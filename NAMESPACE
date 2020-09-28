@@ -1,0 +1,12 @@
+#Dependencies
+import(ape)
+import(stats)
+import(dispRity)
+
+importFrom("graphics","plot")
+
+##Functions
+export(dads)
+
+##S3 
+S3method(plot, dads)

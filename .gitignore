@@ -1,0 +1,6 @@
+## R ignore
+.Rhistory
+*.Rda
+*.rda
+*.RData
+*.Rapp.history
