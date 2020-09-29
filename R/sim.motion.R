@@ -50,9 +50,28 @@ plot.simulation(main = "Uniform",
                                    steps = 100)))
 
 
+## BM motion
+#' @param x0
+#' @param var
+step.BM <- function(x0, var) {
+    return(rnorm(1, mean = x0, sd = sqrt(var)))
+}
+
+plot.simulation(main = "Uniform",
+                    replicate(500,
+                        sim.motion(process = step.BM, 
+                                   parameters = list(var = 1)),
+                                   steps = 100)))
+
+
+
+
+
 ## OU motion
 #' @param x0
 #' @param var
+#' @param alpha
+#' @param theta
 step.OU <- function(x0, var, alpha, theta = 0) {
     mean <- theta + (x0 - theta) * exp(-alpha)
     sd   <- sqrt(var/(2 * alpha) * (1 - exp(-2 * alpha)))
@@ -64,3 +83,6 @@ plot.simulation(main = "OU (alpha = 0.05)",
                         sim.motion(process = step.OU, 
                                    parameters = list(var = 1, alpha = 0.05),
                                    steps = 100)))
+
+
+stop("For multivariate estimation use: MASS::mvrnorm()? Or compare to space.maker approach")

@@ -13,6 +13,12 @@
 #' @export
 
 plot.dads <- function(dads) {
+
+    if(is(dads, "matrix")) #TG: And some dads class
+        
+
+
+
     graphics::plot(42)
     return(invisible())
 }
