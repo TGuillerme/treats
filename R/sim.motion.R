@@ -55,6 +55,8 @@ plot.simulation(main = "Uniform",
 #' @param var
 step.BM <- function(x0, var) {
     return(rnorm(1, mean = x0, sd = sqrt(var)))
+    ## Multidimensional:
+    MASS::mvrnorm(n = 1, mu = x0, Sigma = matrix(var))
 }
 
 plot.simulation(main = "Uniform",
