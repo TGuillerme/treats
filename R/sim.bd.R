@@ -55,105 +55,113 @@ one.bd.event <- function(parent, active_edges, speciation, extinction) {
 
 
 
-pars <- c(1, 0)
+speciation = 1
+extinction = 0
+stop.rule = list(max.live = 10)
 
-make.tree.bd <- function(pars, max.living=Inf, max.t=Inf) {
-  extinct <- FALSE
-  split   <- FALSE
-  parent  <- 0
+birth.death.tree.traits <- function(speciation, extinction, stop.rule = list()) {
+  
+    ## Set up the stop rules
+    stop.rule$max.taxa <- ifelse(is.null(stop.rule$max.taxa), Inf, stop.rule$max.taxa)
+    stop.rule$max.live <- ifelse(is.null(stop.rule$max.live), Inf, stop.rule$max.live)
+    stop.rule$max.time <- ifelse(is.null(stop.rule$max.time), Inf, stop.rule$max.time)
 
-  speciation   <- pars[1]
-  extinction   <- pars[2]
-  edge_lengths <- 0
-  time         <- 0
-  n_living_taxa  <- 1
-  lineages     <- 1
+    ## Initialising the values
+    parent <- edge_lengths <- time <- 0
+    n_living_taxa <- lineages <- 1
+    is_extinct <- is_split <- FALSE
 
-  while ( n_living_taxa <= max.living && n_living_taxa > 0) {
-    ## When does an event happen?
-    ## Get the probability of something happening
-    event_probability <- sum(n_living_taxa * (speciation + extinction))
-    ## Get the waiting time
-    waiting_time <- rexp(1, event_probability)
-    ## Update the global time
-    time <- time + waiting_time
+    ## Building the tree (while the number of living taxa or the number of max taxa is not reached)
+    set.seed(1) ; warning("DEBUG")
+    while(n_living_taxa <= stop.rule$max.live || sum(!is_split) <= stop.rule$max.taxa) {
+        
+        ## Get the probability of something happening
+        event_probability <- sum(n_living_taxa * (speciation + extinction))
+        ## Get the waiting time
+        waiting_time <- rexp(1, event_probability)
+        ## Update the global time
+        time <- time + waiting_time
 
-    ## Correct for going overtime?
-    # if ( time > max.t ) {
-    #   waiting_time <- waiting_time - (time - max.t)
-    #   edge_lengths[lineages] <- edge_lengths[lineages] + waiting_time
-    #   time <- max.t
-    #   break
-    # }
+        ## Arrived at the max time (cut the branch lengths)
+        if(time > stop.rule$max.time) {
+            waiting_time <- waiting_time - (time - stop.rule$max.time)
+            edge_lengths[lineages] <- edge_lengths[lineages] + waiting_time
+            time <- stop.rule$max.time
+            break
+        }
 
-    ## Updating branch length
-    edge_lengths[lineages] <- edge_lengths[lineages] + waiting_time
+        ## Updating branch length
+        edge_lengths[lineages] <- edge_lengths[lineages] + waiting_time
 
-    ## Pick a lineage for the event to happen to:
-    selected_lineage <- sample(n_living_taxa, 1)
-    lineage <- lineages[selected_lineage]
+        ## Pick a lineage for the event to happen to:
+        selected_lineage <- sample(n_living_taxa, 1)
+        lineage <- lineages[selected_lineage]
 
-    ## Randomly triggering an event
-    if (runif(1) < (speciation/(speciation + extinction)) ) {
-      
-      ## Speciating:
-      if(n_living_taxa == max.living) {
-        ## Don't add this one
-        break
-      }
+        ## Simulating a trait (placeholder)
+        trait <- 0
+        modifier <- 0
 
-      ## Creating the new lineages
-      new_lineage <- length(extinct) + 1:2
-      split[lineage] <- TRUE
-      extinct[new_lineage] <- split[new_lineage] <- FALSE
-      parent[new_lineage] <- lineage
-      edge_lengths[new_lineage] <- 0
-      n_living_taxa <- n_living_taxa + 1
+        ## Randomly triggering an event
+        if((modifier + runif(1)) < (speciation/(speciation + extinction))) {
+            ## Speciating:
+            if(n_living_taxa == stop.rule$max.live) {
+                ## Don't add this one
+                break
+            }
 
-      ## lineages <- which(!split & !extinct)
-      lineages <- c(lineages[-selected_lineage], new_lineage)
-    
-    } else {
-      ## Go extinct
-      extinct[lineage] <- TRUE
-      
-      ## lineages <- which(!split & !extinct)
-      lineages <- lineages[-selected_lineage]
-      n_living_taxa <- n_living_taxa - 1
+            ## Creating the new lineages
+            new_lineage <- length(is_split) + 1:2
+            is_split[lineage] <- TRUE
+            is_extinct[new_lineage] <- is_split[new_lineage] <- FALSE
+            parent[new_lineage] <- lineage
+            edge_lengths[new_lineage] <- 0
+            n_living_taxa <- n_living_taxa + 1
+
+            ## lineages <- which(!split & !extinct)
+            lineages <- c(lineages[-selected_lineage], new_lineage)
+        } else {
+
+            ## Go extinct
+            is_extinct[lineage] <- TRUE
+            
+            ## lineages <- which(!split & !extinct)
+            lineages <- lineages[-selected_lineage]
+            n_living_taxa <- n_living_taxa - 1
+        }
     }
-  }
+   
+    ## Summarise into a table (minus the initiation)
+    table <- data.frame(vertex       = seq_along(is_extinct),
+                        parent       = parent,
+                        edge_lengths = edge_lengths,
+                        is_extinct   = is_extinct,
+                        is_split     = is_split)[-1, ]
 
-  ## Summarise into a table
-  table <- data.frame(idx = seq_along(extinct), parent = parent, len = edge_lengths, extinct = extinct, split = split)[-1, ]
+    ## Number of rows and tips
+    Nnode  <- sum(!table$is_split) - 1
+    n_tips <- sum(!table$is_split)
 
-  ## Remove the first row (initiation)
+    ## Getting the edge table node/tips IDs
+    table$vertex2 <- NA
+    table$vertex2[!table$is_split] <- 1:n_tips
+    table$vertex2[ table$is_split] <- order(table$vertex[table$is_split]) + n_tips + 1
 
-  Nnode  <- sum(!table$split) - 1
-  n.tips <- sum(!table$split)
+    ## Getting the edge table nodes (left column)
+    left_edges <- match(table$parent, table$vertex)
+    table$parent2 <- table$vertex2[left_edges]
+    table$parent2[is.na(table$parent2)] <- n_tips + 1
 
-  table$idx2 <- NA
-  table$idx2[!table$split] <- 1:n.tips
-  table$idx2[ table$split] <- order(table$idx[table$split]) + n.tips + 1
+    ## Getting the tips and nodes labels
+    tree <- list(edge        = cbind(table$parent2, table$vertex2),
+                 Nnode       = Nnode,
+                 tip.label   = paste0("t", 1:n_tips),
+                 node.label  = paste0("n", 1:Nnode),
+                 edge.length = table$edge_lengths,
+                 root.time   = time)
+    class(tree) <- "phylo"
 
-  i <- match(table$parent, table$idx)
-  table$parent2 <- table$idx2[i]
-  table$parent2[is.na(table$parent2)] <- n.tips + 1
-
-  tip.label <- ifelse(subset(table, !split)$extinct,
-                      sprintf("ex%d", 1:n.tips),
-                      sprintf("sp%d", 1:n.tips))
-  node.label <- sprintf("nd%d", 1:Nnode)
-
-  table$name <- NA
-  table$name[!table$split] <- tip.label
-
-  phy <- reorder(structure(list(edge=cbind(table$parent2, table$idx2),
-                                Nnode=Nnode,
-                                tip.label=tip.label,
-                                node.label=node.label,
-                                edge.length=table$len),
-                           class="phylo"))
-  phy
+    ## Output
+    return(list(tree = tree, traits = matrix(NA)))
 }
 
 
