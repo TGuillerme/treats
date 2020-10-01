@@ -60,10 +60,10 @@ test_that("sim.bd internal works", {
     stop.rule <- list(max.time = 6)
     test <- birth.death.tree.traits(speciation, extinction, stop.rule)$tree
     expect_is(test, "phylo")
-    expect_equal(Ntip(test), 44)
-    expect_equal(Nnode(test), 43)
+    expect_equal(Ntip(test), 118)
+    expect_equal(Nnode(test), 117)
     ## Not all tips are living
-    expect_equal(length(which(tree.age(test)$age == 0)), 32)
+    expect_equal(length(which(tree.age(test)$age == 0)), 90)
     ## The tree age is 6
     expect_equal(test$root.time, 6)
     expect_equal(max(tree.age(test)$age), 6)
