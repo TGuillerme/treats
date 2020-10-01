@@ -1,21 +1,3 @@
-
-
-
-
-
-speciation = 1
-extinction = 0.5
-stop.rule = list(max.live = 10)
-
-set.seed(4); plot(test <- birth.death.tree.traits(speciation, extinction = 0.5, stop.rule)[[1]])
-
-
-
-plot(test <- birth.death.tree.traits(speciation, extinction = 0.3, stop.rule = list(max.time = 3.5))[[1]])
-axisPhylo()
-
-
-
 birth.death.tree.traits <- function(speciation, extinction, stop.rule = list()) {
   
     ## Set up the stop rules
