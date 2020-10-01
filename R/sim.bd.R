@@ -1,63 +1,20 @@
 
-#' @param speciation the speciation parameter (speciation)
-#' @param extinction the extinction parameter (extinction)
-#' @param stop.rule a named list: change these to stop rules: max.living, max.living, max.time
-#' @param max.time
-sim.birth.death <- function(speciation, extinction, stop.rule) {
-
-  ## Initialise the parameters
-  start_point <- 0
-  start_time  <- 0
-
-
-
-
-}
-
-
-## This function is for creating a new edge in the birth.death process
-#' @param parent the id of the parent edge
-#' @param active_edges the number of edges active in the whole tree
-#' 
-one.bd.event <- function(parent, active_edges, speciation, extinction) {
-
-
-
-    event_probability <- sum(n_living_taxa * (speciation + extinction))
-    ## Get the waiting time
-    waiting_time <- rexp(1, event_probability)
-    
-
-
-
-
-    ## Update the global time
-    time <- time + waiting_time
-
-
-    return(c("parent" = parent,
-             "descendant" = ,
-             "edgelength" = ))
-
-
-
-
-
-    goes_speciat <- speciation / (extinction + speciation)
-
-
-
-}
-
-
-
 
 
 
 
 speciation = 1
-extinction = 0
+extinction = 0.5
 stop.rule = list(max.live = 10)
+
+set.seed(4); plot(test <- birth.death.tree.traits(speciation, extinction = 0.5, stop.rule)[[1]])
+
+
+
+plot(test <- birth.death.tree.traits(speciation, extinction = 0.3, stop.rule = list(max.time = 3.5))[[1]])
+axisPhylo()
+
+
 
 birth.death.tree.traits <- function(speciation, extinction, stop.rule = list()) {
   
@@ -69,16 +26,23 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list()) 
     ## Initialising the values
     parent <- edge_lengths <- time <- 0
     n_living_taxa <- lineages <- 1
-    is_extinct <- is_split <- FALSE
+    #is_extinct <- 
+    is_split <- FALSE
 
-    ## Building the tree (while the number of living taxa or the number of max taxa is not reached)
-    set.seed(1) ; warning("DEBUG")
-    while(n_living_taxa <= stop.rule$max.live || sum(!is_split) <= stop.rule$max.taxa) {
+    ## Building the tree
+    while(n_living_taxa > 0 && n_living_taxa <= stop.rule$max.live && sum(!is_split) <= stop.rule$max.taxa) {
         
         ## Get the probability of something happening
         event_probability <- sum(n_living_taxa * (speciation + extinction))
         ## Get the waiting time
         waiting_time <- rexp(1, event_probability)
+
+        ## Update the global time (for the first waiting time)
+        if(stop.rule$max.time != Inf && time == 0) {
+            stop.rule$max.time <- stop.rule$max.time + waiting_time
+        }
+        #TODO: optimise this bit to be out of the while loop! (having a function in the while loop is longer)
+
         ## Update the global time
         time <- time + waiting_time
 
@@ -103,6 +67,7 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list()) 
 
         ## Randomly triggering an event
         if((modifier + runif(1)) < (speciation/(speciation + extinction))) {
+            
             ## Speciating:
             if(n_living_taxa == stop.rule$max.live) {
                 ## Don't add this one
@@ -112,30 +77,48 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list()) 
             ## Creating the new lineages
             new_lineage <- length(is_split) + 1:2
             is_split[lineage] <- TRUE
-            is_extinct[new_lineage] <- is_split[new_lineage] <- FALSE
+            #is_extinct[new_lineage] <- 
+            is_split[new_lineage] <- FALSE
             parent[new_lineage] <- lineage
             edge_lengths[new_lineage] <- 0
             n_living_taxa <- n_living_taxa + 1
 
             ## lineages <- which(!split & !extinct)
             lineages <- c(lineages[-selected_lineage], new_lineage)
+
         } else {
 
             ## Go extinct
-            is_extinct[lineage] <- TRUE
+            # is_extinct[lineage] <- TRUE
             
             ## lineages <- which(!split & !extinct)
             lineages <- lineages[-selected_lineage]
             n_living_taxa <- n_living_taxa - 1
         }
-    }
-   
+    }   
     ## Summarise into a table (minus the initiation)
-    table <- data.frame(vertex       = seq_along(is_extinct),
+    table <- data.frame(#vertex       = seq_along(is_extinct),
+                        vertex       = seq_along(is_split),
                         parent       = parent,
                         edge_lengths = edge_lengths,
-                        is_extinct   = is_extinct,
+                        # is_extinct   = is_extinct,
                         is_split     = is_split)[-1, ]
+
+    ## Error
+    if(nrow(table) == 0) {
+        stop("No tree generated with these parameters.")
+    }
+
+
+    ## Remove 0 edge split from max.taxa rule
+    if(sum(!table$is_split) > stop.rule$max.taxa) {
+        ## Remove the 0 edge split
+        last_parent <- table$parent[nrow(table)]
+        ## Remove the two last edges
+        table <- table[-c(nrow(table), nrow(table)-1),]
+        ## Change the node into a tip
+        table$is_split[table$vertex == last_parent] <- FALSE
+    } 
 
     ## Number of rows and tips
     Nnode  <- sum(!table$is_split) - 1
@@ -156,9 +139,10 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list()) 
                  Nnode       = Nnode,
                  tip.label   = paste0("t", 1:n_tips),
                  node.label  = paste0("n", 1:Nnode),
-                 edge.length = table$edge_lengths,
-                 root.time   = time)
+                 edge.length = table$edge_lengths)
     class(tree) <- "phylo"
+    ## Adding the root time
+    tree$root.time <- max(dispRity::tree.age(tree)$age)
 
     ## Output
     return(list(tree = tree, traits = matrix(NA)))
