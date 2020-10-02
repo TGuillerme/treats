@@ -1,6 +1,6 @@
 birth.death.tree.traits <- function(speciation, extinction, stop.rule = list()) {
   
-    ## Set up the stop rules
+    ## Set up the stop rules
     stop.rule$max.taxa <- ifelse(is.null(stop.rule$max.taxa), Inf, stop.rule$max.taxa)
     stop.rule$max.live <- ifelse(is.null(stop.rule$max.live), Inf, stop.rule$max.live)
     stop.rule$max.time <- ifelse(is.null(stop.rule$max.time), Inf, stop.rule$max.time)
@@ -11,7 +11,7 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list()) 
     #is_extinct <- 
     is_split <- FALSE
 
-    ## Building the tree
+    ## Building the tree
     while(n_living_taxa > 0 && n_living_taxa <= stop.rule$max.live && sum(!is_split) <= stop.rule$max.taxa) {
         
         ## Get the probability of something happening
@@ -19,13 +19,13 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list()) 
         ## Get the waiting time
         waiting_time <- rexp(1, event_probability)
 
-        ## Update the global time (for the first waiting time)
+        ## Update the global time (for the first waiting time)
         if(stop.rule$max.time != Inf && time == 0) {
             stop.rule$max.time <- stop.rule$max.time + waiting_time
         }
         #TODO: optimise this bit to be out of the while loop! (having a function in the while loop is longer)
 
-        ## Update the global time
+        ## Update the global time
         time <- time + waiting_time
 
         ## Arrived at the max time (cut the branch lengths)
@@ -141,5 +141,5 @@ update.trait <- function(parent_edge, process) {
 ## Make into a phylo object
 convert.to.phylo <- function(bd_table) {
   ## Things in the table that are only in the right column get a tip name
-  ## Things in the table that don't have a tip name get a node name
+  ## Things in the table that don't have a tip name get a node name
 }
