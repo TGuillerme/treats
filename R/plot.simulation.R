@@ -16,7 +16,7 @@
 
 plot.simulation <- function(data, cent.tend = mean, quantiles = c(95, 50), ...) {
 
-    ## Get the data central tendency
+    ## Get the data central tendency
     central_tendency <- apply(data, 1, cent.tend)
     ## Get the quantiles
     cis <- CI.converter(quantiles)
@@ -57,7 +57,7 @@ plot.simulation <- function(data, cent.tend = mean, quantiles = c(95, 50), ...) 
     poly_args$x <- c(1:n_points)
     poly_args$x <- c(poly_args$x, rev(poly_args$x))
 
-    ## Loop through the polygons
+    ## Loop through the polygons
     for (one_ci in 1:n_quantiles) {
         ## Select the quantiles columns
         quantiles_col <- get.quantile.col(one_ci, n_quantiles)

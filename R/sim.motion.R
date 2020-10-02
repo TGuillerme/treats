@@ -27,27 +27,27 @@ step.no.process <- function(x0, fun, options) {
     do.call(fun, options)
 }
 
-plot.simulation(main = "Normal",
-                    replicate(500,
-                        sim.motion(process = step.no.process, 
-                                   parameters = list(fun = rnorm, options = list(mean = 0, sd = 1)),
-                                   steps = 100)))
-plot.simulation(main = "LogNormal",
-                    replicate(500,
-                        sim.motion(process = step.no.process, 
-                                   parameters = list(fun = rlnorm, options = list(meanlog = 0, sdlog = 1)),
-                                   steps = 100)))
-plot.simulation(main = "Gamma",
-                    replicate(500,
-                        sim.motion(process = step.no.process, 
-                                   parameters = list(fun = rgamma, options = list(shape = 1)),
-                                   steps = 100)))
+# plot.simulation(main = "Normal",
+#                     replicate(500,
+#                         sim.motion(process = step.no.process, 
+#                                    parameters = list(fun = rnorm, options = list(mean = 0, sd = 1)),
+#                                    steps = 100)))
+# plot.simulation(main = "LogNormal",
+#                     replicate(500,
+#                         sim.motion(process = step.no.process, 
+#                                    parameters = list(fun = rlnorm, options = list(meanlog = 0, sdlog = 1)),
+#                                    steps = 100)))
+# plot.simulation(main = "Gamma",
+#                     replicate(500,
+#                         sim.motion(process = step.no.process, 
+#                                    parameters = list(fun = rgamma, options = list(shape = 1)),
+#                                    steps = 100)))
 
-plot.simulation(main = "Uniform",
-                    replicate(500,
-                        sim.motion(process = step.no.process, 
-                                   parameters = list(fun = runif, options = list(max = 1, min = -1)),
-                                   steps = 100)))
+# plot.simulation(main = "Uniform",
+#                     replicate(500,
+#                         sim.motion(process = step.no.process, 
+#                                    parameters = list(fun = runif, options = list(max = 1, min = -1)),
+#                                    steps = 100)))
 
 
 ## BM motion
@@ -59,11 +59,11 @@ step.BM <- function(x0, var) {
     MASS::mvrnorm(n = 1, mu = x0, Sigma = matrix(var))
 }
 
-plot.simulation(main = "Uniform",
-                    replicate(500,
-                        sim.motion(process = step.BM, 
-                                   parameters = list(var = 1)),
-                                   steps = 100)))
+# plot.simulation(main = "Uniform",
+#                     replicate(500,
+#                         sim.motion(process = step.BM, 
+#                                    parameters = list(var = 1)),
+#                                    steps = 100)))
 
 
 
@@ -80,11 +80,11 @@ step.OU <- function(x0, var, alpha, theta = 0) {
     return(rnorm(1, mean = mean, sd = sd))
 }
 
-plot.simulation(main = "OU (alpha = 0.05)",
-                    replicate(500,
-                        sim.motion(process = step.OU, 
-                                   parameters = list(var = 1, alpha = 0.05),
-                                   steps = 100)))
+# plot.simulation(main = "OU (alpha = 0.05)",
+#                     replicate(500,
+#                         sim.motion(process = step.OU, 
+#                                    parameters = list(var = 1, alpha = 0.05),
+#                                    steps = 100)))
 
 
-stop("For multivariate estimation use: MASS::mvrnorm()? Or compare to space.maker approach")
+# stop("For multivariate estimation use: MASS::mvrnorm()? Or compare to space.maker approach")

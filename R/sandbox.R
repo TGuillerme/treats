@@ -36,8 +36,8 @@ step.BM <- function(x0, var) {
     return(rnorm(1, mean = x0, sd = sqrt(var)))
 }
 
-plot(NULL, xlim = c(0, 100), ylim = c(-50, 50))
-replicate(100, lines(0:100, sim.motion(fun = step.BM, length = 100)))
+# plot(NULL, xlim = c(0, 100), ylim = c(-50, 50))
+# replicate(100, lines(0:100, sim.motion(fun = step.BM, length = 100)))
 
 ## 
 
@@ -65,14 +65,14 @@ make.br.ou <- function(pars) {
           sqrt(s2/(2*alpha) * (1 - exp(-2*alpha*t))))
 }
 
-step.OUM <- function(distribution, arguments) {
-    arguments$n <- 1
+# step.OUM <- function(distribution, arguments) {
+#     arguments$n <- 1
 
     
-    arguments$mena <- theta + (mean - theta) * exp(-alpha * t)
+#     arguments$mena <- theta + (mean - theta) * exp(-alpha * t)
     
 
-    return(do.call(distribution, arguments))
-}
+#     return(do.call(distribution, arguments))
+# }
 
 
