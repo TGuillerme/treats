@@ -27,11 +27,11 @@ step.no.process <- function(x0, fun, options) {
     do.call(fun, options)
 }
 
-# plot.simulation(main = "Normal",
-#                     replicate(500,
-#                         sim.motion(process = step.no.process, 
-#                                    parameters = list(fun = rnorm, options = list(mean = 0, sd = 1)),
-#                                    steps = 100)))
+plot.simulation(main = "Normal",
+                    replicate(500,
+                        sim.motion(process = step.no.process, 
+                                   parameters = list(fun = rnorm, options = list(mean = 0, sd = 1)),
+                                   steps = 100)))
 # plot.simulation(main = "LogNormal",
 #                     replicate(500,
 #                         sim.motion(process = step.no.process, 
@@ -52,18 +52,19 @@ step.no.process <- function(x0, fun, options) {
 
 ## BM motion
 #' @param x0
-#' @param var
-step.BM <- function(x0, var) {
-    return(rnorm(1, mean = x0, sd = sqrt(var)))
+#' @param sd
+#' @param n
+step.BM <- function(x0, sd, n = 1) {
+    # return(rnorm(1, mean = x0, sd = sd))
     ## Multidimensional:
-    MASS::mvrnorm(n = 1, mu = x0, Sigma = matrix(var))
+    return(t(MASS::mvrnorm(n = n, mu = x0, Sigma = sd)))
 }
 
-# plot.simulation(main = "Uniform",
-#                     replicate(500,
-#                         sim.motion(process = step.BM, 
-#                                    parameters = list(var = 1)),
-#                                    steps = 100)))
+plot.simulation(main = "Uniform",
+                    replicate(500,
+                        sim.motion(process = step.BM, 
+                                   parameters = list(sd = 1),
+                                   steps = 100)))
 
 
 
