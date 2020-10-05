@@ -1,6 +1,7 @@
 Package: dads
-Title: DispArity Data Simulations
-Author: Thomas Guillerme [aut, cre, cph]]
+Title: Disparity And Diversity Simulations
+Author: Thomas Guillerme [aut, cre, cph],
+	Alex Slavenko [aut, cph]
 Maintainer: Thomas Guillerme <guillert@tcd.ie>
 Version: 0.1.0
 Date: 2020-09-28
