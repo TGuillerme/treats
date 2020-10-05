@@ -1,76 +1,69 @@
-# ####
-# # Inputs
-# ####
-
-# ## Trait controller
-# traits <- list(
-#     n = 1,
-#     start = 0,
-#     cor = 0)
 
 
 
-# ####
-# # Birth death modifiers
-# ####
+# # ####
+# # # Birth death modifiers
+# # ####
 
-# ## The model for a modifier
-# modifier = list(
-#             # What to apply the modifier on (extinction, speciation or waiting time)
-#             what = "extinction",
-#             # What is the condition (<, <=, >=, ==, >)
-#             condition = `<=`,
-#             # What is the value for the condition (a numeric)
-#             value = 0,
-#             # The modifier to multiply the probability with
-#             multiplier = 1
-#     )
+# ## Add the potential for dispersal (the information will be another (distance?) matrix)
+
+# # ## The model for a modifier
+# # modifier = list(
+# #             # What to apply the modifier on (extinction, speciation or waiting time)
+# #             what = "speciation",
+# #             # What is the condition (<, <=, >=, ==, >)
+# #             condition = `<`, # Distance from other traits or something like that
+# #             # What is the value for the condition (a numeric)
+# #             value = 0,
+# #             # The modifier to multiply the probability with
+# #             multiplier = 2 # Make this into a function (potentially)
+# #     )
 
 
 
 
 
 
-# ## Function for sampling the waiting time
-# wait.time <- function(event_probability) {
-#     rexp(1, event_probability)
-# }
+# # ## Function for sampling the waiting time
+# # wait.time <- function(event_probability) {
+# #     rexp(1, event_probability)
+# # }
 
-# ## Sampling modifier function
-# use.modifier <- function(fun, args, modifier, trait) {
-#     if(modifier$condition(trait, modifier$value)) {
-#         return(fun(args) * modifier$multiplier)
-#     } else {
-#         return(fun(args))
-#     }
-# }
+# # ## Sampling modifier function
+# # use.modifier <- function(fun, args, modifier, trait) {
+# #     if(modifier$condition(trait, modifier$value)) {
+# #         return(fun(args) * modifier$multiplier)
+# #     } else {
+# #         return(fun(args))
+# #     }
+# # }
 
-# ## Example for waiting time
-# modifier <- list(what = "wait.time",
-#                  condition = `<=`,
-#                  value = 0,
-#                  multiplier = 1)
-# use.modifier(wait.time, event_probability, modifier, trait = 5)
+# # ## Example for waiting time
+# # modifier <- list(what = "wait.time",
+# #                  condition = `<=`,
+# #                  value = 0,
+# #                  multiplier = 1)
+# # use.modifier(wait.time, event_probability, modifier, trait = 5)
 
-# ## Example for speciation
-# modifier <- list(what = "speciation",
-#                  condition = `<=`,
-#                  value = 0,
-#                  multiplier = 1)
-# speciation = 1
-# extinction = 0
-# use.modifier(fun = runif, args = 1, modifier = modifier, trait = 5) < (speciation/(speciation + extinction))
-# # if TRUE, go speciate
+# # ## Example for speciation
+# # modifier <- list(what = "speciation",
+# #                  condition = `<=`,
+# #                  value = 0,
+# #                  multiplier = 1)
+# # speciation = 1
+# # extinction = 0
+# # use.modifier(fun = runif, args = 1, modifier = modifier, trait = 5) < (speciation/(speciation + extinction))
+# # # if TRUE, go speciate
 
-# ## Example for extinction
-# modifier <- list(what = "extinction",
-#                  condition = `<=`,
-#                  value = 0,
-#                  multiplier = 1)
-# speciation = 1
-# extinction = 0.5
-# use.modifier(fun = runif, args = 1, modifier = modifier, trait = 5) < (speciation/(speciation + extinction))
-# # make sure this modifies the extinction probability
+# # ## Example for extinction
+# # modifier <- list(what = "extinction",
+# #                  condition = `<=`,
+# #                  value = 0,
+# #                  multiplier = 1)
+# # speciation = 1
+# # extinction = 0.5
+# # use.modifier(fun = runif, args = 1, modifier = modifier, trait = 5) < (speciation/(speciation + extinction))
+# # # make sure this modifies the extinction probability
 
 
 
@@ -81,7 +74,7 @@
 
 # ## One event
 # event <- list(
-#     when = c("taxa" = 0, "living" = 0, "time" = 0),
+#     when = c("taxa" = 0, "living" = 0, "time" = 0), # Distance
 #     what = c("traits", "living", "taxa"),
 #     event = function()
 #     )
@@ -96,6 +89,20 @@
 #                              event = list(fun = function(t))) 
 #     )
 
+# ## Mass extinctions:
+# bd.event <- list(
+#     when = c("taxa" = 0, "living" = 0, "time" = 0),
+#     what = c("traits", "living", "taxa"),
+#     event = function()
+#     )
+# #TG: for this one, remove a proportion or number of taxa when the event occurs. It is possible to randomly remove the taxa or remove them as function of their trait value. 
+
+# ## Change in the traits:
+# trait.event <- list(
+#     when = ...,
+#     what = ...,
+#     event = ...)
+# #TG: for this one, just change traits$process or traits$cor when the event occurs
 
 
 
@@ -108,23 +115,47 @@
 
 
 
-birth.death.tree.traits <- function(speciation, extinction, traits, stop.rule = list()) {
+# ####
+# # Inputs
+# ####
+
+# ## Trait controller
+# traits <- list(
+#     n = 1,
+#     start = 0,
+#     process = step.BM,
+#     cor = diag(1, 1, 1))
+    
+# speciation = 1
+# extinction = 0
+
+# stop.rule <- list(max.taxa = 10)
+
+
+birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.rule = list()) {
   
     ## Set up the stop rules
     stop.rule$max.taxa <- ifelse(is.null(stop.rule$max.taxa), Inf, stop.rule$max.taxa)
     stop.rule$max.live <- ifelse(is.null(stop.rule$max.live), Inf, stop.rule$max.live)
     stop.rule$max.time <- ifelse(is.null(stop.rule$max.time), Inf, stop.rule$max.time)
 
+    ## Set up the trait simulation
+    do_traits <- !is.null(traits)
+
     ## Initialising the values
+    DEBUG_vertex <- 0
+    DEBUG_tipsnodes <- 0
     parent <- edge_lengths <- time <- 0
     n_living_taxa <- lineages <- 1
     is_split <- FALSE
-    # trait_start <- rep(0, traits$n)
-
-    # trait_values <- matrix(mvrnorm(n = traits$n, mu = rep(traits$start, traits$n), Sigma = waiting.time * bm.rates), ncol = traits$n)
+    if(do_traits) {
+        trait_values <- matrix(traits$start, nrow = traits$n)
+    }
 
     ## Building the tree
     while(n_living_taxa > 0 && n_living_taxa <= stop.rule$max.live && sum(!is_split) <= stop.rule$max.taxa) {
+
+        DEBUG_vertex <- DEBUG_vertex + 1
         
         ## Get the probability of something happening
         event_probability <- sum(n_living_taxa * (speciation + extinction))
@@ -155,15 +186,16 @@ birth.death.tree.traits <- function(speciation, extinction, traits, stop.rule = 
         selected_lineage <- sample(n_living_taxa, 1)
         lineage <- lineages[selected_lineage]
 
-        ## Simulating a trait (placeholder)
-        trait_values <- rbind(trait_values, matrix(mvrnorm(n = traits$n, mu = rep(traits$start, traits$n), Sigma = waiting.time * bm.rates), ncol = traits$n))
-
-        trait <- 0
         modifier <- 0
+
+        cat(paste0("Vertex ", DEBUG_vertex, " waited ", round(waiting_time, 2), " and gets the on lineage ", lineage, ":"))
 
         ## Randomly triggering an event
         if((modifier + runif(1)) < (speciation/(speciation + extinction))) {
             
+            DEBUG_tipsnodes <- DEBUG_tipsnodes + 2
+            cat(paste0(" speciation (", DEBUG_tipsnodes, " total tips/nodes):\n"))
+
             ## Speciating:
             if(n_living_taxa == stop.rule$max.live) {
                 ## Don't add this one
@@ -177,19 +209,39 @@ birth.death.tree.traits <- function(speciation, extinction, traits, stop.rule = 
             parent[new_lineage] <- lineage
             edge_lengths[new_lineage] <- 0
             n_living_taxa <- n_living_taxa + 1
-
             lineages <- c(lineages[-selected_lineage], new_lineage)
+
+            cat(paste0("    lineage ", new_lineage[1], " (from ", parent[new_lineage[1]], ");\n"))
+            cat(paste0("    lineage ", new_lineage[2], " (from ", parent[new_lineage[2]], ");\n"))
+
+
+
+            # DEBUG_vertex <- DEBUG_vertex + 2
+            # ## Update the trait
+            # if(do_traits) {
+            #     last_trait_values <- trait_values[nrow(trait_values),]
+            #     ## Adding two trait values
+            #     trait_values <- rbind(trait_values,
+            #                           traits$process(x0 = last_trait_values, sd = waiting_time * traits$cor, n = traits$n),
+            #                           traits$process(x0 = last_trait_values, sd = waiting_time * traits$cor, n = traits$n))
+            # }
+        
+            # cat(paste0("   Vertex ", DEBUG_vertex-1, ": brlen = ", round(edge_lengths[DEBUG_vertex-1], 2), "; trait = ", round(trait_values[DEBUG_vertex-1,], 2), "\n"))
+            # cat(paste0("   Vertex ", DEBUG_vertex, ": brlen = ", round(edge_lengths[DEBUG_vertex], 2), "; trait = ", round(trait_values[DEBUG_vertex,], 2), "\n"))
 
         } else {
 
+            DEBUG_tipsnodes <- DEBUG_tipsnodes + 1
+            cat(paste0(" extinction (", DEBUG_tipsnodes, " total tips/nodes):\n"))
             ## Go extinct
             lineages <- lineages[-selected_lineage]
             n_living_taxa <- n_living_taxa - 1
         }
-    }   
+    }
+
     ## Summarise into a table (minus the initiation)
-    table <- data.frame(vertex       = seq_along(is_split),
-                        parent       = parent,
+    table <- data.frame(parent       = parent, # These are nodes
+                        vertex       = seq_along(is_split), # These are tips or nodes
                         edge_lengths = edge_lengths,
                         is_split     = is_split)[-1, ]
 
@@ -200,18 +252,19 @@ birth.death.tree.traits <- function(speciation, extinction, traits, stop.rule = 
 
 
     ## Remove 0 edge split from max.taxa rule
-    if(sum(!table$is_split) > stop.rule$max.taxa) {
-        ## Remove the 0 edge split
-        last_parent <- table$parent[nrow(table)]
-        ## Remove the two last edges
-        table <- table[-c(nrow(table), nrow(table)-1),]
-        ## Change the node into a tip
-        table$is_split[table$vertex == last_parent] <- FALSE
-    } 
+    warning("DEBUG")
+    # if(sum(!table$is_split) > stop.rule$max.taxa) {
+    #     ## Remove the 0 edge split
+    #     last_parent <- table$parent[nrow(table)]
+    #     ## Remove the two last edges
+    #     table <- table[-c(nrow(table), nrow(table)-1),]
+    #     ## Change the node into a tip
+    #     table$is_split[table$vertex == last_parent] <- FALSE
+    # } 
 
     ## Number of rows and tips
-    Nnode  <- sum(!table$is_split) - 1
-    n_tips <- sum(!table$is_split)
+    n_nodes <- sum(!table$is_split) - 1
+    n_tips  <- sum(!table$is_split)
 
     ## Getting the edge table node/tips IDs
     table$vertex2 <- NA
@@ -225,9 +278,9 @@ birth.death.tree.traits <- function(speciation, extinction, traits, stop.rule = 
 
     ## Getting the tips and nodes labels
     tree <- list(edge        = cbind(table$parent2, table$vertex2),
-                 Nnode       = Nnode,
+                 Nnode     = n_nodes,
                  tip.label   = paste0("t", 1:n_tips),
-                 node.label  = paste0("n", 1:Nnode),
+                 node.label  = paste0("n", 1:n_nodes),
                  edge.length = table$edge_lengths)
     class(tree) <- "phylo"
     ## Adding the root time
@@ -237,6 +290,9 @@ birth.death.tree.traits <- function(speciation, extinction, traits, stop.rule = 
     return(list(tree = tree, traits = matrix(NA)))
 }
 
+# set.seed(1)
+# tree <- birth.death.tree.traits(speciation = 1, extinction = 0.5, stop.rule = list(max.taxa = 10))$tree
+# plot(tree)
 
 
 ## This function is for updating one (or more) traits in the process
