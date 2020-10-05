@@ -1,4 +1,114 @@
-birth.death.tree.traits <- function(speciation, extinction, stop.rule = list()) {
+# ####
+# # Inputs
+# ####
+
+# ## Trait controller
+# traits <- list(
+#     n = 1,
+#     start = 0,
+#     cor = 0)
+
+
+
+# ####
+# # Birth death modifiers
+# ####
+
+# ## The model for a modifier
+# modifier = list(
+#             # What to apply the modifier on (extinction, speciation or waiting time)
+#             what = "extinction",
+#             # What is the condition (<, <=, >=, ==, >)
+#             condition = `<=`,
+#             # What is the value for the condition (a numeric)
+#             value = 0,
+#             # The modifier to multiply the probability with
+#             multiplier = 1
+#     )
+
+
+
+
+
+
+# ## Function for sampling the waiting time
+# wait.time <- function(event_probability) {
+#     rexp(1, event_probability)
+# }
+
+# ## Sampling modifier function
+# use.modifier <- function(fun, args, modifier, trait) {
+#     if(modifier$condition(trait, modifier$value)) {
+#         return(fun(args) * modifier$multiplier)
+#     } else {
+#         return(fun(args))
+#     }
+# }
+
+# ## Example for waiting time
+# modifier <- list(what = "wait.time",
+#                  condition = `<=`,
+#                  value = 0,
+#                  multiplier = 1)
+# use.modifier(wait.time, event_probability, modifier, trait = 5)
+
+# ## Example for speciation
+# modifier <- list(what = "speciation",
+#                  condition = `<=`,
+#                  value = 0,
+#                  multiplier = 1)
+# speciation = 1
+# extinction = 0
+# use.modifier(fun = runif, args = 1, modifier = modifier, trait = 5) < (speciation/(speciation + extinction))
+# # if TRUE, go speciate
+
+# ## Example for extinction
+# modifier <- list(what = "extinction",
+#                  condition = `<=`,
+#                  value = 0,
+#                  multiplier = 1)
+# speciation = 1
+# extinction = 0.5
+# use.modifier(fun = runif, args = 1, modifier = modifier, trait = 5) < (speciation/(speciation + extinction))
+# # make sure this modifies the extinction probability
+
+
+
+
+# ####
+# # Event modifiers (e.g. make some mass extinction or change the trait correlation matrix after some time)
+# ####
+
+# ## One event
+# event <- list(
+#     when = c("taxa" = 0, "living" = 0, "time" = 0),
+#     what = c("traits", "living", "taxa"),
+#     event = function()
+#     )
+
+# ## Example of events
+# events <- list(
+#     "mass.extinction" = list(when = c("living" = 10),
+#                              what = c("living"),
+#                              event = list(fun = extinction, args = list(severity = 90))),
+#     "trait.cor"       = list(when = c("time" = 5, "taxa" = 5),
+#                              what = "traits",
+#                              event = list(fun = function(t))) 
+#     )
+
+
+
+
+
+
+
+
+
+
+
+
+
+birth.death.tree.traits <- function(speciation, extinction, traits, stop.rule = list()) {
   
     ## Set up the stop rules
     stop.rule$max.taxa <- ifelse(is.null(stop.rule$max.taxa), Inf, stop.rule$max.taxa)
@@ -8,8 +118,10 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list()) 
     ## Initialising the values
     parent <- edge_lengths <- time <- 0
     n_living_taxa <- lineages <- 1
-    #is_extinct <- 
     is_split <- FALSE
+    # trait_start <- rep(0, traits$n)
+
+    # trait_values <- matrix(mvrnorm(n = traits$n, mu = rep(traits$start, traits$n), Sigma = waiting.time * bm.rates), ncol = traits$n)
 
     ## Building the tree
     while(n_living_taxa > 0 && n_living_taxa <= stop.rule$max.live && sum(!is_split) <= stop.rule$max.taxa) {
@@ -44,6 +156,8 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list()) 
         lineage <- lineages[selected_lineage]
 
         ## Simulating a trait (placeholder)
+        trait_values <- rbind(trait_values, matrix(mvrnorm(n = traits$n, mu = rep(traits$start, traits$n), Sigma = waiting.time * bm.rates), ncol = traits$n))
+
         trait <- 0
         modifier <- 0
 
@@ -59,31 +173,24 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list()) 
             ## Creating the new lineages
             new_lineage <- length(is_split) + 1:2
             is_split[lineage] <- TRUE
-            #is_extinct[new_lineage] <- 
             is_split[new_lineage] <- FALSE
             parent[new_lineage] <- lineage
             edge_lengths[new_lineage] <- 0
             n_living_taxa <- n_living_taxa + 1
 
-            ## lineages <- which(!split & !extinct)
             lineages <- c(lineages[-selected_lineage], new_lineage)
 
         } else {
 
             ## Go extinct
-            # is_extinct[lineage] <- TRUE
-            
-            ## lineages <- which(!split & !extinct)
             lineages <- lineages[-selected_lineage]
             n_living_taxa <- n_living_taxa - 1
         }
     }   
     ## Summarise into a table (minus the initiation)
-    table <- data.frame(#vertex       = seq_along(is_extinct),
-                        vertex       = seq_along(is_split),
+    table <- data.frame(vertex       = seq_along(is_split),
                         parent       = parent,
                         edge_lengths = edge_lengths,
-                        # is_extinct   = is_extinct,
                         is_split     = is_split)[-1, ]
 
     ## Error
