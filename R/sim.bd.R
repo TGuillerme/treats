@@ -134,6 +134,10 @@ traits <- list(
 
 birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.rule = list()) {
   
+    ############
+    ## Initialising
+    ############
+
     ## Set up the stop rules
     stop.rule$max.taxa <- ifelse(is.null(stop.rule$max.taxa), Inf, stop.rule$max.taxa)
     stop.rule$max.live <- ifelse(is.null(stop.rule$max.live), Inf, stop.rule$max.live)
@@ -143,31 +147,88 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
     do_traits <- !is.null(traits)
 
     ## Initialising the values
-    DEBUG_vertex <- 0
-    DEBUG_tipsnodes <- 0
-    DEBUG_node_ID <- 0
     parent <- edge_lengths <- time <- 0
     n_living_taxa <- lineages <- 1
+    DEBUG_node_counter <- 0
+    DEBUG_tip_counter <- 0
     is_split <- FALSE
+
+    warning("DEBUG: TODO 1")
+    ## If stop.rule$max.taxa exist, initiate the values to vectors (of length Nnode + Ntip)
+
+
+    ############
+    ## First node (root)
+    ############
+
+    ## Get the probability of something happening
+    event_probability <- sum(n_living_taxa * (speciation + extinction))
+    ## Get the waiting time
+    waiting_time <- rexp(1, event_probability)
+    ## Update the global time (for the first waiting time)
+    if(stop.rule$max.time != Inf && time == 0) {
+        stop.rule$max.time <- stop.rule$max.time + waiting_time
+    }
+    ## Update the global time
+    time <- time + waiting_time
+    ## Updating branch length
+    edge_lengths[lineages] <- edge_lengths[lineages] + waiting_time
+
+    ## Select the first lineage
+    selected_lineage <- lineage <- 1
+
+    ## Start the trait    
     if(do_traits) {
-        trait_values <- cbind(parent = 0, matrix(traits$start, nrow = traits$n))
+        trait_values <- cbind(parent = 1, matrix(traits$start, nrow = traits$n))
+    } else {
+        trait_values <- NA
     }
 
-    ## Building the tree
-    while(n_living_taxa > 0 && n_living_taxa <= stop.rule$max.live && sum(!is_split) <= stop.rule$max.taxa) {
+    # cat(paste0("node = ", lineage, "; trait = ", trait_values[nrow(trait_values), 2], "\n"))
+    # cat(paste0("    parent ", parent[lineage], " trait = ", trait_values[which(trait_values[,1] == parent[lineage]), ][2],  "\n"))
 
-        DEBUG_vertex <- DEBUG_vertex + 1
+    modifier <- 0
+
+    ## Randomly triggering an event
+    if((modifier + runif(1)) < (speciation/(speciation + extinction))) {
+        ## Speciating:
+        if(n_living_taxa == stop.rule$max.live) {
+            ## Don't add this one
+            stop("No tree generated with these parameters.")
+        }
+
+        ## Creating the new lineages
+        new_lineage <- length(is_split) + 1:2
+        is_split[lineage] <- TRUE
+        is_split[new_lineage] <- FALSE
+        parent[new_lineage] <- lineage
+        edge_lengths[new_lineage] <- 0
+        n_living_taxa <- n_living_taxa + 1
+        lineages <- c(lineages[-selected_lineage], new_lineage)
+        # cat(paste0(" lineage ", new_lineage[1], " (from ", parent[new_lineage[1]], ") + "))
+        # cat(paste0(new_lineage[2], " (from ", parent[new_lineage[2]], ")\n"))
+        # cat("\n")
+
+        DEBUG_node_counter <- DEBUG_node_counter + 1
+        cat(paste0("lineage ", lineage, " (edge n", DEBUG_node_counter, ")",  "; trait = ", trait_values[nrow(trait_values), 2], "\n"))
+        cat(paste0("    parent ", parent[lineage], " trait = ", trait_values[which(trait_values[,1] == parent[lineage]), ][2],  "\n"))
+
+    } else {
+        ## Cannot go further
+        stop("No tree generated with these parameters.")
+    }
+
+    ############
+    ## Rest of the tree
+    ############
+
+    ## Build the rest of the tree
+    while(n_living_taxa > 0 && n_living_taxa <= stop.rule$max.live && sum(!is_split) <= stop.rule$max.taxa) {
         
         ## Get the probability of something happening
         event_probability <- sum(n_living_taxa * (speciation + extinction))
         ## Get the waiting time
         waiting_time <- rexp(1, event_probability)
-
-        ## Update the global time (for the first waiting time)
-        if(stop.rule$max.time != Inf && time == 0) {
-            stop.rule$max.time <- stop.rule$max.time + waiting_time
-        }
-        #TODO: optimise this bit to be out of the while loop! (having a function in the while loop is longer)
 
         ## Update the global time
         time <- time + waiting_time
@@ -186,17 +247,6 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
         ## Pick a lineage for the event to happen to:
         selected_lineage <- sample(n_living_taxa, 1)
         lineage <- lineages[selected_lineage]
-
-
-
-
-
-
-
-
-
-
-        cat(paste0(DEBUG_vertex, ": node = ", lineage, "; parent = ", parent[lineage], "\n"))
         
         ## Adding a new row to the trait_values matrix
         trait_values <- rbind(trait_values,
@@ -207,23 +257,15 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
                                     )
                               )
 
-        cat(paste0("    parent (", parent[lineage], ") trait = ", trait_values[which(trait_values[,1] == parent[lineage]), ][2], "; trait = ", trait_values[nrow(trait_values), 2], "\n"))
-
-
-
-
-
-
-
-
+        # cat(paste0("node = ", lineage, "; trait = ", trait_values[nrow(trait_values), 2], "\n"))
+        # cat(paste0("    parent ", parent[lineage], " trait = ", trait_values[which(trait_values[,1] == parent[lineage]), ][2],  "\n"))
 
         modifier <- 0
 
         ## Randomly triggering an event
         if((modifier + runif(1)) < (speciation/(speciation + extinction))) {
             
-            DEBUG_tipsnodes <- DEBUG_tipsnodes + 2
-            cat(paste0("    speciation:"))
+            # cat(paste0("    speciation:"))
 
             ## Speciating:
             if(n_living_taxa == stop.rule$max.live) {
@@ -240,33 +282,32 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
             n_living_taxa <- n_living_taxa + 1
             lineages <- c(lineages[-selected_lineage], new_lineage)
 
-            cat(paste0(" lineage ", new_lineage[1], " (from ", parent[new_lineage[1]], ") + "))
-            cat(paste0(new_lineage[2], " (from ", parent[new_lineage[2]], ")\n"))
-
-            cat("\n")
-
-            # DEBUG_vertex <- DEBUG_vertex + 2
-            # ## Update the trait
-            # if(do_traits) {
-            #     last_trait_values <- trait_values[nrow(trait_values),]
-            #     ## Adding two trait values
-            #     trait_values <- rbind(trait_values,
-            #                           traits$process(x0 = last_trait_values, sd = waiting_time * traits$cor, n = traits$n),
-            #                           traits$process(x0 = last_trait_values, sd = waiting_time * traits$cor, n = traits$n))
-            # }
+            # cat(paste0(" lineage ", new_lineage[1], " (from ", parent[new_lineage[1]], ") + "))
+            # cat(paste0(new_lineage[2], " (from ", parent[new_lineage[2]], ")\n"))
+            # cat("\n")
         
-            # cat(paste0("   Vertex ", DEBUG_vertex-1, ": brlen = ", round(edge_lengths[DEBUG_vertex-1], 2), "; trait = ", round(trait_values[DEBUG_vertex-1,], 2), "\n"))
-            # cat(paste0("   Vertex ", DEBUG_vertex, ": brlen = ", round(edge_lengths[DEBUG_vertex], 2), "; trait = ", round(trait_values[DEBUG_vertex,], 2), "\n"))
+            DEBUG_node_counter <- DEBUG_node_counter + 1
+            cat(paste0("lineage ", lineage, " (edge n", DEBUG_node_counter, ")",  "; trait = ", trait_values[nrow(trait_values), 2], "\n"))
+            cat(paste0("    parent ", parent[lineage], " trait = ", trait_values[which(trait_values[,1] == parent[lineage]), ][2],  "\n"))
 
         } else {
-
-            DEBUG_tipsnodes <- DEBUG_tipsnodes + 1
-            cat(paste0("    extinction.\n\n"))
+            # cat(paste0("    extinction.\n\n"))
             ## Go extinct
             lineages <- lineages[-selected_lineage]
             n_living_taxa <- n_living_taxa - 1
+
+            DEBUG_tip_counter <- DEBUG_tip_counter + 1
+            cat(paste0("lineage ", lineage, " (edge t", DEBUG_tip_counter, " - tip)",  "; trait = ", trait_values[nrow(trait_values), 2], "\n"))
+            cat(paste0("    parent ", parent[lineage], " trait = ", trait_values[which(trait_values[,1] == parent[lineage]), ][2],  "\n"))
+
         }
     }
+
+
+    ############
+    ## Cleaning the results
+    ############
+
 
     ## Summarise into a table (minus the initiation)
     table <- data.frame(parent       = parent, # These are nodes
@@ -274,22 +315,33 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
                         edge_lengths = edge_lengths,
                         is_split     = is_split)[-1, ]
 
+
+    ## Add the trait_values to the table
+    table$parent_trait <- trait_values[match(table$parent, trait_values[, "parent"]), 2]
+    
+    warning("DEBUG: TODO 2")
+    ## Add the trait_values of the vertex to the table
+    # table$vertex_trait <- trait_values[match(table$vertex, trait_values[, "parent"]), 2]
+
+
     ## Error
     if(nrow(table) == 0) {
         stop("No tree generated with these parameters.")
     }
 
-
     ## Remove 0 edge split from max.taxa rule
-    warning("DEBUG") # reactivate this bit
-    # if(sum(!table$is_split) > stop.rule$max.taxa) {
-    #     ## Remove the 0 edge split
-    #     last_parent <- table$parent[nrow(table)]
-    #     ## Remove the two last edges
-    #     table <- table[-c(nrow(table), nrow(table)-1),]
-    #     ## Change the node into a tip
-    #     table$is_split[table$vertex == last_parent] <- FALSE
-    # } 
+    if(sum(!table$is_split) > stop.rule$max.taxa) {
+        ## Remove the 0 edge split
+        last_parent <- table$parent[nrow(table)]
+        ## Remove the two last edges
+        table <- table[-c(nrow(table), nrow(table)-1),]
+        ## Change the node into a tip
+        table$is_split[table$vertex == last_parent] <- FALSE
+    } 
+
+    ############
+    ## Creating the tree object
+    ############
 
     ## Number of rows and tips
     n_nodes <- sum(!table$is_split) - 1
@@ -307,7 +359,7 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
 
     ## Getting the tips and nodes labels
     tree <- list(edge        = cbind(table$parent2, table$vertex2),
-                 Nnode     = n_nodes,
+                 Nnode       = n_nodes,
                  tip.label   = paste0("t", 1:n_tips),
                  node.label  = paste0("n", 1:n_nodes),
                  edge.length = table$edge_lengths)
@@ -319,12 +371,22 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
     return(list(tree = tree, traits = trait_values))
 }
 
+
+traits <- list(
+    n = 1,
+    start = 0,
+    process = function(x0) return(x0 + 1),
+    cor = diag(1, 1, 1))
+speciation = 1
+extinction = 0.5
+stop.rule = list(max.taxa = 10)
+
 set.seed(1)
-test <- birth.death.tree.traits(speciation = 1, extinction = 0.5, stop.rule = list(max.taxa = 10))
+test <- birth.death.tree.traits(speciation = 1, extinction = 0.5, traits = traits, stop.rule = list(max.taxa = 10))
 tree <- test$tree
+tree$edge.length
 plot(tree)
-nodelabels(test$traits[1:Nnode(tree)])
-tiplabels()
+nodelabels(tree$node.label)
 test$traits
 
 
