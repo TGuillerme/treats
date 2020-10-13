@@ -132,6 +132,19 @@ traits <- list(
 # stop.rule <- list(max.taxa = 10)
 
 
+## Simulating traits for one element
+sim.element.trait <- function(parent_trait, edge_length, traits) {
+    ## Set the simulation arguments
+    trait_args <- traits
+    ## Remove the process
+    trait_args$process <- NULL
+    ## Add the x0 (last step) + the edge length
+    trait_args$x0 <- parent_trait
+    trait_args$edge_length <- edge_length
+    return(do.call(traits$process, trait_args))
+}
+
+
 birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.rule = list()) {
   
     ############
@@ -184,7 +197,7 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
 
     ## Start the trait    
     if(do_traits) {
-        trait_values <- cbind(element = 1, matrix(traits$start, nrow = traits$n))
+        trait_values <- cbind(element = 1, matrix(traits$start, ncol = traits$n))
     } else {
         trait_values <- NA
     }
@@ -256,10 +269,13 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
         ## Adding a new row to the trait_values matrix
         trait_values <- rbind(trait_values,
                               ## Creating the new row composed of the lineage ID
-                              cbind(lineage,
-                                    ## And the updated trait from the parent lineage
-                                    trait_values[which(trait_values[,1] == parent[lineage]), -1] + 1
-                                    )
+                              c(lineage,
+                                ## And the updated trait from the parent lineage
+                                sim.element.trait(
+                                    parent_trait = trait_values[which(trait_values[,1] == parent[lineage]), -1],
+                                    edge_length  = waiting_time,
+                                    traits       = traits)
+                                )
                               )
 
         # cat(paste0("node = ", lineage, "; trait = ", trait_values[nrow(trait_values), 2], "\n"))
@@ -308,7 +324,6 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
         }
     }
 
-
     ############
     ## Cleaning the results
     ############
@@ -345,8 +360,12 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
         table$is_split[table$element == last_parent] <- FALSE
     } 
 
+    # ## Adding the traits to the table
+    # trait_table <- cbind(parent = table$parent, element = table$element, edge = table$edge_lengths, trait_values[match(table$element, trait_values[, "element"]), -1])
+    # trait_table <- cbind(table, all_traits)
 
-    # match(trait_values[, "parent"])
+    # ## Simulate the traits for the living tips
+
 
 
 
@@ -384,9 +403,9 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
 
 
 traits <- list(
-    n = 1,
+    n = 2,
     start = 0,
-    process = function(x0) return(x0 + 1),
+    process = function(x0, ...) return(x0 + 1),
     cor = diag(1, 1, 1))
 speciation = 1
 extinction = 0.5
