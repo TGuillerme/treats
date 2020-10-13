@@ -144,6 +144,15 @@ sim.element.trait <- function(parent_trait, edge_length, traits) {
     return(do.call(traits$process, trait_args))
 }
 
+## Simulates one set of traits for the living species
+sim.living.tips <- function(living, trait_table, traits) {
+    return(sim.element.trait(
+            parent_trait = trait_table[which(trait_table[, "element"] == trait_table[living, "parent"]), -c(1:3), drop = FALSE],
+            edge_length = trait_table[living, "edge"],
+            traits = traits)
+    )
+}
+
 
 birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.rule = list()) {
   
@@ -197,14 +206,14 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
 
     ## Start the trait    
     if(do_traits) {
+        ## TODO: change traits$start to always be a function: to be dealt in sanitizing
+        #trait_values <- cbind(element = 1, matrix(traits$start(), ncol = traits$n))
         trait_values <- cbind(element = 1, matrix(traits$start, ncol = traits$n))
     } else {
         trait_values <- NA
     }
 
-    # cat(paste0("node = ", lineage, "; trait = ", trait_values[nrow(trait_values), 2], "\n"))
-    # cat(paste0("    parent ", parent[lineage], " trait = ", trait_values[which(trait_values[,1] == parent[lineage]), ][2],  "\n"))
-
+    ## Placeholder for modifiers
     modifier <- 0
 
     ## Randomly triggering an event
@@ -334,16 +343,6 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
                         element      = seq_along(is_split), # These are tips or nodes
                         edge_lengths = edge_lengths,
                         is_split     = is_split)[-1, ]
-    # warning("DEBUG") # Toggle the [-1, ] or not?
-
-
-    ## Add the trait_values to the table
-    # table$parent_trait <- trait_values[match(table$parent, trait_values[, "parent"]), 2]
-    
-    warning("DEBUG: TODO 2")
-    ## Add the trait_values of the element to the table
-    # table$element_trait <- trait_values[match(table$element, trait_values[, "parent"]), 2]
-
 
     ## Error
     if(nrow(table) == 0) {
@@ -360,14 +359,16 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
         table$is_split[table$element == last_parent] <- FALSE
     } 
 
-    # ## Adding the traits to the table
-    # trait_table <- cbind(parent = table$parent, element = table$element, edge = table$edge_lengths, trait_values[match(table$element, trait_values[, "element"]), -1])
-    # trait_table <- cbind(table, all_traits)
-
-    # ## Simulate the traits for the living tips
-
-
-
+    ## Adding the traits to the table
+    trait_table <- cbind(parent = table$parent, element = table$element, edge = table$edge_lengths, trait_values[match(table$element, trait_values[, "element"]), -1])
+    ## Find the living tips
+    ## TODO: this should be made more clever (i.e. not only based on NA)
+    living_tips <- which(is.na(trait_table[, 4]))
+    ## Simulate the traits for the living tips and add them to the trait table
+    trait_table[living_tips, -c(1:3)] <- t(sapply(living_tips, sim.living.tips, trait_table, traits))
+    ## Add the root values
+    trait_table <- rbind(c(parent = 0, element = 1, edge = 0, trait_values[1, -1]),
+                         trait_table)
 
     ############
     ## Creating the tree object
@@ -397,8 +398,13 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
     ## Adding the root time
     tree$root.time <- max(dispRity::tree.age(tree)$age)
 
+    ## Renaming the trait_values
+    trait_table <- trait_table[, -c(1:3)]
+    rownames(trait_table) <- c(tree$tip.label, tree$node.label)[c(n_tips+1, table$element2)]
+    colnames(trait_table) <- paste0("trait", 1:traits$n)
+
     ## Output
-    return(list(tree = tree, traits = trait_values))
+    return(list(tree = tree, traits = trait_table))
 }
 
 
@@ -414,20 +420,7 @@ stop.rule = list(max.taxa = 10)
 set.seed(1)
 test <- birth.death.tree.traits(speciation = 1, extinction = 0.5, traits = traits, stop.rule = list(max.taxa = 10))
 tree <- test$tree
-tree$edge.length
 plot(tree)
-nodelabels(tree$node.label)
+nodelabels(test$traits[tree$node.label,1])
+tiplabels(test$traits[tree$tip.label,1])
 test$traits
-
-
-## This function is for updating one (or more) traits in the process
-update.trait <- function(parent_edge, process) {
-    ## Use the branch length to update the trait using the process function
-}
-
-
-## Make into a phylo object
-convert.to.phylo <- function(bd_table) {
-  ## Things in the table that are only in the right column get a tip name
-  ## Things in the table that don't have a tip name get a node name
-}
