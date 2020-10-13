@@ -172,18 +172,10 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list(), 
     do_traits <- ifelse(missing(traits), FALSE, TRUE)
 
     ## Initialising the values
-    # if(stop.rule$max.taxa == Inf) {
-        parent <- edge_lengths <- 0
-        is_split <- FALSE
-    # } else {
-    #     ## Initialising the vectors tot the right length (for speed)
-    #     edge_lengths <- vector("numeric", length = 2*stop.rule$max.taxa + 1)
-    #     parent       <- vector("integer", length = 2*stop.rule$max.taxa + 1)
-    #     is_split     <- vector("logical", length = 2*stop.rule$max.taxa + 1)
-    # }
+    parent <- edge_lengths <- 0
+    is_split <- FALSE
     time <- 0
     n_living_taxa <- lineages <- 1
-
 
     ############
     ## First node (root)
