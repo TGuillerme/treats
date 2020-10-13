@@ -72,7 +72,7 @@
 # # Event modifiers (e.g. make some mass extinction or change the trait correlation matrix after some time)
 # ####
 
-# ## One event
+# ## One event
 # event <- list(
 #     when = c("taxa" = 0, "living" = 0, "time" = 0), # Distance
 #     what = c("traits", "living", "taxa"),
@@ -120,11 +120,11 @@
 # ####
 
 # ## Trait controller
-traits <- list(
-    n = 1,
-    start = 0,
-    process = function(x0) return(x0 + 1),
-    cor = diag(1, 1, 1))
+# traits <- list(
+#     n = 1,
+#     start = 0,
+#     process = function(x0) return(x0 + 1),
+#     cor = diag(1, 1, 1))
     
 # speciation = 1
 # extinction = 0
@@ -133,44 +133,45 @@ traits <- list(
 
 
 ## Simulating traits for one element
-sim.element.trait <- function(parent_trait, edge_length, traits) {
-    ## Set the simulation arguments
+sim.element.trait <- function(parent.trait, edge.length, traits) {
+    ## Set the simulation arguments
     trait_args <- traits
     ## Remove the process
     trait_args$process <- NULL
     ## Add the x0 (last step) + the edge length
-    trait_args$x0 <- parent_trait
-    trait_args$edge_length <- edge_length
+    trait_args$x0 <- parent.trait
+    trait_args$edge.length <- edge.length
     return(do.call(traits$process, trait_args))
 }
 
 ## Simulates one set of traits for the living species
 sim.living.tips <- function(living, trait_table, traits) {
     return(sim.element.trait(
-            parent_trait = trait_table[which(trait_table[, "element"] == trait_table[living, "parent"]), -c(1:3), drop = FALSE],
-            edge_length = trait_table[living, "edge"],
+            parent.trait = trait_table[which(trait_table[, "element"] == trait_table[living, "parent"]), -c(1:3), drop = FALSE],
+            edge.length = trait_table[living, "edge"],
             traits = traits)
     )
 }
 
 
-birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.rule = list()) {
+birth.death.tree.traits <- function(speciation, extinction, stop.rule = list(), traits) {
   
     ############
     ## Initialising
     ############
 
-    ## Set up the stop rules
-    stop.rule$max.taxa <- ifelse(is.null(stop.rule$max.taxa), Inf, stop.rule$max.taxa)
-    stop.rule$max.live <- ifelse(is.null(stop.rule$max.live), Inf, stop.rule$max.live)
-    stop.rule$max.time <- ifelse(is.null(stop.rule$max.time), Inf, stop.rule$max.time)
+    ## Set up the stop rules (at least one!)
+    if(is.null(stop.rule$max.taxa) && is.null(stop.rule$max.living) && is.null(stop.rule$max.time)) {
+        stop("You must provide at least one stopping rule. For example:\nstop.rule <- list(max.taxa   = 10,\n                  max.living = 10,\n                  max.time   = 10)")
+    }
+    stop.rule$max.taxa    <- ifelse(is.null(stop.rule$max.taxa),   Inf, stop.rule$max.taxa)
+    stop.rule$max.living  <- ifelse(is.null(stop.rule$max.living), Inf, stop.rule$max.living)
+    stop.rule$max.time    <- ifelse(is.null(stop.rule$max.time),   Inf, stop.rule$max.time)
 
     ## Set up the trait simulation
-    do_traits <- !is.null(traits)
+    do_traits <- ifelse(missing(traits), FALSE, TRUE)
 
     ## Initialising the values
-    DEBUG_node_counter <- 0
-    DEBUG_tip_counter <- 0
     # if(stop.rule$max.taxa == Inf) {
         parent <- edge_lengths <- 0
         is_split <- FALSE
@@ -208,9 +209,10 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
     if(do_traits) {
         ## TODO: change traits$start to always be a function: to be dealt in sanitizing
         #trait_values <- cbind(element = 1, matrix(traits$start(), ncol = traits$n))
+        if(is.null(traits$start)) {traits$start <- 0}
         trait_values <- cbind(element = 1, matrix(traits$start, ncol = traits$n))
     } else {
-        trait_values <- NA
+        trait_table <- NA
     }
 
     ## Placeholder for modifiers
@@ -219,7 +221,7 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
     ## Randomly triggering an event
     if((modifier + runif(1)) < (speciation/(speciation + extinction))) {
         ## Speciating:
-        if(n_living_taxa == stop.rule$max.live) {
+        if(n_living_taxa == stop.rule$max.living ) {
             ## Don't add this one
             stop("No tree generated with these parameters.")
         }
@@ -232,14 +234,6 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
         edge_lengths[new_lineage] <- 0
         n_living_taxa <- n_living_taxa + 1
         lineages <- c(lineages[-selected_lineage], new_lineage)
-        # cat(paste0(" lineage ", new_lineage[1], " (from ", parent[new_lineage[1]], ") + "))
-        # cat(paste0(new_lineage[2], " (from ", parent[new_lineage[2]], ")\n"))
-        # cat("\n")
-
-        DEBUG_node_counter <- DEBUG_node_counter + 1
-        cat(paste0("lineage ", lineage, " (edge n", DEBUG_node_counter, ")",  "; trait = ", trait_values[nrow(trait_values), 2], "\n"))
-        cat(paste0("    parent ", parent[lineage], " trait = ", trait_values[which(trait_values[,1] == parent[lineage]), ][2],  "\n"))
-
     } else {
         ## Cannot go further
         stop("No tree generated with these parameters.")
@@ -250,7 +244,7 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
     ############
 
     ## Build the rest of the tree
-    while(n_living_taxa > 0 && n_living_taxa <= stop.rule$max.live && sum(!is_split) <= stop.rule$max.taxa) {
+    while(n_living_taxa > 0 && n_living_taxa <= stop.rule$max.living  && sum(!is_split) <= stop.rule$max.taxa) {
         
         ## Get the probability of something happening
         event_probability <- sum(n_living_taxa * (speciation + extinction))
@@ -276,29 +270,27 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
         lineage <- lineages[selected_lineage]
         
         ## Adding a new row to the trait_values matrix
-        trait_values <- rbind(trait_values,
-                              ## Creating the new row composed of the lineage ID
-                              c(lineage,
-                                ## And the updated trait from the parent lineage
-                                sim.element.trait(
-                                    parent_trait = trait_values[which(trait_values[,1] == parent[lineage]), -1],
-                                    edge_length  = waiting_time,
-                                    traits       = traits)
-                                )
-                              )
+        if(do_traits) {
+            trait_values <- rbind(trait_values,
+                                  ## Creating the new row composed of the lineage ID
+                                  c(lineage,
+                                    ## And the updated trait from the parent lineage
+                                    sim.element.trait(
+                                        parent.trait = trait_values[which(trait_values[,1] == parent[lineage]), -1],
+                                        edge.length  = waiting_time,
+                                        traits       = traits)
+                                    )
+                                  )
+        }
 
-        # cat(paste0("node = ", lineage, "; trait = ", trait_values[nrow(trait_values), 2], "\n"))
-        # cat(paste0("    parent ", parent[lineage], " trait = ", trait_values[which(trait_values[,1] == parent[lineage]), ][2],  "\n"))
-
+        ## Modifier placeholder
         modifier <- 0
 
         ## Randomly triggering an event
         if((modifier + runif(1)) < (speciation/(speciation + extinction))) {
             
-            # cat(paste0("    speciation:"))
-
             ## Speciating:
-            if(n_living_taxa == stop.rule$max.live) {
+            if(n_living_taxa == stop.rule$max.living ) {
                 ## Don't add this one
                 break
             }
@@ -311,32 +303,16 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
             edge_lengths[new_lineage] <- 0
             n_living_taxa <- n_living_taxa + 1
             lineages <- c(lineages[-selected_lineage], new_lineage)
-
-            # cat(paste0(" lineage ", new_lineage[1], " (from ", parent[new_lineage[1]], ") + "))
-            # cat(paste0(new_lineage[2], " (from ", parent[new_lineage[2]], ")\n"))
-            # cat("\n")
-        
-            DEBUG_node_counter <- DEBUG_node_counter + 1
-            cat(paste0("lineage ", lineage, " (edge n", DEBUG_node_counter, ")",  "; trait = ", trait_values[nrow(trait_values), 2], "\n"))
-            cat(paste0("    parent ", parent[lineage], " trait = ", trait_values[which(trait_values[,1] == parent[lineage]), ][2],  "\n"))
-
         } else {
-            # cat(paste0("    extinction.\n\n"))
             ## Go extinct
             lineages <- lineages[-selected_lineage]
             n_living_taxa <- n_living_taxa - 1
-
-            DEBUG_tip_counter <- DEBUG_tip_counter + 1
-            cat(paste0("lineage ", lineage, " (edge t", DEBUG_tip_counter, " - tip)",  "; trait = ", trait_values[nrow(trait_values), 2], "\n"))
-            cat(paste0("    parent ", parent[lineage], " trait = ", trait_values[which(trait_values[,1] == parent[lineage]), ][2],  "\n"))
-
         }
     }
 
     ############
     ## Cleaning the results
     ############
-
 
     ## Summarise into a table (minus the initiation)
     table <- data.frame(parent       = parent, # These are nodes
@@ -360,15 +336,17 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
     } 
 
     ## Adding the traits to the table
-    trait_table <- cbind(parent = table$parent, element = table$element, edge = table$edge_lengths, trait_values[match(table$element, trait_values[, "element"]), -1])
-    ## Find the living tips
-    ## TODO: this should be made more clever (i.e. not only based on NA)
-    living_tips <- which(is.na(trait_table[, 4]))
-    ## Simulate the traits for the living tips and add them to the trait table
-    trait_table[living_tips, -c(1:3)] <- t(sapply(living_tips, sim.living.tips, trait_table, traits))
-    ## Add the root values
-    trait_table <- rbind(c(parent = 0, element = 1, edge = 0, trait_values[1, -1]),
-                         trait_table)
+    if(do_traits) {
+        trait_table <- cbind(parent = table$parent, element = table$element, edge = table$edge_lengths, trait_values[match(table$element, trait_values[, "element"]), -1])
+        ## Find the living tips
+        ## TODO: this should be made more clever (i.e. not only based on NA)
+        living_tips <- which(is.na(trait_table[, 4]))
+        ## Simulate the traits for the living tips and add them to the trait table
+        trait_table[living_tips, -c(1:3)] <- t(sapply(living_tips, sim.living.tips, trait_table, traits, simplify = TRUE))
+        ## Add the root values
+        trait_table <- rbind(c(parent = 0, element = 1, edge = 0, trait_values[1, -1]),
+                             trait_table)
+    }
 
     ############
     ## Creating the tree object
@@ -399,28 +377,13 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
     tree$root.time <- max(dispRity::tree.age(tree)$age)
 
     ## Renaming the trait_values
-    trait_table <- trait_table[, -c(1:3)]
-    rownames(trait_table) <- c(tree$tip.label, tree$node.label)[c(n_tips+1, table$element2)]
-    colnames(trait_table) <- paste0("trait", 1:traits$n)
+    if(do_traits) {
+        trait_table <- trait_table[, -c(1:3), drop = FALSE]
+        rownames(trait_table) <- c(tree$tip.label, tree$node.label)[c(n_tips+1, table$element2)]
+        colnames(trait_table) <- paste0("trait", 1:traits$n)
+    }
 
     ## Output
     return(list(tree = tree, traits = trait_table))
 }
 
-
-traits <- list(
-    n = 2,
-    start = 0,
-    process = function(x0, ...) return(x0 + 1),
-    cor = diag(1, 1, 1))
-speciation = 1
-extinction = 0.5
-stop.rule = list(max.taxa = 10)
-
-set.seed(1)
-test <- birth.death.tree.traits(speciation = 1, extinction = 0.5, traits = traits, stop.rule = list(max.taxa = 10))
-tree <- test$tree
-plot(tree)
-nodelabels(test$traits[tree$node.label,1])
-tiplabels(test$traits[tree$tip.label,1])
-test$traits
