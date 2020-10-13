@@ -149,15 +149,15 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
     ## Initialising the values
     DEBUG_node_counter <- 0
     DEBUG_tip_counter <- 0
-    if(stop.rule$max.taxa == Inf) {
+    # if(stop.rule$max.taxa == Inf) {
         parent <- edge_lengths <- 0
         is_split <- FALSE
-    } else {
-        ## Initialising the vectors tot the right length (for speed)
-        edge_lengths <- vector("numeric", length = 2*stop.rule$max.taxa + 1)
-        parent       <- vector("integer", length = 2*stop.rule$max.taxa + 1)
-        is_split     <- vector("logical", length = 2*stop.rule$max.taxa + 1)
-    }
+    # } else {
+    #     ## Initialising the vectors tot the right length (for speed)
+    #     edge_lengths <- vector("numeric", length = 2*stop.rule$max.taxa + 1)
+    #     parent       <- vector("integer", length = 2*stop.rule$max.taxa + 1)
+    #     is_split     <- vector("logical", length = 2*stop.rule$max.taxa + 1)
+    # }
     time <- 0
     n_living_taxa <- lineages <- 1
 
@@ -184,7 +184,7 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
 
     ## Start the trait    
     if(do_traits) {
-        trait_values <- cbind(parent = 1, matrix(traits$start, nrow = traits$n))
+        trait_values <- cbind(element = 1, matrix(traits$start, nrow = traits$n))
     } else {
         trait_values <- NA
     }
@@ -316,7 +316,7 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
 
     ## Summarise into a table (minus the initiation)
     table <- data.frame(parent       = parent, # These are nodes
-                        vertex       = seq_along(is_split), # These are tips or nodes
+                        element      = seq_along(is_split), # These are tips or nodes
                         edge_lengths = edge_lengths,
                         is_split     = is_split)[-1, ]
     # warning("DEBUG") # Toggle the [-1, ] or not?
@@ -326,8 +326,8 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
     # table$parent_trait <- trait_values[match(table$parent, trait_values[, "parent"]), 2]
     
     warning("DEBUG: TODO 2")
-    ## Add the trait_values of the vertex to the table
-    # table$vertex_trait <- trait_values[match(table$vertex, trait_values[, "parent"]), 2]
+    ## Add the trait_values of the element to the table
+    # table$element_trait <- trait_values[match(table$element, trait_values[, "parent"]), 2]
 
 
     ## Error
@@ -342,8 +342,13 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
         ## Remove the two last edges
         table <- table[-c(nrow(table), nrow(table)-1),]
         ## Change the node into a tip
-        table$is_split[table$vertex == last_parent] <- FALSE
+        table$is_split[table$element == last_parent] <- FALSE
     } 
+
+
+    # match(trait_values[, "parent"])
+
+
 
     ############
     ## Creating the tree object
@@ -354,17 +359,17 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
     n_tips  <- sum(!table$is_split)
 
     ## Getting the edge table node/tips IDs
-    table$vertex2 <- NA
-    table$vertex2[!table$is_split] <- 1:n_tips
-    table$vertex2[ table$is_split] <- order(table$vertex[table$is_split]) + n_tips + 1
+    table$element2 <- NA
+    table$element2[!table$is_split] <- 1:n_tips
+    table$element2[ table$is_split] <- order(table$element[table$is_split]) + n_tips + 1
 
     ## Getting the edge table nodes (left column)
-    left_edges <- match(table$parent, table$vertex)
-    table$parent2 <- table$vertex2[left_edges]
+    left_edges <- match(table$parent, table$element)
+    table$parent2 <- table$element2[left_edges]
     table$parent2[is.na(table$parent2)] <- n_tips + 1
 
     ## Getting the tips and nodes labels
-    tree <- list(edge        = cbind(table$parent2, table$vertex2),
+    tree <- list(edge        = cbind(table$parent2, table$element2),
                  Nnode       = n_nodes,
                  tip.label   = paste0("t", 1:n_tips),
                  node.label  = paste0("n", 1:n_nodes),
