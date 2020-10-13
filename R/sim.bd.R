@@ -147,14 +147,19 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
     do_traits <- !is.null(traits)
 
     ## Initialising the values
-    parent <- edge_lengths <- time <- 0
-    n_living_taxa <- lineages <- 1
     DEBUG_node_counter <- 0
     DEBUG_tip_counter <- 0
-    is_split <- FALSE
-
-    warning("DEBUG: TODO 1")
-    ## If stop.rule$max.taxa exist, initiate the values to vectors (of length Nnode + Ntip)
+    if(stop.rule$max.taxa == Inf) {
+        parent <- edge_lengths <- 0
+        is_split <- FALSE
+    } else {
+        ## Initialising the vectors tot the right length (for speed)
+        edge_lengths <- vector("numeric", length = 2*stop.rule$max.taxa + 1)
+        parent       <- vector("integer", length = 2*stop.rule$max.taxa + 1)
+        is_split     <- vector("logical", length = 2*stop.rule$max.taxa + 1)
+    }
+    time <- 0
+    n_living_taxa <- lineages <- 1
 
 
     ############
@@ -314,10 +319,11 @@ birth.death.tree.traits <- function(speciation, extinction, traits = NULL, stop.
                         vertex       = seq_along(is_split), # These are tips or nodes
                         edge_lengths = edge_lengths,
                         is_split     = is_split)[-1, ]
+    # warning("DEBUG") # Toggle the [-1, ] or not?
 
 
     ## Add the trait_values to the table
-    table$parent_trait <- trait_values[match(table$parent, trait_values[, "parent"]), 2]
+    # table$parent_trait <- trait_values[match(table$parent, trait_values[, "parent"]), 2]
     
     warning("DEBUG: TODO 2")
     ## Add the trait_values of the vertex to the table
