@@ -1,8 +1,13 @@
-#' @title dads
+#' @title Diversity and disparity simulator
 #'
-#' @description dads
+#' @description Simulating diversity and trait disparity
 #'
-#' @param x input
+#' @param speciation The speciation parameter (birth/lambda; default = 1)
+#' @param extinction The extinction parameter (death/my; default = 0)
+#' @param stop.rule  The rules on when to stop the simulation
+#' @param traits     The dads traits object (see make.traits)
+#' @param modifiers  The dads modifiers object (see make.modifiers)
+#' @param events     The dads events object (see make.events)
 #' 
 #' @examples
 #' dads(1)
@@ -12,23 +17,20 @@
 #' @author Thomas Guillerme
 #' @export
 
-dads <- function(x) {
+dads <- function(speciation, extinction, stop.rule, traits, modifiers, events) {
+
+    ## Sanitizing
+    # speciation and extinction
+    # Must be a single numeric value between 0 and 1
+    
+    # stop.rule
+    # Must be a named list
+
+    # traits modifiers events
+    # Must be a traits modifiers events object
 
 
-    # ## Simulating traits:
-    # phylocurve::sim.traits
-    # castor::simulate_bm_model
-    # caper::growTree
-
-    # http://phytools.org/eqg/Exercise_4.1/
-
-
-    # ## Simulating bd tree
-    # phytools::pbtree
-    # FossilSim::sim.fbd
-    # https://cran.r-project.org/web/packages/FossilSim/vignettes/simfbd.html
-    # https://lukejharmon.github.io/pcm/chapter10_birthdeath/
-
-
-    return(42)
+    output <- 42
+    class(output) <- "dads"
+    return(output)
 }
