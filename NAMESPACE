@@ -7,6 +7,11 @@ importFrom("graphics","plot")
 
 ##Functions
 export(dads)
+export(make.traits)
+export(make.modifiers)
+export(make.events)
 
 ##S3 
 S3method(plot, dads)
+S3method(print, dads) #incl traits modifiers and events
+
