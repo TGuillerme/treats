@@ -2,15 +2,25 @@
 % Please edit documentation in R/dads.R
 \name{dads}
 \alias{dads}
-\title{dads}
+\title{Diversity and disparity simulator}
 \usage{
-dads(x)
+dads(speciation, extinction, stop.rule, traits, modifiers, events)
 }
 \arguments{
-\item{x}{input}
+\item{speciation}{The speciation parameter (birth/lambda; default = 1)}
+
+\item{extinction}{The extinction parameter (death/my; default = 0)}
+
+\item{stop.rule}{The rules on when to stop the simulation}
+
+\item{traits}{The dads traits object (see make.traits)}
+
+\item{modifiers}{The dads modifiers object (see make.modifiers)}
+
+\item{events}{The dads events object (see make.events)}
 }
 \description{
-dads
+Simulating diversity and trait disparity
 }
 \examples{
 dads(1)
