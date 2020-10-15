@@ -122,6 +122,17 @@
 
 
 
+## Traits are nested lists
+
+# traits <- list(
+#             "A" = list(n       = 3,
+#                        process = element.rank,
+#                        start   = c(0,10,20))
+#             "B" = list(n       = 1,
+#                        process = branch.length,
+#                        start   = 0)
+#             )
+
 
 
 ## Simulating traits for one element
