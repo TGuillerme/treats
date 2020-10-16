@@ -98,8 +98,8 @@ test_that("simulating trees + traits works", {
 
     ## Sim.element.trait internals work (for one trait)
     one_trait <- list(
-        n = 1,
-        process = true.answer)
+        trait_id = 1,
+        process  = true.answer)
     expect_equal(sim.element.trait(one_trait, parent.trait = 2, edge.length = 0.1), 42)
     one_trait$process <- element.rank
     expect_equal(sim.element.trait(one_trait, parent.trait = 2, edge.length = 0.1), 3)
@@ -108,7 +108,7 @@ test_that("simulating trees + traits works", {
     one_trait$process <- element.depth
     expect_equal(sim.element.trait(one_trait, parent.trait = 2, edge.length = 0.1), 2.1)
 
-    element_rank_10 <- list(n = 1, process = element.rank, start = 10)
+    element_rank_10 <- list(trait_id = 1, process = element.rank, start = 10)
     traits_list <- list("A" = element_rank_10)
     set.seed(7)
     test <- birth.death.tree.traits(speciation = 1, extinction = 0.5, traits = traits_list, stop.rule = list(max.taxa = 10))
@@ -151,7 +151,7 @@ test_that("simulating trees + traits works", {
     expect_equal(unname(round(sort(test$traits[-1,1]), 5)),
                  round(sort(test$tree$edge.length), 5))
 
-    ## Visual checking
+    # ## Visual checking
     # tree_plot <- test$tree
     # plot(tree_plot)
     # nodelabels(paste(test$tree$node.label, sep = ":", round(test$traits[test$tree$node.label,1], 2)), cex = 1)
@@ -160,13 +160,19 @@ test_that("simulating trees + traits works", {
 
 
     ## Complex traits
-    # traits <- list(
-    #             "A" = list(n       = 3,
-    #                        process = element.rank,
-    #                        start   = c(0,10,20))
-    #             "B" = list(n       = 1,
-    #                        process = branch.length,
-    #                        start   = 0)
-    #             )
+    complex_traits <- list(
+                "A" = list(trait_id = 1:3,
+                           process  = element.rank,
+                           start    = c(0,10,20)),
+                "B" = list(trait_id = 4,
+                           process  = branch.length,
+                           start    = 0)
+                )
+    set.seed(1)
+    test <- birth.death.tree.traits(speciation = 1, extinction = 0.5, traits = complex_traits, stop.rule = list(max.taxa = 10))
+
+    expect_equal(test$traits[,1], test$traits[,2] - 10)
+    expect_equal(test$traits[,1], test$traits[,3] - 20)
+    expect_equal(unname(test$traits[,4]), c(0, test$tree$edge.length))
 })
 

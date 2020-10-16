@@ -139,29 +139,29 @@
 sim.element.trait <- function(one.trait, parent.trait, edge.length) {
     ## Set the simulation arguments
     trait_args <- one.trait
-    ## Remove the process
-    trait_args$process <- NULL
+    ## Remove the process and the n argument
+    trait_args$process  <- NULL
+    trait_args$trait_id <- NULL
     ## Add the x0 (last step) + the edge length
-    trait_args$x0 <- parent.trait
+    trait_args$x0 <- parent.trait[one.trait$trait_id]
     trait_args$edge.length <- edge.length
     return(do.call(one.trait$process, trait_args))
 }
 
 ## Simulates one set of traits for the living species
 sim.living.tips <- function(living, trait_table, traits) {
-    return(
-        do.call(cbind,
-                mapply(sim.element.trait, traits,
-                        ## The parent traits
-                        as.list(trait_table[which(trait_table[, "element"] == trait_table[living, "parent"]), -c(1:3), drop = FALSE]),
-                        ## The edge lengths
-                        MoreArgs = list(edge.length = trait_table[living, "edge"]), SIMPLIFY = FALSE)
-                )
+    return(unlist(
+          lapply(traits,
+                 sim.element.trait,
+                 parent.trait = trait_table[which(trait_table[, "element"] == trait_table[living, "parent"]), -c(1:3), drop = FALSE],
+                 edge.length  = trait_table[living, "edge"]
+                 )
+          )
     )
 }
 
 ## Run a birth death process to generate both tree and traits
-birth.death.tree.traits <- function(speciation, extinction, stop.rule = list(), traits) {
+birth.death.tree.traits <- function(speciation, extinction, stop.rule = list(), traits, null.error = FALSE) {
   
     ############
     ## Initialising
@@ -207,8 +207,7 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list(), 
 
     ## Start the trait    
     if(do_traits) {
-        ## TODO: change traits$start to always be a function: to be dealt in sanitizing
-        trait_values <- cbind(element = 1, do.call(cbind, lapply(traits, function(x) return(x$start))))
+        trait_values <- rbind(NULL, "root" = c("element" =  1, unlist(lapply(traits, function(x) return(x$start)))))
     } else {
         trait_table <- NA
     }
@@ -221,7 +220,11 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list(), 
         ## Speciating:
         if(n_living_taxa == stop.rule$max.living ) {
             ## Don't add this one
-            stop("No tree generated with these parameters.")
+            if(!null.error) {
+                stop("No tree generated with these parameters.")
+            } else {
+                return(NULL)
+            }
         }
 
         ## Creating the new lineages
@@ -234,7 +237,11 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list(), 
         lineages <- c(lineages[-selected_lineage], new_lineage)
     } else {
         ## Cannot go further
-        stop("No tree generated with these parameters.")
+        if(!null.error) {
+            stop("No tree generated with these parameters.")
+        } else {
+            return(NULL)
+        }
     }
 
     ############
@@ -273,7 +280,10 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list(), 
                                   ## Creating the new row composed of the lineage ID
                                   c(lineage,
                                     ## And the updated trait from the parent lineage
-                                    do.call(cbind, mapply(sim.element.trait, traits, as.list(trait_values[which(trait_values[,1] == parent[lineage]), -1]), MoreArgs = list(edge.length = edge_lengths[lineage]), SIMPLIFY = FALSE))
+                                    unlist(lapply(traits,
+                                                  sim.element.trait,
+                                                  parent.trait = trait_values[which(trait_values[,1] == parent[lineage]), -1],
+                                                  edge.length  = edge_lengths[lineage]))
                                     )
                                   )
         }
@@ -317,7 +327,11 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list(), 
 
     ## Error
     if(nrow(table) == 0) {
-        stop("No tree generated with these parameters.")
+        if(!null.error) {
+            stop("No tree generated with these parameters.")
+        } else {
+            return(NULL)
+        }
     }
 
     ## Remove 0 edge split from max.taxa rule
