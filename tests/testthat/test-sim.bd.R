@@ -174,5 +174,6 @@ test_that("simulating trees + traits works", {
     expect_equal(test$traits[,1], test$traits[,2] - 10)
     expect_equal(test$traits[,1], test$traits[,3] - 20)
     expect_equal(unname(test$traits[,4]), c(0, test$tree$edge.length))
+
 })
 
