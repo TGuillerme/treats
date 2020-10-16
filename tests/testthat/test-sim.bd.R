@@ -152,24 +152,21 @@ test_that("simulating trees + traits works", {
                  round(sort(test$tree$edge.length), 5))
 
     ## Visual checking
-    tree_plot <- test$tree
-    plot(tree_plot)
-    nodelabels(paste(test$tree$node.label, sep = ":", round(test$traits[test$tree$node.label,1], 2)), cex = 1)
-    tiplabels(paste(test$tree$tip.label, sep = ":", round(test$traits[test$tree$tip.label,1], 2)), cex = 1)
-    edgelabels(round(test$tree$edge.length, 2))
+    # tree_plot <- test$tree
+    # plot(tree_plot)
+    # nodelabels(paste(test$tree$node.label, sep = ":", round(test$traits[test$tree$node.label,1], 2)), cex = 1)
+    # tiplabels(paste(test$tree$tip.label, sep = ":", round(test$traits[test$tree$tip.label,1], 2)), cex = 1)
+    # edgelabels(round(test$tree$edge.length, 2))
 
-# traits <- list(
-#     n = 2,
-#     start = 0,
-#     process = function(x0, ...) return(x0 + 1),
-#     cor = diag(1, 1, 1))
-# speciation = 1
-# extinction = 0.5
-# stop.rule = list(max.taxa = 10)
 
-# set.seed(1)
-# test <- birth.death.tree.traits(speciation = 1, extinction = 0.5, traits = traits, stop.rule = list(max.taxa = 10))
-# tree <- test$tree
-# test$traits
+    ## Complex traits
+    # traits <- list(
+    #             "A" = list(n       = 3,
+    #                        process = element.rank,
+    #                        start   = c(0,10,20))
+    #             "B" = list(n       = 1,
+    #                        process = branch.length,
+    #                        start   = 0)
+    #             )
 })
 
