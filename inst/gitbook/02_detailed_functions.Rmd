@@ -1,0 +1,22 @@
+---
+title: "Getting start"
+author: "Thomas Guillerme (guillert@tcd.ie)"
+date: "`r Sys.Date()`"
+bibliography: [../References.bib, ../packages.bib]
+output:
+  html_document: default
+  pdf_document: default
+---
+
+# Making trait processes with `make.traits()`
+
+Trait processes always need the following input arguments
+
+ * `x0`: the previous trait value(s)
+ * `edge.length`: the branch length value
+ * `...`: a placeholder for any extra arguments
+
+If it contains at least these arguments, it should be handled correctly by `make.traits` an `dads`
+
+
+> It is highly recommended to set all arguments (but `x0`) to a default value.
