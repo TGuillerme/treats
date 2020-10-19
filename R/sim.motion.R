@@ -3,7 +3,6 @@
 #' @param steps the length of the simulation
 #' @param parameters optional, parameters for process
 sim.motion <- function(process, steps, initial.value = 0, parameters = list(var = 1)) {
-    
     count <- 0
     parameters$x0 <- initial.value
     output <- do.call(process, parameters)
@@ -54,10 +53,9 @@ plot.simulation(main = "Normal",
 #' @param x0
 #' @param sd
 #' @param n
-step.BM <- function(x0, sd, n = 1) {
-    # return(rnorm(1, mean = x0, sd = sd))
-    ## Multidimensional:
-    return(t(MASS::mvrnorm(n = n, mu = x0, Sigma = sd)))
+step.BM <- function(x0, edge.length = 1, sd = 1, ...) {
+    ## Multidimensional traits
+    return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = sd * edge.length)))
 }
 
 plot.simulation(main = "Uniform",
