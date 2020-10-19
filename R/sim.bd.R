@@ -142,6 +142,7 @@ sim.element.trait <- function(one.trait, parent.trait, edge.length) {
     ## Remove the process and the n argument
     trait_args$process  <- NULL
     trait_args$trait_id <- NULL
+    trait_args$start <- NULL
     ## Add the x0 (last step) + the edge length
     trait_args$x0 <- parent.trait[one.trait$trait_id]
     trait_args$edge.length <- edge.length

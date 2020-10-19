@@ -129,17 +129,17 @@ test_that("simulating trees + traits works", {
     expect_equal(nrow(test[[2]]), Ntip(test$tree) + Nnode(test$tree))
 
 
-    ## Visual checking
+    ## Visual checking
     stop.rule <- list(max.living = 20,
                       max.taxa   = Inf,
                       max.time   = Inf)
     set.seed(7)
     traits_list$A$start <- 10
     test <- birth.death.tree.traits(bd.params, traits = traits_list, stop.rule)
-    ## Right dimensions
+    ## Right dimensions
     expect_equal(dim(test$traits), c(Ntip(test$tree) + Nnode(test$tree), 1))
     expect_equal(length(which(test$traits == max(test$traits))), 2)
-    # ## Visual checking
+    # ## Visual checking
     # tree_plot <- test$tree
     # tree_plot$edge.length <- rep(1, Nedge(tree_plot))
     # plot(tree_plot)
@@ -167,7 +167,7 @@ test_that("simulating trees + traits works", {
     expect_equal(unname(round(sort(test$traits[-1,1]), 5)),
                  round(sort(test$tree$edge.length), 5))
 
-    # ## Visual checking
+    # ## Visual checking
     # tree_plot <- test$tree
     # plot(tree_plot)
     # nodelabels(paste(test$tree$node.label, sep = ":", round(test$traits[test$tree$node.label,1], 2)), cex = 1)
@@ -191,5 +191,19 @@ test_that("simulating trees + traits works", {
     expect_equal(test$traits[,1], test$traits[,3] - 20)
     expect_equal(unname(test$traits[,4]), c(0, test$tree$edge.length))
 
+
+    ## Multidimensional brownian trait
+    complex_traits <- list(
+                "A" = list(trait_id = 1:3,
+                           process  = BM.process,
+                           start    = c(0,0,0)),
+                "B" = list(trait_id = 4,
+                           process  = branch.length,
+                           start    = 0)
+                )
+    set.seed(1)
+    test <- birth.death.tree.traits(bd.params, traits = complex_traits, stop.rule)
+    expect_equal(dim(test$traits), c(19, 4))
+    expect_equal(unname(test$traits[,4]), c(0, test$tree$edge.length))
 })
 
