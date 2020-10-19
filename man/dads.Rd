@@ -4,26 +4,63 @@
 \alias{dads}
 \title{Diversity and disparity simulator}
 \usage{
-dads(speciation, extinction, stop.rule, traits, modifiers, events)
+dads(bd.params, stop.rule, traits, modifiers, events)
 }
 \arguments{
-\item{speciation}{The speciation parameter (birth/lambda; default = 1)}
+\item{bd.params}{A list of named parameters for the birth death process (see details).}
 
-\item{extinction}{The extinction parameter (death/my; default = 0)}
+\item{stop.rule}{The rules on when to stop the simulation (see details).}
 
-\item{stop.rule}{The rules on when to stop the simulation}
+\item{traits}{The dads traits object (see \code{\link{make.traits}}).}
 
-\item{traits}{The dads traits object (see make.traits)}
+\item{modifiers}{The dads modifiers object (see \code{\link{make.modifiers}}).}
 
-\item{modifiers}{The dads modifiers object (see make.modifiers)}
-
-\item{events}{The dads events object (see make.events)}
+\item{events}{The dads events object (see \code{\link{make.events}}).}
 }
 \description{
 Simulating diversity and trait disparity
 }
+\details{
+\code{bd.params} and \code{stop.rule} should me named lists to parametrise the birth-death tree. The names of the current handled parameters for each argument are:
+
+\code{bd.params}: The birth death parameters are the parameters used to simulate the birth death process. The allowed parameters are:
+\itemize{
+  \item \code{speciation} The constant speciation rate (sometimes called lambda or birth parameter).
+  \item \code{extinction} The constant extinction rate (sometimes called mu, death or background extinction parameter).
+}
+
+\code{stop.rule}: The rule(s) for when to stop the simulation. When multiple rules are given, the simulation stops when any rule is broken. The allowed rules are:
+\itemize{
+  \item \code{max.taxa}   The maximum number of taxa to reach (including extinct ones).
+  \item \code{max.living} The maximum number of living (i.e. non extinct) to reach.
+  \item \code{max.time}   The maximum amount of phylogenetic time to reach.
+}
+}
 \examples{
-dads(1)
+## Setting some pure birth tree (no extinction) parameters
+my_bd_params <- list(speciation = 1)
+## Setting some stopping rule (stop when reaching 10 taxa)
+my_stop_rule <- list(max.taxa = 10) 
+
+## Run a birth tree without traits
+a_tree <- dads(bd.params = my_bd_params,
+               stop.rule = my_stop_rule)
+## Plotting the results
+plot(a_tree)
+
+## Adding some extinction parameter
+my_bd_params$extinction <- 1/3
+
+## Getting a simple trait (default Brownian motion)
+my_trait <- make.traits()
+
+## Run a birth-death tree with traits
+dads(bd.params = my_bd_params,
+     stop.rule = my_stop_rule,
+     traits    = my_traits)
+
+##
+
 
 }
 \seealso{

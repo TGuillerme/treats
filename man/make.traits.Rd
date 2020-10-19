@@ -9,7 +9,7 @@ make.traits(process = step.BM, n, start, process.args, names, add, test = TRUE)
 \arguments{
 \item{process}{The trait process(es) (default is \code{step.BM}).}
 
-\item{n}{Optional, the number of traits per process (default is \code{1}).}
+\item{n}{Optional, the number of traits per process; see details (default is \code{1}).}
 
 \item{start}{Optional, the starting values for each traits (default is {0}).}
 
@@ -24,7 +24,36 @@ make.traits(process = step.BM, n, start, process.args, names, add, test = TRUE)
 \description{
 Making traits objects for dads
 }
+\details{
+\code{n} is not passed to the process arguments. For example, if the process is inherently multidimensional (e.g. \code{\link{step.BM}}) \code{n = 2} will run two independent processes. In order to run process that generates multiple traits you need to update the argument specific argument in \code{process.args}. In other words:
+
+\code{make.traits(process = step.BM, n = 2)}
+
+Generates two independent Brownian motion processes, whereas:
+
+\code{make.traits(process = step.BM, process.args = list(n = 2))}
+
+Generates a single multidimensional (n = 2) Brownian motion process. However, both examples will results in two traits to be simulated.
+}
 \examples{
+## A simple Brownian motion trait (default)
+make.traits()
+
+## Two independent Brownian motion traits
+make.traits(n = 2)
+
+## Two different traits with different process
+## (Brownian motion and Ornstein–Uhlenbeck)
+make.traits(process = list(step.BM, step.OU))
+
+## A multidimensional Brownian motion trait with correlation
+## and different starting points
+(my_traits <- make.traits(n = 4, start = c(0, 1, 2, 3),
+                          process.args = list(Sigma = diag(1))))
+
+## Adding a Ornstein–Uhlenbeck trait to the previous trait object
+make.traits(process = step.OU, names = "OU_trait",
+            add = my_traits)
 
 }
 \seealso{
