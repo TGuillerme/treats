@@ -161,20 +161,11 @@ sim.living.tips <- function(living, trait_table, traits) {
 }
 
 ## Run a birth death process to generate both tree and traits
-birth.death.tree.traits <- function(speciation, extinction, stop.rule = list(), traits, null.error = FALSE) {
+birth.death.tree.traits <- function(bd.params, stop.rule, traits, null.error = FALSE) {
   
     ############
     ## Initialising
     ############
-
-    # TODO: move this to sanitizing
-    ## Set up the stop rules (at least one!)
-    if(is.null(stop.rule$max.taxa) && is.null(stop.rule$max.living) && is.null(stop.rule$max.time)) {
-        stop("You must provide at least one stopping rule. For example:\nstop.rule <- list(max.taxa   = 10,\n                  max.living = 10,\n                  max.time   = 10)")
-    }
-    stop.rule$max.taxa    <- ifelse(is.null(stop.rule$max.taxa),   Inf, stop.rule$max.taxa)
-    stop.rule$max.living  <- ifelse(is.null(stop.rule$max.living), Inf, stop.rule$max.living)
-    stop.rule$max.time    <- ifelse(is.null(stop.rule$max.time),   Inf, stop.rule$max.time)
 
     ## Set up the trait simulation
     do_traits <- ifelse(missing(traits), FALSE, TRUE)
@@ -190,7 +181,7 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list(), 
     ############
 
     ## Get the probability of something happening
-    event_probability <- sum(n_living_taxa * (speciation + extinction))
+    event_probability <- sum(n_living_taxa * (bd.params$speciation + bd.params$extinction))
     ## Get the waiting time
     waiting_time <- rexp(1, event_probability)
     ## Update the global time (for the first waiting time)
@@ -216,7 +207,7 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list(), 
     modifier <- 0
 
     ## Randomly triggering an event
-    if((modifier + runif(1)) < (speciation/(speciation + extinction))) {
+    if((modifier + runif(1)) < (bd.params$speciation/(bd.params$speciation + bd.params$extinction))) {
         ## Speciating:
         if(n_living_taxa == stop.rule$max.living ) {
             ## Don't add this one
@@ -252,7 +243,7 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list(), 
     while(n_living_taxa > 0 && n_living_taxa <= stop.rule$max.living  && sum(!is_split) <= stop.rule$max.taxa) {
         
         ## Get the probability of something happening
-        event_probability <- sum(n_living_taxa * (speciation + extinction))
+        event_probability <- sum(n_living_taxa * (bd.params$speciation + bd.params$extinction))
         ## Get the waiting time
         waiting_time <- rexp(1, event_probability)
 
@@ -292,7 +283,7 @@ birth.death.tree.traits <- function(speciation, extinction, stop.rule = list(), 
         modifier <- 0
 
         ## Randomly triggering an event
-        if((modifier + runif(1)) < (speciation/(speciation + extinction))) {
+        if((modifier + runif(1)) < (bd.params$speciation/(bd.params$speciation + bd.params$extinction))) {
             
             ## Speciating:
             if(n_living_taxa == stop.rule$max.living ) {

@@ -6,22 +6,21 @@ library(dispRity)
 test_that("simulating trees works", {
 
     ## Pure birth trees
-    speciation = 1
-    extinction = 0
-
-    error <- capture_error(birth.death.tree.traits(speciation, extinction, stop.rule = NULL))
-    expect_equal(error[[1]], "You must provide at least one stopping rule. For example:\nstop.rule <- list(max.taxa   = 10,\n                  max.living = 10,\n                  max.time   = 10)")
-
-    stop.rule <- list(max.living = 10)
-    test <- birth.death.tree.traits(speciation = speciation, extinction = extinction, stop.rule = stop.rule)$tree
+    bd.params <- list(speciation = 1,
+                      extinction = 0)
+    stop.rule <- list(max.living = 10,
+                      max.taxa   = Inf,
+                      max.time   = Inf)
+    test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule)$tree
     expect_is(test, "phylo")
     expect_equal(Ntip(test), 10)
     expect_equal(Nnode(test), 9)
     ## All tips are living
     expect_equal(length(which(tree.age(test)$age == 0)), 10)
 
-    stop.rule <- list(max.taxa = 11)
-    test <- birth.death.tree.traits(speciation, extinction, stop.rule)$tree
+    stop.rule$max.living = Inf
+    stop.rule$max.taxa   = 11
+    test <- birth.death.tree.traits(bd.params, stop.rule)$tree
     expect_is(test, "phylo")
     expect_equal(Ntip(test), 11)
     expect_equal(Nnode(test), 10)
@@ -29,8 +28,10 @@ test_that("simulating trees works", {
     expect_equal(length(which(tree.age(test)$age == 0)), 11)
 
     set.seed(1)
-    stop.rule <- list(max.time = 4)
-    test <- birth.death.tree.traits(speciation, extinction, stop.rule)$tree
+    stop.rule$max.living = Inf
+    stop.rule$max.taxa   = Inf
+    stop.rule$max.time   = 4
+    test <- birth.death.tree.traits(bd.params, stop.rule)$tree
     expect_is(test, "phylo")
     ## All tips are living
     expect_equal(length(which(tree.age(test)$age == 0)), Ntip(test))
@@ -39,12 +40,13 @@ test_that("simulating trees works", {
     expect_equal(max(tree.age(test)$age), 4)
 
     ## Birth death trees
-    speciation = 1
-    extinction = 0.2
-
+    bd.params <- list(speciation = 1,
+                      extinction = 0.2)
+    stop.rule$max.living = 10
+    stop.rule$max.taxa   = Inf
+    stop.rule$max.time   = Inf
     set.seed(2)
-    stop.rule <- list(max.living  = 10)
-    test <- birth.death.tree.traits(speciation, extinction, stop.rule)$tree
+    test <- birth.death.tree.traits(bd.params, stop.rule)$tree
     expect_is(test, "phylo")
     expect_equal(Ntip(test), 15)
     expect_equal(Nnode(test), 14)
@@ -52,8 +54,10 @@ test_that("simulating trees works", {
     expect_equal(length(which(tree.age(test)$age == 0)), 10)
 
     set.seed(2)
-    stop.rule <- list(max.taxa = 10)
-    test <- birth.death.tree.traits(speciation, extinction, stop.rule)$tree
+    stop.rule$max.living = Inf
+    stop.rule$max.taxa   = 10
+    stop.rule$max.time   = Inf
+    test <- birth.death.tree.traits(bd.params, stop.rule)$tree
     expect_is(test, "phylo")
     expect_equal(Ntip(test), 10)
     expect_equal(Nnode(test), 9)
@@ -61,8 +65,10 @@ test_that("simulating trees works", {
     expect_equal(length(which(tree.age(test)$age == 0)), 6)
 
     set.seed(2)
-    stop.rule <- list(max.time = 6)
-    test <- birth.death.tree.traits(speciation, extinction, stop.rule)$tree
+    stop.rule$max.living = Inf
+    stop.rule$max.taxa   = Inf
+    stop.rule$max.time   = 6
+    test <- birth.death.tree.traits(bd.params, stop.rule)$tree
     expect_is(test, "phylo")
     expect_equal(Ntip(test), 139)
     expect_equal(Nnode(test), 138)
@@ -110,8 +116,12 @@ test_that("simulating trees + traits works", {
 
     element_rank_10 <- list(trait_id = 1, process = element.rank, start = 10)
     traits_list <- list("A" = element_rank_10)
+    bd.params <- list(speciation = 1, extinction = 0.5)
+    stop.rule <- list(max.living = Inf,
+                      max.taxa   = 10,
+                      max.time   = Inf)
     set.seed(7)
-    test <- birth.death.tree.traits(speciation = 1, extinction = 0.5, traits = traits_list, stop.rule = list(max.taxa = 10))
+    test <- birth.death.tree.traits(bd.params, traits = traits_list, stop.rule = stop.rule)
     expect_is(test, "list")
     expect_equal(names(test), c("tree", "traits"))
     expect_is(test[[1]], "phylo")
@@ -120,9 +130,12 @@ test_that("simulating trees + traits works", {
 
 
     ## Visual checking
+    stop.rule <- list(max.living = 20,
+                      max.taxa   = Inf,
+                      max.time   = Inf)
     set.seed(7)
     traits_list$A$start <- 10
-    test <- birth.death.tree.traits(speciation = 1, extinction = 0.5, traits = traits_list, stop.rule = list(max.living = 20))
+    test <- birth.death.tree.traits(bd.params, traits = traits_list, stop.rule)
     ## Right dimensions
     expect_equal(dim(test$traits), c(Ntip(test$tree) + Nnode(test$tree), 1))
     expect_equal(length(which(test$traits == max(test$traits))), 2)
@@ -133,11 +146,14 @@ test_that("simulating trees + traits works", {
     # nodelabels(paste(test$tree$node.label, sep = ":", test$traits[test$tree$node.label,1]), cex = 0.5)
     # tiplabels(paste(test$tree$tip.label, sep = ":", test$traits[test$tree$tip.label,1]), cex = 0.5)
 
+    stop.rule <- list(max.living = Inf,
+                      max.taxa   = 10,
+                      max.time   = Inf)
     set.seed(10)
     traits_list$A$process <- branch.length
     traits_list$B <- traits_list$A
     traits_list$C <- traits_list$A
-    test <- birth.death.tree.traits(speciation = 1, extinction = 0.5, traits = traits_list, stop.rule = list(max.taxa = 10))
+    test <- birth.death.tree.traits(bd.params, traits = traits_list, stop.rule)
 
     ## The three traits are equal
     expect_equal(test$traits[,1], test$traits[,2])
@@ -169,7 +185,7 @@ test_that("simulating trees + traits works", {
                            start    = 0)
                 )
     set.seed(1)
-    test <- birth.death.tree.traits(speciation = 1, extinction = 0.5, traits = complex_traits, stop.rule = list(max.taxa = 10))
+    test <- birth.death.tree.traits(bd.params, traits = complex_traits, stop.rule)
 
     expect_equal(test$traits[,1], test$traits[,2] - 10)
     expect_equal(test$traits[,1], test$traits[,3] - 20)
