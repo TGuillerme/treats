@@ -130,3 +130,13 @@ check.list <- function(list, check.fun, condition, ...) {
         return(unlist(check_results))
     }
 }
+
+
+## Checking dads specific class
+check.dads <- function(object, class, msg, errorif = FALSE) {
+
+    ## Checking if the object is at least of dads class
+    check.class(object, class =  "dads")
+
+}
+

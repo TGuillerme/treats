@@ -90,6 +90,7 @@ plot.simulation <- function(data, cent.tend = mean, quantiles = c(95, 50), ...) 
 CI.converter <- function(CI) {
     sort(c(50-CI/2, 50+CI/2)/100)
 }
+
 get.quantile.col <- function(cis, n_quantiles) {
     return(c(
         ## Lower quantile
