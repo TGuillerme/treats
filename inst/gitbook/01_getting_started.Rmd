@@ -1,0 +1,51 @@
+---
+title: "Getting start"
+author: "Thomas Guillerme (guillert@tcd.ie)"
+date: "`r Sys.Date()`"
+bibliography: [../References.bib, ../packages.bib]
+output:
+  html_document: default
+  pdf_document: default
+---
+
+# A simple analyses
+
+
+## What you need?
+
+
+ * The speciation and extinction parameter
+
+ ```{r, eval = FALSE}
+## The birth death parameters
+my_params <- list(speciation = 1,
+                  extinction = 1/3)
+```
+
+ * A stopping rule
+
+ ```{r, eval = FALSE}
+## Creating a stopping rule
+my_stop_rule <- list(max.taxa = 15)
+```
+
+ * A "traits" object
+
+ ```{r, eval = FALSE}
+## A simple Brownian motion object
+my_bm_trait <- make.traits()
+```
+
+
+## How to simulate disparity (traits) and diversity (taxa)?
+
+ ```{r, eval = FALSE}
+## Running a pretty basic simulation
+simple_dads <- dads(bd.params = my_params,
+                    stop.rule = my_stop_rule,
+                    traits    = my_bm_traits)
+```
+
+
+
+> Note that you can also simply simulate diversity by setting the traits argument to `NULL`. This will simply simulate a birth death tree. If this is your objective, you'd probably be better off using one of the excellent `R` packages dedicated to this task like `TreeSim`.

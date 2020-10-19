@@ -1,0 +1,99 @@
+--- 
+title: "dads manual"
+author: "Thomas Guillerme (guillert@tcd.ie)"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: [../references.bib]
+link-citations: yes
+github-repo: TGuillerme/dads
+description: "dads R package vignette"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# `dads`
+
+Disparity and diversity simulations.
+
+The core of this package is based on diversitree function blabalba
+
+
+## What is **not** `dads`s?
+
+Link to RPANDA, diversitree, etc.
+
+## What is `dads`?
+
+Blablaba
+
+### Modular?
+
+Blablaba
+
+## Installing and running the package
+
+You can install this package easily, directly from the CRAN:
+
+```{r, eval = FALSE}
+install.packages("dads")
+```
+
+Alternatively, for the most up to data version and some functionalities not compatible with the CRAN, you can use the package through GitHub using `devtool` (see [to CRAN or not to CRAN?](#noCRAN) for more details):
+
+```{r, eval = FALSE}
+## Checking if devtools is already installed
+if(!require(devtools)) install.packages("devtools")
+
+## Installing the latest released version directly from GitHub
+install_github("TGuillerme/dads", ref = "release")
+```
+
+```{r, eval = FALSE, echo = FALSE, message = FALSE}
+## loading the package and setting up the start seed.
+library(dads)
+## Setting a random seed for repeatability
+set.seed(123)
+```
+
+## Help
+
+If you need help with the package, hopefully the following manual will be useful.
+However, parts of this package are still in development and some other parts are probably not covered.
+Thus if you have suggestions or comments on on what has already been developed or will be developed, please send me an email (<guillert@tcd.ie>) or if you are a GitHub user, directly create an issue on the [GitHub page](https://github.com/TGuillerme/dads).
+
+<!-- 
+## Citations
+
+To cite the package, this manual or some specific functionalities, you can use the following references:
+
+Furthermore, don't forget to cite `R`:
+
+> R Core Team (2020). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
+
+Bonus: you can also cite `ape` since the `dispRity` package heavily relies on it:
+
+> Paradis E. & Schliep K. 2019. ape 5.0: an environment for modern phylogenetics and evolutionary analyses in R. Bioinformatics 35: 526-528.
+ -->
+
+<!-- ### Why is it important to cite us?
+
+Aside from how science works (if you're using a method from a specific paper, cite that specific paper to refer to that specific method), why is it important to also cite the package and the manual?
+
+All the people involve in making the `dads` package happened to do it enthusiastically, freely and most amazingly without asking anything in return!
+I created the package with this idea in mind and I am still sticking to it.
+However, academia (the institutions and people producing science around the globe) is unfortunately not optimal at many level (some might even say "broken"): high impact papers attract big grants that attract high impact papers and big grants again, all this along with livelihood, permanent position and job security.
+Unfortunately however, method development has a hard time to catch up with the current publish or perish system: constantly updating the `dads` package and this manual is hugely time consuming (but really fun!) and that is not even taking into account maintenance and helping users.
+Although I do truly believe that this time spent doing these things modestly help the scientific endeavour, it does not contribute to our paper list!
+
+Therefore, by citing the package and this manual, you help provide visibility to other workers and you might help them in their work!
+And you directly contribute in making this project fun for all the people involved and most of all, free, updated and independent from the publish and perish system!
+
+Thank you! -->
+<!-- ## Associated papers -->
+
+<!-- Here are some papers that have used the `dispRity` package: -->
