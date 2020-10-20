@@ -10,13 +10,71 @@ output:
 
 # Making trait processes with `make.traits()`
 
-Trait processes always need the following input arguments
+## The process
+
+The function `make.traits` allows you to design the process of a trait or a set of traits.
+Here, the process of a trait designates the rules to generate the trait through time while simulating a phylogeny.
+This process can depend on the previous state in the tree (i.e. the trait of the ancestor) and the branch length to the descendant.
+One classic example is the [Brownian motion process (or Weiner process)](https://en.wikipedia.org/wiki/Brownian_motion).
+Note that it can depend from both but does not necessary needs (i.e. the process can be only based on the previous state or only on branch length or on neither).
+
+Trait processes in `dads` are functions that must always intake the following arguments by default.
 
  * `x0`: the previous trait value(s)
  * `edge.length`: the branch length value
  * `...`: a placeholder for any extra arguments
 
-If it contains at least these arguments, it should be handled correctly by `make.traits` an `dads`
+For example, the following function would be a valid process (though not dependent on either the previous state nor the branch length):
+
+```{r}
+## A valid (but useless) process
+valid.process <- function(x0, egde.length = 1, ...) {
+    return(42)
+}
+```
+
+> Note that the argument `edge.length` is set to `1` by default. In general we highly recommend to set all arguments but `x0` to a default value (this really helps the speed of the `dads` function).
+
+On the other hand, the following process (a Brownian motion) is incorrect (it's missing `edge.length` and `...`):
+
+```{r}
+## A wrongly formated process
+invalid.process <- function(x0) {
+    return(rnorm(1, mean = x0))
+}
+```
+
+The `dads` package processes inbuilt processes, namely a multidimensional Brownian motion or a a multidimensional Ornstein-Uhlenbeck process.
+You can find the list of implemented process by looking at the `?trait.process` manual page in `R`.
+
+Once a process is chosen, you can feed it to the `make.traits` function:
+
+```{r}
+## Creating a trait object
+my_trait_object <- make.trait(process = BM.process)
+```
+
+This creates `"dads"` `"traits"` objects that you can print, and visualise using the `plot` function:
+
+```{r}
+## The class of the object
+class(my_trait_object)
+## What's in it?
+my_trait_object
+## What does the process looks like
+plot(my_trait_object)
+```
+
+Note that you can see the multiple options for plotting the trait process by looking at `?plot.dads` manual. Furthermore, you can look at what's actually in the object using:
 
 
-> It is highly recommended to set all arguments (but `x0`) to a default value.
+```{r}
+## What's actually in that object?
+print.dads(my_trait_object, details = TRUE)
+```
+
+As traits can get more and more complex, the automatic printing of its summary allows for a easier display of what's in the traits object.
+
+
+## The number of traits `n` and the starting values `start`
+
