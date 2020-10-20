@@ -6,7 +6,7 @@
 #' @param n            Optional, the number of traits per process (default is \code{1}).
 #' @param start        Optional, the starting values for each traits (default is {0}).
 #' @param process.args Optional, a named list of optional arguments for the trait process.
-#' @param names        Optional, the name(s) of the trait(s) (if missing the name of the process is used to generate the names).
+#' @param trait.names  Optional, the name(s) of the trait(s).
 #' @param add          Optional, another previous \code{"dads"} traits object to which to add the trait.
 #' @param test         Logical, whether to test if the traits object will work with \code{\link{dads}} (\code{TRUE} - default).
 #' 
@@ -20,15 +20,16 @@
 #' 
 #' ## Two different traits with different process
 #' ## (Brownian motion and Ornstein-Uhlenbeck)
-#' make.traits(process = list(BM.process, step.OU))
+#' make.traits(process = list(BM.process, OU.process))
 #' 
 #' ## A multidimensional Brownian motion trait with correlation
 #' ## and different starting points
-#' (my_traits <- make.traits(n = 4, start = c(0, 1, 2, 3),
-#'                           process.args = list(Sigma = diag(1))))
+#' my_correlations <- matrix(1/3, ncol = 3, nrow = 3)
+#' (my_traits <- make.traits(n = 3, start = c(0, 1, 3),
+#'                           process.args = list(Sigma = my_correlations)))
 #' 
 #' ## Adding a Ornstein-Uhlenbeck trait to the previous trait object
-#' make.traits(process = step.OU, names = "OU_trait",
+#' make.traits(process = step.OU, trait.names = "OU_trait",
 #'             add = my_traits)
 #'
 #' @seealso
@@ -36,7 +37,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-make.traits <- function(process = BM.process, n, start, process.args, names, add, test = TRUE) {
+make.traits <- function(process = BM.process, n, start, process.args, trait.names, add, test = TRUE) {
 
     match_call <- match.call()
 
@@ -69,8 +70,10 @@ make.traits <- function(process = BM.process, n, start, process.args, names, add
     if(!missing(start)) {
         check.class(start, c("integer", "numeric"))
         if(length(start) != sum(n)) {
-            warning(paste0("Only the first ", length(start), " starting values were supplied for a required ", sum(n), " traits. The missing start values are set to 0."))
-            start <- c(start, rep(0, length(unlist(trait_id))-length(start)))
+            if(length(start) > 1) {
+                warning(paste0("Only the first ", length(start), " starting values were supplied for a required ", sum(n), " traits. The missing start values are set to 0."))
+            }
+            start <- c(start, rep(0, sum(n)-length(start)))
         }
     } else {
         ## Default start values
@@ -90,21 +93,38 @@ make.traits <- function(process = BM.process, n, start, process.args, names, add
     }
 
     ## Check the additional arguments
-    add_process_args <- rep(FALSE, n_processes)
+    add_process_args <- FALSE
     if(!missing(process.args)) {
         add_process_args <- TRUE
         check.class(process.args, "list")
-        if(is.null(names(process.args))) {
-            stop("process.args must be a named list of arguments.")
+        if(n_processes == 1) {
+            ## Check if arguments are named
+            if(is.null(names(process.args))) {
+                stop("process.args must be a named list of arguments.")
+            }
+            ## Make the process into a list (if there is only one process)
+            process.args <- list(process.args)
+        } else {
+            ## Check if each arguments are named (unless NULL)
+            for(one_process in 1:n_processes) {
+                if(is.null(names(process.args[[one_process]])) && !is.null(process.args[[one_process]][[1]])) {
+                    stop("process.args must be a named list of arguments.")
+                }
+            }
+            ## Make sure the process correspond to the right list
+            if(length(process.args) != n_processes) {
+                stop(paste0("You must provide additional arguments for every process (", n_processes, "). You can provide NULL arguments for processes that don't need extra arguments e.g.\n\n    process.args = list(list(NULL),\n                        list(extra.arg = some_extra_argument))\n\nwill only provide extra arguments to the second process."))
+            }
         }
     } 
 
     ## Check the names
-    if(!missing(names)) {
-        check.class(names, c("character", "numeric", "integer"))
-        check.length(names, n, " must be the same length as the number of characters.")
+    if(!missing(trait.names)) {
+        check.class(trait.names, c("character", "numeric", "integer"))
+        check.length(trait.names, n_processes, " must be the same length as the number of process(es).")
+        trait_names <- trait.names
     } else {
-        names <- match_call$process
+        trait_names <- as.character(1:n_processes)
     }
 
     ## Check add
@@ -123,11 +143,15 @@ make.traits <- function(process = BM.process, n, start, process.args, names, add
     for(one_process in 1:n_processes)  {
         traits[[one_process]]$start    <- start_values[[one_process]]
         traits[[one_process]]$trait_id <- trait_id[[one_process]]
-        if(add_process_args[[one_process]]) {
-            stop("TODO in make.traits: add process.args")
-            traits[[one_process]] <- c(traits[[one_process]], process.args[[one_process]])
+        if(add_process_args) {
+            ## Adding optional arguments if not NULL
+            if(!is.null(process.args[[one_process]][[1]])) {
+                traits[[one_process]] <- c(traits[[one_process]], process.args[[one_process]])
+            }
         }
     }
+    ## Add names
+    names(traits) <- trait_names
 
     ## check
     if(test) {
