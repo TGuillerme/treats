@@ -6,7 +6,7 @@
 #' @param n            Optional, the number of traits per process (default is \code{1}).
 #' @param start        Optional, the starting values for each traits (default is {0}).
 #' @param process.args Optional, a named list of optional arguments for the trait process.
-#' @param trait.names  Optional, the name(s) of the trait(s).
+#' @param trait.names  Optional, the name(s) of the process(s).
 #' @param add          Optional, another previous \code{"dads"} traits object to which to add the trait.
 #' @param test         Logical, whether to test if the traits object will work with \code{\link{dads}} (\code{TRUE} - default).
 #' 
@@ -72,6 +72,8 @@ make.traits <- function(process = BM.process, n, start, process.args, trait.name
         if(length(start) != sum(n)) {
             if(length(start) > 1) {
                 warning(paste0("Only the first ", length(start), " starting values were supplied for a required ", sum(n), " traits. The missing start values are set to 0."))
+            } else {
+                start <- rep(start, sum(n))
             }
             start <- c(start, rep(0, sum(n)-length(start)))
         }
@@ -80,9 +82,28 @@ make.traits <- function(process = BM.process, n, start, process.args, trait.name
         start <- rep(0, sum(n))
     }
 
+    ## Check add
+    add_traits <- FALSE
+    if(!missing(add)) {
+        if(!(is(add, "dads") && is(add, "traits"))) {
+            stop("traits can only be added to objects of class dads and traits.")
+        }
+        add_traits <- TRUE
+        ## Find the previous names (to not duplicate names)
+        previous_names <- names(add)
+        ## Find the previous trait_id (to not duplicate IDs)
+        previous_n <- tail(add[[length(add)]]$trait_id, n = 1)
+        ## Update all the starting values
+        start <- unname(c(unlist(lapply(add, `[[`, "start")), start))
+    } else {
+        ## Initialise the names and n
+        previous_names <- NULL
+        previous_n <- 0
+    }
+
     ## Generate the traits ids and starting values
     n_temp <- n
-    previous_n <- index <- 0
+    index <- 0
     trait_id <- start_values <- vector("list", length(n))
     while(length(n_temp) > 0) {
         index <- index + 1
@@ -105,15 +126,15 @@ make.traits <- function(process = BM.process, n, start, process.args, trait.name
             ## Make the process into a list (if there is only one process)
             process.args <- list(process.args)
         } else {
+            ## Make sure the process correspond to the right list
+            if(length(process.args) != n_processes) {
+                stop(paste0("You must provide additional arguments for every process (", n_processes, "). You can provide NULL arguments for processes that don't need extra arguments e.g.\n\n    process.args = list(list(NULL),\n                        list(extra.arg = some_extra_argument))\n\nwill only provide extra arguments to the second process."))
+            }
             ## Check if each arguments are named (unless NULL)
             for(one_process in 1:n_processes) {
                 if(is.null(names(process.args[[one_process]])) && !is.null(process.args[[one_process]][[1]])) {
                     stop("process.args must be a named list of arguments.")
                 }
-            }
-            ## Make sure the process correspond to the right list
-            if(length(process.args) != n_processes) {
-                stop(paste0("You must provide additional arguments for every process (", n_processes, "). You can provide NULL arguments for processes that don't need extra arguments e.g.\n\n    process.args = list(list(NULL),\n                        list(extra.arg = some_extra_argument))\n\nwill only provide extra arguments to the second process."))
             }
         }
     } 
@@ -122,15 +143,20 @@ make.traits <- function(process = BM.process, n, start, process.args, trait.name
     if(!missing(trait.names)) {
         check.class(trait.names, c("character", "numeric", "integer"))
         check.length(trait.names, n_processes, " must be the same length as the number of process(es).")
-        trait_names <- trait.names
+        ## Making the trait names (+ the previous ones)
+        trait_names <- c(previous_names, trait.names)
     } else {
-        trait_names <- as.character(1:n_processes)
-    }
-
-    ## Check add
-    if(!missing(add)) {
-        if(!(is(add, "dads") && is(add, "traits"))) {
-            stop("traits can only be added to objects of class dads and traits.")
+        ## Default names are letters (or numeric if > 26 processes)
+        if((n_processes + length(previous_names)) <= 26) {
+            ## Naming the process alphabetically (letters used in previous names)
+            trait_names <- c(previous_names, LETTERS[!(LETTERS %in% previous_names)][1:n_processes])
+        } else {
+            ## Just giving number
+            trait_names <- c(previous_names, as.character(1:n_processes))
+            ## Removing duplicates
+            if(any(duplicates <- duplicated(trait_names))) {
+                trait_names[duplicates] <- paste0(trait_names[duplicates], ".bis")
+            }
         }
     }
 
@@ -150,6 +176,12 @@ make.traits <- function(process = BM.process, n, start, process.args, trait.name
             }
         }
     }
+
+    ## Add previous traits
+    if(add_traits) {
+        traits <- c(add, traits)
+    }
+
     ## Add names
     names(traits) <- trait_names
 

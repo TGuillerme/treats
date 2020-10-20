@@ -9,7 +9,7 @@ make.traits(
   n,
   start,
   process.args,
-  names,
+  trait.names,
   add,
   test = TRUE
 )
@@ -23,7 +23,7 @@ make.traits(
 
 \item{process.args}{Optional, a named list of optional arguments for the trait process.}
 
-\item{names}{Optional, the name(s) of the trait(s) (if missing the name of the process is used to generate the names).}
+\item{trait.names}{Optional, the name(s) of the process(s).}
 
 \item{add}{Optional, another previous \code{"dads"} traits object to which to add the trait.}
 
@@ -41,15 +41,16 @@ make.traits(n = 2)
 
 ## Two different traits with different process
 ## (Brownian motion and Ornstein-Uhlenbeck)
-make.traits(process = list(BM.process, step.OU))
+make.traits(process = list(BM.process, OU.process))
 
 ## A multidimensional Brownian motion trait with correlation
 ## and different starting points
-(my_traits <- make.traits(n = 4, start = c(0, 1, 2, 3),
-                          process.args = list(Sigma = diag(1))))
+my_correlations <- matrix(1/3, ncol = 3, nrow = 3)
+(my_traits <- make.traits(n = 3, start = c(0, 1, 3),
+                          process.args = list(Sigma = my_correlations)))
 
 ## Adding a Ornstein-Uhlenbeck trait to the previous trait object
-make.traits(process = step.OU, names = "OU_trait",
+make.traits(process = step.OU, trait.names = "OU_trait",
             add = my_traits)
 
 }
