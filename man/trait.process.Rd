@@ -32,7 +32,7 @@ The different trait processes implemented in dads are:
      \item{OU.process} A Ornstein-Uhlenbeck process (uni or multidimensional). This function is based on \code{\link[MASS]{mvrnorm}}.
      This process can take following optional arguments:
          \itemize{
-              \item \code{var} the process overall variance (default = is \code{1}).
+              \item \code{var} the traits variance/covariance (default is \code{diag(length(x0))}).
               \item \code{alpha} the alpha parameter (default = is \code{1}).
               \item \code{theta} the theta parameter (default = is \code{0}).
               \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.

@@ -24,7 +24,7 @@
 #'      \item{OU.process} A Ornstein-Uhlenbeck process (uni or multidimensional). This function is based on \code{\link[MASS]{mvrnorm}}.
 #'      This process can take following optional arguments:
 #'          \itemize{
-#'               \item \code{var} the process overall variance (default = is \code{1}).
+#'               \item \code{var} the traits variance/covariance (default is \code{diag(length(x0))}).
 #'               \item \code{alpha} the alpha parameter (default = is \code{1}).
 #'               \item \code{theta} the theta parameter (default = is \code{0}).
 #'               \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
@@ -75,11 +75,11 @@ BM.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), ...) {
 }
 
 ## The OU process
-OU.process <- function(x0, edge.length = 1, var = 1, alpha = 1, theta = 0, ...) {
+OU.process <- function(x0, edge.length = 1, var = diag(length(x0)), alpha = 1, theta = 0, ...) {
     ## Calculate the means
     means <- theta + (x0 - theta) * exp(-alpha)
     ## Calculate the Sigma
-    sd   <- sqrt(var/(2 * alpha) * (1 - exp(-2 * alpha)))
+    sd <- sqrt(var/(2 * alpha) * (1 - exp(-2 * alpha)))
     ## Get the traits
     return(t(MASS::mvrnorm(n = 1, mu = means, Sigma = sd * edge.length, ...)))
 }
