@@ -5,13 +5,26 @@ check.traits <- function(traits) {
     ## Make dummy parent trait
     parent.trait <- 123
 
-    try_sucess <- try(
-        results <- lapply(traits, sim.element.trait, parent.trait, edge.length),
-        silent = TRUE)
+    ## Loop through each trait for detailed explanation on why it failed
+    try_success <- list()
+    for(one_trait in 1:length(traits)) {
+        try_success[[one_trait]] <- try(sim.element.trait(traits[[one_trait]], parent.trait, edge.length), silent = TRUE)
+    }
+
+    ## catch the errors
+    errors <- unlist(lapply(try_success, function(x) return(is(x, "try-error"))))
 
     ## Error
-    if(class(try_sucess) == "try-error") {
-        stop("Impossible to generate traits with the current traits object.", call. = FALSE)
+    if(any(errors)) {
+        error_msg <- "Impossible to generate traits with the current traits object."
+        trait_failed <- paste0(" The trait", ifelse(sum(errors) > 1, "s ", " "), paste0(which(errors), collapse = ", "), " returned the following error messages:\n")
+        failure_messages <- ""
+        for(one_trait in 1:length(traits)) {
+            if(errors[one_trait]) {
+                failure_messages <- c(failure_messages, "trait ", one_trait, ": ", try_success[[one_trait]][[1]], "\n")
+            }
+        }
+        stop(paste0(error_msg, trait_failed, paste0(failure_messages, collapse = "")))
     } else {
         return(NULL)
     }
