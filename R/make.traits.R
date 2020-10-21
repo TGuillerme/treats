@@ -181,7 +181,7 @@ make.traits <- function(process = BM.process, n, start, process.args, trait.name
     if(add_traits) {
         traits <- c(add, traits)
     }
-
+    
     ## Add names
     names(traits) <- trait_names
 
