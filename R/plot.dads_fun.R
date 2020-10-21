@@ -1,18 +1,36 @@
-#' @title Plot simulation
-#'
-#' @description 
-#'
-#' @param data the simulated matrix
-#' @param cent.tend the central tendency (default is \code{\link[stats]{mean}})
-#' @param quantiles the quantiles to display (default is \code{c(95, 50)})
-#' @param ... any additional argument to be passed to \code{\link[graphics]{plot}}.
-#' 
-#' @examples 
-#'
-#' @seealso
-#' 
-#' @author Thomas Guillerme
-#' @export
+## Simulates a process based on a traits object
+sim.motion <- function(one_trait, steps) {    
+    if(length(one_trait$trait_id) > 1) {
+        stop("Multidimensional traits cannot be simulated in the current dads version.", call. = FALSE)
+    }
+
+    ## Initialising the simulation
+    output <- one_trait$start
+    count <- 1
+    process <- one_trait$process
+    parameters <- one_trait
+    parameters$x0 <- one_trait$start
+    parameters$start <- parameters$trait_id <- parameters$process <- NULL
+    ## First step
+    output <- c(do.call(process, parameters), output)
+    
+    ## Following steps
+    while(count < (steps-1)) {
+        count <- count + 1
+        parameters$x0 <- output[1]
+        output <- c(do.call(process, parameters), output)
+    }
+    return(rev(output))
+}
+
+# ' @title Plot simulation
+# '
+# ' @description 
+# '
+# ' @param data the simulated matrix
+# ' @param cent.tend the central tendency (default is \code{\link[stats]{mean}})
+# ' @param quantiles the quantiles to display (default is \code{c(95, 50)})
+# ' @param ... any additional argument to be passed to \code{\link[graphics]{plot}}.
 
 plot.simulation <- function(data, cent.tend = mean, quantiles = c(95, 50), ...) {
 

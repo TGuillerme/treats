@@ -1,48 +1,50 @@
-# #' @title plot
-# #'
-# #' @description plot
-# #'
-# #' @param x dads data
-# #' @param trait
-# #' @param plot.tree
-# #' @param simulations
-# #' @param ...
-# #' 
-# #' @examples
-# #' plot.dads()
-# #'
-# #' @seealso
-# #' 
-# #' @author Thomas Guillerme
-# #' @export
+#' @title plot
+#'
+#' @description plot
+#'
+#' @param x \code{dads} data.
+#' @param trait which trait to plot (default is \code{1}).
+#' @param plot.tree
+#' @param simulations if the input is a \code{dads} \code{traits} object, how many replicates to run (default is \code{100}).
+#' @param ...
+#' 
+#' @examples
+#' plot.dads()
+#'
+#' @seealso
+#' 
+#' @author Thomas Guillerme
+#' @export
 
-# plot.dads <- function(x, trait, plot.tree = TRUE, simulations = 100) {
+plot.dads <- function(x, trait = 1, plot.tree = TRUE, simulations = 50) {
 
-#     ## Check class dads
-#     check.class(dads, "dads")
+    ## Renaming the x parameter (data is nicer, x is just for the S3 method standards)
+    data <- x
 
-#     if(length(dads_class <- class(dads), 2)) {
-#         ## Get the second class of the dads object
-#         second_class <- dads_class[2]
+    ## Check class dads
+    check.class(data, "dads")
 
-#         if(second_class == "traits") {
-#             ## Plot the simulated trait
-#             stop("TODO: plot.dads traits")
-#             #TG: Something like that
-#             plot.simulation(main = "Normal",
-#                     replicate(simulations,
-#                         sim.motion(process = x[[trait]]$process, 
-#                                    parameters = list(fun = rnorm, options = list(mean = 0, sd = 1)),
-#                                    steps = 100)))
-#         }
+    if(length(dads_class <- class(data)) ==  2) {
+        ## Get the second class of the dads object
+        second_class <- dads_class[2]
 
-#         return(invisible())
-#     }
+        if(second_class == "traits") {
+            ## Selecting the trait
+            one_trait <- data[[trait]]
 
-#     # if(is(dads, "matrix")) {#TG: And some dads class
+            ## Plotting the results
+            plot.simulation(main = names(data)[[trait]],
+                    replicate(simulations,
+                        sim.motion(one_trait, steps = 100)))
+        }
 
-#     # }
+        return(invisible())
+    }
 
-#     graphics::plot(42)
-#     return(invisible())
-# }
+    # if(is(dads, "matrix")) {#TG: And some dads class
+
+    # }
+
+    graphics::plot(42)
+    return(invisible())
+}
