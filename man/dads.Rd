@@ -4,7 +4,7 @@
 \alias{dads}
 \title{Diversity and disparity simulator}
 \usage{
-dads(bd.params, stop.rule, traits, modifiers, events)
+dads(bd.params, stop.rule, traits = NULL, modifiers = NULL, events = NULL)
 }
 \arguments{
 \item{bd.params}{A list of named parameters for the birth death process (see details).}
