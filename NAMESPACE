@@ -20,5 +20,5 @@ export(no.process)
 
 ##S3 
 # S3method(plot, dads)
-# S3method(print, dads) #incl traits modifiers and events
+S3method(print, dads) #incl traits modifiers and events
 
