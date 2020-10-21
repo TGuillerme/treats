@@ -17,7 +17,4 @@ test_that("print.dads works for traits", {
     out <- capture_output(print.dads(simple))
     expect_equal(out[[1]], "dads traits object:\n1 trait for 1 process (A) with one starting value (0).")    
 
-
-
-
 })
