@@ -383,6 +383,6 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits, null.error = F
     }
 
     ## Output
-    return(list(tree = tree, traits = trait_table))
+    return(list(tree = tree, data = trait_table))
 }
 

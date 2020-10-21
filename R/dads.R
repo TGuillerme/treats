@@ -56,7 +56,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-dads <- function(bd.params, stop.rule, traits, modifiers, events) {
+dads <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events = NULL) {
 
     ## Sanitizing
     if(missing(bd.params)) {
@@ -118,18 +118,48 @@ dads <- function(bd.params, stop.rule, traits, modifiers, events) {
     stop.rule$max.time    <- ifelse(is.null(stop.rule$max.time),   Inf, stop.rule$max.time)
 
     ## traits
-    check.traits(traits)
+    if(!is.null(traits)) {
+        if(is(traits, "dads") && is(traits, "traits")) {
+            check.traits(traits)
+        } else {
+            stop("traits must be of class \"dads\" \"traits\". Use make.traits() to format the object correctly.")
+        }
+    }
 
     ## modifiers
-    ## events
+    if(!is.null(modifiers)) {
+        if(is(modifiers, "dads") && is(modifiers, "modifiers")) {
+            check.modifiers(modifiers)
+        } else {
+            stop("modifiers must be of class \"dads\" \"modifiers\". Use make.modifiers() to format the object correctly.")
+        }
+    }
 
+    ## events
+    if(!is.null(events)) {
+        if(is(events, "dads") && is(events, "events")) {
+            check.events(events)
+        } else {
+            stop("events must be of class \"dads\" \"events\". Use make.events() to format the object correctly.")
+        }
+    }
 
     ## Simulating the traits and tree
-    output <- birth.death.tree.traits(bd.params, stop.rule, traits, null.error = FALSE)
+    output <- birth.death.tree.traits(bd.params, stop.rule, traits = traits, modifiers = modifiers, events = events, null.error = FALSE)
 
-    if(is.na(output$traits)) {
+    if(is.na(output$data)) {
         output <- output$tree
     } else {
+        ## Adding the traits, modifiers and events to the object
+        if(!is.null(traits)) {
+            output$traits <- traits
+        }
+        if(!is.null(modifiers)) {
+            output$modifiers <- modifiers
+        }
+        if(!is.null(events)) {
+            output$events <- events
+        }
         class(output) <- "dads"
     }
     return(output)

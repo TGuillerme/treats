@@ -123,7 +123,7 @@ test_that("simulating trees + traits works", {
     set.seed(7)
     test <- birth.death.tree.traits(bd.params, traits = traits_list, stop.rule = stop.rule)
     expect_is(test, "list")
-    expect_equal(names(test), c("tree", "traits"))
+    expect_equal(names(test), c("tree", "data"))
     expect_is(test[[1]], "phylo")
     expect_is(test[[2]], c("matrix", "array"))
     expect_equal(nrow(test[[2]]), Ntip(test$tree) + Nnode(test$tree))
@@ -137,14 +137,14 @@ test_that("simulating trees + traits works", {
     traits_list$A$start <- 10
     test <- birth.death.tree.traits(bd.params, traits = traits_list, stop.rule)
     ## Right dimensions
-    expect_equal(dim(test$traits), c(Ntip(test$tree) + Nnode(test$tree), 1))
-    expect_equal(length(which(test$traits == max(test$traits))), 2)
+    expect_equal(dim(test$data), c(Ntip(test$tree) + Nnode(test$tree), 1))
+    expect_equal(length(which(test$data == max(test$data))), 2)
     # ## Visual checking
     # tree_plot <- test$tree
     # tree_plot$edge.length <- rep(1, Nedge(tree_plot))
     # plot(tree_plot)
-    # nodelabels(paste(test$tree$node.label, sep = ":", test$traits[test$tree$node.label,1]), cex = 0.5)
-    # tiplabels(paste(test$tree$tip.label, sep = ":", test$traits[test$tree$tip.label,1]), cex = 0.5)
+    # nodelabels(paste(test$tree$node.label, sep = ":", test$data[test$tree$node.label,1]), cex = 0.5)
+    # tiplabels(paste(test$tree$tip.label, sep = ":", test$data[test$tree$tip.label,1]), cex = 0.5)
 
     stop.rule <- list(max.living = Inf,
                       max.taxa   = 10,
@@ -156,22 +156,22 @@ test_that("simulating trees + traits works", {
     test <- birth.death.tree.traits(bd.params, traits = traits_list, stop.rule)
 
     ## The three traits are equal
-    expect_equal(test$traits[,1], test$traits[,2])
-    expect_equal(test$traits[,2], test$traits[,3])
-    expect_equal(test$traits[,1], test$traits[,3])
+    expect_equal(test$data[,1], test$data[,2])
+    expect_equal(test$data[,2], test$data[,3])
+    expect_equal(test$data[,1], test$data[,3])
 
     ## The first trait value is 10
-    expect_equal(test$traits[1,1], 10)
+    expect_equal(test$data[1,1], 10)
 
     ## The traits are equal to edge lengths
-    expect_equal(unname(round(sort(test$traits[-1,1]), 5)),
+    expect_equal(unname(round(sort(test$data[-1,1]), 5)),
                  round(sort(test$tree$edge.length), 5))
 
     # ## Visual checking
     # tree_plot <- test$tree
     # plot(tree_plot)
-    # nodelabels(paste(test$tree$node.label, sep = ":", round(test$traits[test$tree$node.label,1], 2)), cex = 1)
-    # tiplabels(paste(test$tree$tip.label, sep = ":", round(test$traits[test$tree$tip.label,1], 2)), cex = 1)
+    # nodelabels(paste(test$tree$node.label, sep = ":", round(test$data[test$tree$node.label,1], 2)), cex = 1)
+    # tiplabels(paste(test$tree$tip.label, sep = ":", round(test$data[test$tree$tip.label,1], 2)), cex = 1)
     # edgelabels(round(test$tree$edge.length, 2))
 
 
@@ -187,9 +187,9 @@ test_that("simulating trees + traits works", {
     set.seed(1)
     test <- birth.death.tree.traits(bd.params, traits = complex_traits, stop.rule)
 
-    expect_equal(test$traits[,1], test$traits[,2] - 10)
-    expect_equal(test$traits[,1], test$traits[,3] - 20)
-    expect_equal(unname(test$traits[,4]), c(0, test$tree$edge.length))
+    expect_equal(test$data[,1], test$data[,2] - 10)
+    expect_equal(test$data[,1], test$data[,3] - 20)
+    expect_equal(unname(test$data[,4]), c(0, test$tree$edge.length))
 
 
     ## Multidimensional brownian trait
@@ -203,7 +203,7 @@ test_that("simulating trees + traits works", {
                 )
     set.seed(1)
     test <- birth.death.tree.traits(bd.params, traits = complex_traits, stop.rule)
-    expect_equal(dim(test$traits), c(19, 4))
-    expect_equal(unname(test$traits[,4]), c(0, test$tree$edge.length))
+    expect_equal(dim(test$data), c(19, 4))
+    expect_equal(unname(test$data[,4]), c(0, test$tree$edge.length))
 })
 
