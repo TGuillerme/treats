@@ -2,7 +2,7 @@
 #'
 #' @description Summarises the content of a \code{dads} object.
 #'
-#' @param x A \code{dads} object.
+#' @param x   A \code{dads} object.
 #' @param all \code{logical}; whether to display the entire object (\code{TRUE}) or just summarise its contents (\code{FALSE} - default).
 #' @param ... further arguments to be passed to \code{print} or to \code{print.dads}.
 #' 
@@ -30,24 +30,34 @@ print.dads <- function(x, all = FALSE, ...) {
             ## randtest
             switch(class(x)[[2]],
                 traits = {
-                    cat("dads traits object:\n")
+                    cat(" ---- dads traits object ---- \n")
                     print.traits.info(x)
                 },
                 events = {
-                    cat("dads events object:\n")
+                    cat(" ---- dads events object ---- \n")
                 },
                 modifiers = {
-                    cat("dads modifiers object:\n")
+                    cat(" ---- dads modifiers object ---- \n")
                 }
                 )
             return(invisible())
         }
 
         ## Normal class dads objects (tree + traits)
+        cat(" ---- dads object ---- \n")
         cat("Simulated diversity data (x$tree):\n")
-        cat(print(test$tree))
-        cat("Simulated disparity data (x$data):\n")
-        cat(paste0(ncol(test$traits), " trait", ifelse(ncol(test$traits) > 1, "s", "") ," for ", nrow(test$traits), " element", ifelse(nrow(test$traits) > 1, "s", "") ," generated using ", length(test$call$process), " process", ifelse(length(test$call$process) > 1, "es.", ".")))
+        cat(print(x$tree))
+        cat("\n")
+        if(!is.null(x$traits)) {
+            cat("Simulated disparity data (x$data):\n")
+            print.traits.info(x$traits)
+        }
+        if(!is.null(x$events)) {
+            cat("DEBUG print.events.info\n")
+        }
+        if(!is.null(x$modifiers)) {
+            cat("DEBUG print.modifiers.info\n")
+        }
     }
     return(invisible())
 }
