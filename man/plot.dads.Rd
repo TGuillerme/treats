@@ -2,21 +2,32 @@
 % Please edit documentation in R/plot.dads.R
 \name{plot.dads}
 \alias{plot.dads}
-\title{plot}
+\title{Plot dads objects}
 \usage{
-\method{plot}{dads}(x, trait = 1, plot.tree = TRUE, simulations = 50)
+\method{plot}{dads}(x, col, ..., trait = 1, plot.tree = TRUE, simulations = 50)
 }
 \arguments{
 \item{x}{\code{dads} data.}
 
+\item{col}{Optional, a vector of colours that can be named (see details).}
+
+\item{...}{Any additional options to be passed to plot functions.}
+
 \item{trait}{which trait to plot (default is \code{1}).}
 
-\item{simulations}{if the input is a \code{dads} \code{traits} object, how many replicates to run (default is \code{100}).}
+\item{plot.tree}{logical, whether to plot the underlying tree structure (\code{TRUE}; default) or not (\code{FALSE}).}
 
-\item{...}{}
+\item{simulations}{if the input is a \code{dads} \code{traits} object, how many replicates to run (default is \code{100}).}
 }
 \description{
-plot
+Plotting dads objects (either a simulated tree and trait(s) or a process for traits objects)
+}
+\details{
+The \code{col} option can be either:
+\itemize{
+     \item an unnamed vector of colours to be applied to \code{"dads"} \code{"traits"} objects (for respectively the median, 50% CI and 95% CI - by default this is \code{col = c("black", "grey", "lightgrey")})
+     \item a named vector of colours to be applied to \code{"dads"} objects for the colours of different elements of the plot. By default this is \code{col = c("nodes" = "orange", "fossils" = "lightblue", "livings" = "blue", "edges" = "grey")}. To colour both living and fossil tips the same way, you can use a vector element called \code{"tips"} instead of distinguishing between \code{"fossils"} and \code{"livings"}. 
+}
 }
 \examples{
 plot.dads()
