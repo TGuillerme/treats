@@ -382,6 +382,10 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     if(do_traits) {
         trait_table <- trait_table[, -c(1:3), drop = FALSE]
         rownames(trait_table) <- c(tree$tip.label, tree$node.label)[c(n_tips+1, table$element2)]
+        ## Add the column names (if missing)
+        if(length(missing_names <- which(colnames(trait_table) == "")) > 0) {
+            colnames(trait_table)[missing_names] <- names(traits)
+        }
     }
 
     ## Output
