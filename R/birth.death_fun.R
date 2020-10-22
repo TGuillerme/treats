@@ -162,14 +162,16 @@ sim.living.tips <- function(living, trait_table, traits) {
 }
 
 ## Run a birth death process to generate both tree and traits
-birth.death.tree.traits <- function(bd.params, stop.rule, traits, null.error = FALSE) {
+birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events = NULL, null.error = FALSE) {
   
     ############
     ## Initialising
     ############
 
-    ## Set up the trait simulation
-    do_traits <- ifelse(missing(traits), FALSE, TRUE)
+    ## Set up the traits, modifiers and events simulation
+    do_traits    <- ifelse(is.null(traits), FALSE, TRUE)
+    do_modifiers <- ifelse(is.null(modifiers), FALSE, TRUE)
+    do_events    <- ifelse(is.null(events), FALSE, TRUE)
 
     ## Initialising the values
     parent <- edge_lengths <- 0
@@ -201,7 +203,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits, null.error = F
     if(do_traits) {
         trait_values <- rbind(NULL, "root" = c("element" =  1, unlist(lapply(traits, function(x) return(x$start)))))
     } else {
-        trait_table <- NA
+        trait_table <- NULL
     }
 
     ## Placeholder for modifiers
