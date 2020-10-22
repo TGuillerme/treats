@@ -2,11 +2,12 @@
 #'
 #' @description Simulating diversity and trait disparity
 #'
-#' @param bd.params A list of named parameters for the birth death process (see details).
-#' @param stop.rule The rules on when to stop the simulation (see details).
-#' @param traits    The dads traits object (see \code{\link{make.traits}}).
-#' @param modifiers The dads modifiers object (see \code{\link{make.modifiers}}).
-#' @param events    The dads events object (see \code{\link{make.events}}).
+#' @param bd.params  A list of named parameters for the birth death process (see details).
+#' @param stop.rule  The rules on when to stop the simulation (see details).
+#' @param traits     The dads traits object (see \code{\link{make.traits}}).
+#' @param modifiers  The dads modifiers object (see \code{\link{make.modifiers}}).
+#' @param events     The dads events object (see \code{\link{make.events}}).
+#' @param null.error Logical, whether to return an error when the birth death parameters fails to build a tree (\code{FALSE}; default and highly recommended) or whether to return \code{NULL} (\code{TRUE}).
 #' 
 #' @details
 #' \code{bd.params} and \code{stop.rule} should me named lists to parametrise the birth-death tree. The names of the current handled parameters for each argument are:
@@ -47,8 +48,6 @@
 #' dads(bd.params = my_bd_params,
 #'      stop.rule = my_stop_rule,
 #'      traits    = my_traits)
-#' 
-#' ##
 #'
 #'
 #' @seealso
@@ -56,46 +55,44 @@
 #' @author Thomas Guillerme
 #' @export
 
-dads <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events = NULL) {
+dads <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events = NULL, null.error = FALSE) {
 
     ## Sanitizing
     if(missing(bd.params)) {
+        ## Default pure birth tree
         bd.params <- list(speciation = 1,
                           extinction = 0)
     } else {
+        ## Must be a named list
         check.class(bd.params, "list")
+        if(is.null(names(bd.params))) {
+            stop("bd.params must be a named list.", call. = FALSE)
+        }
+
         if(is.null(bd.params$speciation)) {
             ## Set default speciation
             bd.params$speciation <- 1
         } else {
-            ## Speciation parameter must a single numeric (or integer) betweem 0 and 1
-            if(!(is(bd.params$speciation, "numeric") |
-                 is(bd.params$speciation, "integer") &&
-                 length(bd.params$speciation == 1)   &&
-                 bd.params$speciation < 0 &&
-                 bd.params$speciation > 1)) {
-                stop("bd.params$speciation must be a single numeric value between 0 and 1.", call. = FALSE)
-            }
-            ## Speciation cannot be 0
-            if(bd.params$speciation == 0) {
-                stop("Impossible to simulate a tree and trait if speciation is set to 0.", call. = FALSE)
+            ## Speciation parameter must a single numeric (or integer) between 0 and 1
+            if(any(!(c(is(bd.params$speciation, "numeric") ||
+                       is(bd.params$speciation, "integer"),
+                       length(bd.params$speciation) == 1,
+                       !bd.params$speciation <= 0,
+                       !bd.params$speciation > 1)))) {
+                stop("bd.params$speciation must be a single numeric value in the (0, 1] interval.", call. = FALSE)
             }
         }
         if(is.null(bd.params$extinction)) {
             ## Set default extinction
             bd.params$extinction <- 0
         } else {
-            ## Extinction parameter must a single numeric (or integer) betweem 0 and 1
-            if(!(is(bd.params$extinction, "numeric") |
-                 is(bd.params$extinction, "integer") &&
-                 length(bd.params$extinction == 1)   &&
-                 bd.params$extinction < 0 &&
-                 bd.params$extinction > 1)) {
-                stop("bd.params$extinction must be a single numeric value between 0 and 1.", call. = FALSE)
-            }
-            ## Extinction cannot be 1
-            if(bd.params$speciation == 1) {
-                stop("Impossible to simulate a tree and trait if extinction is set to 1.", call. = FALSE)
+            ## Extinction parameter must a single numeric (or integer) between 0 and 1
+            if(any(!(c(is(bd.params$extinction, "numeric") ||
+                       is(bd.params$extinction, "integer"),
+                       length(bd.params$extinction) == 1,
+                       !bd.params$extinction < 0,
+                       !bd.params$extinction >= 1)))) {
+                stop("bd.params$extinction must be a single numeric value in the [0, 1) interval.", call. = FALSE)
             }
         }
     }
@@ -144,10 +141,18 @@ dads <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events =
         }
     }
 
-    ## Simulating the traits and tree
-    output <- birth.death.tree.traits(bd.params, stop.rule, traits = traits, modifiers = modifiers, events = events, null.error = FALSE)
+    check.class(null.error, "logical")
 
-    if(is.na(output$data)) {
+
+    ## Simulating the traits and tree
+    output <- birth.death.tree.traits(bd.params, stop.rule, traits = traits, modifiers = modifiers, events = events, null.error = null.error)
+
+    if(is.null(output)) {
+        ## Should only fire if null.error = TRUE
+        return(output)
+    }
+
+    if(is.null(output$data)) {
         output <- output$tree
     } else {
         ## Adding the traits, modifiers and events to the object

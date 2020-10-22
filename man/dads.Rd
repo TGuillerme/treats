@@ -4,7 +4,14 @@
 \alias{dads}
 \title{Diversity and disparity simulator}
 \usage{
-dads(bd.params, stop.rule, traits = NULL, modifiers = NULL, events = NULL)
+dads(
+  bd.params,
+  stop.rule,
+  traits = NULL,
+  modifiers = NULL,
+  events = NULL,
+  null.error = FALSE
+)
 }
 \arguments{
 \item{bd.params}{A list of named parameters for the birth death process (see details).}
@@ -16,6 +23,8 @@ dads(bd.params, stop.rule, traits = NULL, modifiers = NULL, events = NULL)
 \item{modifiers}{The dads modifiers object (see \code{\link{make.modifiers}}).}
 
 \item{events}{The dads events object (see \code{\link{make.events}}).}
+
+\item{null.error}{Logical, whether to return an error when the birth death parameters fails to build a tree (\code{FALSE}; default and highly recommended) or whether to return \code{NULL} (\code{TRUE}).}
 }
 \description{
 Simulating diversity and trait disparity
@@ -58,8 +67,6 @@ my_trait <- make.traits()
 dads(bd.params = my_bd_params,
      stop.rule = my_stop_rule,
      traits    = my_traits)
-
-##
 
 
 }
