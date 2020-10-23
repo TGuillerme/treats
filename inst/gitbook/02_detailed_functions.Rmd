@@ -8,19 +8,21 @@ output:
   pdf_document: default
 ---
 
-# Making trait processes with `make.traits()`
+# Detailed functions
+
+## Making trait processes with `make.traits()`
 
 ```{r, echo = FALSE}
 set.seed(123)
 ```
 
-## The process
+### The process (`process`)
 
 The function `make.traits` allows you to design the process of a trait or a set of traits.
 Here, the process of a trait designates the rules to generate the trait through time while simulating a phylogeny.
 This process can depend on the previous state in the tree (i.e. the trait of the ancestor) and the branch length to the descendant.
 One classic example is the [Brownian motion process (or Weiner process)](https://en.wikipedia.org/wiki/Brownian_motion).
-Note that it can depend from both but does not necessary needs (i.e. the process can be only based on the previous state or only on branch length or on neither).
+Note that it _can_ depend on both the ancestor and the branch length but does _not necessary needs_ (i.e. the process can be only based on the previous state or only on branch length or on neither).
 
 Trait processes in `dads` are functions that must always intake the following arguments by default.
 
@@ -37,9 +39,9 @@ valid.process <- function(x0, egde.length = 1, ...) {
 }
 ```
 
-> Note that the argument `edge.length` is set to `1` by default. In general we highly recommend to set all arguments but `x0` to a default value (this really helps the speed of the `dads` function).
+> Note that the argument `edge.length` is set to `1` by default. In general we highly recommend to set all arguments but `x0` to a default value (this really helps the speeding up the `dads` function).
 
-On the other hand, the following process (a Brownian motion) is incorrect (it's missing `edge.length` and `...`):
+On the other hand, the following process (a unidimensional Brownian motion) is incorrect (it's missing `edge.length` and `...`):
 
 ```{r}
 ## A wrongly formated process
@@ -48,7 +50,7 @@ invalid.process <- function(x0) {
 }
 ```
 
-The `dads` package processes inbuilt processes, namely a multidimensional Brownian motion or a a multidimensional Ornstein-Uhlenbeck process.
+The `dads` package proposes inbuilt processes, namely a multidimensional Brownian motion (`BM.process`) or a a multidimensional Ornstein-Uhlenbeck process (`OU.process`).
 You can find the list of implemented process by looking at the `?trait.process` manual page in `R`.
 
 Once a process is chosen, you can feed it to the `make.traits` function:
@@ -79,6 +81,108 @@ print.dads(my_trait_object, all = TRUE)
 
 As traits can get more and more complex, the automatic printing of its summary allows for a easier display of what's in the traits object.
 
+Note that it is possible to make `"traits"` objects with multiple processes (that can be the same):
 
-## The number of traits `n` and the starting values `start`
+```{r}
+## 4 traits: two BM, one OU and one normal non process
+four_traits <- make.traits(process = c(BM.process,
+                                       BM.process,
+                                       OU.process,
+                                       no.process))
+four_traits
+```
 
+You can visualise them individually using the `trait` argument in `plot.dads`:
+
+```{r}
+## Plot options (4 plots in one window)
+par(mfrow = c(2,2))
+plot(four_traits, trait = 1)
+plot(four_traits, trait = 2)
+plot(four_traits, trait = 3)
+plot(four_traits, trait = 4)
+```
+
+
+
+### The number of traits `n` and the starting values `start`
+
+Two further important arguments are `n` the number of traits per process and `start` the starting values for all traits.
+By default they are set to `n = 1` and `start = 0`.
+This means that `make.traits` will assume that your processes are always unidimensional by default and that they always start with the value `0`.
+It is however possible to change these values.
+
+For example you can use the following to create a three dimensional Brownian motion with each dimensions starting with the value `1`:
+
+```{r}
+## Multidimensional Brownian motion
+make.traits(BM.process, n = 3, start = 1)
+```
+
+Or the following with each dimensions starting with different values (respectively `1`, `2` and `3`):
+
+```{r}
+## Multidimensional Brownian motion
+make.traits(BM.process, n = 3, start = c(1,2,3))
+```
+
+Note that the number of traits are distributed per processes.
+If the traits contains multiple process, the number of traits are distributed per processes:
+
+```{r}
+## two 3D processes (BM and OU)
+make.traits(c(BM.process, OU.process), n = 3)
+## one 1D processes (BM) and one 4D process (OU)
+make.traits(c(BM.process, OU.process), n = c(1, 4))
+```
+
+And starting values are distributed for all the traits or for the traits one by one:
+
+```{r}
+## two 3D processes (BM and OU) starting with 1
+make.traits(c(BM.process, OU.process), n = 3, start = 1)
+## two 3D processes (BM and OU) starting with values 1 to 6
+make.traits(c(BM.process, OU.process), n = 3, start = 1:6)
+## two 3D processes (BM and OU) with the two first ones starting
+## with 1 and the 4 other ones with the default (0)
+make.traits(c(BM.process, OU.process), n = 3, start = c(1,1))
+```
+
+## Extra argument for the processes with `process.args`
+
+You can also feed extra arguments to your process(es) functions. For example, the inbuilt process `no.process` (that is just a number generator not based on the previous value `x0` or the branch length) can intake a specific random number generator as a function:
+
+```{r}
+## no process trait using the normal distribution (default)
+make.traits(no.process, process.args = list(fun = rnorm))
+## no process trait using the uniform distribution
+## bounded between 1 and 100
+make.traits(no.process, process.args = list(fun = runif, min = 1, max = 100))
+```
+
+You can also add multiple extra arguments for multiple processes giving them as a list.
+
+```{r}
+## Two traits with no process:one normal and one uniform (1,100)
+make.traits(process      = c(no.process, no.process),
+            process.args = list(list(fun = rnorm),
+                                list(fun = runif, min = 1, max = 100)))
+```
+
+If one process do not need extra argument you must still give it and extra `NULL` process argument:
+
+```{r}
+## Three traits with no process:
+## one default, one lognormal and one uniform (1,100)
+make.traits(process      = c(no.process, no.process, no.process),
+            process.args = list(## Extra arguments for the first process (none)
+                                list(NULL),
+                                ## Extra arguments for the second process
+                                list(fun = rlnorm),
+                                ## Extra arguments for the third process
+                                list(fun = runif, min = 1, max = 100)))
+```
+
+## Combining multiple traits with `add`
+
+## Naming and testing traits (`trait.names` and `test`)
