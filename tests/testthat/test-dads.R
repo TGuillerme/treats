@@ -81,3 +81,55 @@ test_that("dads works for trees + traits", {
 
 #test_that("dads works for trees + traits + modifiers + events", {
 #})
+
+
+
+
+
+
+# ## Vanity: some speed checks
+
+# set.seed(123)
+# start <- Sys.time()
+# test <- dads(bd.params = list(extinction = 1/3), stop.rule = list(max.taxa = 1000))
+# end <- Sys.time()
+# end-start
+# # 1000 taxa (no traits)
+# # Time difference of 0.1825261 secs
+
+# start <- Sys.time()
+# test <- dads(bd.params = list(extinction = 1/3), stop.rule = list(max.taxa = 10000))
+# end <- Sys.time()
+# end-start
+# # 10000 taxa (no traits)
+# # 30.21827 secs
+
+# start <- Sys.time()
+# test <- dads(bd.params = list(extinction = 1/3), stop.rule = list(max.taxa = 1000), traits = make.traits())
+# end <- Sys.time()
+# end-start
+# # 1000 taxa (1 traits)
+# # Time difference of 1.056556 secs
+
+# start <- Sys.time()
+# test <- dads(bd.params = list(extinction = 1/3), stop.rule = list(max.taxa = 10000), traits = make.traits())
+# end <- Sys.time()
+# end-start
+# # 10000 taxa (1 traits)
+# # Time difference of 37.54625 secs
+
+
+# complex_traits <- make.traits(process = c(BM.process, OU.process, BM.process), n = c(6,3,1))
+# start <- Sys.time()
+# test <- dads(bd.params = list(extinction = 1/3), stop.rule = list(max.taxa = 1000), traits = complex_traits)
+# end <- Sys.time()
+# end-start
+# # 1000 taxa (1 traits)
+# # Time difference of 1.674716 secs
+
+# start <- Sys.time()
+# test <- dads(bd.params = list(extinction = 1/3), stop.rule = list(max.taxa = 10000), traits = complex_traits)
+# end <- Sys.time()
+# end-start
+# # 10000 taxa (10 traits)
+# # Time difference of 46.44996 secs
