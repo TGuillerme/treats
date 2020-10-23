@@ -11,6 +11,7 @@ export(dads)
 export(make.traits)
 export(print.dads)
 export(plot.dads)
+export(drop.fossil.dads)
 # export(make.modifiers)
 # export(make.events)
 
