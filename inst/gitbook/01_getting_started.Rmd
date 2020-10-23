@@ -8,44 +8,130 @@ output:
   pdf_document: default
 ---
 
-# A simple analyses
+```{r, echo = FALSE}
+library(dads)
+set.seed(4242)
+```
 
+# Getting started
 
-## What you need?
+## The simplest of all analysis: simulating diversity only
 
+One of the simplest things to do with the `dads` package is just to simulate a birth death tree.
+For that you can use the function `dads` and specify your stopping rule.
+The stopping rule simply tells the birth death process to step whenever it reaches one of these three conditions:
 
- * The speciation and extinction parameter
+ * `"max.taxa"   = n` stop when `n` taxa are generated;
+ * `"max.living" = n` stop when there is `n` co-occuring taxa of the same age (i.e. "living" taxa);
+ * `"max.time"   = n` stop when the simulated tree is `n` units of age old (these units are arbitrary);
 
- ```{r, eval = FALSE}
-## The birth death parameters
+For example, we might want to generate a birth-death tree with 20 taxa:
+
+```{r}
+## Setting a stopping rule to reach a maximum of 20 taxa
+my_stop_rule <- list(max.taxa = 20)
+```
+
+We can now run the simulations using:
+
+```{r}
+## Running the birth death simulation
+my_tree <- dads(stop.rule = my_stop_rule)
+```
+
+> Note that here we could have specified more than one stopping rule, for example, we might want to run a simulation and stop it if it either reaches 10 taxa or the age 2 using `stop.rule = list(max.time = 2, max.taxa = 10)`. The simulation will then stop when either of these conditions are met.
+
+The resulting object is a classic `"phylo"` object that you can simply plot or visualise like so:
+
+```{r}
+## The tree object
+my_tree
+## Plotting it
+plot(my_tree)
+```
+
+### Changing the birth-death parameters
+
+People familiar with the [birth-death models](https://lukejharmon.github.io/pcm/chapter10_birthdeath/) might have noticed that we did not specify two important things here: the speciation parameter (sometimes called "lambda" or "birth") and the extinction parameter (sometimes called "mu", "death" or "background extinction").
+By default `dads` runs a pure birth model (the speciation is set to 1 and the extinction to 0).
+However, you can easily change that by specifying your new birth death parameters:
+
+```{r}
+## my birth death parameters
 my_params <- list(speciation = 1,
                   extinction = 1/3)
 ```
+> Note that here it is not necessary to specify `extinction = 1` since this is the default option, you can always just change the parameter of interest (e.g. changing `extinciton = 0` to `extinction = 1/3`). However, we think it's good practice to attribute both parameters specifically to avoid any confusion.
 
- * A stopping rule
+You can then run the same birth death tree with extinction:
 
- ```{r, eval = FALSE}
-## Creating a stopping rule
-my_stop_rule <- list(max.taxa = 15)
+```{r}
+## Generating a birth death tree with extinctions:
+my_tree <- dads(bd.params = my_params, stop.rule = my_stop_rule)
+## Visualising the new tree
+plot(my_tree)
 ```
 
- * A "traits" object
+## Slightly more complex: simulating disparity and diversity
 
- ```{r, eval = FALSE}
-## A simple Brownian motion object
-my_bm_trait <- make.traits()
+Chances are that you want to also simulate traits (disparity) along with your diversity (otherwise, we suggest using the [`TreeSim`](https://github.com/tanja819/TreeSim/) package that provides many more birth death models).
+Simulating traits is not much more complicated in `dads`: you'll simply need to create a `"traits"` object using the `make.traits` function.
+These objects can have increasing complexity (see the rest of this tutorial) but we will keep it simple here.
+
+`"traits"` objects contain one or more processes which are the ways to generate the trait.
+The most common of these processes is the [Brownian Motion](https://en.wikipedia.org/wiki/Brownian_motion).
+This is used by default with the `make.traits` function:
+
+```{r}
+## Creating the traits object
+my_trait <- make.traits()
 ```
 
+This trait object can be simply printed (to see what's in it) or plotted (to see what the process looks like in the absence of a phylogeny):
 
-## How to simulate disparity (traits) and diversity (taxa)?
-
- ```{r, eval = FALSE}
-## Running a pretty basic simulation
-simple_dads <- dads(bd.params = my_params,
-                    stop.rule = my_stop_rule,
-                    traits    = my_bm_traits)
+```{r}
+## Which process is in here?
+my_trait
+## What does it look like?
+plot(my_trait)
 ```
 
+By default, this trait is called "A".
+This is not a really good name but you'll see more about specifying trait names later on.
+If this is what the process should look like (theoretically) you can then add its `"traits"` object to our previous `dads` function to generate the tree and the traits:
 
+```{r}
+## Simulate disparity and diversity
+my_data <- dads(bd.params = my_params,
+                stop.rule = my_stop_rule,
+                traits    = my_trait)
+```
 
-> Note that you can also simply simulate diversity by setting the traits argument to `NULL`. This will simply simulate a birth death tree. If this is your objective, you'd probably be better off using one of the excellent `R` packages dedicated to this task like `TreeSim`.
+Et voilà! We now have a simple disparity and diversity simulation.
+We can see what's in the results by simply printing it or plotting it:
+
+```{r}
+## What's in there
+my_data
+## Plotting the disparity and diversity
+plot(my_data)
+```
+
+You can then extract the components you need for your specific analysis like so:
+
+```{r}
+## Extracting the tree (a "phylo" object)
+the_generated_tree <- my_data$tree
+class(the_generated_tree)
+
+## Extracting the data (a "matrix")
+the_generated_data <- my_data$data
+class(the_generated_data)
+```
+
+## Slightly more more complex: simulating linked disparity and diversity 
+
+The example above is also still pretty simple and easily done through a variety of `R` packages: here the trait and the tree are simulated at the same time but only the tree is simulating the trait (i.e. the trait value at a tip is affected by it's ancestor and the branch length leading to it) but not the other way around (the trait value does not affect the tree).
+It is possible to add this aspect using `"modifiers"` objects.
+`"modifiers"` are similar to `"traits"` in that you specify what should go in there and then feed it to your simulation.
+
