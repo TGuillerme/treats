@@ -1,7 +1,7 @@
 #Dependencies
 import(ape)
 import(stats)
-import(dispRity)s
+import(dispRity)
 
 importFrom("graphics","plot")
 importFrom("MASS","mvrnorm")
