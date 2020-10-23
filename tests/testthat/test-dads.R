@@ -44,6 +44,19 @@ test_that("dads works for simple birth-deaths", {
     test <- dads(bd.params = list(extinction = 0.2), stop.rule = list("max.taxa" = 10))
     expect_is(test, "phylo")
     expect_equal(Ntip(test), 10)
+
+
+
+    ## Works with null.error set to a logical or an integer
+    # set.seed(1)
+    # test <- dads(bd.params = list(speciation = 1, extinction = 0.5), stop.rule = list("max.living" = 10), null.error = TRUE)
+    # expect_null(test)
+    set.seed(1)
+    error <- capture_error(dads(bd.params = list(speciation = 1, extinction = 0.5), stop.rule = list("max.living" = 10)))
+    expect_equal(error[[1]], "No tree generated with these parameters.")
+    set.seed(1)
+    test <- dads(bd.params = list(speciation = 1, extinction = 0.5), stop.rule = list("max.living" = 10), null.error = 100)
+    expect_is(test, "phylo")
 })
 
 

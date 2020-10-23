@@ -7,7 +7,7 @@
 #' @param traits     The dads traits object (see \code{\link{make.traits}}).
 #' @param modifiers  The dads modifiers object (see \code{\link{make.modifiers}}).
 #' @param events     The dads events object (see \code{\link{make.events}}).
-#' @param null.error Logical, whether to return an error when the birth death parameters fails to build a tree (\code{FALSE}; default and highly recommended) or whether to return \code{NULL} (\code{TRUE}).
+#' @param null.error Logical, whether to return an error when the birth death parameters fails to build a tree (\code{FALSE}; default and highly recommended) or whether to return \code{NULL} (\code{TRUE}). Can also be set to a integer value for the numbers of trials (see details).
 #' 
 #' @details
 #' \code{bd.params} and \code{stop.rule} should me named lists to parametrise the birth-death tree. The names of the current handled parameters for each argument are:
@@ -24,7 +24,9 @@
 #'   \item \code{max.living} The maximum number of living (i.e. non extinct) to reach.
 #'   \item \code{max.time}   The maximum amount of phylogenetic time to reach.
 #' }
-
+#' 
+#' If \code{null.error} is set to a numeric value, the function will run multiple times until a correct tree is generated. Using this option can greatly increase computational time!
+#' 
 #' 
 #' @examples
 #' ## Setting some pure birth tree (no extinction) parameters
@@ -141,11 +143,23 @@ dads <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events =
         }
     }
 
-    check.class(null.error, "logical")
+    error_class <- check.class(null.error, c("logical", "integer", "numeric"))
+    if(error_class == "logical") {
+        max.counter <- 1
+        null.error <- null.error
+    } else {
+        max.counter <- round(null.error)
+        null.error <- TRUE
+    }
+    counter <- 0
+    output <- NULL
 
-
-    ## Simulating the traits and tree
-    output <- birth.death.tree.traits(bd.params, stop.rule, traits = traits, modifiers = modifiers, events = events, null.error = null.error)
+    while(is.null(output) || counter <= max.counter) {
+        ## Simulating the traits and tree
+        output <- birth.death.tree.traits(bd.params, stop.rule, traits = traits, modifiers = modifiers, events = events, null.error = null.error)
+        ## Update the counter
+        counter <- counter + 1
+    }
 
     if(is.null(output)) {
         ## Should only fire if null.error = TRUE

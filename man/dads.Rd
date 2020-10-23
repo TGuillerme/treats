@@ -24,7 +24,7 @@ dads(
 
 \item{events}{The dads events object (see \code{\link{make.events}}).}
 
-\item{null.error}{Logical, whether to return an error when the birth death parameters fails to build a tree (\code{FALSE}; default and highly recommended) or whether to return \code{NULL} (\code{TRUE}).}
+\item{null.error}{Logical, whether to return an error when the birth death parameters fails to build a tree (\code{FALSE}; default and highly recommended) or whether to return \code{NULL} (\code{TRUE}). Can also be set to a integer value for the numbers of trials (see details).}
 }
 \description{
 Simulating diversity and trait disparity
@@ -44,6 +44,8 @@ Simulating diversity and trait disparity
   \item \code{max.living} The maximum number of living (i.e. non extinct) to reach.
   \item \code{max.time}   The maximum amount of phylogenetic time to reach.
 }
+
+If \code{null.error} is set to a numeric value, the function will run multiple times until a correct tree is generated. Using this option can greatly increase computational time!
 }
 \examples{
 ## Setting some pure birth tree (no extinction) parameters
