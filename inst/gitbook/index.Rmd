@@ -20,37 +20,37 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Disparity and diversity simulations.
 
-The core of this package is based on diversitree function blabalba
+Allowing to simulate disparity and diversity at the same time with interaction between both.
 
-
-## What is **not** `dads`s?
-
-Link to RPANDA, diversitree, etc.
+The core of this package is based on the [`diversitree` birth-death algorithm](https://github.com/cran/diversitree/blob/master/R/simulate-bd.R).
 
 ## What is `dads`?
 
-Blablaba
+There are some very good packages out there to simulate birth death trees (like [TreeSim](https://github.com/tanja819/TreeSim)) or even packages simulating traits (disparity) and diversity jointly (like [RPANDA](https://github.com/cran/RPANDA) or [PETER](https://github.com/PuttickMacroevolution/PETER)).
+We strongly advice you have a look at these packages first as they might be more appropriate for your tasks.
+
+`dads` aims to be a highly modular and friendly version of all these packages: it allows to simulate disparity and diversity jointly with a vast array of options that can be easily modified by users.
+For example, you can easily generate any type of process to generate a trait (BM, OU, something else, etc...) in multiple dependent or independent dimensions through `"traits"` objects.
+You can then specify how the traits should affect disparity through `"modifiers"` objects. And finally you can create events (like mass extinctions) through `"events"` objects.
+These objects and how to modify them will be detailed throughout this manual.
+Finally we are putting an emphasise in the development of this package on the speed and reliability of the functions.
 
 ### Modular?
 
-Blablaba
+Because their is an infinite way you might want to generate disparity and diversity (different traits, different modifiers and different events), the `dads` package is designed to make all these parts easy to code separately and integrate them easily in the `dads` core functions.
+This allows you to simulate finely tuned multidimensional data for your specific project!
 
 ## Installing and running the package
 
-You can install this package easily, directly from the CRAN:
-
-```{r, eval = FALSE}
-install.packages("dads")
-```
-
-Alternatively, for the most up to data version and some functionalities not compatible with the CRAN, you can use the package through GitHub using `devtool` (see [to CRAN or not to CRAN?](#noCRAN) for more details):
+You can install this package easily, directly from the github:
+<!-- TG: I do intend to release it on CRAN later on -->
 
 ```{r, eval = FALSE}
 ## Checking if devtools is already installed
 if(!require(devtools)) install.packages("devtools")
 
-## Installing the latest released version directly from GitHub
-install_github("TGuillerme/dads", ref = "release")
+## Installing the latest version directly from GitHub
+install_github("TGuillerme/dads")
 ```
 
 ```{r, eval = FALSE, echo = FALSE, message = FALSE}
@@ -65,35 +65,4 @@ set.seed(123)
 If you need help with the package, hopefully the following manual will be useful.
 However, parts of this package are still in development and some other parts are probably not covered.
 Thus if you have suggestions or comments on on what has already been developed or will be developed, please send me an email (<guillert@tcd.ie>) or if you are a GitHub user, directly create an issue on the [GitHub page](https://github.com/TGuillerme/dads).
-
-<!-- 
-## Citations
-
-To cite the package, this manual or some specific functionalities, you can use the following references:
-
-Furthermore, don't forget to cite `R`:
-
-> R Core Team (2020). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
-
-Bonus: you can also cite `ape` since the `dispRity` package heavily relies on it:
-
-> Paradis E. & Schliep K. 2019. ape 5.0: an environment for modern phylogenetics and evolutionary analyses in R. Bioinformatics 35: 526-528.
- -->
-
-<!-- ### Why is it important to cite us?
-
-Aside from how science works (if you're using a method from a specific paper, cite that specific paper to refer to that specific method), why is it important to also cite the package and the manual?
-
-All the people involve in making the `dads` package happened to do it enthusiastically, freely and most amazingly without asking anything in return!
-I created the package with this idea in mind and I am still sticking to it.
-However, academia (the institutions and people producing science around the globe) is unfortunately not optimal at many level (some might even say "broken"): high impact papers attract big grants that attract high impact papers and big grants again, all this along with livelihood, permanent position and job security.
-Unfortunately however, method development has a hard time to catch up with the current publish or perish system: constantly updating the `dads` package and this manual is hugely time consuming (but really fun!) and that is not even taking into account maintenance and helping users.
-Although I do truly believe that this time spent doing these things modestly help the scientific endeavour, it does not contribute to our paper list!
-
-Therefore, by citing the package and this manual, you help provide visibility to other workers and you might help them in their work!
-And you directly contribute in making this project fun for all the people involved and most of all, free, updated and independent from the publish and perish system!
-
-Thank you! -->
-<!-- ## Associated papers -->
-
-<!-- Here are some papers that have used the `dispRity` package: -->
+Doing so will not only hopefully help you but also other users since it will help improve this manual!
