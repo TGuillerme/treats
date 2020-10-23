@@ -1,7 +1,7 @@
 #Dependencies
 import(ape)
 import(stats)
-import(dispRity)
+import(dispRity)s
 
 importFrom("graphics","plot")
 importFrom("MASS","mvrnorm")
@@ -9,6 +9,8 @@ importFrom("MASS","mvrnorm")
 ##Functions
 export(dads)
 export(make.traits)
+export(print.dads)
+export(plot.dads)
 # export(make.modifiers)
 # export(make.events)
 
