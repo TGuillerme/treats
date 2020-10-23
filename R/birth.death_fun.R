@@ -82,8 +82,6 @@ sim.living.tips <- function(living, trait_table, traits) {
 # null.error <- NULL
 ## Add the potential for dispersal (the information will be another (distance?) matrix)
 
-
-
 waiting.time <- function(bd.params, n_living_taxa) {
 
     ## Get the event probability
@@ -105,8 +103,6 @@ trigger.speciation <- function(bd.params, traits) {
     return(do_speciate)
 }
 
-
-
 ## Run a birth death process to generate both tree and traits
 birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events = NULL, null.error = FALSE) {
   
@@ -119,6 +115,12 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     do_modifiers <- ifelse(is.null(modifiers), FALSE, TRUE)
     do_events    <- ifelse(is.null(events), FALSE, TRUE)
 
+
+    modifiers <- list("waiting"    = waiting.time,
+                      "speciating" = trigger.speciation)
+
+
+
     ## Initialising the values
     parent <- edge_lengths <- 0
     is_split <- FALSE
@@ -128,16 +130,9 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ############
     ## First node (root)
     ############
-
-
-    #####
-    ## modifiers placeholder
-    ####
-    # Modify waiting time
     
     ## Get the waiting time
-    waiting_time <- waiting.time(bd.params, n_living_taxa)
-
+    waiting_time <- modifiers$waiting(bd.params, n_living_taxa)
 
     ## Update the global time (for the first waiting time)
     if(stop.rule$max.time != Inf && time == 0) {
@@ -158,24 +153,8 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         trait_table <- NULL
     }
 
-
-
-
-    #####
-    ## modifiers placeholder
-    ####
-    # Modify trigger event
-    
-
-
-    # trigger_event <- runif(1)
-
-
-
-
-
     ## Randomly triggering an event
-    if(trigger.speciation(bd.params, traits)) {
+    if(modifiers$speciating(bd.params, traits)) {
         ## Speciating:
         if(n_living_taxa == stop.rule$max.living ) {
             ## Don't add this one
@@ -210,17 +189,8 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ## Build the rest of the tree
     while(n_living_taxa > 0 && n_living_taxa <= stop.rule$max.living  && sum(!is_split) <= stop.rule$max.taxa) {
         
-
-        #####
-        ## modifiers placeholder
-        ####
-        # Modify waiting time
-
-
-
-
         ## Get the waiting time
-        waiting_time <- waiting.time(bd.params, n_living_taxa)
+        waiting_time <- modifiers$waiting(bd.params, n_living_taxa)
 
         ## Update the global time
         time <- time + waiting_time
@@ -254,18 +224,8 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                                   )
         }
 
-
-
-
-        #####
-        ## modifiers placeholder
-        ####
-        # Modify trigger event
-        # trigger_event <- runif(1)
-
-
         ## Randomly triggering an event
-        if(trigger.speciation(bd.params, traits)) {
+        if(modifiers$speciating(bd.params, traits)) {
             
             ## Speciating:
             if(n_living_taxa == stop.rule$max.living ) {
