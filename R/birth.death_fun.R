@@ -1,62 +1,4 @@
 
-
-
-# # ####
-# # # Birth death modifiers
-# # ####
-
-# ## Add the potential for dispersal (the information will be another (distance?) matrix)
-
-
-
-
-
-
-
-# # ## Function for sampling the waiting time
-# # wait.time <- function(event_probability) {
-# #     rexp(1, event_probability)
-# # }
-
-# # ## Sampling modifier function
-# # use.modifier <- function(fun, args, modifier, trait) {
-# #     if(modifier$condition(trait, modifier$value)) {
-# #         return(fun(args) * modifier$multiplier)
-# #     } else {
-# #         return(fun(args))
-# #     }
-# # }
-
-# # ## Example for waiting time
-# # modifier <- list(what = "wait.time",
-# #                  condition = `<=`,
-# #                  value = 0,
-# #                  multiplier = 1)
-# # use.modifier(wait.time, event_probability, modifier, trait = 5)
-
-# # ## Example for speciation
-# # modifier <- list(what = "speciation",
-# #                  condition = `<=`,
-# #                  value = 0,
-# #                  multiplier = 1)
-# # speciation = 1
-# # extinction = 0
-# # use.modifier(fun = runif, args = 1, modifier = modifier, trait = 5) < (speciation/(speciation + extinction))
-# # # if TRUE, go speciate
-
-# # ## Example for extinction
-# # modifier <- list(what = "extinction",
-# #                  condition = `<=`,
-# #                  value = 0,
-# #                  multiplier = 1)
-# # speciation = 1
-# # extinction = 0.5
-# # use.modifier(fun = runif, args = 1, modifier = modifier, trait = 5) < (speciation/(speciation + extinction))
-# # # make sure this modifies the extinction probability
-
-
-
-
 # ####
 # # Event modifiers (e.g. make some mass extinction or change the trait correlation matrix after some time)
 # ####
@@ -104,36 +46,6 @@
 
 
 
-# ####
-# # Inputs
-# ####
-
-# ## Trait controller
-# traits <- list(
-#     n = 1,
-#     start = 0,
-#     process = function(x0) return(x0 + 1),
-#     cor = diag(1, 1, 1))
-    
-# speciation = 1
-# extinction = 0
-
-# stop.rule <- list(max.taxa = 10)
-
-
-
-## Traits are nested lists
-
-# traits <- list(
-#             "A" = list(n       = 3,
-#                        process = element.rank,
-#                        start   = c(0,10,20))
-#             "B" = list(n       = 1,
-#                        process = branch.length,
-#                        start   = 0)
-#             )
-
-
 
 ## Simulating traits for one element
 sim.element.trait <- function(one.trait, parent.trait, edge.length) {
@@ -161,6 +73,40 @@ sim.living.tips <- function(living, trait_table, traits) {
     )
 }
 
+# stop("DEBUG birth.death_fun.R")
+# bd.params <- list(speciation = 1, extinction = 1/3)
+# traits <- make.traits()
+# stop.rule <- list(max.taxa = 20, max.living = Inf, max.time = Inf)
+# modifiers <- NULL
+# events <- NULL
+# null.error <- NULL
+## Add the potential for dispersal (the information will be another (distance?) matrix)
+
+
+
+waiting.time <- function(bd.params, n_living_taxa) {
+
+    ## Get the event probability
+    event_probability <- sum(n_living_taxa * (bd.params$speciation + bd.params$extinction))
+
+    ## Get the waiting time
+    waiting_time <- rexp(1, event_probability)
+
+    return(waiting_time)
+}
+
+trigger.speciation <- function(bd.params, traits) {
+
+    trigger_event <- runif(1)
+
+    ## Speciate?
+    do_speciate <- trigger_event < (bd.params$speciation/(bd.params$speciation + bd.params$extinction))
+
+    return(do_speciate)
+}
+
+
+
 ## Run a birth death process to generate both tree and traits
 birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events = NULL, null.error = FALSE) {
   
@@ -183,10 +129,16 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ## First node (root)
     ############
 
-    ## Get the probability of something happening
-    event_probability <- sum(n_living_taxa * (bd.params$speciation + bd.params$extinction))
+
+    #####
+    ## modifiers placeholder
+    ####
+    # Modify waiting time
+    
     ## Get the waiting time
-    waiting_time <- rexp(1, event_probability)
+    waiting_time <- waiting.time(bd.params, n_living_taxa)
+
+
     ## Update the global time (for the first waiting time)
     if(stop.rule$max.time != Inf && time == 0) {
         stop.rule$max.time <- stop.rule$max.time + waiting_time
@@ -206,11 +158,24 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         trait_table <- NULL
     }
 
-    ## Placeholder for modifiers
-    modifier <- 0
+
+
+
+    #####
+    ## modifiers placeholder
+    ####
+    # Modify trigger event
+    
+
+
+    # trigger_event <- runif(1)
+
+
+
+
 
     ## Randomly triggering an event
-    if((modifier + runif(1)) < (bd.params$speciation/(bd.params$speciation + bd.params$extinction))) {
+    if(trigger.speciation(bd.params, traits)) {
         ## Speciating:
         if(n_living_taxa == stop.rule$max.living ) {
             ## Don't add this one
@@ -245,10 +210,17 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ## Build the rest of the tree
     while(n_living_taxa > 0 && n_living_taxa <= stop.rule$max.living  && sum(!is_split) <= stop.rule$max.taxa) {
         
-        ## Get the probability of something happening
-        event_probability <- sum(n_living_taxa * (bd.params$speciation + bd.params$extinction))
+
+        #####
+        ## modifiers placeholder
+        ####
+        # Modify waiting time
+
+
+
+
         ## Get the waiting time
-        waiting_time <- rexp(1, event_probability)
+        waiting_time <- waiting.time(bd.params, n_living_taxa)
 
         ## Update the global time
         time <- time + waiting_time
@@ -282,11 +254,18 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                                   )
         }
 
-        ## Modifier placeholder
-        modifier <- 0
+
+
+
+        #####
+        ## modifiers placeholder
+        ####
+        # Modify trigger event
+        # trigger_event <- runif(1)
+
 
         ## Randomly triggering an event
-        if((modifier + runif(1)) < (bd.params$speciation/(bd.params$speciation + bd.params$extinction))) {
+        if(trigger.speciation(bd.params, traits)) {
             
             ## Speciating:
             if(n_living_taxa == stop.rule$max.living ) {
