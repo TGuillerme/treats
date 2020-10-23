@@ -207,3 +207,17 @@ test_that("simulating trees + traits works", {
     expect_equal(unname(test$data[,4]), c(0, test$tree$edge.length))
 })
 
+test_that("simulating trees + traits + modifiers work", {
+
+    ## Test with longer waiting time for traits with positive values
+
+
+    ## Test with extinction for traits with negative values
+
+
+    ## Test with longer average waiting time for traits with negative values
+
+  
+    ## Test with average more extinction for traits with positive values
+
+})
