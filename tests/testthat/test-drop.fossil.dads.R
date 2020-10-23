@@ -4,7 +4,7 @@ context("drop.fossils.dads")
 test_that("drop.fossils.dads works", {
 
     ## Create a simple bd tree
-    set.seed(1)
+    set.seed(2)
     phy <- dads(bd.params = list(extinction = 1/3), stop.rule = list(max.living = 20))
     expect_gt(Ntip(phy), 20)
     test <- drop.fossil.dads(phy)
