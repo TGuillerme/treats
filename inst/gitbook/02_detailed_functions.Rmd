@@ -148,7 +148,7 @@ make.traits(c(BM.process, OU.process), n = 3, start = 1:6)
 make.traits(c(BM.process, OU.process), n = 3, start = c(1,1))
 ```
 
-## Extra argument for the processes with `process.args`
+### Extra argument for the processes with `process.args`
 
 You can also feed extra arguments to your process(es) functions. For example, the inbuilt process `no.process` (that is just a number generator not based on the previous value `x0` or the branch length) can intake a specific random number generator as a function:
 
@@ -183,6 +183,59 @@ make.traits(process      = c(no.process, no.process, no.process),
                                 list(fun = runif, min = 1, max = 100)))
 ```
 
-## Combining multiple traits with `add`
+### Naming the traits with `trait.names`
 
-## Naming and testing traits (`trait.names` and `test`)
+As traits become more and more complex, it can be useful to give clearer names to each process.
+This is easily done using the `trait.names` argument that attributes one name per process:
+
+```{r}
+## A simple trait with a proper name
+simple_trait <- make.traits(trait.names = "1D Brownian Motion")
+simple_trait
+```
+
+This becomes more useful if we use the complex example above:
+
+```{r}
+## Three named traits with no process:
+## one default, one lognormal and one uniform (1,100)
+make.traits(process      = c(no.process, no.process, no.process),
+            process.args = list(## Extra arguments for the first process (none)
+                                list(NULL),
+                                ## Extra arguments for the second process
+                                list(fun = rlnorm),
+                                ## Extra arguments for the third process
+                                list(fun = runif, min = 1, max = 100)),
+            ## Naming each trait
+            trait.names  = c("Normal", "LogNormal", "Uniform(1,100)"))
+```
+
+
+### Combining multiple traits with `add`
+
+You can also add traits to already existing trait objects using the simple `add` option.
+This option just intakes a `"dads"` `"traits"` object and the additional process(es) will be added to it. For example:
+
+```{r}
+## Creating on simple default Brownian motion
+one_process <- make.traits(trait.names = "BM")
+
+## Creating a new trait (a 3D OU.process)
+## and adding the previous one
+two_processes <- make.traits(OU.process, n = 3, add = one_process,
+                             trait.names = "3D OU")
+
+## Only one process
+one_process
+
+## The two processes
+two_processes
+```
+
+
+### Testing the traits with `test`
+
+This bit is more for development.
+We highly suggest leaving `test = TRUE` so that `make.traits` returns an error if a process or its additional arguments (`process.args`) are not formatted correctly.
+`make.traits` will error if the trait cannot be directly passed to `dads`.
+However, in some specific cases (again, probably mainly for development and debugging) it could be useful to skip the tests using `test = FALSE`.
