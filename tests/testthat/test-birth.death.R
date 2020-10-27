@@ -45,15 +45,15 @@ test_that("simulating trees works", {
     stop.rule$max.living = 10
     stop.rule$max.taxa   = Inf
     stop.rule$max.time   = Inf
-    set.seed(2)
+    set.seed(3)
     test <- birth.death.tree.traits(bd.params, stop.rule)$tree
     expect_is(test, "phylo")
-    expect_equal(Ntip(test), 15)
-    expect_equal(Nnode(test), 14)
+    expect_equal(Ntip(test), 14)
+    expect_equal(Nnode(test), 13)
     ## Not all tips are living
     expect_equal(length(which(tree.age(test)$age == 0)), 10)
 
-    set.seed(2)
+    set.seed(3)
     stop.rule$max.living = Inf
     stop.rule$max.taxa   = 10
     stop.rule$max.time   = Inf
@@ -62,18 +62,18 @@ test_that("simulating trees works", {
     expect_equal(Ntip(test), 10)
     expect_equal(Nnode(test), 9)
     ## Not all tips are living
-    expect_equal(length(which(tree.age(test)$age == 0)), 6)
+    expect_equal(length(which(tree.age(test)$age == 0)), 7)
 
-    set.seed(2)
+    set.seed(3)
     stop.rule$max.living = Inf
     stop.rule$max.taxa   = Inf
     stop.rule$max.time   = 6
     test <- birth.death.tree.traits(bd.params, stop.rule)$tree
     expect_is(test, "phylo")
-    expect_equal(Ntip(test), 139)
-    expect_equal(Nnode(test), 138)
+    expect_equal(Ntip(test), 137)
+    expect_equal(Nnode(test), 136)
     ## Not all tips are living
-    expect_equal(length(which(tree.age(test)$age == 0)), 105)
+    expect_equal(length(which(tree.age(test)$age == 0)), 107)
     ## The tree age is 6
     expect_equal(test$root.time, 6)
     expect_equal(max(tree.age(test)$age), 6)
@@ -120,7 +120,7 @@ test_that("simulating trees + traits works", {
     stop.rule <- list(max.living = Inf,
                       max.taxa   = 10,
                       max.time   = Inf)
-    set.seed(7)
+    set.seed(1)
     test <- birth.death.tree.traits(bd.params, traits = traits_list, stop.rule = stop.rule)
     expect_is(test, "list")
     expect_equal(names(test), c("tree", "data"))
@@ -133,7 +133,7 @@ test_that("simulating trees + traits works", {
     stop.rule <- list(max.living = 20,
                       max.taxa   = Inf,
                       max.time   = Inf)
-    set.seed(7)
+    set.seed(1)
     traits_list$A$start <- 10
     test <- birth.death.tree.traits(bd.params, traits = traits_list, stop.rule)
     ## Right dimensions
