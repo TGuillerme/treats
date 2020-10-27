@@ -90,6 +90,9 @@ waiting.time <- function(bd.params, n_living_taxa, parent.trait) {
     ## Get the waiting time
     waiting_time <- rexp(1, event_probability)
 
+    ## modifier placeholder
+    modifier_placeholder <- NULL
+
     return(waiting_time)
 }
 
@@ -100,12 +103,15 @@ trigger.speciation <- function(bd.params, parent.trait) {
     ## Speciate?
     do_speciate <- trigger_event < (bd.params$speciation/(bd.params$speciation + bd.params$extinction))
 
+    ## modifier placeholder
+    modifier_placeholder <- NULL
+    
     return(do_speciate)
 }
 
 
 
-# waiting.time.modified <- function(bd.params, n_living_taxa, traits) {
+# waiting.time.modified <- function(bd.params, n_living_taxa, parent.trait) {
 
 #     ## Get the event probability
 #     event_probability <- sum(n_living_taxa * (bd.params$speciation + bd.params$extinction))
@@ -113,17 +119,21 @@ trigger.speciation <- function(bd.params, parent.trait) {
 #     ## Get the waiting time
 #     waiting_time <- rexp(1, event_probability)
 
-#     if()
+#     ## Set condition
+#     condition_placeholder <- NULL
 
 #     return(waiting_time)
 # }
 
-# trigger.speciation.modified <- function(bd.params, traits) {
+# trigger.speciation.modified <- function(bd.params, parent.trait) {
 
 #     trigger_event <- runif(1)
 
 #     ## Speciate?
 #     do_speciate <- trigger_event < (bd.params$speciation/(bd.params$speciation + bd.params$extinction))
+
+#     ## modifier placeholder
+#     modifier_placeholder <- NULL
 
 #     return(do_speciate)
 # }
@@ -131,9 +141,9 @@ trigger.speciation <- function(bd.params, parent.trait) {
 
 
 # modifiers <- list("waiting"    = waiting.time,
-#                   "speciating" = trigger.speciation)
+#                   "speciating" = trigger.speciation.modified)
 
-# set.seed(2)
+# set.seed(5)
 # test <- birth.death.tree.traits(bd.params, stop.rule, traits, modifiers = modifiers)
 # par(mfrow = c(2,1))
 # plot(test$tree)
