@@ -87,7 +87,12 @@ sim.living.tips <- function(living, trait_table, traits) {
 #                   modify    = function(x)x)
 
 
-waiting.time <- function(bd.params, n.taxa, lineage = NULL, trait.values = NULL, modifiers = NULL) {
+get.parent.traits <- function(trait.values, parent.lineage) {
+    return(trait.values[which(trait.values[,1] == parent.lineage), -1])
+} 
+
+
+waiting.time <- function(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modifiers = NULL) {
 
     ## Get the event probability
     event_probability <- sum(n.taxa * (bd.params$speciation + bd.params$extinction))
@@ -101,7 +106,7 @@ waiting.time <- function(bd.params, n.taxa, lineage = NULL, trait.values = NULL,
     return(waiting_time)
 }
 
-trigger.speciation <- function(bd.params, lineage = NULL, trait.values = NULL, modifiers = NULL) {
+trigger.speciation <- function(bd.params, parent.lineage = NULL, trait.values = NULL, modifiers = NULL) {
 
     trigger_event <- runif(1)
 
@@ -113,10 +118,6 @@ trigger.speciation <- function(bd.params, lineage = NULL, trait.values = NULL, m
     
     return(do_speciate)
 }
-
-get.parent.traits <- function(trait.values, parent.lineage) {
-    return(trait.values[which(trait.values[,1] == parent.lineage), -1])
-} 
 
 
 # waiting.trait.dependent <- function(bd.params, n.taxa, traits, parent.trait, condition = function(x) return(x < 0), modify = function(x) (x * 10)) {
@@ -143,7 +144,7 @@ get.parent.traits <- function(trait.values, parent.lineage) {
 #                       condition = function(x) return(x < 0),
 #                       modify = function(x) return(x * 10))
 
-speciating.trait.dependent <- function(bd.params, lineage, trait.values, modifiers){
+speciating.trait.dependent <- function(bd.params, parent.lineage, trait.values, modifiers){
 
     ## Randomly trigger an event
     trigger_event <- runif(1)
@@ -206,7 +207,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ## Get the waiting time
     waiting_time <- initial.modifiers$waiting(bd.params,
                                               n.taxa = n_living_taxa,
-                                              lineage = NULL,
+                                              parent.lineage = NULL,
                                               trait.values = NULL,
                                               modifiers = NULL)
 
@@ -228,7 +229,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
 
     ## Randomly triggering an event
     if(initial.modifiers$speciating(bd.params,
-                                    lineage = NULL,
+                                    parent.lineage = NULL,
                                     trait.values = NULL,
                                     modifiers = NULL)) {
         ## Speciating:
@@ -272,7 +273,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         ## Get the waiting time
         waiting_time <- modifiers$waiting(bd.params,
                                           n.taxa = n_living_taxa,
-                                          lineage = lineage,
+                                          parent.lineage = parent[lineage],
                                           trait.values = trait_values,
                                           modifiers = NULL)
 
@@ -306,7 +307,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
 
         ## Randomly triggering an event
         if(modifiers$speciating(bd.params,
-                                lineage = lineage,
+                                parent.lineage = parent[lineage],
                                 trait.values = trait_values,
                                 modifiers = NULL)) {
             
