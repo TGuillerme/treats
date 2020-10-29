@@ -1,4 +1,4 @@
-context("sim.bd")
+context("birth.death.tree.traits")
 
 library(dispRity)
 

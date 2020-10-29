@@ -140,29 +140,48 @@ speciating.trait.dependent <- function(bd.params, parent.lineage, trait.values, 
 }
 
 
-internals1 <- list(condition = function(x) return(x > 0),
-                   modify    = function(x) return(x * 10))
-internals2 <- list(condition = function(x) return(x > 0),
-                   modify    = function(x) return(x + 100))
-
-
-modifiers <- list("waiting"    = list(fun      = waiting.trait.dependent,
-                                      internal = internals1),
-                  "speciating" = list(fun      = speciating.trait.dependent,
-                                      internal = internals2))
 
 
 
 
+# stop("DEBUG birth.death_fun.R")
+# bd.params <- list(speciation = 1, extinction = 1/3)
+# traits <- make.traits()
+# stop.rule <- list(max.taxa = 20, max.living = Inf, max.time = Inf)
+# modifiers <- NULL
+# events <- NULL
+# null.error <- NULL
+
+# ## Test normal (no modifiers)
+# set.seed(5)
+# test <- birth.death.tree.traits(bd.params, stop.rule, traits)
+# par(mfrow = c(2,1))
+# plot(test$tree)
+# class(test) <- "dads"
+# plot.dads(test)
+
+# ## Test with modifiers
+# internals1 <- list(condition = function(x) return(x > 0),
+#                    modify    = function(x) return(x * 10))
+# internals2 <- list(condition = function(x) return(x < 0),
+#                    modify    = function(x) return(x + 100))
+
+# modifiers <- list("waiting"    = list(fun      = waiting.trait.dependent,
+#                                       internal = internals1),
+#                   "speciating" = list(fun      = speciating.trait.dependent,
+#                                       internal = internals2))
+
+# set.seed(5)
+# trait_table <- NULL
+# test <- birth.death.tree.traits(bd.params, stop.rule, traits, modifiers)
+# par(mfrow = c(2,1))
+# plot(test$tree)
+# class(test) <- "dads"
+# plot.dads(test)
 
 
 
-set.seed(5)
-test <- birth.death.tree.traits(bd.params, stop.rule, traits = make.traits())#, modifiers = modifiers)
-par(mfrow = c(2,1))
-plot(test$tree)
-class(test) <- "dads"
-plot.dads(test)
+
 
 ## Run a birth death process to generate both tree and traits
 birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events = NULL, null.error = FALSE) {
@@ -365,7 +384,9 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         ## Find the living tips
         living_tips <- which(is.na(trait_table[-1, 4]) & !table$is_split) + 1
         ## Simulate the traits for the living tips and add them to the trait table
-        trait_table[living_tips, -c(1:3)] <- t(sapply(living_tips, sim.living.tips, trait_table, traits, simplify = TRUE))
+        if(length(living_tips) > 0) {
+            trait_table[living_tips, -c(1:3)] <- t(sapply(living_tips, sim.living.tips, trait_table, traits, simplify = TRUE))
+        }
     }
 
     ############
@@ -395,6 +416,26 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     class(tree) <- "phylo"
     ## Adding the root time
     tree$root.time <- max(dispRity::tree.age(tree)$age)
+
+    ## Check if it reached the proper stop.rule values
+    ## Get the achieved values
+    achieved <- list(max.living = length(which(dispRity::tree.age(tree)$age == 0)),
+                     max.taxa   = Ntip(tree),
+                     max.time   = tree$root.time + edge_lengths[1])
+    ## Find if any matches the requested ones
+    check.requested <- function(requested, achieved){
+        if(requested == Inf) {TRUE} else {achieved == requested}
+    }
+    achieved <- unlist(mapply(check.requested, stop.rule[names(achieved)], achieved))
+    
+    ## Warning or fail
+    if(any(!achieved)) {
+        if(!null.error) {
+            warning("The simulation stopped before reaching any of the stopping rule.", call. = FALSE)
+        } else {
+            return(NULL)
+        }
+    }
 
     ## Renaming the trait_values
     if(do_traits) {
