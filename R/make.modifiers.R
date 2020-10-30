@@ -93,3 +93,33 @@ make.modifiers <- function(what, when, how, speciating = NULL, waiting = NULL, a
 }
 
 
+waiting.trait.dependent <- function(bd.params, n.taxa, parent.trait, condition = function(x) return(x < 0), modify = function(x) (x * 10)) {
+
+    ## Get the event probability
+    event_probability <- sum(n.taxa * (bd.params$speciation + bd.params$extinction))
+
+    ## Get the waiting time
+    waiting_time <- rexp(1, event_probability)
+
+    ## Modify the waiting time
+    if(condition(parent.trait)) {
+        waiting_time <- modify(waiting_time)
+    }
+
+    return(waiting_time)
+}
+
+
+speciating.trait.depedent <- function(bd.params, parent.trait, condition = function(x) return(x < 0), modify = function(x) (x * 10)) {
+
+    ## Randomly trigger an event
+    trigger_event <- runif(1)
+
+    ## Modify the triggering
+    if(condition(parent.trait)) {
+        trigger_event <- modify(trigger_event)
+    }
+
+    ## Speciate?
+    return(trigger_event < (bd.params$speciation/(bd.params$speciation + bd.params$extinction)))
+}
