@@ -21,6 +21,13 @@ export(BM.process)
 export(OU.process)
 export(no.process)
 
+## Modifiers
+export(modifiers)
+export(branch.length)
+export(branch.length.trait)
+export(speciation)
+export(speciation.trait)
+
 ##S3 
 S3method(plot, dads) #incl traits
 S3method(print, dads) #incl traits modifiers and events
