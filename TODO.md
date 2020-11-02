@@ -17,7 +17,7 @@
 
  - [x] make list of modifiers
  - [x] `make.modifiers`
- - [ ] document list of modifiers (Rd)
+ - [x] document list of modifiers (Rd)
  - [ ] document list of modifiers (gitbook)
  - [ ] test `make.modifiers`
  - [ ] test list of modifiers
