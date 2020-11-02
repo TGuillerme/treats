@@ -79,78 +79,13 @@ get.parent.traits <- function(trait.values, parent.lineage) {
 } 
 
 
-waiting.time <- function(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) {
-
-    ## Get the event probability
-    event_probability <- sum(n.taxa * (bd.params$speciation + bd.params$extinction))
-
-    ## Get the waiting time
-    waiting_time <- rexp(1, event_probability)
-
-    ## modifier placeholder
-    modifier_placeholder <- NULL
-
-    return(waiting_time)
-}
-
-trigger.speciation <- function(bd.params, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) {
-
-    trigger_event <- runif(1)
-
-    ## Speciate?
-    do_speciate <- trigger_event < (bd.params$speciation/(bd.params$speciation + bd.params$extinction))
-
-    ## modifier placeholder
-    modifier_placeholder <- NULL
-    
-    return(do_speciate)
-}
-
-
-
-waiting.trait.dependent <- function(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) {
-
-    ## Get the event probability
-    event_probability <- sum(n.taxa * (bd.params$speciation + bd.params$extinction))
-
-    ## Get the waiting time
-    waiting_time <- rexp(1, event_probability)
-
-    ## Modify the waiting time
-    if(modify.fun$condition(get.parent.traits(trait.values, parent.lineage))) {
-        waiting_time <- modify.fun$modify(waiting_time)
-    }
-
-    return(waiting_time)
-}
-
-
-speciating.trait.dependent <- function(bd.params, parent.lineage, trait.values, modify.fun){
-
-    ## Randomly trigger an event
-    trigger_event <- runif(1)
-
-    ## Modify the triggering
-    if(modify.fun$condition(get.parent.traits(trait.values, parent.lineage))) {
-        trigger_event <- modify.fun$modify(trigger_event)
-    }
-
-    ## Speciate?
-    return(trigger_event < (bd.params$speciation/(bd.params$speciation + bd.params$extinction)))
-}
-
-
-
-
-
-
-stop("DEBUG birth.death_fun.R")
-bd.params <- list(speciation = 1, extinction = 1/3)
-traits <- make.traits()
-stop.rule <- list(max.taxa = 20, max.living = Inf, max.time = Inf)
-modifiers <- NULL
-events <- NULL
-null.error <- NULL
+# stop("DEBUG birth.death_fun.R")
+# bd.params <- list(speciation = 1, extinction = 1/3)
+# traits <- make.traits()
+# stop.rule <- list(max.taxa = 20, max.living = Inf, max.time = Inf)
+# modifiers <- NULL
+# events <- NULL
+# null.error <- NULL
 
 # ## Test normal (no modifiers)
 # set.seed(1)
@@ -194,9 +129,9 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     do_events    <- ifelse(is.null(events), FALSE, TRUE)
 
     ## Make the initial modifier (no modifier)
-    initial.modifiers <- list("waiting"    = list(fun = waiting.time,
+    initial.modifiers <- list("waiting"    = list(fun = branch.length.fast,
                                                   internal = NULL),
-                              "speciating" = list(fun = trigger.speciation,
+                              "speciating" = list(fun = speciation.fast,
                                                   internal = NULL))
     ## Set the modifiers if null (no modifier)
     if(is.null(modifiers)) {
