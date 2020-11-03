@@ -5,19 +5,19 @@ check.modifiers <- function(modifiers) {
     required_names <- c("waiting", "speciating")
     if(any(missing <- is.na(match(names(modifiers), required_names)))) {
         ## TODO: improve message here
-        stop("check.modifiers failure (TODO: improve thi message!).")
+        stop("check.modifiers failure (TODO: improve this message!).")
     }
 
-    ## Check the content for each required names
+    ## Check the content for each required names
     required_content <- c("fun", "internal")
     for(one_check in required_names) {
         if(any(missing <- is.na(match(names(modifiers[[one_check]]), required_content)))) {
             ## TODO: improve message here
-            stop("check.modifiers failure (TODO: improve thi message!).")
+            stop("check.modifiers failure (TODO: improve this message!).")
         }
     }
 
-    ## Dummy (basic) arguments
+    ## Dummy (basic) arguments
     bd.params      <- list(speciation = 1, exinction = 0)
     n.taxa         <- 1
     parent.lineage <- 1
@@ -32,7 +32,7 @@ check.modifiers <- function(modifiers) {
                                               modify.fun     = modifiers$waiting$internal),
                         silent = TRUE)
 
-    ## Debrief
+    ## Debrief
     if(class(test_waiting) == "try-error") {
         stop("check.modifiers failure (TODO: improve thi message!).")
     } else {
@@ -51,7 +51,7 @@ check.modifiers <- function(modifiers) {
                                                 modify.fun     = modifiers$speciating$internal),
                         silent = TRUE)
 
-    ## Debrief
+    ## Debrief
     if(class(test_speciating) == "try-error") {
         stop("check.modifiers failure (TODO: improve thi message!).")
     } else {

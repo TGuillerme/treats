@@ -4,15 +4,16 @@
 #'
 #' @param branch.length A function for the waiting time generating branch length (see details).
 #' @param speciation    A function for triggering the speciation events (see details).
-#' @param condition     A function giving the condition on which to modify the output of \code{branch.length} or \code{speciation}. If missing the condition is always met (set to \code{condition = function(x, ...) TRUE})
-#' @param modify        A function giving the rule of how to modify the output of \code{branch.length} or \code{speciation}. If missing no modification is used (set to \code{modify = function(x, ...) x}).
+#' @param condition     A function giving the condition on which to modify the output of \code{branch.length} or \code{speciation} (see details). If missing the condition is always met (set to \code{condition = function(x, ...) TRUE})
+#' @param modify        A function giving the rule of how to modify the output of \code{branch.length} or \code{speciation} (see details). If missing no modification is used (set to \code{modify = function(x, ...) x}).
 #' @param add           Whether to add this modifier to a \code{"dads"} \code{"modifier"} object.
 #' @param test          Logical whether to test if the modifiers object will work (default is TRUE),
 #' @param ...           Optional, any extra argument to be passed to the modifier function.
 #' 
 #' @details
 #' 
-#' \code{branch.length} must be a function that intakes the following arguments: 
+#' \code{branch.length} and \code{speciation} must be a functions that intakes the following arguments: \code{}
+#' 
 #' 
 #' @examples
 #'
