@@ -45,6 +45,8 @@ The different trait processes implemented in dads are:
               \item \code{...} any named additional argument to be passed to \code{fun}.
          }
 }
+
+More details about the \code{trait.process} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
 }
 \examples{
 ## NOTE: You can visualise most process by making them

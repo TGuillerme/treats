@@ -32,6 +32,9 @@ make.traits(
 \description{
 Making traits objects for dads
 }
+\details{
+More details about the \code{"dads"} \code{"traits"} objects is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
+}
 \examples{
 ## A simple Brownian motion trait (default)
 make.traits()
