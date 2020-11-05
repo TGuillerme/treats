@@ -30,3 +30,9 @@
  - [ ] document list of events (gitbook)
  - [ ] test `make.events`
  - [ ] test list of events
+
+## TODO utilities
+ 
+ - [x] add utilities
+ - [ ] add manual for utilities
+ - [ ] add test for `get.parent.traits`

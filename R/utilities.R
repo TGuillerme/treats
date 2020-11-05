@@ -23,11 +23,6 @@
 #' @author Thomas Guillerme
 #' @export
 
-# get.parent.traits <- function(trait.values, parent.lineage) {
-#     return(trait.values[which(trait.values[,1] == parent.lineage), -1])
-# } 
-
-
 get.parent.traits <- function(trait.values, parent.lineage) {
     return(trait.values[which(rownames(trait.values) == parent.lineage), ,drop = FALSE])
 } 
