@@ -28,6 +28,9 @@ export(branch.length.trait)
 export(speciation)
 export(speciation.trait)
 
+## Utilities
+export(get.parent.traits)
+
 ##S3 
 S3method(plot, dads) #incl traits
 S3method(print, dads) #incl traits modifiers and events

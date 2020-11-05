@@ -73,12 +73,6 @@ sim.living.tips <- function(living, trait_table, traits) {
     )
 }
 
-
-get.parent.traits <- function(trait.values, parent.lineage) {
-    return(trait.values[which(trait.values[,1] == parent.lineage), -1])
-} 
-
-
 # stop("DEBUG birth.death_fun.R")
 # bd.params <- list(speciation = 1, extinction = 1/3)
 # traits <- make.traits()
@@ -170,7 +164,8 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
 
     ## Start the trait    
     if(do_traits) {
-        trait_values <- rbind(NULL, "root" = c("element" =  1, unlist(lapply(traits, function(x) return(x$start)))))
+        trait_values <- rbind(NULL, c(unlist(lapply(traits, function(x) return(x$start)))))
+        rownames(trait_values) <- 1
     } else {
         trait_table <- NULL
     }
@@ -242,15 +237,13 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         ## Adding a new row to the trait_values matrix
         if(do_traits) {
             trait_values <- rbind(trait_values,
-                                  ## Creating the new row composed of the lineage ID
-                                  c(lineage,
-                                    ## And the updated trait from the parent lineage
-                                    unlist(lapply(traits,
-                                                  sim.element.trait,
-                                                  parent.trait = get.parent.traits(trait_values, parent[lineage]),
-                                                  edge.length  = edge_lengths[lineage]))
-                                    )
-                                  )
+                                  ## Add the updated trait from the parent lineage
+                                  unlist(lapply(traits,
+                                                sim.element.trait,
+                                                parent.trait = get.parent.traits(trait_values, parent[lineage]),
+                                                edge.length  = edge_lengths[lineage]))
+                                 , deparse.level = 0)
+            rownames(trait_values)[rownames(trait_values) == ""] <- lineage
         }
 
         ## Randomly triggering an event
@@ -311,12 +304,12 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
 
     ## Adding the traits to the table
     if(do_traits) {
-        trait_table <- cbind(parent = table$parent, element = table$element, edge = table$edge_lengths, trait_values[match(table$element, trait_values[, "element"]), -1])
+        trait_table <- cbind(parent = table$parent, element = table$element, edge = table$edge_lengths, trait_values[match(table$element, rownames(trait_values)), ])
         ## Add the root value
-        trait_table <- rbind(c(parent = 0, element = 1, edge = 0, trait_values[1, -1]),
+        trait_table <- rbind(c(parent = 0, element = 1, edge = 0, trait_values[1, ]),
                              trait_table)
         ## Find the living tips
-        living_tips <- which(is.na(trait_table[-1, 4]) & !table$is_split) + 1
+        living_tips <- which(is.na(rownames(trait_table)))
         ## Simulate the traits for the living tips and add them to the trait table
         if(length(living_tips) > 0) {
             trait_table[living_tips, -c(1:3)] <- t(sapply(living_tips, sim.living.tips, trait_table, traits, simplify = TRUE))
