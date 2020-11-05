@@ -38,6 +38,8 @@
 #'          }
 #' }
 #' 
+#' More details about the \code{trait.process} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
+#' 
 #' @examples
 #' ## NOTE: You can visualise most process by making them
 #' ## into a "dads" "traits" object using make.traits():

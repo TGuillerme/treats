@@ -11,6 +11,10 @@
 #' @param test         Logical, whether to test if the traits object will work with \code{\link{dads}} (\code{TRUE} - default).
 #' 
 #' 
+#' @details
+#' 
+#' More details about the \code{"dads"} \code{"traits"} objects is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
+#' 
 #' @examples
 #' ## A simple Brownian motion trait (default)
 #' make.traits()
