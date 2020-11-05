@@ -12,8 +12,29 @@
 #' 
 #' @details
 #' 
-#' \code{branch.length} and \code{speciation} must be a functions that intakes the following arguments: \code{}
+#' \code{branch.length} and \code{speciation} must be a functions that intakes the following arguments: \code{bd.params} = NULL, n.taxa = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun}.
 #' 
+#' \code{condition} must be a function with unambiguous input (the inputs listed about for \code{branch.length} and \code{speciation}) and must output a single \code{logical} value. For example a conditional on the number of taxa:
+#' 
+#' \code{condition = function(n.taxa) return(n.taxa < 1)}
+#' 
+#' or a conditional on the trait values:
+#' 
+#' \code{condition = function(trait.values, parent.lineage)}
+#' \code{    \{}
+#' \code{    get.parent.traits(trait.values, parent.lineage) < mean(trait.values)}
+#' \code{    \}}
+#' 
+#' \code{modify} must be a function with at least one input named \code{x} (which will be the branch length or the speciation trigger to value depending on the modifier) and must return a \code{numeric} value.
+#' For example a constant modification of the input:
+#' 
+#' \code{modify = function(x) return(x * 2)}
+#' 
+#' or a modifier depending on the number of taxa:
+#' 
+#' \code{modify = function(x, n.taxa) return(x/n.taxa)}
+#' 
+#' More details about the \code{modifiers} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
 #' 
 #' @examples
 #'

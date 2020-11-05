@@ -100,7 +100,7 @@ branch.length.trait <- function(bd.params, n.taxa, parent.lineage = NULL, trait.
 
     ## Modify the waiting time
     if(modify.fun$condition(get.parent.traits(trait.values, parent.lineage))) {
-        waiting_time <- modify.fun$modify(waiting_time)
+        waiting_time <- modify.fun$modify(x = waiting_time)
     }
 
     return(waiting_time)
@@ -114,7 +114,7 @@ speciation.trait <- function(bd.params, n.taxa = NULL, parent.lineage, trait.val
 
     ## Modify the triggering
     if(modify.fun$condition(get.parent.traits(trait.values, parent.lineage))) {
-        trigger_event <- modify.fun$modify(trigger_event)
+        trigger_event <- modify.fun$modify(x = trigger_event)
     }
 
     ## Speciate?

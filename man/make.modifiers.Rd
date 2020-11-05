@@ -4,16 +4,24 @@
 \alias{make.modifiers}
 \title{make.modifiers}
 \usage{
-make.modifiers(branch.length)
+make.modifiers(
+  branch.length,
+  speciation,
+  condition,
+  modify,
+  add,
+  test = TRUE,
+  ...
+)
 }
 \arguments{
 \item{branch.length}{A function for the waiting time generating branch length (see details).}
 
 \item{speciation}{A function for triggering the speciation events (see details).}
 
-\item{condition}{A function giving the condition on which to modify the output of \code{branch.length} or \code{speciation}. If missing the condition is always met (set to \code{condition = function(x, ...) TRUE})}
+\item{condition}{A function giving the condition on which to modify the output of \code{branch.length} or \code{speciation} (see details). If missing the condition is always met (set to \code{condition = function(x, ...) TRUE})}
 
-\item{modify}{A function giving the rule of how to modify the output of \code{branch.length} or \code{speciation}. If missing no modification is used (set to \code{modify = function(x, ...) x}).}
+\item{modify}{A function giving the rule of how to modify the output of \code{branch.length} or \code{speciation} (see details). If missing no modification is used (set to \code{modify = function(x, ...) x}).}
 
 \item{add}{Whether to add this modifier to a \code{"dads"} \code{"modifier"} object.}
 
@@ -25,7 +33,7 @@ make.modifiers(branch.length)
 Making modifiers objects for dads based on an ancestor's (parent) trait.
 }
 \details{
-\code{branch.length} must be a function that intakes the following arguments:
+
 }
 \examples{
 
