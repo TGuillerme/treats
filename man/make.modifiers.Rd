@@ -19,9 +19,9 @@ make.modifiers(
 
 \item{speciation}{A function for triggering the speciation events (see details).}
 
-\item{condition}{A function giving the condition on which to modify the output of \code{branch.length} or \code{speciation} (see details). If missing the condition is always met (set to \code{condition = function(x, ...) TRUE})}
+\item{condition}{A function giving the condition on which to modify the output of \code{branch.length} or \code{speciation} (see details). If missing the condition is always met (set to \code{condition = function() TRUE})}
 
-\item{modify}{A function giving the rule of how to modify the output of \code{branch.length} or \code{speciation} (see details). If missing no modification is used (set to \code{modify = function(x, ...) x}).}
+\item{modify}{A function giving the rule of how to modify the output of \code{branch.length} or \code{speciation} (see details). If missing no modification is used (set to \code{modify = function(x) x}).}
 
 \item{add}{Whether to add this modifier to a \code{"dads"} \code{"modifier"} object.}
 
