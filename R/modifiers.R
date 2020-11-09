@@ -99,7 +99,8 @@ branch.length.trait <- function(bd.params, n.taxa, parent.lineage = NULL, trait.
     waiting_time <- rexp(1, event_probability)
 
     ## Modify the waiting time
-    if(modify.fun$condition(get.parent.traits(trait.values, parent.lineage))) {
+    if(modify.fun$condition(trait.values, parent.lineage)) {
+    # if(modify.fun$condition(get.parent.traits(trait.values, parent.lineage))) {
         waiting_time <- modify.fun$modify(x = waiting_time)
     }
 
@@ -113,7 +114,8 @@ speciation.trait <- function(bd.params, n.taxa = NULL, parent.lineage, trait.val
     trigger_event <- runif(1)
 
     ## Modify the triggering
-    if(modify.fun$condition(get.parent.traits(trait.values, parent.lineage))) {
+    if(modify.fun$condition(trait.values, parent.lineage)) {
+    #if(modify.fun$condition(get.parent.traits(trait.values, parent.lineage))) {
         trigger_event <- modify.fun$modify(x = trigger_event)
     }
 
