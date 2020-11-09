@@ -38,7 +38,7 @@ test_that("make.modifiers works", {
 
     ## Wrong arguments for add
     error <- capture_error(make.modifiers(add = TRUE))
-    expect_equal(error[[1]], "modifiers can only be added to objects of class dads and modifiers")
+    expect_equal(error[[1]], "modifiers can only be added to objects of class dads and modifiers.")
 
     ## Wrong arguments for test
     error <- capture_error(make.modifiers(test = "whatever"))
