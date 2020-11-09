@@ -8,15 +8,13 @@ output:
   pdf_document: default
 ---
 
-# Detailed functions
-
-## Making trait processes with `make.traits()`
+# Making trait processes with `make.traits()`
 
 ```{r, echo = FALSE}
 set.seed(123)
 ```
 
-### The process (`process`)
+## The process (`process`)
 
 The function `make.traits` allows you to design the process of a trait or a set of traits.
 Here, the process of a trait designates the rules to generate the trait through time while simulating a phylogeny.
@@ -103,9 +101,7 @@ plot(four_traits, trait = 3)
 plot(four_traits, trait = 4)
 ```
 
-
-
-### The number of traits `n` and the starting values `start`
+## The number of traits `n` and the starting values `start`
 
 Two further important arguments are `n` the number of traits per process and `start` the starting values for all traits.
 By default they are set to `n = 1` and `start = 0`.
@@ -148,7 +144,7 @@ make.traits(c(BM.process, OU.process), n = 3, start = 1:6)
 make.traits(c(BM.process, OU.process), n = 3, start = c(1,1))
 ```
 
-### Extra argument for the processes with `process.args`
+## Extra argument for the processes with `process.args`
 
 You can also feed extra arguments to your process(es) functions. For example, the inbuilt process `no.process` (that is just a number generator not based on the previous value `x0` or the branch length) can intake a specific random number generator as a function:
 
@@ -183,7 +179,7 @@ make.traits(process      = c(no.process, no.process, no.process),
                                 list(fun = runif, min = 1, max = 100)))
 ```
 
-### Naming the traits with `trait.names`
+## Naming the traits with `trait.names`
 
 As traits become more and more complex, it can be useful to give clearer names to each process.
 This is easily done using the `trait.names` argument that attributes one name per process:
@@ -211,7 +207,7 @@ make.traits(process      = c(no.process, no.process, no.process),
 ```
 
 
-### Combining multiple traits with `add`
+## Combining multiple traits with `add`
 
 You can also add traits to already existing trait objects using the simple `add` option.
 This option just intakes a `"dads"` `"traits"` object and the additional process(es) will be added to it. For example:
@@ -233,9 +229,54 @@ two_processes
 ```
 
 
-### Testing the traits with `test`
+## Testing the traits with `test`
 
 This bit is more for development.
 We highly suggest leaving `test = TRUE` so that `make.traits` returns an error if a process or its additional arguments (`process.args`) are not formatted correctly.
 `make.traits` will error if the trait cannot be directly passed to `dads`.
 However, in some specific cases (again, probably mainly for development and debugging) it could be useful to skip the tests using `test = FALSE`.
+
+
+## Templates for making your very own process
+
+As detailed above, any process of your own design will work as long as it is a function that takes at least the arguments `x0` and `edge.length`.
+You can be imaginative and creative when designing your own process but here are two detailed example functions for a unidimensional Brownian Motion and Ornstein-Uhlenbeck process that you can use for a start (or not).
+Remember it is good practice for `dads` processes to set all the arguments but `x0` with default values (just in case).
+Also, note that the functions below are not equal to the already implemented `BM.process` and `OU.process` but are rather generalised/simplified version that you can use as a template
+
+### A simple Brownian Motion process template
+
+```{r}
+## A simple Brownian motion process
+my.BM.process <- function(x0, edge.length = 1, sd = 1, ...) {
+    ## Drawing a random number from a normal distribution
+    ## with x0 as the and a given standard deviation
+    ## and depending on branch (edge) length
+    result <- rnorm(n = 1, mean = x0, sd = sd * edge.length)
+
+    ## Return the number
+    return(result)
+}
+```
+
+### A simple Ornstein-Uhlenbeck process template
+
+```{r}
+## A simple Ornstein-Uhlenbeck motion process
+function(x0, edge.length = 1, var = 1, alpha = 1, ...) {
+    ## Calculate the mean based on alpha
+    mean <- x0 * exp(-alpha)
+    ## Calculate the standard deviation based on alpha and the variance
+    sd <- sqrt(var/(2 * alpha) * (1 - exp(-2 * alpha)))
+    ## Draw a random number from a normal distribution
+    ## using this mean and standard deviation
+    ## and depending on branch (edge) length
+    result <- rnorm(n = 1, mean = mean, sd = sd * branch.length)
+
+    ## Return the number
+    return(result)
+}
+```
+
+
+

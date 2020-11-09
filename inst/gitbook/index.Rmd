@@ -66,3 +66,14 @@ If you need help with the package, hopefully the following manual will be useful
 However, parts of this package are still in development and some other parts are probably not covered.
 Thus if you have suggestions or comments on on what has already been developed or will be developed, please send me an email (<guillert@tcd.ie>) or if you are a GitHub user, directly create an issue on the [GitHub page](https://github.com/TGuillerme/dads).
 Doing so will not only hopefully help you but also other users since it will help improve this manual!
+
+
+## How does `dads` work?
+
+Basically, the `dads` function intakes your personalised `traits`, `modifiers` and `events` to generate your disparity and diversity.
+You will find more details about how these objects (`traits`, `modifiers` and `events`) work in the rest of the tutorial but here is a graphical representation of how `dads` work:
+
+![Schematised summary of the `dads` package architecture](dads_structure.pdf)
+
+
+
