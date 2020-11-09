@@ -5,7 +5,7 @@ check.modifiers <- function(modifiers) {
     required_names <- c("waiting", "speciating")
     if(any(missing <- is.na(match(names(modifiers), required_names)))) {
         ## TODO: improve message here
-        stop("check.modifiers failure (TODO: improve this message!).")
+        stop(paste0("modifiers must have the following elements: ", paste(required_names, collapse = ", "), "."), call. = FALSE)
     }
 
     ## Check the content for each required names
@@ -13,19 +13,18 @@ check.modifiers <- function(modifiers) {
     for(one_check in required_names) {
         if(any(missing <- is.na(match(names(modifiers[[one_check]]), required_content)))) {
             ## TODO: improve message here
-            stop("check.modifiers failure (TODO: improve this message!).")
+            stop(paste0("The ", one_check, " modifier must contain the following elements: ", paste(required_content, collapse = ", "), "."), call. = FALSE)
         }
     }
 
     ## Dummy (basic) arguments
-    bd.params      <- list(speciation = 1, exinction = 0)
+    bd.params      <- list(speciation = 1, extinction = 0)
     n.taxa         <- 1
     parent.lineage <- 1
-    trait_values   <- rbind(NULL, "root" = c("element" = 1, 1))
+    trait_values   <- rbind(NULL, "1" = c(1))
 
     ## Testing the waiting function
-    test_waiting <- try(
-        waiting_time <- modifiers$waiting$fun(bd.params,
+    test_waiting <- try(modifiers$waiting$fun(bd.params,
                                               n.taxa         = n.taxa,
                                               parent.lineage = parent.lineage,
                                               trait.values   = trait_values,
@@ -34,29 +33,28 @@ check.modifiers <- function(modifiers) {
 
     ## Debrief
     if(class(test_waiting) == "try-error") {
-        stop("check.modifiers failure (TODO: improve thi message!).")
+        stop(paste0("The waiting element from the modifiers failed with the following error message", ifelse(length(test_waiting) > 1, "s:\n", ":\n"), paste(test_waiting, collapse = "\n")), call. = FALSE)
     } else {
-        if(class(waiting_time) != "numeric") {
-            stop("check.modifiers failure (TODO: improve thi message!).")
+        if(class(test_waiting) != "numeric") {
+            stop(paste0("The waiting element from the modifiers did not produce a numeric value (it produced a ", paste(class(test_waiting), collapse = ","), " instead)."))
         }
     }
 
 
     ## Testing the speciating function
-    test_speciating <- try(
-        do_speciate <- modifiers$speciating$fun(bd.params,
+    test_speciating <- try(modifiers$speciating$fun(bd.params,
                                                 n.taxa         = n.taxa,
                                                 parent.lineage = parent.lineage,
                                                 trait.values   = trait_values,
                                                 modify.fun     = modifiers$speciating$internal),
-                        silent = TRUE)
+                           silent = TRUE)
 
     ## Debrief
     if(class(test_speciating) == "try-error") {
-        stop("check.modifiers failure (TODO: improve thi message!).")
+        stop(paste0("The speciating element from the modifiers failed with the following error message", ifelse(length(test_speciating) > 1, "s:\n", ":\n"), paste(test_speciating, collapse = "\n")), call. = FALSE)
     } else {
-        if(class(do_speciate) != "logical") {
-            stop("check.modifiers failure (TODO: improve thi message!).")
+        if(class(test_speciating) != "logical") {
+            stop(paste0("The waiting element from the modifiers did not produce a logical value (it produced a ", paste(class(test_speciating), collapse = ","), " instead)."))
         }
     }
     return(NULL)
