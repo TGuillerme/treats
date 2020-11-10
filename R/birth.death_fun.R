@@ -73,42 +73,6 @@ sim.living.tips <- function(living, trait_table, traits) {
     )
 }
 
-# stop("DEBUG birth.death_fun.R")
-# bd.params <- list(speciation = 1, extinction = 1/3)
-# traits <- make.traits()
-# stop.rule <- list(max.taxa = 20, max.living = Inf, max.time = Inf)
-# modifiers <- NULL
-# events <- NULL
-# null.error <- NULL
-
-# ## Test normal (no modifiers)
-# set.seed(1)
-# test <- birth.death.tree.traits(bd.params, stop.rule, traits)
-# par(mfrow = c(2,2))
-# plot(test$tree)
-# class(test) <- "dads"
-# plot.dads(test, main = "random tree + trait")
-
-# ## Test with modifiers
-# internals1 <- list(condition = function(x) return(x > 0),
-#                    modify    = function(x) return(x * 10))
-# internals2 <- list(condition = function(x) return(x < 0),
-#                    modify    = function(x) return(x + 100))
-
-# modifiers <- list("waiting"    = list(fun      = waiting.trait.dependent,
-#                                       internal = internals1),
-#                   "speciating" = list(fun      = speciating.trait.dependent,
-#                                       internal = internals2))
-
-# set.seed(1)
-# trait_table <- NULL
-# test <- birth.death.tree.traits(bd.params, stop.rule, traits, modifiers)
-# plot(test$tree)
-# class(test) <- "dads"
-# plot.dads(test, main = "skewed branch length and extinction")
-
-
-
 
 
 ## Run a birth death process to generate both tree and traits
