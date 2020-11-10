@@ -12,7 +12,7 @@
 #' 
 #' @details
 #' 
-#' \code{branch.length} and \code{speciation} must be a functions that intakes the following arguments: \code{bd.params} = NULL, n.taxa = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun}.
+#' \code{branch.length} and \code{speciation} must be a functions that intakes the following arguments: \code{bd.params = NULL, n.taxa = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun}.
 #' 
 #' \code{condition} must be a function with unambiguous input (the inputs listed about for \code{branch.length} and \code{speciation}) and must output a single \code{logical} value. For example a conditional on the number of taxa:
 #' 
@@ -107,10 +107,6 @@ make.modifiers <- function(branch.length, speciation, condition, modify, add, te
 
     ## test
     check.class(test, "logical")
-    
-    ## Set the defaults
-    default_branch_length <- !do_branch_length && !do_condition && !do_modify
-    default_speciation    <- !do_speciation    && !do_condition && !do_modify
 
     ## add
     add_modifiers <- FALSE
@@ -123,49 +119,31 @@ make.modifiers <- function(branch.length, speciation, condition, modify, add, te
         ## Check what's done already
         already_done <- names(add)
 
-        ## Check if waiting time existed
-        if("waiting" %in% names(add)) {
-            if(do_branch_length) {
-                warning("branch.length modifier overwritten.", call. = FALSE)
-            } else {
-                default_branch_length <- FALSE
-            } 
-        }
-
-        ## Check if speciating existed
-        if("speciating" %in% names(add)) {
-            if(do_branch_length) {
-                warning("speciation modifier overwritten.", call. = FALSE)
-            } else {
-                default_speciation <- FALSE
-            } 
-        }
+        ## DEBUG
+        stop("make.modifiers: add option not implemented yet")
     }
+
 
     ## Build the object
     modifiers <- list()
     ## Making the waiting modifier
-    if(default_branch_length) {
+    if(!do_branch_length) {
         modifiers$waiting <- list(fun = branch.length.fast,
                                     internal = NULL)
     } else {
-        if(do_branch_length) {
-            modifiers$waiting <- list(fun = branch.length,
-                                      internal = list(condition = condition,
-                                                      modify    = modify))
-        }
+        modifiers$waiting <- list(fun = branch.length,
+                                  internal = list(condition = condition,
+                                                  modify    = modify))
     }
 
     ## Making the speciating modifier
-    if(default_speciation) {
+    if(!do_speciation) {
         modifiers$speciating <- list(fun = speciation.fast,
                                      internal = NULL)
     } else {
-        if(do_speciation) {
-            modifiers$speciating <- list(fun = speciation,
-                                         internal = list(condition = condition,
-                                                         modify    = modify))
-        }
+        modifiers$speciating <- list(fun = speciation,
+                                     internal = list(condition = condition,
+                                                     modify    = modify))
     }
 
     if(test) {

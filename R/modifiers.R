@@ -55,8 +55,8 @@ branch.length <- function(bd.params, n.taxa, parent.lineage = NULL, trait.values
     waiting_time <- rexp(1, event_probability)
 
     ## Modify the waiting time
-    if(modify.fun$condition(...)) {
-        waiting_time <- modify.fun$modify(waiting_time)
+    if(modify.fun$condition(n.taxa, parent.lineage, trait.values)) {
+        waiting_time <- modify.fun$modify(x = waiting_time, n.taxa, parent.lineage, trait.values)
     }
 
     return(waiting_time)
@@ -68,8 +68,8 @@ speciation <- function(bd.params, n.taxa = NULL, parent.lineage = NULL, trait.va
     trigger_event <- runif(1)
 
     ## Modify the triggering
-    if(modify.fun$condition(...)) {
-        trigger_event <- modify.fun$modify(trigger_event)
+    if(modify.fun$condition(n.taxa, parent.lineage, trait.values)) {
+        trigger_event <- modify.fun$modify(x = trigger_event, n.taxa, parent.lineage, trait.values)
     }
 
     ## Speciate?
@@ -83,7 +83,7 @@ branch.length.fast <- function(bd.params, n.taxa, parent.lineage = NULL, trait.v
     return(rexp(1, sum(n.taxa * (bd.params$speciation + bd.params$extinction))))
 }
 
-## Normal spciation  (internal usage only)
+## Normal speciation  (internal usage only)
 speciation.fast <- function(bd.params, n.taxa = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) {
     ## Speciate?
     return(runif(1) < (bd.params$speciation/(bd.params$speciation + bd.params$extinction)))
@@ -101,7 +101,7 @@ branch.length.trait <- function(bd.params, n.taxa, parent.lineage = NULL, trait.
     ## Modify the waiting time
     if(modify.fun$condition(trait.values, parent.lineage)) {
     # if(modify.fun$condition(get.parent.traits(trait.values, parent.lineage))) {
-        waiting_time <- modify.fun$modify(x = waiting_time)
+        waiting_time <- modify.fun$modify(x = waiting_time, trait.values, parent.lineage)
     }
 
     return(waiting_time)
@@ -116,7 +116,7 @@ speciation.trait <- function(bd.params, n.taxa = NULL, parent.lineage, trait.val
     ## Modify the triggering
     if(modify.fun$condition(trait.values, parent.lineage)) {
     #if(modify.fun$condition(get.parent.traits(trait.values, parent.lineage))) {
-        trigger_event <- modify.fun$modify(x = trigger_event)
+        trigger_event <- modify.fun$modify(x = trigger_event, trait.values, parent.lineage)
     }
 
     ## Speciate?

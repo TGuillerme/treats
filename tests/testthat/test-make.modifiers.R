@@ -45,19 +45,43 @@ test_that("make.modifiers works", {
     expect_equal(error[[1]], "test must be of class logical.")
 
     ## Working fine?
-    # branch.length <- branch.length.trait
-    # speciation <- speciation.trait
     condition <- function(trait.values, parent.lineage) return(get.parent.traits(trait.values, parent.lineage) < 0)
-    modify <- function(x) return(x * 10)
-    # add = FALSE
-    # test = TRUE
-
+    modify <- function(x, trait.values, parent.lineage) return(x * 20)
     test <- make.modifiers(branch.length = branch.length.trait,
                            speciation    = speciation.trait,
                            condition     = condition,
                            modify        = modify)
-
     expect_is(test, c("dads", "modifiers"))
+    expect_equal(names(test), c("waiting", "speciating"))
+    expect_equal(names(test[[1]]), c("fun", "internal"))
+    expect_equal(names(test[[2]]), c("fun", "internal"))
 
+    ## Working correctly without condition and modify
+
+    ## Working correctly with just condition
+
+    ## Working correctly with just modify
+
+    ## Working correctly without speciation
+    test <- make.modifiers(branch.length = branch.length.trait,
+                           condition     = condition,
+                           modify        = modify)
+    expect_is(test, c("dads", "modifiers"))
+    expect_equal(names(test), c("waiting", "speciating"))
+    expect_equal(names(test[[1]]), c("fun", "internal"))
+    expect_equal(names(test[[2]]), c("fun", "internal"))
+
+    ## Working correctly without branch.length
+    test <- make.modifiers(speciation    = speciation.trait,
+                           condition     = condition,
+                           modify        = modify)
+    expect_is(test, c("dads", "modifiers"))
+    expect_equal(names(test), c("waiting", "speciating"))
+    expect_equal(names(test[[1]]), c("fun", "internal"))
+    expect_equal(names(test[[2]]), c("fun", "internal"))
+
+    ## Adds works correctly
+
+    ## Print modifiers works correctly
 
 })
