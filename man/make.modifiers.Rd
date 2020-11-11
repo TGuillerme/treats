@@ -4,56 +4,52 @@
 \alias{make.modifiers}
 \title{make.modifiers}
 \usage{
-make.modifiers(
-  branch.length,
-  speciation,
-  condition,
-  modify,
-  add,
-  test = TRUE,
-  ...
-)
+make.modifiers(branch.length, speciation, condition, modify, add, test = TRUE)
 }
 \arguments{
-\item{branch.length}{A function for the waiting time generating branch length (see details).}
+\item{branch.length}{A function for the waiting time generating branch length (can be left empty for the defeault branch length function; see details).}
 
-\item{speciation}{A function for triggering the speciation events (see details).}
+\item{speciation}{A function for triggering the speciation events (can be left empty for the defeault speciation function; see details).}
 
-\item{condition}{A function giving the condition on which to modify the output of \code{branch.length} or \code{speciation} (see details). If missing the condition is always met (set to \code{condition = function() TRUE})}
+\item{condition}{A function giving the condition on which to modify the output of \code{branch.length} or \code{speciation} (see details). If missing the condition is always met.}
 
-\item{modify}{A function giving the rule of how to modify the output of \code{branch.length} or \code{speciation} (see details). If missing no modification is used (set to \code{modify = function(x) x}).}
+\item{modify}{A function giving the rule of how to modify the output of \code{branch.length} or \code{speciation} (see details). If missing no modification is used.}
 
 \item{add}{Whether to add this modifier to a \code{"dads"} \code{"modifier"} object.}
 
-\item{test}{Logical whether to test if the modifiers object will work (default is TRUE),}
-
-\item{...}{Optional, any extra argument to be passed to the modifier function.}
+\item{test}{Logical whether to test if the modifiers object will work (default is TRUE).}
 }
 \description{
 Making modifiers objects for dads based on an ancestor's (parent) trait.
 }
 \details{
-\code{branch.length} and \code{speciation} must be a functions that intakes the following arguments: \code{bd.params = NULL, n.taxa = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun}.
+\code{branch.length} and \code{speciation} must be a functions that intakes the following arguments: \code{bd.params, n.taxa, parent.lineage, trait.values, modify.fun} (even if they are not used in the function).
 
-\code{condition} must be a function with unambiguous input (the inputs listed about for \code{branch.length} and \code{speciation}) and must output a single \code{logical} value. For example a conditional on the number of taxa:
+The default \code{branch.length} function is drawing a random number from the exponantial distribution with a rate equal to the current number of taxa multiplied by the speciation and extinction (\code{rexp(1, n.taxa * (speciation + extinction))}).
 
-\code{condition = function(n.taxa) return(n.taxa < 1)}
+The default \code{speciation} function is drawing a random number from a uniform distribution (0,1) and starts a speciation event if this random number is lower than the ration of speciation on speciation and extinction (\code{runif(1) < (speciation/(speciation + extinction))}). If the random number is greater, the lineage goes extinct.
+
+\code{condition} must be a function with unambiguous input (the inputs listed about for \code{branch.length} and \code{speciation}) and must output a single \code{logical} value. 
+
+For example a conditional on the number of taxa:
+
+    \code{condition = function(n.taxa) return(n.taxa < 1)}
 
 or a conditional on the trait values:
 
-\code{condition = function(trait.values, parent.lineage)}
-\code{    \{}
-\code{    get.parent.traits(trait.values, parent.lineage) < mean(trait.values)}
-\code{    \}}
+    \code{condition = function(trait.values, parent.lineage)}
+    \code{    \{}
+    \code{    get.parent.traits(trait.values, parent.lineage) < mean(trait.values)}
+    \code{    \}}
 
 \code{modify} must be a function with at least one input named \code{x} (which will be the branch length or the speciation trigger to value depending on the modifier) and must return a \code{numeric} value.
 For example a constant modification of the input:
 
-\code{modify = function(x) return(x * 2)}
+    \code{modify = function(x) return(x * 2)}
 
 or a modifier depending on the number of taxa:
 
-\code{modify = function(x, n.taxa) return(x/n.taxa)}
+    \code{modify = function(x, n.taxa) return(x/n.taxa)}
 
 More details about the \code{modifiers} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
 }
