@@ -11,6 +11,7 @@
  - [x] document list of traits (Rd)
  - [x] document list of traits (gitbook)
  - [x] test `make.traits`
+ - [x] add and test `print.traits`
  - [ ] test list of traits
 
 ## TODO modifiers
@@ -19,7 +20,8 @@
  - [x] `make.modifiers`
  - [x] document list of modifiers (Rd)
  - [ ] document list of modifiers (gitbook)
- - [ ] test `make.modifiers`
+ - [x] test `make.modifiers`
+ - [ ] add and test `print.modifiers`
  - [ ] test list of modifiers
 
 ## TODO events
@@ -29,6 +31,7 @@
  - [ ] document list of events (Rd)
  - [ ] document list of events (gitbook)
  - [ ] test `make.events`
+ - [ ] add and test `print.events`
  - [ ] test list of events
 
 ## TODO utilities
