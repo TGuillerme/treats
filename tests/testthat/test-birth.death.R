@@ -235,7 +235,7 @@ test_that("simulating trees + traits + modifiers work", {
     condition <- function(trait.values, parent.lineage) return(get.parent.traits(trait.values, parent.lineage) < 0)
     modify <- function(x) return(x * 20)
 
-    ## Setting up the different modifiers
+    ## Setting up the different modifiers
     modify_speciation <- make.modifiers(speciation    = speciation.trait,
                                         condition     = condition,
                                         modify        = modify)
