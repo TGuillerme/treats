@@ -57,10 +57,52 @@ test_that("make.modifiers works", {
     expect_equal(names(test[[2]]), c("fun", "internal"))
 
     ## Working correctly without condition and modify
+    test <- make.modifiers(branch.length = branch.length.trait,
+                           speciation    = speciation.trait)    
+    expect_is(test, c("dads", "modifiers"))
+    expect_equal(names(test), c("waiting", "speciating"))
+    expect_equal(names(test[[1]]), c("fun", "internal"))
+    expect_equal(names(test[[2]]), c("fun", "internal"))
+    expect_true(test[[1]]$internal$condition())
+    expect_equal(test[[1]]$internal$modify(42), 42)
 
     ## Working correctly with just condition
+    always.false <- function(whatever) return(FALSE)
+    error <- capture_error(
+        test <- make.modifiers(branch.length = branch.length.trait,          
+                           speciation    = speciation.trait,
+                           condition     = always.false)
+        )
+    expect_equal(error[[1]], "The condition function cannot recognise the whatever argument.")
+    always.false <- function() return(FALSE)
+    test <- make.modifiers(branch.length = branch.length.trait,
+                           speciation    = speciation.trait,
+                           condition     = always.false)    
+    expect_is(test, c("dads", "modifiers"))
+    expect_equal(names(test), c("waiting", "speciating"))
+    expect_equal(names(test[[1]]), c("fun", "internal"))
+    expect_equal(names(test[[2]]), c("fun", "internal"))
+    expect_false(test[[1]]$internal$condition())
+    expect_equal(test[[1]]$internal$modify(42), 42)
 
     ## Working correctly with just modify
+    always.one <- function() return(1)
+    error <- capture_error(
+        test <- make.modifiers(branch.length = branch.length.trait,
+                           speciation    = speciation.trait,
+                           modify        = always.one)
+        )
+    expect_equal(error[[1]], "The modify function must have at least one x argument (you can use x = NULL).")
+    always.one <- function(x = NULL) return(1)
+    test <- make.modifiers(branch.length = branch.length.trait,
+                           speciation    = speciation.trait,
+                           modify        = always.one)
+    expect_is(test, c("dads", "modifiers"))
+    expect_equal(names(test), c("waiting", "speciating"))
+    expect_equal(names(test[[1]]), c("fun", "internal"))
+    expect_equal(names(test[[2]]), c("fun", "internal"))
+    expect_true(test[[1]]$internal$condition())
+    expect_equal(test[[1]]$internal$modify(42), 1)
 
     ## Working correctly without speciation
     test <- make.modifiers(branch.length = branch.length.trait,
