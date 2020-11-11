@@ -93,16 +93,10 @@ make.modifiers <- function(branch.length, speciation, condition, modify, add, te
             ## Add the argument to the function
             formals(condition) <- alist("n.taxa" = , "parent.lineage" = , "trait.values" = )
         }
-
     } else {
         ## Default condition
         condition <- function(n.taxa, parent.lineage, trait.values, modify.fun) return(TRUE)
     }
-
-
-    
-
-
 
     ## Check modify
     do_modify <- FALSE
@@ -137,35 +131,83 @@ make.modifiers <- function(branch.length, speciation, condition, modify, add, te
         if(!(is(add, "dads") && is(add, "modifiers"))) {
             stop("modifiers can only be added to objects of class dads and modifiers.")
         }
-        add_modifiers <- TRUE
-        ## Check what's done already
-        already_done <- names(add)
 
-        ## DEBUG
-        stop("make.modifiers: add option not implemented yet")
+        ## Update the modifiers
+        modifiers <- add
+
+        ## Check which things to change
+        if(do_branch_length) {
+            message("branch.length function was overwritten.")
+            init_branch_length <- TRUE
+        } else {
+            init_branch_length <- FALSE
+        }
+        if(do_speciation) {
+            message("speciation function was overwritten.")
+            init_speciation <- TRUE
+        } else {
+            init_speciation <- FALSE
+        }
+
+        if(!do_branch_length && !do_speciation) {
+            ## Only update the modify and function
+            if(!do_modify && !do_speciation) {
+                stop("Nothing to update. Specify at least one branch.length, speciation, condition or modify function.")
+            } else {
+                update_condition <- do_condition
+                update_modify <- do_modify
+            }
+        }
+
+    } else {
+        ## Build an empty modifiers list
+        modifiers <- list()
+        init_branch_length <- init_speciation <- TRUE
+        update_condition <- update_modify <- FALSE
     }
 
 
-    ## Build the object
-    modifiers <- list()
+
     ## Making the waiting modifier
-    if(!do_branch_length) {
-        modifiers$waiting <- list(fun = branch.length.fast,
-                                    internal = NULL)
+    if(init_branch_length) {
+        if(!do_branch_length) {
+            modifiers$waiting <- list(fun = branch.length.fast,
+                                        internal = NULL)
+        } else {
+            modifiers$waiting <- list(fun = branch.length,
+                                      internal = list(condition = condition,
+                                                      modify    = modify))
+        }
     } else {
-        modifiers$waiting <- list(fun = branch.length,
-                                  internal = list(condition = condition,
-                                                  modify    = modify))
+        if(do_branch_length) {
+            if(update_condition) {
+                modifiers$waiting$internal$condition <- condition
+            }
+            if(update_modify) {
+                modifiers$waiting$internal$modify <- modify
+            }
+        }
     }
 
     ## Making the speciating modifier
-    if(!do_speciation) {
-        modifiers$speciating <- list(fun = speciation.fast,
-                                     internal = NULL)
+    if(init_speciation) {
+        if(!do_speciation) {
+            modifiers$speciating <- list(fun = speciation.fast,
+                                         internal = NULL)
+        } else {
+            modifiers$speciating <- list(fun = speciation,
+                                         internal = list(condition = condition,
+                                                         modify    = modify))
+        }
     } else {
-        modifiers$speciating <- list(fun = speciation,
-                                     internal = list(condition = condition,
-                                                     modify    = modify))
+        if(do_speciation) {
+            if(update_condition) {
+                modifiers$speciating$internal$condition <- condition
+            }
+            if(update_modify) {
+                modifiers$speciating$internal$modify <- modify
+            }
+        }
     }
 
     if(test) {
