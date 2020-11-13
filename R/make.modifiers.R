@@ -212,7 +212,7 @@ make.modifiers <- function(branch.length, speciation, condition, modify, add, te
             modifiers$speciating <- list(fun = speciation.fast,
                                          internal = NULL)
             ## Update the call
-            modifiers$call$speciating <- "default"
+            modifiers$call$speciating$fun <- "default"
         } else {
             modifiers$speciating <- list(fun = speciation,
                                          internal = list(condition = condition,
