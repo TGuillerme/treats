@@ -13,7 +13,7 @@ install_github("TGuillerme/dads")
 library(dads)
 ```
 
-The detailed manual is available [here]().
+The detailed manual is available [here](http://tguillerme.github.io/dads.html).
 
 
 ## Latest patch notes
