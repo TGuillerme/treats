@@ -38,6 +38,7 @@ print.dads <- function(x, all = FALSE, ...) {
                 },
                 modifiers = {
                     cat(" ---- dads modifiers object ---- \n")
+                    print.modifiers.info(x)
                 }
                 )
             return(invisible())
@@ -45,19 +46,36 @@ print.dads <- function(x, all = FALSE, ...) {
 
         ## Normal class dads objects (tree + traits)
         cat(" ---- dads object ---- \n")
+        ## Print the modifiers and/or events
+        if(!is.null(x$modifiers) || !is.null(x$events)) {
+            cat(paste0(
+                "Birth death process with",
+                ifelse(!is.null(x$modifiers), " modifiers", ""), 
+                ifelse(!is.null(x$events), paste0(ifelse(!is.null(x$modifiers), " and", ""), " events"), ""), 
+                ":\n"))
+            if(!is.null(x$modifiers)) {
+                print.modifiers.info(x$modifiers)
+            } 
+            if(!is.null(x$modifiers)) {
+                cat("DEBUG print.events.info\n")
+                #print.events.info(x$events)
+            }
+            cat("\n")
+        }
+
+
+        ## Print the tree
         cat("Simulated diversity data (x$tree):\n")
         cat(print(x$tree))
         cat("\n")
+
+        ## Print the traits
         if(!is.null(x$traits)) {
             cat("Simulated disparity data (x$data):\n")
             print.traits.info(x$traits)
         }
-        if(!is.null(x$events)) {
-            cat("DEBUG print.events.info\n")
-        }
-        if(!is.null(x$modifiers)) {
-            cat("DEBUG print.modifiers.info\n")
-        }
+
+
     }
     return(invisible())
 }

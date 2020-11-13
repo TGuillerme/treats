@@ -37,3 +37,52 @@ print.traits.info <- function(x) {
     }
     return(invisible())
 }
+
+## Function for printing the modifiers info
+print.modifiers.info <- function(x) {
+
+    ## Check of is null or default
+    not.null.default <- function(x) {
+        if(is.null(x)) {
+            return(FALSE)
+        }
+        if(x[[1]] == "default") {
+            return(FALSE)
+        }
+        return(TRUE)
+    }
+
+    ## See if everything is default
+    if(all(unlist(x$call) == "default")) {
+        cat(paste0("No modifiers applied to the branch length and speciation processes (default).\n"))
+    } else {
+        ## Waiting process
+        if(not.null.default(x$call$waiting$fun)) {
+            cat(paste0("Branch length process is set to ", x$call$waiting$fun))
+        } else {
+            cat(paste0("Default branch length process"))
+        }
+        if(not.null.default(x$call$waiting$condition)) {
+            cat(paste0(" with a condition (", x$call$waiting$condition, ")"))
+        }
+        if(not.null.default(x$call$waiting$modify)) {
+            cat(ifelse(not.null.default(x$call$waiting$condition), " and ", " with "))
+            cat(paste0("a modifier (", x$call$waiting$modify, ")"))
+        }
+        cat(".\n")
+        ## Speciating process
+        if(not.null.default(x$call$speciating$fun)) {
+            cat(paste0("Speciation process is set to ", x$call$speciating$fun))
+        } else {
+            cat(paste0("Default speciation process"))
+        }
+        if(not.null.default(x$call$speciating$condition)) {
+            cat(paste0(" with a condition (", x$call$speciating$condition, ")"))
+        }
+        if(not.null.default(x$call$speciating$modify)) {
+            cat(ifelse(not.null.default(x$call$speciating$condition), " and ", " with "))
+            cat(paste0("a modifier (", x$call$speciating$modify, ")"))
+        }
+        cat(".\n")
+    }
+}
