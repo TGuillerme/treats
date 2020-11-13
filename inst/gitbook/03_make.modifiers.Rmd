@@ -1,0 +1,79 @@
+---
+title: "`make.modifiers`"
+author: "Thomas Guillerme (guillert@tcd.ie)"
+date: "`r Sys.Date()`"
+bibliography: [../References.bib, ../packages.bib]
+output:
+  html_document: default
+  pdf_document: default
+---
+
+# Making modifiers with `make.modifiers()` {#makemodifiers}
+
+```{r, echo = FALSE}
+set.seed(123)
+```
+
+> TODO: just ideas so far
+
+
+## The branch length function (`branch.length`)
+
+A branch length function that is constant
+
+```{r, eval = FALSE}
+constant.brlen <- function(bd.params = NULL,
+                         n.taxa = NULL,
+                         parent.lineage = NULL,
+                         trait.values = NULL,
+                         modify.fun = NULL) {
+    return(1)
+}
+
+constant_brlen <- dads(bd.params = list(extinction = 0.25),
+                     stop.rule = list(max.living = 20),
+                     traits    = make.traits(),
+                     modifiers = make.modifiers(
+                        branch.length = constant.brlen))
+
+plot(constant_brlen, main = "constant branch length")
+```
+
+## The speciation function (`speciation`)
+
+
+```{r, eval = FALSE}
+random.brlen <- function(bd.params = NULL,
+                         n.taxa = NULL,
+                         parent.lineage = NULL,
+                         trait.values = NULL,
+                         modify.fun = NULL) {
+    return(runif(1))
+}
+
+random.spec  <- function(bd.params = NULL,
+                         n.taxa = NULL,
+                         parent.lineage = NULL,
+                         trait.values = NULL,
+                         modify.fun = NULL) {
+    return(sample(c(TRUE, FALSE), 1))
+}
+
+set.seed(1)
+yule_tree <- dads(bd.params = list(extinction = 0),
+                     stop.rule = list(max.living = 20),
+                     traits    = make.traits(),
+                     modifiers = make.modifiers(
+                        branch.length = random.brlen,
+                        speciation    = random.spec))
+
+plot(yule_tree, main = "a (failing) yule(ish) tree")
+```
+
+## The condition function (`condition`)
+
+## The modify function (`modify`)
+
+## Combining and editing modifiers (`add`)
+
+## Testing modifiers (`test`)

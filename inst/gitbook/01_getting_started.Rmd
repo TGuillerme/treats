@@ -129,9 +129,116 @@ the_generated_data <- my_data$data
 class(the_generated_data)
 ```
 
+You can find much more on how to design trait objects in the [`make.traits` section](#maketraits).
+
+
 ## Slightly more more complex: simulating linked disparity and diversity 
 
 The example above is also still pretty simple and easily done through a variety of `R` packages: here the trait and the tree are simulated at the same time but only the tree is simulating the trait (i.e. the trait value at a tip is affected by it's ancestor and the branch length leading to it) but not the other way around (the trait value does not affect the tree).
 It is possible to add this aspect using `"modifiers"` objects.
 `"modifiers"` are similar to `"traits"` in that you specify what should go in there and then feed it to your simulation.
 
+`"modifiers"` affect two key steps of the birth-death process: the calculation of the waiting time (i.e. the component generating branch lengths) and the triggering of speciation or extinction events.
+These events can be modified using some `condition` and `modify` function.
+In other words, when reaching a certain condition specified by a `condition` function, the birth-death process will modify either the branch length or the speciation (or extinction) probability by applying a `modify` function.
+
+You can use the function `make.modifiers` to design a specific `"modifiers"` object.
+By default, this function generates a `"modifiers"` object that affects branch length and speciation in the following way:
+
+ * branch length is a randomly drawn number from an exponential distribution with a rate equal to the current number of taxa multiplied by the sum of the speciation and extinction rates.
+ * speciation is triggered if a randomly drawn number (from a (0,1) uniform distribution) is smaller than the ratio between the speciation rate and the sum of the speciation and extinction rates. If that random number is greater, the lineage goes extinct.
+
+Note that these are default for a birth death tree and were actually already applied in the examples before (without specifying a modifier):
+
+```{r}
+## Make a default modifiers
+default_modifiers <- make.modifiers()
+## What's in it?
+default_modifiers
+```
+
+This will not do much to our simulations compared to the previous trait and tree simulation but we can provide our modifiers object to the `dads` function:
+
+```{r}
+set.seed(1)
+## Setting the simulation parameters
+extinction_02 <- list(extinction = 0.4)
+living_20     <- list(max.living = 20)
+BM_trait      <- make.traits()
+set.seed(4242)
+## Simulate disparity and diversity
+default_data <- dads(bd.params = extinction_02,
+                     stop.rule = living_20,
+                     traits    = BM_trait,
+                     modifiers = default_modifiers)
+default_data
+```
+
+Note however that the printing information is now updated to state that you've add a modifier (even though it's a default one).
+
+For more interesting simulations however, you can provide modifiers that actually modify the birth death process.
+We can create one for example that makes species go extinct if their ancestor have a negative trait value.
+For that we need to create a modifiers object that modifies the `speciation` process with a specific condition and a specific modification when that condition is met.
+First we are going to create the modification function.
+This function must intake the argument `x` and, in our case, return a logical value: `TRUE` is for speciate and `FALSE` is for go extinct.
+We want this `modify` function to always return `FALSE` (go extinct) since it will be triggered by `condition` (we will see that in a minute).
+
+```{r}
+## Going extinct
+staying.alive <- function(x) return(TRUE)
+```
+
+Now we want this function to only trigger when an ancestor has a negative trait value.
+We can do that by specifying our `condition` function (when the ancestor is trait is negative) apply our modification (here the `staying.alive` function).
+For that we can use the `parent.traits` utility function that is optimised for accessing traits in the birth death process (but you can of course write your own).
+This function intakes the `trait.values` and `parent.lineage` arguments, two arguments that you can leave named as they are to facilitate `dads`s understanding of what you which to asses:
+
+```{r}
+## Triggering a modification only if the ancestor trait is negative
+negative.ancestor <- function(trait.values, parent.lineage) {
+    return(all(parent.traits(trait.values, parent.lineage) < 0))
+}
+```
+
+Note that we use the function `all` here to evaluate all traits (if the data is multidimensional). 
+We can then provide these two functions (the condition `negative.ancestor` and how to modify the speciation event when this condition is met `staying.alive`).
+If you are an advances `dads` user, you can design your own `speciation` function but if you just want to use a normal `speciation` function, you can use the default one from `dads` called... `speciation`.
+
+```{r}
+## Making a modifier for species to go extinct if
+## their ancestor's trait value is (or are) negative
+negatives_extinct <- make.modifiers(
+                        ## The speciation function (default)
+                        speciation = speciation,
+                        ## What to modify
+                        modify     = staying.alive,
+                        ## When to modify it
+                        condition  = negative.ancestor)
+## What's in it?
+negatives_extinct
+```
+
+Note that the `make.modifiers` function tests whether the input is compatible with `dads` by default so unless you have an error message, your `modifiers` will work!
+We can now simulate our tree and traits with our modifier: species will go extinct if their ancestor have a negative trait value:
+
+```{r}
+set.seed(4242)
+## Simulate disparity and diversity
+biased_data <- dads(bd.params = extinction_02,
+                    stop.rule = living_20,
+                    traits    = BM_trait,
+                    modifiers = negatives_extinct)
+biased_data
+```
+
+We can now compare the two trees and their trait values.
+Note that we've used the same starting seed for both trees so the only thing differing between them is the modifier!
+Also, although species
+
+```{r, fig.height = 6, fig.width = 12}
+par(mfrow = c(1,2))
+plot(default_data, main = "default results")
+plot(biased_data, main = "results with the modifier")
+```
+
+You can find much more how to design modifiers in the [`make.modifiers` section](#makemodifiers).

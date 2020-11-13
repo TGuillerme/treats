@@ -1,5 +1,5 @@
 ---
-title: "Getting start"
+title: "`make.traits`"
 author: "Thomas Guillerme (guillert@tcd.ie)"
 date: "`r Sys.Date()`"
 bibliography: [../References.bib, ../packages.bib]
@@ -8,7 +8,7 @@ output:
   pdf_document: default
 ---
 
-# Making trait processes with `make.traits()`
+# Making trait processes with `make.traits()` {#maketraits}
 
 ```{r, echo = FALSE}
 set.seed(123)
@@ -263,7 +263,7 @@ my.BM.process <- function(x0, edge.length = 1, sd = 1, ...) {
 
 ```{r}
 ## A simple Ornstein-Uhlenbeck motion process
-function(x0, edge.length = 1, var = 1, alpha = 1, ...) {
+my.OU.process <- function(x0, edge.length = 1, var = 1, alpha = 1, ...) {
     ## Calculate the mean based on alpha
     mean <- x0 * exp(-alpha)
     ## Calculate the standard deviation based on alpha and the variance
