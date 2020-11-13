@@ -2,7 +2,7 @@
 check.modifiers <- function(modifiers) {
 
     ## Check the content at the first level
-    required_names <- c("waiting", "speciating")
+    required_names <- c("waiting", "speciating", "call")
     if(any(missing <- is.na(match(names(modifiers), required_names)))) {
         ## TODO: improve message here
         stop(paste0("modifiers must have the following elements: ", paste(required_names, collapse = ", "), "."), call. = FALSE)
@@ -10,7 +10,7 @@ check.modifiers <- function(modifiers) {
 
     ## Check the content for each required names
     required_content <- c("fun", "internal")
-    for(one_check in required_names) {
+    for(one_check in required_names[-length(required_names)]) {
         if(any(missing <- is.na(match(names(modifiers[[one_check]]), required_content)))) {
             ## TODO: improve message here
             stop(paste0("The ", one_check, " modifier must contain the following elements: ", paste(required_content, collapse = ", "), "."), call. = FALSE)

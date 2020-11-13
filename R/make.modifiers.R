@@ -52,6 +52,13 @@ make.modifiers <- function(branch.length, speciation, condition, modify, add, te
 
     ## required arguments
     required_args <- c("bd.params", "n.taxa", "parent.lineage", "trait.values", "modify.fun")
+    ## Get the call
+    match_call <- match.call()
+    # return(match_call)
+    ## Internal function for returning default calls
+    call.default <- function(x) {
+        return(ifelse(is.null(x), "default", as.character(x)))
+    }
 
     ## Check branch length
     do_branch_length <- FALSE
@@ -161,7 +168,7 @@ make.modifiers <- function(branch.length, speciation, condition, modify, add, te
 
     } else {
         ## Build an empty modifiers list
-        modifiers <- list()
+        modifiers <- list("waiting" = NULL, "speciating" = NULL, "call" = NULL)
         init_branch_length <- init_speciation <- TRUE
         update_condition <- update_modify <- FALSE
     }
@@ -173,18 +180,28 @@ make.modifiers <- function(branch.length, speciation, condition, modify, add, te
         if(!do_branch_length) {
             modifiers$waiting <- list(fun = branch.length.fast,
                                         internal = NULL)
+            ## Update the call
+            modifiers$call$waiting$fun <- "default"
         } else {
             modifiers$waiting <- list(fun = branch.length,
                                       internal = list(condition = condition,
                                                       modify    = modify))
+            ## Update the call
+            modifiers$call$waiting$fun       <- call.default(match_call$branch.length)
+            modifiers$call$waiting$condition <- call.default(match_call$condition)
+            modifiers$call$waiting$modify    <- call.default(match_call$modify)
         }
     } else {
         if(do_branch_length) {
             if(update_condition) {
                 modifiers$waiting$internal$condition <- condition
+                ## Update the call
+                modifiers$call$waiting$condition <- call.default(match_call$condition)
             }
             if(update_modify) {
                 modifiers$waiting$internal$modify <- modify
+                ## Update the call
+                modifiers$call$waiting$modify    <- call.default(match_call$modify)
             }
         }
     }
@@ -194,18 +211,28 @@ make.modifiers <- function(branch.length, speciation, condition, modify, add, te
         if(!do_speciation) {
             modifiers$speciating <- list(fun = speciation.fast,
                                          internal = NULL)
+            ## Update the call
+            modifiers$call$speciating <- "default"
         } else {
             modifiers$speciating <- list(fun = speciation,
                                          internal = list(condition = condition,
                                                          modify    = modify))
+            ## Update the call
+            modifiers$call$speciating$fun       <- call.default(match_call$speciation)
+            modifiers$call$speciating$condition <- call.default(match_call$condition)
+            modifiers$call$speciating$modify    <- call.default(match_call$modify)
         }
     } else {
         if(do_speciation) {
             if(update_condition) {
                 modifiers$speciating$internal$condition <- condition
+                ## Update the call
+                modifiers$call$speciating$condition <- call.default(match_call$condition)
             }
             if(update_modify) {
                 modifiers$speciating$internal$modify <- modify
+                ## Update the call
+                modifiers$call$speciating$modify    <- call.default(match_call$modify)
             }
         }
     }
