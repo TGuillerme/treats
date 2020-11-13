@@ -33,10 +33,10 @@ check.modifiers <- function(modifiers) {
 
     ## Debrief
     if(class(test_waiting) == "try-error") {
-        stop(paste0("The waiting element from the modifiers failed with the following error message", ifelse(length(test_waiting) > 1, "s:\n", ":\n"), paste(test_waiting, collapse = "\n")), call. = FALSE)
+        stop(paste0("The branch length element from the modifiers failed with the following error message", ifelse(length(test_waiting) > 1, "s:\n", ":\n"), paste(test_waiting, collapse = "\n")), call. = FALSE)
     } else {
         if(class(test_waiting) != "numeric") {
-            stop(paste0("The waiting element from the modifiers did not produce a numeric value (it produced a ", paste(class(test_waiting), collapse = ","), " instead)."))
+            stop(paste0("The branch length element from the modifiers did not produce a numeric value (it produced a ", paste(class(test_waiting), collapse = ","), " instead)."))
         }
     }
 
@@ -51,10 +51,10 @@ check.modifiers <- function(modifiers) {
 
     ## Debrief
     if(class(test_speciating) == "try-error") {
-        stop(paste0("The speciating element from the modifiers failed with the following error message", ifelse(length(test_speciating) > 1, "s:\n", ":\n"), paste(test_speciating, collapse = "\n")), call. = FALSE)
+        stop(paste0("The speciation element from the modifiers failed with the following error message", ifelse(length(test_speciating) > 1, "s:\n", ":\n"), paste(test_speciating, collapse = "\n")), call. = FALSE)
     } else {
         if(class(test_speciating) != "logical") {
-            stop(paste0("The waiting element from the modifiers did not produce a logical value (it produced a ", paste(class(test_speciating), collapse = ","), " instead)."))
+            stop(paste0("The speciation element from the modifiers did not produce a logical value (it produced a ", paste(class(test_speciating), collapse = ","), " instead)."))
         }
     }
     return(NULL)
