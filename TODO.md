@@ -19,10 +19,8 @@
  - [x] make list of modifiers
  - [x] `make.modifiers`
  - [x] document list of modifiers (Rd)
- - [ ] document list of modifiers (gitbook)
  - [x] test `make.modifiers`
- - [ ] add and test `print.modifiers`
- - [ ] test list of modifiers
+ - [x] add and test `print.modifiers`
 
 ## TODO events
 
@@ -38,4 +36,4 @@
  
  - [x] add utilities
  - [ ] add manual for utilities
- - [ ] add test for `get.parent.traits`
+ - [ ] add test for `parent.traits`
