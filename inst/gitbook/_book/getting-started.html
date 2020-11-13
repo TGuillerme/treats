@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2 Getting started | dads manual</title>
+  <meta name="description" content="dads R package vignette" />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2 Getting started | dads manual" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="dads R package vignette" />
+  <meta name="github-repo" content="TGuillerme/dads" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2 Getting started | dads manual" />
+  
+  <meta name="twitter:description" content="dads R package vignette" />
+  
+
+<meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Alex Slavenko (email) and others" />
+
+
+<meta name="date" content="2020-11-13" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="maketraits.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">dads manual</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> <code>dads</code></a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#what-is-dads"><i class="fa fa-check"></i><b>1.1</b> What is <code>dads</code>?</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#modular"><i class="fa fa-check"></i><b>1.1.1</b> Modular?</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#installing-and-running-the-package"><i class="fa fa-check"></i><b>1.2</b> Installing and running the package</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#help"><i class="fa fa-check"></i><b>1.3</b> Help</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#how-does-dads-work"><i class="fa fa-check"></i><b>1.4</b> How does <code>dads</code> work?</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="getting-started.html"><a href="getting-started.html"><i class="fa fa-check"></i><b>2</b> Getting started</a><ul>
+<li class="chapter" data-level="2.1" data-path="getting-started.html"><a href="getting-started.html#the-simplest-of-all-analysis-simulating-diversity-only"><i class="fa fa-check"></i><b>2.1</b> The simplest of all analysis: simulating diversity only</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="getting-started.html"><a href="getting-started.html#changing-the-birth-death-parameters"><i class="fa fa-check"></i><b>2.1.1</b> Changing the birth-death parameters</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="getting-started.html"><a href="getting-started.html#slightly-more-complex-simulating-disparity-and-diversity"><i class="fa fa-check"></i><b>2.2</b> Slightly more complex: simulating disparity and diversity</a></li>
+<li class="chapter" data-level="2.3" data-path="getting-started.html"><a href="getting-started.html#slightly-more-more-complex-simulating-linked-disparity-and-diversity"><i class="fa fa-check"></i><b>2.3</b> Slightly more more complex: simulating linked disparity and diversity</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="maketraits.html"><a href="maketraits.html"><i class="fa fa-check"></i><b>3</b> Making trait processes with <code>make.traits()</code></a><ul>
+<li class="chapter" data-level="3.1" data-path="maketraits.html"><a href="maketraits.html#the-process-process"><i class="fa fa-check"></i><b>3.1</b> The process (<code>process</code>)</a></li>
+<li class="chapter" data-level="3.2" data-path="maketraits.html"><a href="maketraits.html#the-number-of-traits-n-and-the-starting-values-start"><i class="fa fa-check"></i><b>3.2</b> The number of traits <code>n</code> and the starting values <code>start</code></a></li>
+<li class="chapter" data-level="3.3" data-path="maketraits.html"><a href="maketraits.html#extra-argument-for-the-processes-with-process.args"><i class="fa fa-check"></i><b>3.3</b> Extra argument for the processes with <code>process.args</code></a></li>
+<li class="chapter" data-level="3.4" data-path="maketraits.html"><a href="maketraits.html#naming-the-traits-with-trait.names"><i class="fa fa-check"></i><b>3.4</b> Naming the traits with <code>trait.names</code></a></li>
+<li class="chapter" data-level="3.5" data-path="maketraits.html"><a href="maketraits.html#combining-multiple-traits-with-add"><i class="fa fa-check"></i><b>3.5</b> Combining multiple traits with <code>add</code></a></li>
+<li class="chapter" data-level="3.6" data-path="maketraits.html"><a href="maketraits.html#testing-the-traits-with-test"><i class="fa fa-check"></i><b>3.6</b> Testing the traits with <code>test</code></a></li>
+<li class="chapter" data-level="3.7" data-path="maketraits.html"><a href="maketraits.html#templates-for-making-your-very-own-process"><i class="fa fa-check"></i><b>3.7</b> Templates for making your very own process</a><ul>
+<li class="chapter" data-level="3.7.1" data-path="maketraits.html"><a href="maketraits.html#a-simple-brownian-motion-process-template"><i class="fa fa-check"></i><b>3.7.1</b> A simple Brownian Motion process template</a></li>
+<li class="chapter" data-level="3.7.2" data-path="maketraits.html"><a href="maketraits.html#a-simple-ornstein-uhlenbeck-process-template"><i class="fa fa-check"></i><b>3.7.2</b> A simple Ornstein-Uhlenbeck process template</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="makemodifiers.html"><a href="makemodifiers.html"><i class="fa fa-check"></i><b>4</b> Making modifiers with <code>make.modifiers()</code></a><ul>
+<li class="chapter" data-level="4.1" data-path="makemodifiers.html"><a href="makemodifiers.html#the-branch-length-function-branch.length"><i class="fa fa-check"></i><b>4.1</b> The branch length function (<code>branch.length</code>)</a></li>
+<li class="chapter" data-level="4.2" data-path="makemodifiers.html"><a href="makemodifiers.html#the-speciation-function-speciation"><i class="fa fa-check"></i><b>4.2</b> The speciation function (<code>speciation</code>)</a></li>
+<li class="chapter" data-level="4.3" data-path="makemodifiers.html"><a href="makemodifiers.html#the-condition-function-condition"><i class="fa fa-check"></i><b>4.3</b> The condition function (<code>condition</code>)</a></li>
+<li class="chapter" data-level="4.4" data-path="makemodifiers.html"><a href="makemodifiers.html#the-modify-function-modify"><i class="fa fa-check"></i><b>4.4</b> The modify function (<code>modify</code>)</a></li>
+<li class="chapter" data-level="4.5" data-path="makemodifiers.html"><a href="makemodifiers.html#combining-and-editing-modifiers-add"><i class="fa fa-check"></i><b>4.5</b> Combining and editing modifiers (<code>add</code>)</a></li>
+<li class="chapter" data-level="4.6" data-path="makemodifiers.html"><a href="makemodifiers.html#testing-modifiers-test"><i class="fa fa-check"></i><b>4.6</b> Testing modifiers (<code>test</code>)</a></li>
+<li class="chapter" data-level="4.7" data-path="makemodifiers.html"><a href="makemodifiers.html#demo-runnable"><i class="fa fa-check"></i><b>4.7</b> Demo runnable</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/TGuillerme/dads/" target="blank">Project GitHub page</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">dads manual</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="getting-started" class="section level1">
+<h1><span class="header-section-number">2</span> Getting started</h1>
+<div id="the-simplest-of-all-analysis-simulating-diversity-only" class="section level2">
+<h2><span class="header-section-number">2.1</span> The simplest of all analysis: simulating diversity only</h2>
+<p>One of the simplest things to do with the <code>dads</code> package is just to simulate a birth death tree.
+For that you can use the function <code>dads</code> and specify your stopping rule.
+The stopping rule simply tells the birth death process to step whenever it reaches one of these three conditions:</p>
+<ul>
+<li><code>&quot;max.taxa&quot;   = n</code> stop when <code>n</code> taxa are generated;</li>
+<li><code>&quot;max.living&quot; = n</code> stop when there is <code>n</code> co-occuring taxa of the same age (i.e. “living” taxa);</li>
+<li><code>&quot;max.time&quot;   = n</code> stop when the simulated tree is <code>n</code> units of age old (these units are arbitrary);</li>
+</ul>
+<p>For example, we might want to generate a birth-death tree with 20 taxa:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co">## Setting a stopping rule to reach a maximum of 20 taxa</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">my_stop_rule &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">max.taxa =</span> <span class="dv">20</span>)</a></code></pre></div>
+<p>We can now run the simulations using:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co">## Running the birth death simulation</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">my_tree &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">stop.rule =</span> my_stop_rule)</a></code></pre></div>
+<blockquote>
+<p>Note that here we could have specified more than one stopping rule, for example, we might want to run a simulation and stop it if it either reaches 10 taxa or the age 2 using <code>stop.rule = list(max.time = 2, max.taxa = 10)</code>. The simulation will then stop when either of these conditions are met.</p>
+</blockquote>
+<p>The resulting object is a classic <code>&quot;phylo&quot;</code> object that you can simply plot or visualise like so:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co">## The tree object</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">my_tree</a></code></pre></div>
+<pre><code>## 
+## Phylogenetic tree with 20 tips and 19 internal nodes.
+## 
+## Tip labels:
+##   t1, t2, t3, t4, t5, t6, ...
+## Node labels:
+##   n1, n2, n3, n4, n5, n6, ...
+## 
+## Rooted; includes branch lengths.</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co">## Plotting it</span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw">plot</span>(my_tree)</a></code></pre></div>
+<p><img src="dads_manual_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<div id="changing-the-birth-death-parameters" class="section level3">
+<h3><span class="header-section-number">2.1.1</span> Changing the birth-death parameters</h3>
+<p>People familiar with the <a href="https://lukejharmon.github.io/pcm/chapter10_birthdeath/">birth-death models</a> might have noticed that we did not specify two important things here: the speciation parameter (sometimes called “lambda” or “birth”) and the extinction parameter (sometimes called “mu”, “death” or “background extinction”).
+By default <code>dads</code> runs a pure birth model (the speciation is set to 1 and the extinction to 0).
+However, you can easily change that by specifying your new birth death parameters:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co">## my birth death parameters</span></a>
+<a class="sourceLine" id="cb8-2" data-line-number="2">my_params &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">speciation =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb8-3" data-line-number="3">                  <span class="dt">extinction =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">3</span>)</a></code></pre></div>
+<blockquote>
+<p>Note that here it is not necessary to specify <code>extinction = 1</code> since this is the default option, you can always just change the parameter of interest (e.g. changing <code>extinciton = 0</code> to <code>extinction = 1/3</code>). However, we think it’s good practice to attribute both parameters specifically to avoid any confusion.</p>
+</blockquote>
+<p>You can then run the same birth death tree with extinction:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co">## Generating a birth death tree with extinctions:</span></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">my_tree &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params =</span> my_params, <span class="dt">stop.rule =</span> my_stop_rule)</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">## Visualising the new tree</span></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="kw">plot</span>(my_tree)</a></code></pre></div>
+<p><img src="dads_manual_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+</div>
+<div id="slightly-more-complex-simulating-disparity-and-diversity" class="section level2">
+<h2><span class="header-section-number">2.2</span> Slightly more complex: simulating disparity and diversity</h2>
+<p>Chances are that you want to also simulate traits (disparity) along with your diversity (otherwise, we suggest using the <a href="https://github.com/tanja819/TreeSim/"><code>TreeSim</code></a> package that provides many more birth death models).
+Simulating traits is not much more complicated in <code>dads</code>: you’ll simply need to create a <code>&quot;traits&quot;</code> object using the <code>make.traits</code> function.
+These objects can have increasing complexity (see the rest of this tutorial) but we will keep it simple here.</p>
+<p><code>&quot;traits&quot;</code> objects contain one or more processes which are the ways to generate the trait.
+The most common of these processes is the <a href="https://en.wikipedia.org/wiki/Brownian_motion">Brownian Motion</a>.
+This is used by default with the <code>make.traits</code> function:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="co">## Creating the traits object</span></a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">my_trait &lt;-<span class="st"> </span><span class="kw">make.traits</span>()</a></code></pre></div>
+<p>This trait object can be simply printed (to see what’s in it) or plotted (to see what the process looks like in the absence of a phylogeny):</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="co">## Which process is in here?</span></a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">my_trait</a></code></pre></div>
+<pre><code>##  ---- dads traits object ---- 
+## 1 trait for 1 process (A) with one starting value (0).</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co">## What does it look like?</span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="kw">plot</span>(my_trait)</a></code></pre></div>
+<p><img src="dads_manual_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>By default, this trait is called “A”.
+This is not a really good name but you’ll see more about specifying trait names later on.
+If this is what the process should look like (theoretically) you can then add its <code>&quot;traits&quot;</code> object to our previous <code>dads</code> function to generate the tree and the traits:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="co">## Simulate disparity and diversity</span></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2">my_data &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params =</span> my_params,</a>
+<a class="sourceLine" id="cb14-3" data-line-number="3">                <span class="dt">stop.rule =</span> my_stop_rule,</a>
+<a class="sourceLine" id="cb14-4" data-line-number="4">                <span class="dt">traits    =</span> my_trait)</a></code></pre></div>
+<p>Et voilà! We now have a simple disparity and diversity simulation.
+We can see what’s in the results by simply printing it or plotting it:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co">## What&#39;s in there</span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">my_data</a></code></pre></div>
+<pre><code>##  ---- dads object ---- 
+## Simulated diversity data (x$tree):
+## 
+## Phylogenetic tree with 20 tips and 19 internal nodes.
+## 
+## Tip labels:
+##   t1, t2, t3, t4, t5, t6, ...
+## Node labels:
+##   n1, n2, n3, n4, n5, n6, ...
+## 
+## Rooted; includes branch lengths.
+## 
+## Simulated disparity data (x$data):
+## 1 trait for 1 process (A) with one starting value (0).</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co">## Plotting the disparity and diversity</span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">plot</span>(my_data)</a></code></pre></div>
+<p><img src="dads_manual_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>You can then extract the components you need for your specific analysis like so:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="co">## Extracting the tree (a &quot;phylo&quot; object)</span></a>
+<a class="sourceLine" id="cb18-2" data-line-number="2">the_generated_tree &lt;-<span class="st"> </span>my_data<span class="op">$</span>tree</a>
+<a class="sourceLine" id="cb18-3" data-line-number="3"><span class="kw">class</span>(the_generated_tree)</a></code></pre></div>
+<pre><code>## [1] &quot;phylo&quot;</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="co">## Extracting the data (a &quot;matrix&quot;)</span></a>
+<a class="sourceLine" id="cb20-2" data-line-number="2">the_generated_data &lt;-<span class="st"> </span>my_data<span class="op">$</span>data</a>
+<a class="sourceLine" id="cb20-3" data-line-number="3"><span class="kw">class</span>(the_generated_data)</a></code></pre></div>
+<pre><code>## [1] &quot;matrix&quot; &quot;array&quot;</code></pre>
+<p>You can find much more on how to design trait objects in the <a href="maketraits.html#maketraits"><code>make.traits</code> section</a>.</p>
+</div>
+<div id="slightly-more-more-complex-simulating-linked-disparity-and-diversity" class="section level2">
+<h2><span class="header-section-number">2.3</span> Slightly more more complex: simulating linked disparity and diversity</h2>
+<p>The example above is also still pretty simple and easily done through a variety of <code>R</code> packages: here the trait and the tree are simulated at the same time but only the tree is simulating the trait (i.e. the trait value at a tip is affected by it’s ancestor and the branch length leading to it) but not the other way around (the trait value does not affect the tree).
+It is possible to add this aspect using <code>&quot;modifiers&quot;</code> objects.
+<code>&quot;modifiers&quot;</code> are similar to <code>&quot;traits&quot;</code> in that you specify what should go in there and then feed it to your simulation.</p>
+<p><code>&quot;modifiers&quot;</code> affect two key steps of the birth-death process: the calculation of the waiting time (i.e. the component generating branch lengths) and the triggering of speciation or extinction events.
+These events can be modified using some <code>condition</code> and <code>modify</code> function.
+In other words, when reaching a certain condition specified by a <code>condition</code> function, the birth-death process will modify either the branch length or the speciation (or extinction) probability by applying a <code>modify</code> function.</p>
+<p>You can use the function <code>make.modifiers</code> to design a specific <code>&quot;modifiers&quot;</code> object.
+By default, this function generates a <code>&quot;modifiers&quot;</code> object that affects branch length and speciation in the following way:</p>
+<ul>
+<li>branch length is a randomly drawn number from an exponential distribution with a rate equal to the current number of taxa multiplied by the sum of the speciation and extinction rates.</li>
+<li>speciation is triggered if a randomly drawn number (from a (0,1) uniform distribution) is smaller than the ratio between the speciation rate and the sum of the speciation and extinction rates. If that random number is greater, the lineage goes extinct.</li>
+</ul>
+<p>Note that these are default for a birth death tree and were actually already applied in the examples before (without specifying a modifier):</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="co">## Make a default modifiers</span></a>
+<a class="sourceLine" id="cb22-2" data-line-number="2">default_modifiers &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>()</a>
+<a class="sourceLine" id="cb22-3" data-line-number="3"><span class="co">## What&#39;s in it?</span></a>
+<a class="sourceLine" id="cb22-4" data-line-number="4">default_modifiers</a></code></pre></div>
+<pre><code>##  ---- dads modifiers object ---- 
+## No modifiers applied to the branch length and speciation processes (default).</code></pre>
+<p>This will not do much to our simulations compared to the previous trait and tree simulation but we can provide our modifiers object to the <code>dads</code> function:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb24-2" data-line-number="2"><span class="co">## Setting the simulation parameters</span></a>
+<a class="sourceLine" id="cb24-3" data-line-number="3">extinction_<span class="dv">02</span> &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">extinction =</span> <span class="fl">0.4</span>)</a>
+<a class="sourceLine" id="cb24-4" data-line-number="4">living_<span class="dv">20</span>     &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">max.living =</span> <span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb24-5" data-line-number="5">BM_trait      &lt;-<span class="st"> </span><span class="kw">make.traits</span>()</a>
+<a class="sourceLine" id="cb24-6" data-line-number="6"><span class="kw">set.seed</span>(<span class="dv">4242</span>)</a>
+<a class="sourceLine" id="cb24-7" data-line-number="7"><span class="co">## Simulate disparity and diversity</span></a>
+<a class="sourceLine" id="cb24-8" data-line-number="8">default_data &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params =</span> extinction_<span class="dv">02</span>,</a>
+<a class="sourceLine" id="cb24-9" data-line-number="9">                     <span class="dt">stop.rule =</span> living_<span class="dv">20</span>,</a>
+<a class="sourceLine" id="cb24-10" data-line-number="10">                     <span class="dt">traits    =</span> BM_trait,</a>
+<a class="sourceLine" id="cb24-11" data-line-number="11">                     <span class="dt">modifiers =</span> default_modifiers)</a>
+<a class="sourceLine" id="cb24-12" data-line-number="12">default_data</a></code></pre></div>
+<pre><code>##  ---- dads object ---- 
+## Birth death process with modifiers:
+## No modifiers applied to the branch length and speciation processes (default).
+## 
+## Simulated diversity data (x$tree):
+## 
+## Phylogenetic tree with 45 tips and 44 internal nodes.
+## 
+## Tip labels:
+##   t1, t2, t3, t4, t5, t6, ...
+## Node labels:
+##   n1, n2, n3, n4, n5, n6, ...
+## 
+## Rooted; includes branch lengths.
+## 
+## Simulated disparity data (x$data):
+## 1 trait for 1 process (A) with one starting value (0).</code></pre>
+<p>Note however that the printing information is now updated to state that you’ve add a modifier (even though it’s a default one).</p>
+<p>For more interesting simulations however, you can provide modifiers that actually modify the birth death process.
+We can create one for example that makes species go extinct if their ancestor have a negative trait value.
+For that we need to create a modifiers object that modifies the <code>speciation</code> process with a specific condition and a specific modification when that condition is met.
+First we are going to create the modification function.
+This function must intake the argument <code>x</code> and, in our case, return a logical value: <code>TRUE</code> is for speciate and <code>FALSE</code> is for go extinct.
+We want this <code>modify</code> function to always return <code>FALSE</code> (go extinct) since it will be triggered by <code>condition</code> (we will see that in a minute).</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="co">## Going extinct</span></a>
+<a class="sourceLine" id="cb26-2" data-line-number="2">staying.alive &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">return</span>(<span class="ot">TRUE</span>)</a></code></pre></div>
+<p>Now we want this function to only trigger when an ancestor has a negative trait value.
+We can do that by specifying our <code>condition</code> function (when the ancestor is trait is negative) apply our modification (here the <code>staying.alive</code> function).
+For that we can use the <code>parent.traits</code> utility function that is optimised for accessing traits in the birth death process (but you can of course write your own).
+This function intakes the <code>trait.values</code> and <code>parent.lineage</code> arguments, two arguments that you can leave named as they are to facilitate <code>dads</code>s understanding of what you which to asses:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="co">## Triggering a modification only if the ancestor trait is negative</span></a>
+<a class="sourceLine" id="cb27-2" data-line-number="2">negative.ancestor &lt;-<span class="st"> </span><span class="cf">function</span>(trait.values, parent.lineage) {</a>
+<a class="sourceLine" id="cb27-3" data-line-number="3">    <span class="kw">return</span>(<span class="kw">all</span>(<span class="kw">parent.traits</span>(trait.values, parent.lineage) <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb27-4" data-line-number="4">}</a></code></pre></div>
+<p>Note that we use the function <code>all</code> here to evaluate all traits (if the data is multidimensional).
+We can then provide these two functions (the condition <code>negative.ancestor</code> and how to modify the speciation event when this condition is met <code>staying.alive</code>).
+If you are an advances <code>dads</code> user, you can design your own <code>speciation</code> function but if you just want to use a normal <code>speciation</code> function, you can use the default one from <code>dads</code> called… <code>speciation</code>.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="co">## Making a modifier for species to go extinct if</span></a>
+<a class="sourceLine" id="cb28-2" data-line-number="2"><span class="co">## their ancestor&#39;s trait value is (or are) negative</span></a>
+<a class="sourceLine" id="cb28-3" data-line-number="3">negatives_extinct &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(</a>
+<a class="sourceLine" id="cb28-4" data-line-number="4">                        <span class="co">## The speciation function (default)</span></a>
+<a class="sourceLine" id="cb28-5" data-line-number="5">                        <span class="dt">speciation =</span> speciation,</a>
+<a class="sourceLine" id="cb28-6" data-line-number="6">                        <span class="co">## What to modify</span></a>
+<a class="sourceLine" id="cb28-7" data-line-number="7">                        <span class="dt">modify     =</span> staying.alive,</a>
+<a class="sourceLine" id="cb28-8" data-line-number="8">                        <span class="co">## When to modify it</span></a>
+<a class="sourceLine" id="cb28-9" data-line-number="9">                        <span class="dt">condition  =</span> negative.ancestor)</a>
+<a class="sourceLine" id="cb28-10" data-line-number="10"><span class="co">## What&#39;s in it?</span></a>
+<a class="sourceLine" id="cb28-11" data-line-number="11">negatives_extinct</a></code></pre></div>
+<pre><code>##  ---- dads modifiers object ---- 
+## Default branch length process.
+## Speciation process is set to speciation with a condition (negative.ancestor) and a modifier (staying.alive).</code></pre>
+<p>Note that the <code>make.modifiers</code> function tests whether the input is compatible with <code>dads</code> by default so unless you have an error message, your <code>modifiers</code> will work!
+We can now simulate our tree and traits with our modifier: species will go extinct if their ancestor have a negative trait value:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">4242</span>)</a>
+<a class="sourceLine" id="cb30-2" data-line-number="2"><span class="co">## Simulate disparity and diversity</span></a>
+<a class="sourceLine" id="cb30-3" data-line-number="3">biased_data &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params =</span> extinction_<span class="dv">02</span>,</a>
+<a class="sourceLine" id="cb30-4" data-line-number="4">                    <span class="dt">stop.rule =</span> living_<span class="dv">20</span>,</a>
+<a class="sourceLine" id="cb30-5" data-line-number="5">                    <span class="dt">traits    =</span> BM_trait,</a>
+<a class="sourceLine" id="cb30-6" data-line-number="6">                    <span class="dt">modifiers =</span> negatives_extinct)</a>
+<a class="sourceLine" id="cb30-7" data-line-number="7">biased_data</a></code></pre></div>
+<pre><code>##  ---- dads object ---- 
+## Birth death process with modifiers:
+## Default branch length process.
+## Speciation process is set to speciation with a condition (negative.ancestor) and a modifier (staying.alive).
+## 
+## Simulated diversity data (x$tree):
+## 
+## Phylogenetic tree with 38 tips and 37 internal nodes.
+## 
+## Tip labels:
+##   t1, t2, t3, t4, t5, t6, ...
+## Node labels:
+##   n1, n2, n3, n4, n5, n6, ...
+## 
+## Rooted; includes branch lengths.
+## 
+## Simulated disparity data (x$data):
+## 1 trait for 1 process (A) with one starting value (0).</code></pre>
+<p>We can now compare the two trees and their trait values.
+Note that we’ve used the same starting seed for both trees so the only thing differing between them is the modifier!
+Also, although species</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb32-2" data-line-number="2"><span class="kw">plot</span>(default_data, <span class="dt">main =</span> <span class="st">&quot;default results&quot;</span>)</a>
+<a class="sourceLine" id="cb32-3" data-line-number="3"><span class="kw">plot</span>(biased_data, <span class="dt">main =</span> <span class="st">&quot;results with the modifier&quot;</span>)</a></code></pre></div>
+<p><img src="dads_manual_files/figure-html/unnamed-chunk-20-1.png" width="1152" /></p>
+<p>You can find much more how to design modifiers in the <a href="makemodifiers.html#makemodifiers"><code>make.modifiers</code> section</a>.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="maketraits.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/TGuillerme/dads/inst/gitbook/edit/master/01_getting_started.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

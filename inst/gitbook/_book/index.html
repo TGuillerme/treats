@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>dads manual</title>
+  <meta name="description" content="dads R package vignette" />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="dads manual" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="dads R package vignette" />
+  <meta name="github-repo" content="TGuillerme/dads" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="dads manual" />
+  
+  <meta name="twitter:description" content="dads R package vignette" />
+  
+
+<meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Alex Slavenko (email) and others" />
+
+
+<meta name="date" content="2020-11-13" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+
+<link rel="next" href="getting-started.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">dads manual</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> <code>dads</code></a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#what-is-dads"><i class="fa fa-check"></i><b>1.1</b> What is <code>dads</code>?</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#modular"><i class="fa fa-check"></i><b>1.1.1</b> Modular?</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#installing-and-running-the-package"><i class="fa fa-check"></i><b>1.2</b> Installing and running the package</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#help"><i class="fa fa-check"></i><b>1.3</b> Help</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#how-does-dads-work"><i class="fa fa-check"></i><b>1.4</b> How does <code>dads</code> work?</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="getting-started.html"><a href="getting-started.html"><i class="fa fa-check"></i><b>2</b> Getting started</a><ul>
+<li class="chapter" data-level="2.1" data-path="getting-started.html"><a href="getting-started.html#the-simplest-of-all-analysis-simulating-diversity-only"><i class="fa fa-check"></i><b>2.1</b> The simplest of all analysis: simulating diversity only</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="getting-started.html"><a href="getting-started.html#changing-the-birth-death-parameters"><i class="fa fa-check"></i><b>2.1.1</b> Changing the birth-death parameters</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="getting-started.html"><a href="getting-started.html#slightly-more-complex-simulating-disparity-and-diversity"><i class="fa fa-check"></i><b>2.2</b> Slightly more complex: simulating disparity and diversity</a></li>
+<li class="chapter" data-level="2.3" data-path="getting-started.html"><a href="getting-started.html#slightly-more-more-complex-simulating-linked-disparity-and-diversity"><i class="fa fa-check"></i><b>2.3</b> Slightly more more complex: simulating linked disparity and diversity</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="maketraits.html"><a href="maketraits.html"><i class="fa fa-check"></i><b>3</b> Making trait processes with <code>make.traits()</code></a><ul>
+<li class="chapter" data-level="3.1" data-path="maketraits.html"><a href="maketraits.html#the-process-process"><i class="fa fa-check"></i><b>3.1</b> The process (<code>process</code>)</a></li>
+<li class="chapter" data-level="3.2" data-path="maketraits.html"><a href="maketraits.html#the-number-of-traits-n-and-the-starting-values-start"><i class="fa fa-check"></i><b>3.2</b> The number of traits <code>n</code> and the starting values <code>start</code></a></li>
+<li class="chapter" data-level="3.3" data-path="maketraits.html"><a href="maketraits.html#extra-argument-for-the-processes-with-process.args"><i class="fa fa-check"></i><b>3.3</b> Extra argument for the processes with <code>process.args</code></a></li>
+<li class="chapter" data-level="3.4" data-path="maketraits.html"><a href="maketraits.html#naming-the-traits-with-trait.names"><i class="fa fa-check"></i><b>3.4</b> Naming the traits with <code>trait.names</code></a></li>
+<li class="chapter" data-level="3.5" data-path="maketraits.html"><a href="maketraits.html#combining-multiple-traits-with-add"><i class="fa fa-check"></i><b>3.5</b> Combining multiple traits with <code>add</code></a></li>
+<li class="chapter" data-level="3.6" data-path="maketraits.html"><a href="maketraits.html#testing-the-traits-with-test"><i class="fa fa-check"></i><b>3.6</b> Testing the traits with <code>test</code></a></li>
+<li class="chapter" data-level="3.7" data-path="maketraits.html"><a href="maketraits.html#templates-for-making-your-very-own-process"><i class="fa fa-check"></i><b>3.7</b> Templates for making your very own process</a><ul>
+<li class="chapter" data-level="3.7.1" data-path="maketraits.html"><a href="maketraits.html#a-simple-brownian-motion-process-template"><i class="fa fa-check"></i><b>3.7.1</b> A simple Brownian Motion process template</a></li>
+<li class="chapter" data-level="3.7.2" data-path="maketraits.html"><a href="maketraits.html#a-simple-ornstein-uhlenbeck-process-template"><i class="fa fa-check"></i><b>3.7.2</b> A simple Ornstein-Uhlenbeck process template</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="makemodifiers.html"><a href="makemodifiers.html"><i class="fa fa-check"></i><b>4</b> Making modifiers with <code>make.modifiers()</code></a><ul>
+<li class="chapter" data-level="4.1" data-path="makemodifiers.html"><a href="makemodifiers.html#the-branch-length-function-branch.length"><i class="fa fa-check"></i><b>4.1</b> The branch length function (<code>branch.length</code>)</a></li>
+<li class="chapter" data-level="4.2" data-path="makemodifiers.html"><a href="makemodifiers.html#the-speciation-function-speciation"><i class="fa fa-check"></i><b>4.2</b> The speciation function (<code>speciation</code>)</a></li>
+<li class="chapter" data-level="4.3" data-path="makemodifiers.html"><a href="makemodifiers.html#the-condition-function-condition"><i class="fa fa-check"></i><b>4.3</b> The condition function (<code>condition</code>)</a></li>
+<li class="chapter" data-level="4.4" data-path="makemodifiers.html"><a href="makemodifiers.html#the-modify-function-modify"><i class="fa fa-check"></i><b>4.4</b> The modify function (<code>modify</code>)</a></li>
+<li class="chapter" data-level="4.5" data-path="makemodifiers.html"><a href="makemodifiers.html#combining-and-editing-modifiers-add"><i class="fa fa-check"></i><b>4.5</b> Combining and editing modifiers (<code>add</code>)</a></li>
+<li class="chapter" data-level="4.6" data-path="makemodifiers.html"><a href="makemodifiers.html#testing-modifiers-test"><i class="fa fa-check"></i><b>4.6</b> Testing modifiers (<code>test</code>)</a></li>
+<li class="chapter" data-level="4.7" data-path="makemodifiers.html"><a href="makemodifiers.html#demo-runnable"><i class="fa fa-check"></i><b>4.7</b> Demo runnable</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/TGuillerme/dads/" target="blank">Project GitHub page</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">dads manual</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="header">
+<h1 class="title">dads manual</h1>
+<p class="author"><em>Thomas Guillerme (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>), Alex Slavenko (email) and others</em></p>
+<p class="date"><em>2020-11-13</em></p>
+</div>
+<div id="dads" class="section level1">
+<h1><span class="header-section-number">1</span> <code>dads</code></h1>
+<p>Disparity and diversity simulations.</p>
+<p>Allowing to simulate disparity and diversity at the same time with interaction between both.</p>
+<p>The core of this package is based on the <a href="https://github.com/cran/diversitree/blob/master/R/simulate-bd.R"><code>diversitree</code> birth-death algorithm</a>.</p>
+<div id="what-is-dads" class="section level2">
+<h2><span class="header-section-number">1.1</span> What is <code>dads</code>?</h2>
+<p>There are some very good packages out there to simulate birth death trees (like <a href="https://github.com/tanja819/TreeSim">TreeSim</a>) or even packages simulating traits (disparity) and diversity jointly (like <a href="https://github.com/cran/RPANDA">RPANDA</a> or <a href="https://github.com/PuttickMacroevolution/PETER">PETER</a>).
+We strongly advice you have a look at these packages first as they might be more appropriate for your tasks.</p>
+<p><code>dads</code> aims to be a highly modular and friendly version of all these packages: it allows to simulate disparity and diversity jointly with a vast array of options that can be easily modified by users.
+For example, you can easily generate any type of process to generate a trait (BM, OU, something else, etc…) in multiple dependent or independent dimensions through <code>&quot;traits&quot;</code> objects.
+You can then specify how the traits should affect disparity through <code>&quot;modifiers&quot;</code> objects. And finally you can create events (like mass extinctions) through <code>&quot;events&quot;</code> objects.
+These objects and how to modify them will be detailed throughout this manual.
+Finally we are putting an emphasise in the development of this package on the speed and reliability of the functions.</p>
+<div id="modular" class="section level3">
+<h3><span class="header-section-number">1.1.1</span> Modular?</h3>
+<p>Because their is an infinite way you might want to generate disparity and diversity (different traits, different modifiers and different events), the <code>dads</code> package is designed to make all these parts easy to code separately and integrate them easily in the <code>dads</code> core functions.
+This allows you to simulate finely tuned multidimensional data for your specific project!</p>
+</div>
+</div>
+<div id="installing-and-running-the-package" class="section level2">
+<h2><span class="header-section-number">1.2</span> Installing and running the package</h2>
+<p>You can install this package easily, directly from the github:
+<!-- TG: I do intend to release it on CRAN later on --></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co">## Checking if devtools is already installed</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(devtools)) <span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co">## Installing the latest version directly from GitHub</span></a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="kw">install_github</span>(<span class="st">&quot;TGuillerme/dads&quot;</span>)</a></code></pre></div>
+</div>
+<div id="help" class="section level2">
+<h2><span class="header-section-number">1.3</span> Help</h2>
+<p>If you need help with the package, hopefully the following manual will be useful.
+However, parts of this package are still in development and some other parts are probably not covered.
+Thus if you have suggestions or comments on on what has already been developed or will be developed, please send me an email (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>) or if you are a GitHub user, directly create an issue on the <a href="https://github.com/TGuillerme/dads">GitHub page</a>.
+Doing so will not only hopefully help you but also other users since it will help improve this manual!</p>
+</div>
+<div id="how-does-dads-work" class="section level2">
+<h2><span class="header-section-number">1.4</span> How does <code>dads</code> work?</h2>
+<p>Basically, the <code>dads</code> function intakes your personalised <code>traits</code>, <code>modifiers</code> and <code>events</code> to generate your disparity and diversity.
+You will find more details about how these objects (<code>traits</code>, <code>modifiers</code> and <code>events</code>) work in the rest of the tutorial but here is a graphical representation of how <code>dads</code> work:</p>
+<div class="figure">
+<embed src="dads_structure.pdf" />
+<p class="caption">Schematised summary of the <code>dads</code> package architecture</p>
+</div>
+
+<pre><code>## Loading required package: dispRity</code></pre>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+<a href="getting-started.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/TGuillerme/dads/inst/gitbook/edit/master/index.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
