@@ -23,6 +23,6 @@
 #' @author Thomas Guillerme
 #' @export
 
-get.parent.traits <- function(trait.values, parent.lineage) {
+parent.traits <- function(trait.values, parent.lineage) {
     return(trait.values[which(rownames(trait.values) == parent.lineage), ,drop = FALSE])
 } 

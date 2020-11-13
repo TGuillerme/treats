@@ -102,7 +102,7 @@ test_that("dads works for trees + traits", {
 
 # ## Vanity: some speed checks
 
-# set.seed(123)
+# set.seed(1)
 # start <- Sys.time()
 # test <- dads(bd.params = list(extinction = 1/3), stop.rule = list(max.taxa = 1000))
 # end <- Sys.time()
@@ -114,8 +114,8 @@ test_that("dads works for trees + traits", {
 # test <- dads(bd.params = list(extinction = 1/3), stop.rule = list(max.taxa = 10000))
 # end <- Sys.time()
 # end-start
-# # 10000 taxa (no traits)
-# # 30.21827 secs
+# # # 10000 taxa (no traits)
+# # # 30.21827 secs
 
 # start <- Sys.time()
 # test <- dads(bd.params = list(extinction = 1/3), stop.rule = list(max.taxa = 1000), traits = make.traits())

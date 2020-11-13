@@ -45,7 +45,7 @@ test_that("make.modifiers works", {
     expect_equal(error[[1]], "test must be of class logical.")
 
     ## Working fine?
-    condition <- function(trait.values, parent.lineage) return(get.parent.traits(trait.values, parent.lineage) < 0)
+    condition <- function(trait.values, parent.lineage) return(parent.traits(trait.values, parent.lineage) < 0)
     modify <- function(x, trait.values, parent.lineage) return(x * 20)
     test <- make.modifiers(branch.length = branch.length,
                            speciation    = speciation,

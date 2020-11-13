@@ -56,7 +56,7 @@ print.dads <- function(x, all = FALSE, ...) {
             if(!is.null(x$modifiers)) {
                 print.modifiers.info(x$modifiers)
             } 
-            if(!is.null(x$modifiers)) {
+            if(!is.null(x$events)) {
                 cat("DEBUG print.events.info\n")
                 #print.events.info(x$events)
             }

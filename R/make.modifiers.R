@@ -3,7 +3,7 @@
 #' @description Making modifiers objects for dads based on an ancestor's (parent) trait.
 #'
 #' @param branch.length A function for the waiting time generating branch length (can be left empty for the defeault branch length function; see details).
-#' @param speciation    A function for triggering the speciation events (can be left empty for the defeault speciation function; see details).
+#' @param speciation    A function for triggering the speciation events (can be left empty for the default speciation function; see details).
 #' @param condition     A function giving the condition on which to modify the output of \code{branch.length} or \code{speciation} (see details). If missing the condition is always met.
 #' @param modify        A function giving the rule of how to modify the output of \code{branch.length} or \code{speciation} (see details). If missing no modification is used.
 #' @param add           Whether to add this modifier to a \code{"dads"} \code{"modifier"} object.
@@ -27,7 +27,7 @@
 #' 
 #'     \code{condition = function(trait.values, parent.lineage)}
 #'     \code{    \{}
-#'     \code{    get.parent.traits(trait.values, parent.lineage) < mean(trait.values)}
+#'     \code{    parent.traits(trait.values, parent.lineage) < mean(trait.values)}
 #'     \code{    \}}
 #' 
 #' \code{modify} must be a function with at least one input named \code{x} (which will be the branch length or the speciation trigger to value depending on the modifier) and must return a \code{numeric} value.

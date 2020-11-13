@@ -204,7 +204,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                                   ## Add the updated trait from the parent lineage
                                   unlist(lapply(traits,
                                                 sim.element.trait,
-                                                parent.trait = get.parent.traits(trait_values, parent[lineage]),
+                                                parent.trait = parent.traits(trait_values, parent[lineage]),
                                                 edge.length  = edge_lengths[lineage]))
                                  , deparse.level = 0)
             rownames(trait_values)[rownames(trait_values) == ""] <- lineage

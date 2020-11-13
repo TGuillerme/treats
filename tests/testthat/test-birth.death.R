@@ -232,7 +232,7 @@ test_that("simulating trees + traits + modifiers work", {
     null.error <- NULL
 
     ## modifiers
-    condition <- function(trait.values, parent.lineage) return(get.parent.traits(trait.values, parent.lineage) < 0)
+    condition <- function(trait.values, parent.lineage) return(parent.traits(trait.values, parent.lineage) < 0)
     modify <- function(x) return(x * 20)
 
     ## Setting up the different modifiers

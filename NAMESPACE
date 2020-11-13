@@ -12,7 +12,7 @@ export(make.traits)
 export(print.dads)
 export(plot.dads)
 export(drop.fossil.dads)
-# export(make.modifiers)
+export(make.modifiers)
 # export(make.events)
 
 ## Traits
@@ -29,7 +29,7 @@ export(speciation)
 export(speciation.trait)
 
 ## Utilities
-export(get.parent.traits)
+export(parent.traits)
 
 ##S3 
 S3method(plot, dads) #incl traits

@@ -9,7 +9,7 @@ make.modifiers(branch.length, speciation, condition, modify, add, test = TRUE)
 \arguments{
 \item{branch.length}{A function for the waiting time generating branch length (can be left empty for the defeault branch length function; see details).}
 
-\item{speciation}{A function for triggering the speciation events (can be left empty for the defeault speciation function; see details).}
+\item{speciation}{A function for triggering the speciation events (can be left empty for the default speciation function; see details).}
 
 \item{condition}{A function giving the condition on which to modify the output of \code{branch.length} or \code{speciation} (see details). If missing the condition is always met.}
 
@@ -39,7 +39,7 @@ or a conditional on the trait values:
 
     \code{condition = function(trait.values, parent.lineage)}
     \code{    \{}
-    \code{    get.parent.traits(trait.values, parent.lineage) < mean(trait.values)}
+    \code{    parent.traits(trait.values, parent.lineage) < mean(trait.values)}
     \code{    \}}
 
 \code{modify} must be a function with at least one input named \code{x} (which will be the branch length or the speciation trigger to value depending on the modifier) and must return a \code{numeric} value.
