@@ -207,77 +207,23 @@ test_that("simulating trees + traits works", {
     expect_equal(unname(test$data[,4]), c(0, test$tree$edge.length))
 })
 
-test_that("simulating trees + traits + modifiers work", {
+# test_that("simulating trees + traits + modifiers work", {
 
-    ## Test with longer waiting time for traits with positive values
-
-
-    ## Test with extinction for traits with negative values
+#     ## Test with longer waiting time for traits with positive values
 
 
-    ## Test with longer average waiting time for traits with negative values
+#     ## Test with extinction for traits with negative values
+
+
+#     ## Test with longer average waiting time for traits with negative values
 
   
-    ## Test with average more extinction for traits with positive values
+#     ## Test with average more extinction for traits with positive values
 
 
-    ## Visual tests
+#     ## Visual tests
 
-    ## Setting up all parameters
-    bd.params <- list(speciation = 1, extinction = 1/3)
-    traits <- make.traits()
-    stop.rule <- list(max.taxa = 20, max.living = Inf, max.time = Inf)
-    modifiers <- NULL
-    events <- NULL
-    null.error <- NULL
+#     ## Setting up all parameters
 
-    ## modifiers
-    condition <- function(trait.values, parent.lineage) return(parent.traits(trait.values, parent.lineage) < 0)
-    modify <- function(x) return(x * 20)
 
-    ## Setting up the different modifiers
-    modify_speciation <- make.modifiers(speciation    = speciation.trait,
-                                        condition     = condition,
-                                        modify        = modify)
-    modify_brlen <- make.modifiers(branch.length = branch.length.trait,
-                                   condition     = condition,
-                                   modify        = modify)
-    modify_speciation_brlen <- make.modifiers(branch.length = branch.length.trait,
-                                              speciation    = speciation.trait,
-                                              condition     = condition,
-                                              modify        = modify)
-
-    ## Test normal (no modifiers)
-    set.seed(1)
-    test <- birth.death.tree.traits(bd.params, stop.rule, traits)
-    par(mfrow = c(2,4))
-    plot(test$tree)
-    class(test) <- "dads"
-    plot.dads(test, main = "random tree + trait", xlim = c(5,0))
-
-    ## Test with modifiers
-    set.seed(1)
-    trait_table <- NULL
-    test <- birth.death.tree.traits(bd.params, stop.rule, traits,
-                                    modifiers = modify_speciation)
-    plot(test$tree)
-    class(test) <- "dads"
-    plot.dads(test, main = "Skewed speciation", xlim = c(5,0))
-
-    set.seed(1)
-    trait_table <- NULL
-    test <- birth.death.tree.traits(bd.params, stop.rule, traits,
-                                    modifiers = modify_brlen)
-    plot(test$tree)
-    class(test) <- "dads"
-    plot.dads(test, main = "Skewed branch length", xlim = c(5,0))
-
-    set.seed(1)
-    trait_table <- NULL
-    test <- birth.death.tree.traits(bd.params, stop.rule, traits,
-                                    modifiers = modify_speciation_brlen)
-    plot(test$tree)
-    class(test) <- "dads"
-    plot.dads(test, main = "Skewed branch length and speciation", xlim = c(5,0))
-
-})
+# })

@@ -1,3 +1,5 @@
+# function from RPANDA commented by Alex Slavenko
+
 sim_MCSBDD <- function (pars, ou = list(NULL,NULL), disp = NULL, root.value = 0, age.max = 50, age.ext = NULL, step.size = 0.01, bounds = c(-Inf, Inf), plot = TRUE, ylims = NULL, full.sim = FALSE) 
 {
   lambda1 = pars[1] #speciation initiation rate

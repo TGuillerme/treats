@@ -49,7 +49,9 @@
 #' ## Run a birth-death tree with traits
 #' dads(bd.params = my_bd_params,
 #'      stop.rule = my_stop_rule,
-#'      traits    = my_traits)
+#'      traits    = my_trait)
+#' 
+#' ## TODO: more examples
 #'
 #'
 #' @seealso
