@@ -2,7 +2,7 @@
 check.modifiers <- function(modifiers) {
 
     ## Check the content at the first level
-    required_names <- c("waiting", "speciating", "call")
+    required_names <- c("waiting", "selecting", "speciating", "call")
     if(any(missing <- is.na(match(names(modifiers), required_names)))) {
         ## TODO: improve message here
         stop(paste0("modifiers must have the following elements: ", paste(required_names, collapse = ", "), "."), call. = FALSE)
@@ -37,6 +37,23 @@ check.modifiers <- function(modifiers) {
     } else {
         if(class(test_waiting) != "numeric") {
             stop(paste0("The branch length element from the modifiers did not produce a numeric value (it produced a ", paste(class(test_waiting), collapse = ","), " instead)."))
+        }
+    }
+
+    ## Testing the selecting function
+    test_selecting <- try(modifiers$selecting$fun(bd.params,
+                                              n.taxa         = n.taxa,
+                                              parent.lineage = parent.lineage,
+                                              trait.values   = trait_values,
+                                              modify.fun     = modifiers$selecting$internal),
+                        silent = TRUE)
+
+    ## Debrief
+    if(class(test_selecting) == "try-error") {
+        stop(paste0("The branch length element from the modifiers failed with the following error message", ifelse(length(test_selecting) > 1, "s:\n", ":\n"), paste(test_selecting, collapse = "\n")), call. = FALSE)
+    } else {
+        if(class(test_selecting) != "numeric") {
+            stop(paste0("The branch length element from the modifiers did not produce a numeric value (it produced a ", paste(class(test_selecting), collapse = ","), " instead)."))
         }
     }
 

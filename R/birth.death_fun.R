@@ -90,6 +90,8 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     initial.modifiers <- list("waiting"    = list(fun = branch.length.fast,
                                                   internal = NULL),
                               "speciating" = list(fun = speciation.fast,
+                                                  internal = NULL),
+                              "select"     = list(fun = selection.fast,
                                                   internal = NULL))
     ## Set the modifiers if null (no modifier)
     if(is.null(modifiers)) {
@@ -174,7 +176,12 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     while(n_living_taxa > 0 && n_living_taxa <= stop.rule$max.living  && sum(!is_split) <= stop.rule$max.taxa) {
         
         ## Pick a lineage for the event to happen to:
-        selected_lineage <- sample(n_living_taxa, 1)
+        # selected_lineage <- sample(n_living_taxa, 1)
+        selected_lineage <- modifiers$selecting$fun(bd.params,
+                                                    n.taxa         = n_living_taxa,
+                                                    parent.lineage = parent[lineage],
+                                                    trait.values   = trait_values,
+                                                    modify.fun     = modifiers$selecting$internal)
         lineage <- lineages[selected_lineage]
 
         ## Get the waiting time

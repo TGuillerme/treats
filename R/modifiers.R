@@ -89,6 +89,14 @@ speciation.fast <- function(bd.params, n.taxa = NULL, parent.lineage = NULL, tra
     return(runif(1) < (bd.params$speciation/(bd.params$speciation + bd.params$extinction)))
 }
 
+## Normal selector (internal usage only)
+selection.fast <- function(bd.params, n.taxa = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) {
+    ## Speciate?
+    return(sample(n.taxa, 1))
+}
+
+
+
 ## Trait dependent branch length
 branch.length.trait <- function(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun) {
 

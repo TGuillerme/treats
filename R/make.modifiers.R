@@ -3,6 +3,7 @@
 #' @description Making modifiers objects for dads based on an ancestor's (parent) trait.
 #'
 #' @param branch.length A function for the waiting time generating branch length (can be left empty for the defeault branch length function; see details).
+#' @param selection     A function for selecting the lineage(s) affected by speciation (can be left empty for the default selection function; see details).
 #' @param speciation    A function for triggering the speciation events (can be left empty for the default speciation function; see details).
 #' @param condition     A function giving the condition on which to modify the output of \code{branch.length} or \code{speciation} (see details). If missing the condition is always met.
 #' @param modify        A function giving the rule of how to modify the output of \code{branch.length} or \code{speciation} (see details). If missing no modification is used.
@@ -11,9 +12,11 @@
 #' 
 #' @details
 #' 
-#' \code{branch.length} and \code{speciation} must be a functions that intakes the following arguments: \code{bd.params, n.taxa, parent.lineage, trait.values, modify.fun} (even if they are not used in the function).
+#' \code{branch.length}, \code{selection} and \code{speciation} must be a functions that intakes the following arguments: \code{bd.params, n.taxa, parent.lineage, trait.values, modify.fun} (even if they are not used in the function).
 #' 
 #' The default \code{branch.length} function is drawing a random number from the exponantial distribution with a rate equal to the current number of taxa multiplied by the speciation and extinction (\code{rexp(1, n.taxa * (speciation + extinction))}).
+#' 
+#' The default \code{selection} function is randomly drawing a single lineage among the ones present at the time of the speciation (\code{sample(n.taxa, 1)}).
 #' 
 #' The default \code{speciation} function is drawing a random number from a uniform distribution (0,1) and starts a speciation event if this random number is lower than the ration of speciation on speciation and extinction (\code{runif(1) < (speciation/(speciation + extinction))}). If the random number is greater, the lineage goes extinct.
 #' 
@@ -48,7 +51,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-make.modifiers <- function(branch.length, speciation, condition, modify, add, test = TRUE) {
+make.modifiers <- function(branch.length, selection, speciation, condition, modify, add, test = TRUE) {
 
     ## required arguments
     required_args <- c("bd.params", "n.taxa", "parent.lineage", "trait.values", "modify.fun")
@@ -70,6 +73,18 @@ make.modifiers <- function(branch.length, speciation, condition, modify, add, te
             stop(paste0("The branch.length function is missing the following argument", ifelse(sum(missing) > 1, "s: ", ": "),  paste(required_args[missing], collapse = ", "), ". If ", ifelse(sum(missing) > 1, "they are", "it is"), " not required, you can set ", ifelse(sum(missing) > 1, "them", "it"), " to NULL."), call. = FALSE)
         }
         do_branch_length <- TRUE
+    }
+
+    ## Check selection
+    do_selection <- FALSE
+    if(!missing(selection)) {
+        check.class(selection, "function")
+        ## Check if it has the right arguments
+        check_args <- names(formals(selection))
+        if(any(missing <- is.na(match(required_args, check_args)))) {
+            stop(paste0("The selection function is missing the following argument", ifelse(sum(missing) > 1, "s: ", ": "),  paste(required_args[missing], collapse = ", "), ". If ", ifelse(sum(missing) > 1, "they are", "it is"), " not required, you can set ", ifelse(sum(missing) > 1, "them", "it"), " to NULL."), call. = FALSE)
+        }
+        do_selection <- TRUE
     }
 
     ## Check speciation
@@ -149,6 +164,12 @@ make.modifiers <- function(branch.length, speciation, condition, modify, add, te
         } else {
             init_branch_length <- FALSE
         }
+        if(do_selection) {
+            message("selection function was overwritten.")
+            init_selection <- TRUE
+        } else {
+            init_selection <- FALSE
+        }
         if(do_speciation) {
             message("speciation function was overwritten.")
             init_speciation <- TRUE
@@ -156,10 +177,10 @@ make.modifiers <- function(branch.length, speciation, condition, modify, add, te
             init_speciation <- FALSE
         }
 
-        if(!do_branch_length && !do_speciation) {
+        if(!do_branch_length && !do_selection && !do_speciation) {
             ## Only update the modify and function
-            if(!do_modify && !do_speciation) {
-                stop("Nothing to update. Specify at least one branch.length, speciation, condition or modify function.")
+            if(!do_modify && !do_selection && !do_speciation) {
+                stop("Nothing to update. Specify at least one branch.length, selection, speciation, condition or modify function.")
             } else {
                 update_condition <- do_condition
                 update_modify <- do_modify
@@ -168,7 +189,7 @@ make.modifiers <- function(branch.length, speciation, condition, modify, add, te
 
     } else {
         ## Build an empty modifiers list
-        modifiers <- list("waiting" = NULL, "speciating" = NULL, "call" = NULL)
+        modifiers <- list("waiting" = NULL, "selecting" = NULL, "speciating" = NULL, "call" = NULL)
         init_branch_length <- init_speciation <- TRUE
         update_condition <- update_modify <- FALSE
     }
@@ -206,6 +227,38 @@ make.modifiers <- function(branch.length, speciation, condition, modify, add, te
         }
     }
 
+    ## Making the selecting modifier
+    if(init_selection) {
+        if(!do_selection) {
+            modifiers$selecting <- list(fun = selection.fast,
+                                         internal = NULL)
+            ## Update the call
+            modifiers$call$selecting$fun <- "default"
+        } else {
+            modifiers$selecting <- list(fun = selection,
+                                         internal = list(condition = condition,
+                                                         modify    = modify))
+            ## Update the call
+            modifiers$call$selecting$fun       <- call.default(match_call$selection)
+            modifiers$call$selecting$condition <- call.default(match_call$condition)
+            modifiers$call$selecting$modify    <- call.default(match_call$modify)
+        }
+    } else {
+        if(do_selection) {
+            if(update_condition) {
+                modifiers$selecting$internal$condition <- condition
+                ## Update the call
+                modifiers$call$selecting$condition     <- call.default(match_call$condition)
+            }
+            if(update_modify) {
+                modifiers$selecting$internal$modify <- modify
+                ## Update the call
+                modifiers$call$selecting$modify     <- call.default(match_call$modify)
+            }
+        }
+    }
+
+
     ## Making the speciating modifier
     if(init_speciation) {
         if(!do_speciation) {
@@ -227,12 +280,12 @@ make.modifiers <- function(branch.length, speciation, condition, modify, add, te
             if(update_condition) {
                 modifiers$speciating$internal$condition <- condition
                 ## Update the call
-                modifiers$call$speciating$condition <- call.default(match_call$condition)
+                modifiers$call$speciating$condition     <- call.default(match_call$condition)
             }
             if(update_modify) {
                 modifiers$speciating$internal$modify <- modify
                 ## Update the call
-                modifiers$call$speciating$modify    <- call.default(match_call$modify)
+                modifiers$call$speciating$modify     <- call.default(match_call$modify)
             }
         }
     }
