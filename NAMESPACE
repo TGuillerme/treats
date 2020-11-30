@@ -25,6 +25,7 @@ export(no.process)
 export(modifiers)
 export(branch.length)
 export(branch.length.trait)
+export(selection)
 export(speciation)
 export(speciation.trait)
 

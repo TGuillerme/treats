@@ -89,9 +89,9 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ## Make the initial modifier (no modifier)
     initial.modifiers <- list("waiting"    = list(fun = branch.length.fast,
                                                   internal = NULL),
-                              "speciating" = list(fun = speciation.fast,
+                              "selecting"     = list(fun = selection.fast,
                                                   internal = NULL),
-                              "select"     = list(fun = selection.fast,
+                              "speciating" = list(fun = speciation.fast,
                                                   internal = NULL))
     ## Set the modifiers if null (no modifier)
     if(is.null(modifiers)) {
