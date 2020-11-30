@@ -19,7 +19,7 @@ check.modifiers <- function(modifiers) {
 
     ## Dummy (basic) arguments
     bd.params      <- list(speciation = 1, extinction = 0)
-    n.taxa         <- 1
+    n.taxa         <- as.integer(1)
     parent.lineage <- 1
     trait_values   <- rbind(NULL, "1" = c(1))
 
@@ -40,7 +40,7 @@ check.modifiers <- function(modifiers) {
         }
     }
 
-    ## Testing the selecting function
+    ## Testing the selecting function
     test_selecting <- try(modifiers$selecting$fun(bd.params,
                                               n.taxa         = n.taxa,
                                               parent.lineage = parent.lineage,
@@ -50,10 +50,10 @@ check.modifiers <- function(modifiers) {
 
     ## Debrief
     if(class(test_selecting) == "try-error") {
-        stop(paste0("The branch length element from the modifiers failed with the following error message", ifelse(length(test_selecting) > 1, "s:\n", ":\n"), paste(test_selecting, collapse = "\n")), call. = FALSE)
+        stop(paste0("The selection element from the modifiers failed with the following error message", ifelse(length(test_selecting) > 1, "s:\n", ":\n"), paste(test_selecting, collapse = "\n")), call. = FALSE)
     } else {
-        if(class(test_selecting) != "numeric") {
-            stop(paste0("The branch length element from the modifiers did not produce a numeric value (it produced a ", paste(class(test_selecting), collapse = ","), " instead)."))
+        if(class(test_selecting) != "integer") {
+            stop(paste0("The selection element from the modifiers did not produce a integer value (it produced a ", paste(class(test_selecting), collapse = ","), " instead)."))
         }
     }
 

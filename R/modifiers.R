@@ -62,7 +62,7 @@ branch.length <- function(bd.params, n.taxa, parent.lineage = NULL, trait.values
     return(waiting_time)
 }
 
-## Normal spciation
+## Normal speciation
 speciation <- function(bd.params, n.taxa = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL, ...) {
     ## Randomly trigger an event
     trigger_event <- runif(1)
@@ -75,6 +75,15 @@ speciation <- function(bd.params, n.taxa = NULL, parent.lineage = NULL, trait.va
     ## Speciate?
     return(trigger_event < (bd.params$speciation/(bd.params$speciation + bd.params$extinction)))
 }
+
+## Normal selection
+selection <- function(bd.params, n.taxa = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) {
+    ## Speciate?
+    return(sample(n.taxa, 1))
+}
+
+
+
 
 ## Normal branch length (internal usage only)
 branch.length.fast <- function(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) {

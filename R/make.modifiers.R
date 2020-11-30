@@ -75,7 +75,7 @@ make.modifiers <- function(branch.length, selection, speciation, condition, modi
         do_branch_length <- TRUE
     }
 
-    ## Check selection
+    ## Check selection
     do_selection <- FALSE
     if(!missing(selection)) {
         check.class(selection, "function")
@@ -190,7 +190,7 @@ make.modifiers <- function(branch.length, selection, speciation, condition, modi
     } else {
         ## Build an empty modifiers list
         modifiers <- list("waiting" = NULL, "selecting" = NULL, "speciating" = NULL, "call" = NULL)
-        init_branch_length <- init_speciation <- TRUE
+        init_branch_length <- init_selection <- init_speciation <- TRUE
         update_condition <- update_modify <- FALSE
     }
 
@@ -257,7 +257,6 @@ make.modifiers <- function(branch.length, selection, speciation, condition, modi
             }
         }
     }
-
 
     ## Making the speciating modifier
     if(init_speciation) {
