@@ -4,10 +4,20 @@
 \alias{make.modifiers}
 \title{make.modifiers}
 \usage{
-make.modifiers(branch.length, speciation, condition, modify, add, test = TRUE)
+make.modifiers(
+  branch.length,
+  selection,
+  speciation,
+  condition,
+  modify,
+  add,
+  test = TRUE
+)
 }
 \arguments{
 \item{branch.length}{A function for the waiting time generating branch length (can be left empty for the defeault branch length function; see details).}
+
+\item{selection}{A function for selecting the lineage(s) affected by speciation (can be left empty for the default selection function; see details).}
 
 \item{speciation}{A function for triggering the speciation events (can be left empty for the default speciation function; see details).}
 
@@ -23,9 +33,11 @@ make.modifiers(branch.length, speciation, condition, modify, add, test = TRUE)
 Making modifiers objects for dads based on an ancestor's (parent) trait.
 }
 \details{
-\code{branch.length} and \code{speciation} must be a functions that intakes the following arguments: \code{bd.params, n.taxa, parent.lineage, trait.values, modify.fun} (even if they are not used in the function).
+\code{branch.length}, \code{selection} and \code{speciation} must be a functions that intakes the following arguments: \code{bd.params, n.taxa, parent.lineage, trait.values, modify.fun} (even if they are not used in the function).
 
 The default \code{branch.length} function is drawing a random number from the exponantial distribution with a rate equal to the current number of taxa multiplied by the speciation and extinction (\code{rexp(1, n.taxa * (speciation + extinction))}).
+
+The default \code{selection} function is randomly drawing a single lineage among the ones present at the time of the speciation (\code{sample(n.taxa, 1)}).
 
 The default \code{speciation} function is drawing a random number from a uniform distribution (0,1) and starts a speciation event if this random number is lower than the ration of speciation on speciation and extinction (\code{runif(1) < (speciation/(speciation + extinction))}). If the random number is greater, the lineage goes extinct.
 
