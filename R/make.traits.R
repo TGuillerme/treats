@@ -33,7 +33,7 @@
 #'                           process.args = list(Sigma = my_correlations)))
 #' 
 #' ## Adding a Ornstein-Uhlenbeck trait to the previous trait object
-#' make.traits(process = step.OU, trait.names = "OU_trait",
+#' make.traits(process = OU.process, trait.names = "OU_trait",
 #'             add = my_traits)
 #'
 #' @seealso
