@@ -1,3 +1,55 @@
+## Checking and filling arguments for modifiers
+check.args <- function(fun, fun_name, modify = FALSE) {
+
+    ## The required arguments (internal)
+    required_args <- c("bd.params", "n.taxa", "parent.lineage", "trait.values", "modify.fun")
+
+    if(modify) {
+        required_args <- c("x", required_args)
+    }
+
+    ## Must be a function
+    check.class(fun, "function")
+    ## Check the arguments
+    present_args <- names(formals(fun))
+    ## Check for incorrect arguments
+    if(any(incorrect_args <- is.na(match(present_args, required_args)))) {
+        stop(paste0("The ", fun_name, " function cannot recognise the ", paste(present_args[incorrect_args], collapse = ", "), " argument", ifelse(sum(incorrect_args) > 1, "s.", ".")), call. = FALSE)
+    }
+    ## Add the missing arguments
+    used_args <- methods::formalArgs(fun)
+    if(any(missing_args <- !(required_args %in% used_args))) {
+
+        ## Add the missing args one by one (there's probably a better way to do this!)
+
+        if(modify) {
+            ## Also considering the x argument
+            if(missing_args[1]) {
+                formals(fun) <- c(formals(fun), alist("x" = NULL))
+            }
+            missing_args <- missing_args[-1]
+        }
+
+        if(missing_args[1]) {
+            formals(fun) <- c(formals(fun),  alist("bd.params" = NULL))    
+        }
+        if(missing_args[2]) {
+            formals(fun) <- c(formals(fun),  alist("n.taxa" = NULL))    
+        }
+        if(missing_args[3]) {
+            formals(fun) <- c(formals(fun),  alist("parent.lineage" = NULL))    
+        }
+        if(missing_args[4]) {
+            formals(fun) <- c(formals(fun),  alist("trait.values" = NULL))
+        }
+        if(missing_args[5]) {
+            formals(fun) <- c(formals(fun),  alist("modify.fun" = NULL))
+        }                
+    }
+
+    return(fun)
+} 
+
 ## Checking the modifiers structure
 check.modifiers <- function(modifiers) {
 
@@ -21,14 +73,15 @@ check.modifiers <- function(modifiers) {
     bd.params      <- list(speciation = 1, extinction = 0)
     n.taxa         <- as.integer(1)
     parent.lineage <- 1
-    trait_values   <- rbind(NULL, "1" = c(1))
+    trait.values   <- rbind(NULL, "1" = c(1))
 
     ## Testing the waiting function
-    test_waiting <- try(modifiers$waiting$fun(bd.params,
+    test_waiting <- try(modifiers$waiting$fun(bd.params      = bd.params,
                                               n.taxa         = n.taxa,
                                               parent.lineage = parent.lineage,
-                                              trait.values   = trait_values,
-                                              modify.fun     = modifiers$waiting$internal),
+                                              trait.values   = trait.values,
+                                              modify.fun     = modifiers$waiting$internal)
+    ,
                         silent = TRUE)
 
     ## Debrief
@@ -41,10 +94,10 @@ check.modifiers <- function(modifiers) {
     }
 
     ## Testing the selecting function
-    test_selecting <- try(modifiers$selecting$fun(bd.params,
+    test_selecting <- try(modifiers$selecting$fun(bd.params  = bd.params,
                                               n.taxa         = n.taxa,
                                               parent.lineage = parent.lineage,
-                                              trait.values   = trait_values,
+                                              trait.values   = trait.values,
                                               modify.fun     = modifiers$selecting$internal),
                         silent = TRUE)
 
@@ -59,10 +112,11 @@ check.modifiers <- function(modifiers) {
 
 
     ## Testing the speciating function
-    test_speciating <- try(modifiers$speciating$fun(bd.params,
+    test_speciating <- try(modifiers$speciating$fun(
+                                                bd.params      = bd.params,
                                                 n.taxa         = n.taxa,
                                                 parent.lineage = parent.lineage,
-                                                trait.values   = trait_values,
+                                                trait.values   = trait.values,
                                                 modify.fun     = modifiers$speciating$internal),
                            silent = TRUE)
 

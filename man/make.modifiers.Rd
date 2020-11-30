@@ -33,7 +33,7 @@ make.modifiers(
 Making modifiers objects for dads based on an ancestor's (parent) trait.
 }
 \details{
-\code{branch.length}, \code{selection} and \code{speciation} must be a functions that intakes the following arguments: \code{bd.params, n.taxa, parent.lineage, trait.values, modify.fun} (even if they are not used in the function).
+\code{branch.length}, \code{selection} and \code{speciation} must be a functions that intakes the following arguments: \code{bd.params, n.taxa, parent.lineage, trait.values, modify.fun}. If left empty, any of these arguments is considered as NULL.
 
 The default \code{branch.length} function is drawing a random number from the exponantial distribution with a rate equal to the current number of taxa multiplied by the speciation and extinction (\code{rexp(1, n.taxa * (speciation + extinction))}).
 

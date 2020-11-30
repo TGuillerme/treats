@@ -4,15 +4,15 @@
 #'
 #' @description Different modifiers for the birth death process implemented in dads.
 #'
-#' @usage branch.length(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL, ...)
-#' @usage speciation(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL, ...)
+#' @usage branch.length(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL)
+#' @usage selection(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL)
+#' @usage speciation(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL)
 #'
 #' @param bd.params      A named list of birth death parameters (see details).
 #' @param n.taxa         A single numerical value (the number of taxa at the time of the simulations - see details).
 #' @param parent.lineage A single numerical value (the ID of the parent of the current lineage - see details).
 #' @param trait.values   A matrix containing the trait values (see details).
 #' @param modify.fun     A list of internals functions that can modified by \code{events} (see details).
-#' @param ...            Any additional arguments for the specific modifier (see details).
 #' 
 #' @details
 #' \code{modifiers} are functions passed to the birth death process in \code{\link{dads}} to either generate the branch length (named \code{branch.length} and similar) or to decide whether to speciate or go extinct (named \code{speciation} and similar).
@@ -27,6 +27,8 @@
 #'
 #'      \item \code{branch.length.trait} a modification of the \code{branch.length} \code{modifier} where the resulting branch length is changed by \code{modify.fun$modify} if the parent trait(s) meet the condition \code{modify.fun$condition}.
 #'
+#'      \item \code{selection} a function returning a randomly sampled integer among the number of taxa available.
+#' 
 #'      \item \code{speciation} a function returning \code{TRUE} (speciation) if a random uniform number (\code{\link[stats]{runif}}) is smaller than the ratio of speciation by speciation and extinction (\code{bd.params$speciation / (bd.params$speciation) + bd.params$extinction}). If it's bigger, the function returns \code{FALSE} (exinction).
 #'
 #'      \item \code{speciation.trait} a modification of the \code{speciation} \code{modifier} where the random uniform number is changed by \code{modify.fun$modify} if the parent trait(s) meet the condition \code{modify.fun$condition}.
@@ -46,7 +48,7 @@ modifiers <- function(bd.params = NULL, n.taxa = NULL, parent.lineage = NULL, tr
 }
 
 ## Normal branch length
-branch.length <- function(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL, ...) {
+branch.length <- function(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) {
 
     ## Get the event probability
     event_probability <- sum(n.taxa * (bd.params$speciation + bd.params$extinction))
@@ -55,21 +57,21 @@ branch.length <- function(bd.params, n.taxa, parent.lineage = NULL, trait.values
     waiting_time <- rexp(1, event_probability)
 
     ## Modify the waiting time
-    if(modify.fun$condition(n.taxa, parent.lineage, trait.values)) {
-        waiting_time <- modify.fun$modify(x = waiting_time, n.taxa, parent.lineage, trait.values)
+    if(modify.fun$condition(n.taxa = n.taxa, parent.lineage = parent.lineage, trait.values = trait.values)) {
+        waiting_time <- modify.fun$modify(x = waiting_time, n.taxa = n.taxa, parent.lineage = parent.lineage, trait.values = trait.values)
     }
 
     return(waiting_time)
 }
 
 ## Normal speciation
-speciation <- function(bd.params, n.taxa = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL, ...) {
+speciation <- function(bd.params, n.taxa = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) {
     ## Randomly trigger an event
     trigger_event <- runif(1)
 
     ## Modify the triggering
-    if(modify.fun$condition(n.taxa, parent.lineage, trait.values)) {
-        trigger_event <- modify.fun$modify(x = trigger_event, n.taxa, parent.lineage, trait.values)
+    if(modify.fun$condition(n.taxa = n.taxa, parent.lineage = parent.lineage, trait.values = trait.values)) {
+        trigger_event <- modify.fun$modify(x = trigger_event, n.taxa = n.taxa, parent.lineage = parent.lineage, trait.values = trait.values)
     }
 
     ## Speciate?
@@ -116,9 +118,9 @@ branch.length.trait <- function(bd.params, n.taxa, parent.lineage = NULL, trait.
     waiting_time <- rexp(1, event_probability)
 
     ## Modify the waiting time
-    if(modify.fun$condition(n.taxa, parent.lineage, trait.values)) {
+    if(modify.fun$condition(n.taxa = n.taxa, parent.lineage = parent.lineage, trait.values = trait.values)) {
     # if(modify.fun$condition(parent.traits(trait.values, parent.lineage))) {
-        waiting_time <- modify.fun$modify(x = waiting_time, n.taxa, parent.lineage, trait.values)
+        waiting_time <- modify.fun$modify(x = waiting_time, n.taxa = n.taxa, parent.lineage = parent.lineage, trait.values =  trait.values)
     }
 
     return(waiting_time)
@@ -133,7 +135,7 @@ speciation.trait <- function(bd.params, n.taxa = NULL, parent.lineage, trait.val
     ## Modify the triggering
     if(modify.fun$condition(n.taxa, parent.lineage, trait.values)) {
     #if(modify.fun$condition(parent.traits(trait.values, parent.lineage))) {
-        trigger_event <- modify.fun$modify(x = trigger_event, n.taxa, parent.lineage, trait.values)
+        trigger_event <- modify.fun$modify(x = trigger_event, n.taxa = n.taxa, parent.lineage = parent.lineage, trait.values = trait.values)
     }
 
     ## Speciate?

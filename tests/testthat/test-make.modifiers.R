@@ -7,26 +7,26 @@ test_that("make.modifiers works", {
     ## Wrong arguments for branch length
     wrong.bl <- function(x, y, n.taxa) return("ah")
     error <- capture_error(make.modifiers(branch.length = wrong.bl))
-    expect_equal(error[[1]], "The branch.length function is missing the following arguments: bd.params, parent.lineage, trait.values, modify.fun. If they are not required, you can set them to NULL.")
+    expect_equal(error[[1]], "The branch length function cannot recognise the x, y arguments.")
     wrong.bl <- function(bd.params = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) return("ah")
     error <- capture_error(make.modifiers(branch.length = wrong.bl))
-    expect_equal(error[[1]], "The branch.length function is missing the following argument: n.taxa. If it is not required, you can set it to NULL.")
+    expect_equal(error[[1]], "The branch length element from the modifiers did not produce a numeric value (it produced a character instead).")
 
     ## Wrong arguments for selection
     wrong.sl <- function(x, y, n.taxa) return("oh")
     error <- capture_error(make.modifiers(selection = wrong.sl))
-    expect_equal(error[[1]], "The selection function is missing the following arguments: bd.params, parent.lineage, trait.values, modify.fun. If they are not required, you can set them to NULL.")
+    expect_equal(error[[1]], "The selection function cannot recognise the x, y arguments.")
     wrong.sl <- function(bd.params = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) return("oh")
     error <- capture_error(make.modifiers(selection = wrong.sl))
-    expect_equal(error[[1]], "The selection function is missing the following argument: n.taxa. If it is not required, you can set it to NULL.")
+    expect_equal(error[[1]], "The selection element from the modifiers did not produce a integer value (it produced a character instead).")
 
     ## Wrong arguments for speciation
     wrong.sp <- function(x, y, n.taxa) return("ah")
     error <- capture_error(make.modifiers(speciation = wrong.sp))
-    expect_equal(error[[1]], "The speciation function is missing the following arguments: bd.params, parent.lineage, trait.values, modify.fun. If they are not required, you can set them to NULL.")
+    expect_equal(error[[1]], "The speciation function cannot recognise the x, y arguments.")
     wrong.sp <- function(bd.params = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) return("ah")
     error <- capture_error(make.modifiers(speciation = wrong.sp))
-    expect_equal(error[[1]], "The speciation function is missing the following argument: n.taxa. If it is not required, you can set it to NULL.")
+    expect_equal(error[[1]], "The speciation element from the modifiers did not produce a logical value (it produced a character instead).")
 
     ## Wrong arguments for condition
     wrong.con <- function(x) return("a")
@@ -36,13 +36,13 @@ test_that("make.modifiers works", {
     error <- capture_error(make.modifiers(condition = wrong.con))
     expect_equal(error[[1]], "The condition function cannot recognise the y, ya arguments.")
 
-    # ## Wrong arguments for modify
+    ## Wrong arguments for modify
     wrong.mod <- function(x, y) return("a")
     error <- capture_error(make.modifiers(modify = wrong.mod))
     expect_equal(error[[1]], "The modify function cannot recognise the y argument.")
     wrong.mod <- function(n.taxa, y) return("a")
     error <- capture_error(make.modifiers(modify = wrong.mod))
-    expect_equal(error[[1]], "The modify function must have at least one x argument (you can use x = NULL).")
+    expect_equal(error[[1]], "The modify function cannot recognise the y argument.")
 
     ## Wrong arguments for add
     error <- capture_error(make.modifiers(add = TRUE))
@@ -104,7 +104,7 @@ test_that("make.modifiers works", {
                            speciation    = speciation.trait,
                            modify        = always.one)
         )
-    expect_equal(error[[1]], "The modify function must have at least one x argument (you can use x = NULL).")
+    expect_null(error)
     always.one <- function(x = NULL) return(1)
     test <- make.modifiers(branch.length = branch.length.trait,
                            speciation    = speciation.trait,
@@ -118,7 +118,7 @@ test_that("make.modifiers works", {
     expect_equal(test[[1]]$internal$modify(42), 1)
 
     ## Working correctly without speciation
-    test <- make.modifiers(branch.length = branch.length.trait,
+    test <- make.modifiers(branch.length = branch.length,
                            condition     = condition,
                            modify        = modify)
     expect_is(test, c("dads", "modifiers"))
@@ -128,7 +128,7 @@ test_that("make.modifiers works", {
     expect_equal(names(test[[3]]), c("fun", "internal"))
 
     ## Working correctly without branch.length
-    test <- make.modifiers(speciation    = speciation.trait,
+    test <- make.modifiers(speciation    = speciation,
                            condition     = condition,
                            modify        = modify)
     expect_is(test, c("dads", "modifiers"))

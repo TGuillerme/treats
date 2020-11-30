@@ -113,7 +113,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     selected_lineage <- lineage <- 1
     
     ## Get the waiting time
-    waiting_time <- initial.modifiers$waiting$fun(bd.params,
+    waiting_time <- initial.modifiers$waiting$fun(bd.params      = bd.params,
                                                   n.taxa         = n_living_taxa,
                                                   parent.lineage = NULL,
                                                   trait.values   = NULL,
@@ -137,7 +137,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     }
 
     ## Randomly triggering an event
-    if(initial.modifiers$speciating$fun(bd.params,
+    if(initial.modifiers$speciating$fun(bd.params      = bd.params,
                                         parent.lineage = NULL,
                                         trait.values   = NULL,
                                         modify.fun     = NULL)) {
@@ -177,7 +177,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         
         ## Pick a lineage for the event to happen to:
         # selected_lineage <- sample(n_living_taxa, 1)
-        selected_lineage <- modifiers$selecting$fun(bd.params,
+        selected_lineage <- modifiers$selecting$fun(bd.params      = bd.params,
                                                     n.taxa         = n_living_taxa,
                                                     parent.lineage = parent[lineage],
                                                     trait.values   = trait_values,
@@ -185,7 +185,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         lineage <- lineages[selected_lineage]
 
         ## Get the waiting time
-        waiting_time <- modifiers$waiting$fun(bd.params,
+        waiting_time <- modifiers$waiting$fun(bd.params      = bd.params,
                                               n.taxa         = n_living_taxa,
                                               parent.lineage = parent[lineage],
                                               trait.values   = trait_values,
@@ -218,7 +218,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         }
 
         ## Randomly triggering an event
-        if(modifiers$speciating$fun(bd.params,
+        if(modifiers$speciating$fun(bd.params      = bd.params,
                                     parent.lineage = parent[lineage],
                                     trait.values   = trait_values,
                                     modify.fun     = modifiers$speciating$internal)) {

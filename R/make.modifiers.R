@@ -12,7 +12,7 @@
 #' 
 #' @details
 #' 
-#' \code{branch.length}, \code{selection} and \code{speciation} must be a functions that intakes the following arguments: \code{bd.params, n.taxa, parent.lineage, trait.values, modify.fun} (even if they are not used in the function).
+#' \code{branch.length}, \code{selection} and \code{speciation} must be a functions that intakes the following arguments: \code{bd.params, n.taxa, parent.lineage, trait.values, modify.fun}. If left empty, any of these arguments is considered as NULL.
 #' 
 #' The default \code{branch.length} function is drawing a random number from the exponantial distribution with a rate equal to the current number of taxa multiplied by the speciation and extinction (\code{rexp(1, n.taxa * (speciation + extinction))}).
 #' 
@@ -53,8 +53,6 @@
 
 make.modifiers <- function(branch.length, selection, speciation, condition, modify, add, test = TRUE) {
 
-    ## required arguments
-    required_args <- c("bd.params", "n.taxa", "parent.lineage", "trait.values", "modify.fun")
     ## Get the call
     match_call <- match.call()
     # return(match_call)
@@ -66,55 +64,33 @@ make.modifiers <- function(branch.length, selection, speciation, condition, modi
     ## Check branch length
     do_branch_length <- FALSE
     if(!missing(branch.length)) {
-        check.class(branch.length, "function")
-        ## Check if it has the right arguments
-        check_args <- names(formals(branch.length))
-        if(any(missing <- is.na(match(required_args, check_args)))) {
-            stop(paste0("The branch.length function is missing the following argument", ifelse(sum(missing) > 1, "s: ", ": "),  paste(required_args[missing], collapse = ", "), ". If ", ifelse(sum(missing) > 1, "they are", "it is"), " not required, you can set ", ifelse(sum(missing) > 1, "them", "it"), " to NULL."), call. = FALSE)
-        }
+        ## Checking the arguments
+        branch.length <- check.args(branch.length, fun_name = "branch length")
         do_branch_length <- TRUE
     }
 
     ## Check selection
     do_selection <- FALSE
     if(!missing(selection)) {
-        check.class(selection, "function")
-        ## Check if it has the right arguments
-        check_args <- names(formals(selection))
-        if(any(missing <- is.na(match(required_args, check_args)))) {
-            stop(paste0("The selection function is missing the following argument", ifelse(sum(missing) > 1, "s: ", ": "),  paste(required_args[missing], collapse = ", "), ". If ", ifelse(sum(missing) > 1, "they are", "it is"), " not required, you can set ", ifelse(sum(missing) > 1, "them", "it"), " to NULL."), call. = FALSE)
-        }
+        ## Checking the arguments
+        selection <- check.args(selection, fun_name = "selection")
         do_selection <- TRUE
     }
 
     ## Check speciation
     do_speciation <- FALSE
     if(!missing(speciation)) {
-        check.class(speciation, "function")
-        ## Check if it has the right arguments
-        check_args <- names(formals(speciation))
-        if(any(missing <- is.na(match(required_args, check_args)))) {
-            stop(paste0("The speciation function is missing the following argument", ifelse(sum(missing) > 1, "s: ", ": "),  paste(required_args[missing], collapse = ", "), ". If ", ifelse(sum(missing) > 1, "they are", "it is"), " not required, you can set ", ifelse(sum(missing) > 1, "them", "it"), " to NULL."), call. = FALSE)
-        }
+        ## Checking the arguments
+        speciation <- check.args(speciation, fun_name = "speciation")
         do_speciation <- TRUE
     }
 
     ## Check condition
     do_condition <- FALSE
     if(!missing(condition)) {
-        check.class(condition, "function")
+        ## Checking the arguments
+        condition <- check.args(condition, fun_name = "condition")
         do_condition <- TRUE
-        ## Check the arguments
-        check_args <- names(formals(condition))
-        if(any(incorrect <- is.na(match(check_args, required_args)))) {
-            stop(paste0("The condition function cannot recognise the ", paste(check_args[incorrect], collapse = ", "), " argument", ifelse(sum(incorrect) > 1, "s.", ".")), call. = FALSE)
-        }
-        ## Make sure the arguments match the required
-        used_args <- methods::formalArgs(condition)
-        if(any(missing_args <- !(required_args[-c(1,5)] %in% used_args))) {
-            ## Add the argument to the function
-            formals(condition) <- alist("n.taxa" = , "parent.lineage" = , "trait.values" = )
-        }
     } else {
         ## Default condition
         condition <- function(n.taxa, parent.lineage, trait.values, modify.fun) return(TRUE)
@@ -123,21 +99,9 @@ make.modifiers <- function(branch.length, selection, speciation, condition, modi
     ## Check modify
     do_modify <- FALSE
     if(!missing(modify)) {
-        check.class(modify, "function")
+        ## Checking the arguments
+        modify <- check.args(modify, fun_name = "modify", modify = TRUE)
         do_modify <- TRUE
-        ## Check the arguments
-        check_args <- names(formals(modify))
-        if(!("x" %in% check_args)) {
-            stop(paste0("The modify function must have at least one x argument (you can use x = NULL)."))
-        }
-        if(any(incorrect <- is.na(match(check_args, c("x", required_args))))) {
-            stop(paste0("The modify function cannot recognise the ", paste(check_args[incorrect], collapse = ", "), " argument", ifelse(sum(incorrect) > 1, "s.", ".")), call. = FALSE)
-        }
-        used_args <- methods::formalArgs(modify)
-        if(any(missing_args <- !(c("x", required_args[-c(1,5)]) %in% used_args))) {
-            ## Add the argument to the function
-            formals(modify) <- alist("x" = , "n.taxa" = , "parent.lineage" = , "trait.values" = )
-        }
     } else {
         ## Default modify
         modify <- function(x, n.taxa, parent.lineage, trait.values, modify.fun) return(x)

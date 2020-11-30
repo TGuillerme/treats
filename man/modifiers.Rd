@@ -8,9 +8,11 @@
 \alias{speciation.trait}
 \title{Modifiers}
 \usage{
-branch.length(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL, ...)
+branch.length(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL)
 
-speciation(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL, ...)
+selection(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL)
+
+speciation(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL)
 }
 \arguments{
 \item{bd.params}{A named list of birth death parameters (see details).}
@@ -22,8 +24,6 @@ speciation(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify
 \item{trait.values}{A matrix containing the trait values (see details).}
 
 \item{modify.fun}{A list of internals functions that can modified by \code{events} (see details).}
-
-\item{...}{Any additional arguments for the specific modifier (see details).}
 }
 \description{
 Different modifiers for the birth death process implemented in dads.
@@ -40,6 +40,8 @@ The pre-build \code{modifiers} in the \code{dads} package are (so far):
      \item \code{branch.length} the simple branch length generator that randomly gets a numeric value drawn from the exponential distribution (\code{\link[stats]{rexp}}) with a rate equal to the number of taxa (\code{n.taxa * bd.params$speciation + bd.params$extinction}).
 
      \item \code{branch.length.trait} a modification of the \code{branch.length} \code{modifier} where the resulting branch length is changed by \code{modify.fun$modify} if the parent trait(s) meet the condition \code{modify.fun$condition}.
+
+     \item \code{selection} a function returning a randomly sampled integer among the number of taxa available.
 
      \item \code{speciation} a function returning \code{TRUE} (speciation) if a random uniform number (\code{\link[stats]{runif}}) is smaller than the ratio of speciation by speciation and extinction (\code{bd.params$speciation / (bd.params$speciation) + bd.params$extinction}). If it's bigger, the function returns \code{FALSE} (exinction).
 
