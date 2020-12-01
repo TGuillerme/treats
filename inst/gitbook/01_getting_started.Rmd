@@ -160,7 +160,6 @@ default_modifiers
 This will not do much to our simulations compared to the previous trait and tree simulation but we can provide our modifiers object to the `dads` function:
 
 ```{r}
-set.seed(1)
 ## Setting the simulation parameters
 extinction_02 <- list(extinction = 0.4)
 living_20     <- list(max.living = 20)

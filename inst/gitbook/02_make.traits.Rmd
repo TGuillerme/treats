@@ -254,7 +254,7 @@ my.BM.process <- function(x0, edge.length = 1, sd = 1, ...) {
     ## and depending on branch (edge) length
     result <- rnorm(n = 1, mean = x0, sd = sd * edge.length)
 
-    ## Return the number
+    ## Return the number
     return(result)
 }
 ```
@@ -273,7 +273,7 @@ my.OU.process <- function(x0, edge.length = 1, var = 1, alpha = 1, ...) {
     ## and depending on branch (edge) length
     result <- rnorm(n = 1, mean = mean, sd = sd * branch.length)
 
-    ## Return the number
+    ## Return the number
     return(result)
 }
 ```

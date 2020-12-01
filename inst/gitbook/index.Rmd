@@ -16,9 +16,7 @@ description: "dads R package vignette"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# `dads`
-
-Disparity and diversity simulations.
+# `dads`: disparity and diversity simulations.
 
 Allowing to simulate disparity and diversity at the same time with interaction between both.
 
@@ -54,10 +52,8 @@ install_github("TGuillerme/dads")
 ```
 
 ```{r, eval = FALSE, echo = FALSE, message = FALSE}
-## loading the package and setting up the start seed.
+## Loading the package and setting up the start seed.
 library(dads)
-## Setting a random seed for repeatability
-set.seed(123)
 ```
 
 ## Help
@@ -74,6 +70,4 @@ Basically, the `dads` function intakes your personalised `traits`, `modifiers` a
 You will find more details about how these objects (`traits`, `modifiers` and `events`) work in the rest of the tutorial but here is a graphical representation of how `dads` work:
 
 ![Schematised summary of the `dads` package architecture](dads_structure.pdf)
-
-
 
