@@ -14,19 +14,106 @@ output:
 set.seed(123)
 ```
 
-> TODO: just ideas so far
+`"modifiers"` have a similar structure than `"traits"` where you can design an object with increasing complexity, starting with the simplest modifiers that doesn't modify anything (using the default arguments):
 
+```{r}
+## Making a default modifier (no modification)
+my_default_modifiers <- make.modifiers()
+my_default_modifiers
+```
+
+Similarly to `"traits"` objects, `"modifiers"` are also printed by default using `print.dads`.
+You can see details about what's actually in the object using `print.dads(my_default_modifiers, all = TRUE)`.
+However, contrary to `"traits"`, you cannot plot `"modifiers"`.
 
 ## The branch length function (`branch.length`)
 
-A branch length function that is constant
+The first argument in `"modifiers"` is the branch length function (`branch.length`) this is the function that will be executed in `dads` to generate branch length.
+Note that in the `dads` algorithm, branch length is not generated _directly_ but actually results of the waiting time.
+In other words, the `branch.length` function just affects waiting time for all taxa present at any time in the simulation.
+These taxa can then either go extinct (stopping the "growth" of it's branch length) or survive (continuing the "growth").
+
+By default, branch length (or waiting or growth) is a randomly drawn number from an exponential distribution with the rate of the number of taxa multiplied by the speciation and extinction rate: $n \times (\lambda + \mu)$ (where $n$ is the number of taxa currently present in the simulation, $\lambda$ and $\mu$ are respectively the speciation and extinction rates).
+This default function is simply called `branch.length` in `dads` and can be used as a modifier as follows:
+
+```{r}
+## Specifying the default modifier
+default_modifiers <- make.modifiers(branch.length = branch.length)
+
+## Setting some parameters for generating trees
+bd_params  <- list(extinction = 0)
+stope_rule <- list(max.living = 20)
+
+## Generating a tree with the default branch length parameter
+set.seed(0)
+default_tree <- dads(bd.params = bd_params,
+                     stop.rule = stope_rule,
+                     modifiers = default_modifiers)
+```
+
+Of course, the point of the modularity here is that you can provide your own function for generating branch length.
+For example, we might be interested in what our tree would look like if we'd use a simple constant branch length generation (instead of randomly drawing it from an exponential distribution).
+We can do so by declaring our own `branch.length` function and adding it to a `"modifiers"` object. 
+
+```{r}
+## A constant branch length generator
+## (note that the output must be numeric, not integer)
+constant.brlen <- function() {
+    return(as.numeric(1))
+}
+
+## Creating the modifiers object
+constant_modifier <- make.modifiers(branch.length = constant.brlen)
+
+## Generating a new tree with this modifier
+set.seed(0)
+modified_tree <- dads(bd.params = bd_params,
+                      stop.rule = stope_rule,
+                      modifiers = constant_modifier)
+``` 
+
+And we can visualise the difference between both resulting trees:
+
+```{r}
+par(mfrow = c(1,2))
+plot(default_tree,  main = "Default modifier")
+plot(modified_tree, main = "Constant branch length\nmodifier")
+```
+
+It is of course to use more complex branch length modifiers that intakes different conditions and specific modification rather than simply always output a value of one.
+
+
+## The condition and modify functions (`condition` and `modify`)
+
+In the examples above, we have seen how to specify modifications to the birth death process (via `branch.length`, `selection` and `speciation`), however, one might note that these modifications are not dynamic.
+In other words, throughout the process, the modifications remain constant (even if they are conditional).
+It is however possible to code the modifiers
+
+
+
+In the following section we will see how to program these functions in a `"modifiers"` before learning about other aspects of the birth death process that can be modified (the `selection` and `speciation` steps).
+
+As shown in the example with the `branch.length` modifier, it is possible to modify a specific part of the birth death process (e.g. the change in time) but in the previous example, the `constant.brlen` modifier only included a constant modification of the process whereas it is probably more valuable to have a variable change in branch length (e.g. like the default `branch.length` modifier that is dependent on the number of taxa at the time of the simulation).
+It is possible add conditions and modifications to the `"modifiers"` object through the `condition` and `modify` function.
+As stated in their names, the `condition` function is indicating in which conditions to do a special action while the `modify` function is indicating what to modify (typically when a condition is met).
+
+`condition` and `modify` are hard coded in the `branch.length` function that they concern, i.e. they are variables (functions) within the function.
+
+
+
+
+
+
+
+
+
 
 ```{r, eval = FALSE}
-constant.brlen <- function(bd.params = NULL,
-                         n.taxa = NULL,
-                         parent.lineage = NULL,
-                         trait.values = NULL,
-                         modify.fun = NULL) {
+constant.brlen <- function(bd.params      = NULL,
+                           n.taxa         = NULL,
+                           parent.lineage = NULL,
+                           trait.values   = NULL,
+                           modify.fun     = NULL) {
     return(1)
 }
 
