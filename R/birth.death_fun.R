@@ -101,7 +101,6 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ## Initialising the values
     edge_lengths <- 0
     time <- 0
-    parent.trait <- NULL
 
     ## Initialise the lineage tracker
     lineage <- list("parents" = 0,     ## The list of parent lineages
@@ -118,8 +117,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
 
     ## Get the waiting time
     waiting_time <- initial.modifiers$waiting$fun(bd.params      = bd.params,
-                                                  n.taxa         = lineage$n,
-                                                  parent.lineage = NULL,
+                                                  lineage        = lineage,
                                                   trait.values   = NULL,
                                                   modify.fun     = NULL)
 
@@ -141,10 +139,10 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     }
 
     ## Randomly triggering an event
-    if(initial.modifiers$speciating$fun(bd.params      = bd.params,
-                                        parent.lineage = NULL,
-                                        trait.values   = NULL,
-                                        modify.fun     = NULL)) {
+    if(initial.modifiers$speciating$fun(bd.params    = bd.params,
+                                        lineage      = NULL,
+                                        trait.values = NULL,
+                                        modify.fun   = NULL)) {
         ## Speciating:
         if(lineage$n == stop.rule$max.living) {
             ## Don't add this one
@@ -182,20 +180,18 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         
         ## Pick a lineage for the event to happen to:
         # lineage$drawn <- sample(n_living_taxa, 1)
-        lineage$drawn <- modifiers$selecting$fun(bd.params      = bd.params,
-                                                    n.taxa         = lineage$n,
-                                                    parent.lineage = lineage$parents[lineage$current],
-                                                    trait.values   = trait_values,
-                                                    modify.fun     = modifiers$selecting$internal)
+        lineage$drawn <- modifiers$selecting$fun(bd.params    = bd.params,
+                                                 lineage      = lineage,
+                                                 trait.values = trait_values,
+                                                 modify.fun   = modifiers$selecting$internal)
         
         lineage$current <- lineage$livings[lineage$drawn]
 
         ## Get the waiting time
-        waiting_time <- modifiers$waiting$fun(bd.params      = bd.params,
-                                              n.taxa         = lineage$n,
-                                              parent.lineage = lineage$parents[lineage$current],
-                                              trait.values   = trait_values,
-                                              modify.fun     = modifiers$waiting$internal)
+        waiting_time <- modifiers$waiting$fun(bd.params    = bd.params,
+                                              lineage      = lineage,
+                                              trait.values = trait_values,
+                                              modify.fun   = modifiers$selecting$internal)
 
         ## Update the global time
         time <- time + waiting_time
@@ -217,17 +213,17 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                                   ## Add the updated trait from the parent lineage
                                   unlist(lapply(traits,
                                                 sim.element.trait,
-                                                parent.trait = parent.traits(trait_values, lineage$parents[lineage$current]),
+                                                parent.trait = parent.traits(trait_values, lineage),
                                                 edge.length  = edge_lengths[lineage$current]))
                                  , deparse.level = 0)
             rownames(trait_values)[rownames(trait_values) == ""] <- lineage$current
         }
 
         ## Randomly triggering an event
-        if(modifiers$speciating$fun(bd.params      = bd.params,
-                                    parent.lineage = lineage$parents[lineage$current],
-                                    trait.values   = trait_values,
-                                    modify.fun     = modifiers$speciating$internal)) {
+        if(modifiers$speciating$fun(bd.params    = bd.params,
+                                    lineage      = lineage,
+                                    trait.values = trait_values,
+                                    modify.fun   = modifiers$speciating$internal)) {
             
             ## Speciating:
             if(lineage$n == stop.rule$max.living) {

@@ -4,27 +4,18 @@
 \alias{parent.traits}
 \title{Get parent traits}
 \usage{
-parent.traits(trait.values, parent.lineage)
+parent.traits(trait.values, lineage)
 }
 \arguments{
 \item{trait.values}{The internal table of trait values}
 
-\item{parent.lineage}{The internal parent lineage ID}
+\item{lineage}{The internal lineage data list}
 }
 \description{
 An internal utility function for \code{modifiers}, \code{traits} or \code{events} to access the value(s) of the parent traits in the \code{dads} algorithm
 }
 \details{
 This function is designed to be used internally in \code{dads} to help \code{modifiers}, \code{traits} or \code{events} objects to access the parent traits of the lineages simulated through the internal birth death algorithm.
-}
-\examples{
-## You can use this function in a modifiers object condition:
-
-## 1. designing the condition function:
-## Return FALSE if the trait value is less than the average trait value
-my_condition <- function(trait.values, parent.lineage) {
-}
-
 }
 \seealso{
 
