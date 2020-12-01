@@ -39,33 +39,33 @@ test_that("print.modifiers works", {
     ## The default
     test <- make.modifiers()
     out <- capture_output(print.dads(test))
-    expect_equal(out[[1]], " ---- dads modifiers object ---- \nNo modifiers applied to the branch length and speciation processes (default).")
+    expect_equal(out[[1]], " ---- dads modifiers object ---- \nNo modifiers applied to the branch length, selection and speciation processes (default).")
 
     my_speciation_fun <- speciation
     test <- make.modifiers(speciation = my_speciation_fun)
     out <- capture_output(print.dads(test))
-    expect_equal(out[[1]], " ---- dads modifiers object ---- \nDefault branch length process.\nSpeciation process is set to my_speciation_fun.")
+    expect_equal(out[[1]], " ---- dads modifiers object ---- \nDefault branch length process.\nDefault selection process.\nSpeciation process is set to my_speciation_fun.")
 
     my_condition_fun <- function() return(TRUE)
     my_modify_fun <- function(x) return(x)
     test <- make.modifiers(speciation = my_speciation_fun, modify = my_modify_fun)
     out <- capture_output(print.dads(test))
-    expect_equal(out[[1]], " ---- dads modifiers object ---- \nDefault branch length process.\nSpeciation process is set to my_speciation_fun with a modifier (my_modify_fun).")
+    expect_equal(out[[1]], " ---- dads modifiers object ---- \nDefault branch length process.\nDefault selection process.\nSpeciation process is set to my_speciation_fun with a modifier (my_modify_fun).")
 
     my_condition_fun <- function() return(TRUE)
     my_modify_fun <- function(x) return(x)
     test <- make.modifiers(speciation = my_speciation_fun, condition = my_condition_fun, modify = my_modify_fun)
     out <- capture_output(print.dads(test))
-    expect_equal(out[[1]], " ---- dads modifiers object ---- \nDefault branch length process.\nSpeciation process is set to my_speciation_fun with a condition (my_condition_fun) and a modifier (my_modify_fun).")
+    expect_equal(out[[1]], " ---- dads modifiers object ---- \nDefault branch length process.\nDefault selection process.\nSpeciation process is set to my_speciation_fun with a condition (my_condition_fun) and a modifier (my_modify_fun).")
 
     my_branch_length_fun <- branch.length
     test <- make.modifiers(branch.length = my_branch_length_fun, speciation = my_speciation_fun, condition = my_condition_fun, modify = my_modify_fun)
     out <- capture_output(print.dads(test))
-    expect_equal(out[[1]], " ---- dads modifiers object ---- \nBranch length process is set to my_branch_length_fun with a condition (my_condition_fun) and a modifier (my_modify_fun).\nSpeciation process is set to my_speciation_fun with a condition (my_condition_fun) and a modifier (my_modify_fun).")
+    expect_equal(out[[1]], " ---- dads modifiers object ---- \nBranch length process is set to my_branch_length_fun with a condition (my_condition_fun) and a modifier (my_modify_fun).\nDefault selection process.\nSpeciation process is set to my_speciation_fun with a condition (my_condition_fun) and a modifier (my_modify_fun).")
 
     my_branch_length_fun <- branch.length
     test <- make.modifiers(branch.length = my_branch_length_fun, speciation = my_speciation_fun)
     out <- capture_output(print.dads(test))
-    expect_equal(out[[1]], " ---- dads modifiers object ---- \nBranch length process is set to my_branch_length_fun.\nSpeciation process is set to my_speciation_fun.")
+    expect_equal(out[[1]], " ---- dads modifiers object ---- \nBranch length process is set to my_branch_length_fun.\nDefault selection process.\nSpeciation process is set to my_speciation_fun.")
 
 })

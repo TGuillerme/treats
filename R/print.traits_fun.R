@@ -54,7 +54,7 @@ print.modifiers.info <- function(x) {
 
     ## See if everything is default
     if(all(unlist(x$call) == "default")) {
-        cat(paste0("No modifiers applied to the branch length and speciation processes (default).\n"))
+        cat(paste0("No modifiers applied to the branch length, selection and speciation processes (default).\n"))
     } else {
         ## Waiting process
         if(not.null.default(x$call$waiting$fun)) {
@@ -70,6 +70,22 @@ print.modifiers.info <- function(x) {
             cat(paste0("a modifier (", x$call$waiting$modify, ")"))
         }
         cat(".\n")
+
+        ## Selecting process
+        if(not.null.default(x$call$selecting$fun)) {
+            cat(paste0("Selection process is set to ", x$call$selecting$fun))
+        } else {
+            cat(paste0("Default selection process"))
+        }
+        if(not.null.default(x$call$selecting$condition)) {
+            cat(paste0(" with a condition (", x$call$selecting$condition, ")"))
+        }
+        if(not.null.default(x$call$selecting$modify)) {
+            cat(ifelse(not.null.default(x$call$selecting$condition), " and ", " with "))
+            cat(paste0("a modifier (", x$call$selecting$modify, ")"))
+        }
+        cat(".\n")
+
         ## Speciating process
         if(not.null.default(x$call$speciating$fun)) {
             cat(paste0("Speciation process is set to ", x$call$speciating$fun))
