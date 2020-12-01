@@ -33,11 +33,11 @@ make.modifiers(
 Making modifiers objects for dads based on an ancestor's (parent) trait.
 }
 \details{
-\code{branch.length}, \code{selection} and \code{speciation} must be a functions that intakes the following arguments: \code{bd.params, n.taxa, parent.lineage, trait.values, modify.fun}. If left empty, any of these arguments is considered as NULL.
+\code{branch.length}, \code{selection} and \code{speciation} must be a functions that intakes the following arguments: \code{bd.params, lineage, trait.values, modify.fun}. If left empty, any of these arguments is considered as NULL.
 
-The default \code{branch.length} function is drawing a random number from the exponantial distribution with a rate equal to the current number of taxa multiplied by the speciation and extinction (\code{rexp(1, n.taxa * (speciation + extinction))}).
+The default \code{branch.length} function is drawing a random number from the exponantial distribution with a rate equal to the current number of taxa multiplied by the speciation and extinction (\code{rexp(1, n_taxa * (speciation + extinction))}).
 
-The default \code{selection} function is randomly drawing a single lineage among the ones present at the time of the speciation (\code{sample(n.taxa, 1)}).
+The default \code{selection} function is randomly drawing a single lineage among the ones present at the time of the speciation (\code{sample(n_taxa, 1)}).
 
 The default \code{speciation} function is drawing a random number from a uniform distribution (0,1) and starts a speciation event if this random number is lower than the ration of speciation on speciation and extinction (\code{runif(1) < (speciation/(speciation + extinction))}). If the random number is greater, the lineage goes extinct.
 
@@ -45,13 +45,13 @@ The default \code{speciation} function is drawing a random number from a uniform
 
 For example a conditional on the number of taxa:
 
-    \code{condition = function(n.taxa) return(n.taxa < 1)}
+    \code{condition = function(lineage) return(lineage$n < 1)}
 
 or a conditional on the trait values:
 
-    \code{condition = function(trait.values, parent.lineage)}
+    \code{condition = function(trait.values, lineage)}
     \code{    \{}
-    \code{    parent.traits(trait.values, parent.lineage) < mean(trait.values)}
+    \code{    parent.traits(trait.values, lineage) < mean(trait.values)}
     \code{    \}}
 
 \code{modify} must be a function with at least one input named \code{x} (which will be the branch length or the speciation trigger to value depending on the modifier) and must return a \code{numeric} value.
@@ -61,7 +61,7 @@ For example a constant modification of the input:
 
 or a modifier depending on the number of taxa:
 
-    \code{modify = function(x, n.taxa) return(x/n.taxa)}
+    \code{modify = function(x, lineage) return(x/lineage$n)}
 
 More details about the \code{modifiers} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
 }

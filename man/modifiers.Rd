@@ -3,23 +3,22 @@
 \name{modifiers}
 \alias{modifiers}
 \alias{branch.length}
+\alias{selection}
 \alias{speciation}
 \alias{branch.length.trait}
 \alias{speciation.trait}
 \title{Modifiers}
 \usage{
-branch.length(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL)
+branch.length(bd.params = NULL, lineage = NULL, trait.values = NULL, modify.fun = NULL)
 
-selection(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL)
+selection(bd.params = NULL, lineage = NULL, trait.values = NULL, modify.fun = NULL)
 
-speciation(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL)
+speciation(bd.params = NULL, lineage = NULL, trait.values = NULL, modify.fun = NULL)
 }
 \arguments{
 \item{bd.params}{A named list of birth death parameters (see details).}
 
-\item{n.taxa}{A single numerical value (the number of taxa at the time of the simulations - see details).}
-
-\item{parent.lineage}{A single numerical value (the ID of the parent of the current lineage - see details).}
+\item{lineage}{A named list containing the lineage data (see details).}
 
 \item{trait.values}{A matrix containing the trait values (see details).}
 
@@ -37,7 +36,7 @@ The pre-build \code{modifiers} in the \code{dads} package are (so far):
 
 \itemize{
 
-     \item \code{branch.length} the simple branch length generator that randomly gets a numeric value drawn from the exponential distribution (\code{\link[stats]{rexp}}) with a rate equal to the number of taxa (\code{n.taxa * bd.params$speciation + bd.params$extinction}).
+     \item \code{branch.length} the simple branch length generator that randomly gets a numeric value drawn from the exponential distribution (\code{\link[stats]{rexp}}) with a rate equal to the number of taxa (\code{lineage$n * bd.params$speciation + bd.params$extinction}).
 
      \item \code{branch.length.trait} a modification of the \code{branch.length} \code{modifier} where the resulting branch length is changed by \code{modify.fun$modify} if the parent trait(s) meet the condition \code{modify.fun$condition}.
 

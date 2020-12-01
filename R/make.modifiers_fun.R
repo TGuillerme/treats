@@ -2,7 +2,7 @@
 check.args <- function(fun, fun_name, modify = FALSE) {
 
     ## The required arguments (internal)
-    required_args <- c("bd.params", "n.taxa", "parent.lineage", "trait.values", "modify.fun")
+    required_args <- c("bd.params", "lineage", "trait.values", "modify.fun")
 
     if(modify) {
         required_args <- c("x", required_args)
@@ -34,15 +34,12 @@ check.args <- function(fun, fun_name, modify = FALSE) {
             formals(fun) <- c(formals(fun),  alist("bd.params" = NULL))    
         }
         if(missing_args[2]) {
-            formals(fun) <- c(formals(fun),  alist("n.taxa" = NULL))    
+            formals(fun) <- c(formals(fun),  alist("lineage" = NULL))    
         }
         if(missing_args[3]) {
-            formals(fun) <- c(formals(fun),  alist("parent.lineage" = NULL))    
-        }
-        if(missing_args[4]) {
             formals(fun) <- c(formals(fun),  alist("trait.values" = NULL))
         }
-        if(missing_args[5]) {
+        if(missing_args[4]) {
             formals(fun) <- c(formals(fun),  alist("modify.fun" = NULL))
         }                
     }
@@ -56,7 +53,6 @@ check.modifiers <- function(modifiers) {
     ## Check the content at the first level
     required_names <- c("waiting", "selecting", "speciating", "call")
     if(any(missing <- is.na(match(names(modifiers), required_names)))) {
-        ## TODO: improve message here
         stop(paste0("modifiers must have the following elements: ", paste(required_names, collapse = ", "), "."), call. = FALSE)
     }
 
@@ -64,23 +60,26 @@ check.modifiers <- function(modifiers) {
     required_content <- c("fun", "internal")
     for(one_check in required_names[-length(required_names)]) {
         if(any(missing <- is.na(match(names(modifiers[[one_check]]), required_content)))) {
-            ## TODO: improve message here
             stop(paste0("The ", one_check, " modifier must contain the following elements: ", paste(required_content, collapse = ", "), "."), call. = FALSE)
         }
     }
 
     ## Dummy (basic) arguments
-    bd.params      <- list(speciation = 1, extinction = 0)
-    n.taxa         <- as.integer(1)
-    parent.lineage <- 1
-    trait.values   <- rbind(NULL, "1" = c(1))
+    bd.params    <- list(speciation = 1, extinction = 0)
+    trait.values <- rbind(NULL, "1" = c(1))
+    lineage <- list("parents" = 1,     ## The list of parent lineages
+                    "livings" = 1,     ## The list of lineages still not extinct
+                    "drawn"   = 1,     ## The lineage ID drawn (selected)
+                    "current" = 1,     ## The current focal lineage
+                    "n"       = 1,     ## The number of non extinct lineages
+                    "split"   = FALSE)
+
 
     ## Testing the waiting function
-    test_waiting <- try(modifiers$waiting$fun(bd.params      = bd.params,
-                                              n.taxa         = n.taxa,
-                                              parent.lineage = parent.lineage,
-                                              trait.values   = trait.values,
-                                              modify.fun     = modifiers$waiting$internal)
+    test_waiting <- try(modifiers$waiting$fun(bd.params    = bd.params,
+                                              lineage      = lineage,
+                                              trait.values = trait.values,
+                                              modify.fun   = modifiers$waiting$internal)
     ,
                         silent = TRUE)
 
@@ -94,11 +93,10 @@ check.modifiers <- function(modifiers) {
     }
 
     ## Testing the selecting function
-    test_selecting <- try(modifiers$selecting$fun(bd.params  = bd.params,
-                                              n.taxa         = n.taxa,
-                                              parent.lineage = parent.lineage,
-                                              trait.values   = trait.values,
-                                              modify.fun     = modifiers$selecting$internal),
+    test_selecting <- try(modifiers$selecting$fun(bd.params    = bd.params,
+                                                  lineage      = lineage,
+                                                  trait.values = trait.values,
+                                                  modify.fun   = modifiers$selecting$internal),
                         silent = TRUE)
 
     ## Debrief
@@ -112,12 +110,10 @@ check.modifiers <- function(modifiers) {
 
 
     ## Testing the speciating function
-    test_speciating <- try(modifiers$speciating$fun(
-                                                bd.params      = bd.params,
-                                                n.taxa         = n.taxa,
-                                                parent.lineage = parent.lineage,
-                                                trait.values   = trait.values,
-                                                modify.fun     = modifiers$speciating$internal),
+    test_speciating <- try(modifiers$speciating$fun(bd.params    = bd.params,
+                                                    lineage      = lineage,
+                                                    trait.values = trait.values,
+                                                    modify.fun   = modifiers$speciating$internal),
                            silent = TRUE)
 
     ## Debrief

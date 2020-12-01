@@ -5,26 +5,26 @@ test_that("make.modifiers works", {
 
     ## Sanitizing
     ## Wrong arguments for branch length
-    wrong.bl <- function(x, y, n.taxa) return("ah")
+    wrong.bl <- function(x, y, lineage) return("ah")
     error <- capture_error(make.modifiers(branch.length = wrong.bl))
     expect_equal(error[[1]], "The branch length function cannot recognise the x, y arguments.")
-    wrong.bl <- function(bd.params = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) return("ah")
+    wrong.bl <- function(bd.params = NULL, lineage = NULL, trait.values = NULL, modify.fun = NULL) return("ah")
     error <- capture_error(make.modifiers(branch.length = wrong.bl))
     expect_equal(error[[1]], "The branch length element from the modifiers did not produce a numeric value (it produced a character instead).")
 
     ## Wrong arguments for selection
-    wrong.sl <- function(x, y, n.taxa) return("oh")
+    wrong.sl <- function(x, y, lineage) return("oh")
     error <- capture_error(make.modifiers(selection = wrong.sl))
     expect_equal(error[[1]], "The selection function cannot recognise the x, y arguments.")
-    wrong.sl <- function(bd.params = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) return("oh")
+    wrong.sl <- function(bd.params = NULL, lineage = NULL, trait.values = NULL, modify.fun = NULL) return("oh")
     error <- capture_error(make.modifiers(selection = wrong.sl))
     expect_equal(error[[1]], "The selection element from the modifiers did not produce a integer value (it produced a character instead).")
 
     ## Wrong arguments for speciation
-    wrong.sp <- function(x, y, n.taxa) return("ah")
+    wrong.sp <- function(x, y, lineage) return("ah")
     error <- capture_error(make.modifiers(speciation = wrong.sp))
     expect_equal(error[[1]], "The speciation function cannot recognise the x, y arguments.")
-    wrong.sp <- function(bd.params = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) return("ah")
+    wrong.sp <- function(bd.params = NULL, lineage = NULL, trait.values = NULL, modify.fun = NULL) return("ah")
     error <- capture_error(make.modifiers(speciation = wrong.sp))
     expect_equal(error[[1]], "The speciation element from the modifiers did not produce a logical value (it produced a character instead).")
 
@@ -32,7 +32,7 @@ test_that("make.modifiers works", {
     wrong.con <- function(x) return("a")
     error <- capture_error(make.modifiers(condition = wrong.con))
     expect_equal(error[[1]], "The condition function cannot recognise the x argument.")
-    wrong.con <- function(n.taxa, y, ya) return("a")
+    wrong.con <- function(lineage, y, ya) return("a")
     error <- capture_error(make.modifiers(condition = wrong.con))
     expect_equal(error[[1]], "The condition function cannot recognise the y, ya arguments.")
 
@@ -40,7 +40,7 @@ test_that("make.modifiers works", {
     wrong.mod <- function(x, y) return("a")
     error <- capture_error(make.modifiers(modify = wrong.mod))
     expect_equal(error[[1]], "The modify function cannot recognise the y argument.")
-    wrong.mod <- function(n.taxa, y) return("a")
+    wrong.mod <- function(lineage, y) return("a")
     error <- capture_error(make.modifiers(modify = wrong.mod))
     expect_equal(error[[1]], "The modify function cannot recognise the y argument.")
 
@@ -53,8 +53,8 @@ test_that("make.modifiers works", {
     expect_equal(error[[1]], "test must be of class logical.")
 
     ## Working fine?
-    condition <- function(trait.values, parent.lineage) return(parent.traits(trait.values, parent.lineage) < 0)
-    modify <- function(x, trait.values, parent.lineage) return(x * 20)
+    condition <- function(trait.values, lineage) return(parent.traits(trait.values, lineage) < 0)
+    modify <- function(x, trait.values, lineage) return(x * 20)
     test <- make.modifiers(branch.length = branch.length,
                            selection     = selection,
                            speciation    = speciation,

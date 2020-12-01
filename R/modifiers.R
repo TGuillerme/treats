@@ -1,16 +1,15 @@
 #' @name modifiers
-#' @aliases branch.length speciation branch.length.trait speciation.trait
+#' @aliases branch.length selection speciation branch.length.trait speciation.trait
 #' @title Modifiers
 #'
 #' @description Different modifiers for the birth death process implemented in dads.
 #'
-#' @usage branch.length(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL)
-#' @usage selection(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL)
-#' @usage speciation(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL)
+#' @usage branch.length(bd.params = NULL, lineage = NULL, trait.values = NULL, modify.fun = NULL)
+#' @usage selection(bd.params = NULL, lineage = NULL, trait.values = NULL, modify.fun = NULL)
+#' @usage speciation(bd.params = NULL, lineage = NULL, trait.values = NULL, modify.fun = NULL)
 #'
 #' @param bd.params      A named list of birth death parameters (see details).
-#' @param n.taxa         A single numerical value (the number of taxa at the time of the simulations - see details).
-#' @param parent.lineage A single numerical value (the ID of the parent of the current lineage - see details).
+#' @param lineage        A named list containing the lineage data (see details).
 #' @param trait.values   A matrix containing the trait values (see details).
 #' @param modify.fun     A list of internals functions that can modified by \code{events} (see details).
 #' 
@@ -23,7 +22,7 @@
 #'
 #' \itemize{
 #'
-#'      \item \code{branch.length} the simple branch length generator that randomly gets a numeric value drawn from the exponential distribution (\code{\link[stats]{rexp}}) with a rate equal to the number of taxa (\code{n.taxa * bd.params$speciation + bd.params$extinction}).
+#'      \item \code{branch.length} the simple branch length generator that randomly gets a numeric value drawn from the exponential distribution (\code{\link[stats]{rexp}}) with a rate equal to the number of taxa (\code{lineage$n * bd.params$speciation + bd.params$extinction}).
 #'
 #'      \item \code{branch.length.trait} a modification of the \code{branch.length} \code{modifier} where the resulting branch length is changed by \code{modify.fun$modify} if the parent trait(s) meet the condition \code{modify.fun$condition}.
 #'
@@ -37,41 +36,43 @@
 #' 
 #' More details about the \code{modifiers} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
 
-modifiers <- function(bd.params = NULL, n.taxa = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) {
+modifiers <- function(bd.params = NULL, lineage = NULL, trait.values = NULL, modify.fun = NULL) {
     cat("modifiers functions implemented in dads:\n")
     cat("branch length generating functions:\n")
     cat("   ?branch.length\n")
     cat("   ?branch.length.trait\n")
+    cat("lineage selection functions:\n")
+    cat("   ?selection\n")
     cat("speciation trigger functions:\n")
     cat("   ?speciation\n")
     cat("   ?speciation.trait\n")
 }
 
 ## Normal branch length
-branch.length <- function(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) {
+branch.length <- function(bd.params, lineage = NULL, trait.values = NULL, modify.fun = NULL) {
 
     ## Get the event probability
-    event_probability <- sum(n.taxa * (bd.params$speciation + bd.params$extinction))
+    event_probability <- sum(lineage$n * (bd.params$speciation + bd.params$extinction))
 
     ## Get the waiting time
     waiting_time <- rexp(1, event_probability)
 
     ## Modify the waiting time
-    if(modify.fun$condition(n.taxa = n.taxa, parent.lineage = parent.lineage, trait.values = trait.values)) {
-        waiting_time <- modify.fun$modify(x = waiting_time, n.taxa = n.taxa, parent.lineage = parent.lineage, trait.values = trait.values)
+    if(modify.fun$condition(lineage = lineage, trait.values = trait.values)) {
+        waiting_time <- modify.fun$modify(x = waiting_time, lineage = lineage, trait.values = trait.values)
     }
 
     return(waiting_time)
 }
 
 ## Normal speciation
-speciation <- function(bd.params, n.taxa = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) {
+speciation <- function(bd.params, lineage = NULL, trait.values = NULL, modify.fun = NULL) {
     ## Randomly trigger an event
     trigger_event <- runif(1)
 
     ## Modify the triggering
-    if(modify.fun$condition(n.taxa = n.taxa, parent.lineage = parent.lineage, trait.values = trait.values)) {
-        trigger_event <- modify.fun$modify(x = trigger_event, n.taxa = n.taxa, parent.lineage = parent.lineage, trait.values = trait.values)
+    if(modify.fun$condition(lineage = lineage, trait.values = trait.values)) {
+        trigger_event <- modify.fun$modify(x = trigger_event, lineage = lineage, trait.values = trait.values)
     }
 
     ## Speciate?
@@ -79,63 +80,58 @@ speciation <- function(bd.params, n.taxa = NULL, parent.lineage = NULL, trait.va
 }
 
 ## Normal selection
-selection <- function(bd.params, n.taxa = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) {
-    ## Speciate?
-    return(sample(n.taxa, 1))
+selection <- function(bd.params, lineage = NULL, trait.values = NULL, modify.fun = NULL) {
+    return(sample(lineage$n, 1))
 }
-
-
 
 
 ## Normal branch length (internal usage only)
-branch.length.fast <- function(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) {
+branch.length.fast <- function(bd.params, lineage = NULL, trait.values = NULL, modify.fun = NULL) {
 
     ## Get the waiting time
-    return(rexp(1, sum(n.taxa * (bd.params$speciation + bd.params$extinction))))
+    return(rexp(1, sum(lineage$n * (bd.params$speciation + bd.params$extinction))))
 }
 
 ## Normal speciation  (internal usage only)
-speciation.fast <- function(bd.params, n.taxa = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) {
+speciation.fast <- function(bd.params, lineage = NULL, trait.values = NULL, modify.fun = NULL) {
     ## Speciate?
     return(runif(1) < (bd.params$speciation/(bd.params$speciation + bd.params$extinction)))
 }
 
 ## Normal selector (internal usage only)
-selection.fast <- function(bd.params, n.taxa = NULL, parent.lineage = NULL, trait.values = NULL, modify.fun = NULL) {
+selection.fast <- function(bd.params, lineage = NULL, trait.values = NULL, modify.fun = NULL) {
     ## Speciate?
-    return(sample(n.taxa, 1))
+    return(sample(lineage$n, 1))
 }
 
 
 
 ## Trait dependent branch length
-branch.length.trait <- function(bd.params, n.taxa, parent.lineage = NULL, trait.values = NULL, modify.fun) {
+branch.length.trait <- function(bd.params, lineage = NULL, trait.values = NULL, modify.fun) {
 
     ## Get the event probability
-    event_probability <- sum(n.taxa * (bd.params$speciation + bd.params$extinction))
+    event_probability <- sum(lineage$n * (bd.params$speciation + bd.params$extinction))
 
     ## Get the waiting time
     waiting_time <- rexp(1, event_probability)
 
     ## Modify the waiting time
-    if(modify.fun$condition(n.taxa = n.taxa, parent.lineage = parent.lineage, trait.values = trait.values)) {
-    # if(modify.fun$condition(parent.traits(trait.values, parent.lineage))) {
-        waiting_time <- modify.fun$modify(x = waiting_time, n.taxa = n.taxa, parent.lineage = parent.lineage, trait.values =  trait.values)
+    if(modify.fun$condition(lineage = lineage, trait.values = trait.values)) {
+        waiting_time <- modify.fun$modify(x = waiting_time, lineage = lineage, trait.values = trait.values)
     }
 
     return(waiting_time)
 }
 
 ## Trait dependent speciation
-speciation.trait <- function(bd.params, n.taxa = NULL, parent.lineage, trait.values, modify.fun){
+speciation.trait <- function(bd.params, lineage, trait.values, modify.fun){
 
     ## Randomly trigger an event
     trigger_event <- runif(1)
 
     ## Modify the triggering
-    if(modify.fun$condition(n.taxa, parent.lineage, trait.values)) {
-    #if(modify.fun$condition(parent.traits(trait.values, parent.lineage))) {
-        trigger_event <- modify.fun$modify(x = trigger_event, n.taxa = n.taxa, parent.lineage = parent.lineage, trait.values = trait.values)
+    if(modify.fun$condition(lineage, trait.values)) {
+        trigger_event <- modify.fun$modify(x = trigger_event, lineage = lineage, trait.values = trait.values)
     }
 
     ## Speciate?
