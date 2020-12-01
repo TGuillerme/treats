@@ -106,8 +106,8 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ## Initialise the lineage tracker
     lineage <- list("parents" = 0,     ## The list of parent lineages
                     "livings" = 1,     ## The list of lineages still not extinct
-                    "drawn"   = 0,     ## The lineage ID drawn (selected)
-                    "current" = 0,     ## The current focal lineage
+                    "drawn"   = 1,     ## The lineage ID drawn (selected)
+                    "current" = 1,     ## The current focal lineage
                     "n"       = 1,     ## The number of non extinct lineages
                     "split"   = FALSE) ## The topology tracker (sum(!lineage$split) is total number of tips)
 
@@ -116,10 +116,6 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ## First node (root)
     ############
 
-    ## Select the first lineage
-    drawn_lineage <- 1 #DBG remove?
-    lineage$current <- 1    
-    
     ## Get the waiting time
     waiting_time <- initial.modifiers$waiting$fun(bd.params      = bd.params,
                                                   n.taxa         = lineage$n,
@@ -166,7 +162,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         lineage$parents[new_lineage] <- lineage$current
         edge_lengths[new_lineage] <- 0
         lineage$n <- lineage$n +1
-        lineage$livings <- c(lineage$livings[-drawn_lineage], new_lineage)
+        lineage$livings <- c(lineage$livings[-lineage$drawn], new_lineage)
 
     } else {
         ## Cannot go further
@@ -185,14 +181,14 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     while(lineage$n > 0 && lineage$n <= stop.rule$max.living  && sum(!lineage$split) <= stop.rule$max.taxa) {
         
         ## Pick a lineage for the event to happen to:
-        # drawn_lineage <- sample(n_living_taxa, 1)
-        drawn_lineage <- modifiers$selecting$fun(bd.params      = bd.params,
+        # lineage$drawn <- sample(n_living_taxa, 1)
+        lineage$drawn <- modifiers$selecting$fun(bd.params      = bd.params,
                                                     n.taxa         = lineage$n,
                                                     parent.lineage = lineage$parents[lineage$current],
                                                     trait.values   = trait_values,
                                                     modify.fun     = modifiers$selecting$internal)
         
-        lineage$current <- lineage$livings[drawn_lineage]
+        lineage$current <- lineage$livings[lineage$drawn]
 
         ## Get the waiting time
         waiting_time <- modifiers$waiting$fun(bd.params      = bd.params,
@@ -246,10 +242,10 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
             lineage$parents[new_lineage] <- lineage$current
             edge_lengths[new_lineage] <- 0
             lineage$n <- lineage$n + 1
-            lineage$livings <- c(lineage$livings[-drawn_lineage], new_lineage)
+            lineage$livings <- c(lineage$livings[-lineage$drawn], new_lineage)
         } else {
             ## Go extinct
-            lineage$livings <- lineage$livings[-drawn_lineage]
+            lineage$livings <- lineage$livings[-lineage$drawn]
             lineage$n <- lineage$n - 1
         }
     }
