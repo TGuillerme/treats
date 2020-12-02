@@ -89,7 +89,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ## Make the initial modifier (no modifier)
     initial.modifiers <- list("waiting"    = list(fun = branch.length.fast,
                                                   internal = NULL),
-                              "selecting"     = list(fun = selection.fast,
+                              "selecting"  = list(fun = selection.fast,
                                                   internal = NULL),
                               "speciating" = list(fun = speciation.fast,
                                                   internal = NULL))
@@ -99,17 +99,15 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     }
 
     ## Initialising the values
-    edge_lengths <- 0
-    time <- 0
+    time <- edge_lengths <- 0
 
     ## Initialise the lineage tracker
-    lineage <- list("parents" = 0,     ## The list of parent lineages
-                    "livings" = 1,     ## The list of lineages still not extinct
-                    "drawn"   = 1,     ## The lineage ID drawn (selected)
-                    "current" = 1,     ## The current focal lineage
-                    "n"       = 1,     ## The number of non extinct lineages
-                    "split"   = FALSE) ## The topology tracker (sum(!lineage$split) is total number of tips)
-
+    lineage <- list("parents" = as.integer(0), ## The list of parent lineages
+                    "livings" = as.integer(1), ## The list of lineages still not extinct
+                    "drawn"   = as.integer(1), ## The lineage ID drawn (selected)
+                    "current" = as.integer(1), ## The current focal lineage
+                    "n"       = as.integer(1), ## The number of non extinct lineages
+                    "split"   = FALSE)         ## The topology tracker (sum(!lineage$split) is total number of tips)
 
     ############
     ## First node (root)
@@ -159,7 +157,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         lineage$split[new_lineage] <- FALSE
         lineage$parents[new_lineage] <- lineage$current
         edge_lengths[new_lineage] <- 0
-        lineage$n <- lineage$n +1
+        lineage$n <- lineage$n + as.integer(1)
         lineage$livings <- c(lineage$livings[-lineage$drawn], new_lineage)
 
     } else {
@@ -179,7 +177,6 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     while(lineage$n > 0 && lineage$n <= stop.rule$max.living  && sum(!lineage$split) <= stop.rule$max.taxa) {
         
         ## Pick a lineage for the event to happen to:
-        # lineage$drawn <- sample(n_living_taxa, 1)
         lineage$drawn <- modifiers$selecting$fun(bd.params    = bd.params,
                                                  lineage      = lineage,
                                                  trait.values = trait_values,
@@ -191,7 +188,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         waiting_time <- modifiers$waiting$fun(bd.params    = bd.params,
                                               lineage      = lineage,
                                               trait.values = trait_values,
-                                              modify.fun   = modifiers$selecting$internal)
+                                              modify.fun   = modifiers$waiting$internal)
 
         ## Update the global time
         time <- time + waiting_time
@@ -237,12 +234,12 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
             lineage$split[new_lineage] <- FALSE
             lineage$parents[new_lineage] <- lineage$current
             edge_lengths[new_lineage] <- 0
-            lineage$n <- lineage$n + 1
+            lineage$n <- lineage$n + as.integer(1)
             lineage$livings <- c(lineage$livings[-lineage$drawn], new_lineage)
         } else {
             ## Go extinct
             lineage$livings <- lineage$livings[-lineage$drawn]
-            lineage$n <- lineage$n - 1
+            lineage$n <- lineage$n - as.integer(1)
         }
     }
 
