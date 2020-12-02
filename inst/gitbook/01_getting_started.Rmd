@@ -161,10 +161,10 @@ This will not do much to our simulations compared to the previous trait and tree
 
 ```{r}
 ## Setting the simulation parameters
-extinction_02 <- list(extinction = 0.4)
+extinction_02 <- list(extinction = 0.2)
 living_20     <- list(max.living = 20)
 BM_trait      <- make.traits()
-set.seed(4242)
+set.seed(1)
 ## Simulate disparity and diversity
 default_data <- dads(bd.params = extinction_02,
                      stop.rule = living_20,
@@ -194,8 +194,8 @@ This function intakes the `trait.values` and `parent.lineage` arguments, two arg
 
 ```{r}
 ## Triggering a modification only if the ancestor trait is negative
-negative.ancestor <- function(trait.values, parent.lineage) {
-    return(all(parent.traits(trait.values, parent.lineage) < 0))
+negative.ancestor <- function(trait.values, lineage) {
+    return(all(parent.traits(trait.values, lineage) < 0))
 }
 ```
 
@@ -221,7 +221,7 @@ Note that the `make.modifiers` function tests whether the input is compatible wi
 We can now simulate our tree and traits with our modifier: species will go extinct if their ancestor have a negative trait value:
 
 ```{r}
-set.seed(4242)
+set.seed(1)
 ## Simulate disparity and diversity
 biased_data <- dads(bd.params = extinction_02,
                     stop.rule = living_20,
