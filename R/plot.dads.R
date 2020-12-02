@@ -17,7 +17,7 @@
 #' }
 #' 
 #' @examples
-#' plot.dads()
+#' #plot.dads()
 #'
 #' @seealso
 #' 

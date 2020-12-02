@@ -15,7 +15,7 @@
 # 
 # ## 1. designing the condition function:
 # ## Return FALSE if the trait value is less than the average trait value
-# my_condition <- function(trait.values, parent.lineage) {
+# my_condition <- function(trait.values, lineage) {
 # }
 #'
 #' @seealso

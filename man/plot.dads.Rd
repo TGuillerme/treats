@@ -30,7 +30,7 @@ The \code{col} option can be either:
 }
 }
 \examples{
-plot.dads()
+#plot.dads()
 
 }
 \seealso{

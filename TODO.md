@@ -37,3 +37,7 @@
  - [x] add utilities
  - [ ] add manual for utilities
  - [ ] add test for `parent.traits`
+
+## TODO package
+
+ - [ ] add examples in functions
