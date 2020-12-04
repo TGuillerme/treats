@@ -333,7 +333,7 @@ To do so, you can formally declare conditions (`condition`) and modifications (`
 
 ## Demo runnable
 
-```{r, fig.height = 16, fig.width = 8}
+```{r, fig.height = 16, fig.width = 8, eval = FALSE}
 bd.params <- list(speciation = 1, extinction = 1/3)
 traits <- make.traits()
 stop.rule <- list(max.taxa = 20, max.living = Inf, max.time = Inf)

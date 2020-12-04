@@ -24,7 +24,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Alex Slavenko (email) and others" />
 
 
-<meta name="date" content="2020-11-13" />
+<meta name="date" content="2020-12-04" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -131,7 +131,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="./">dads manual</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> <code>dads</code></a><ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> <code>dads</code>: disparity and diversity simulations.</a><ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#what-is-dads"><i class="fa fa-check"></i><b>1.1</b> What is <code>dads</code>?</a><ul>
 <li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#modular"><i class="fa fa-check"></i><b>1.1.1</b> Modular?</a></li>
 </ul></li>
@@ -159,13 +159,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="makemodifiers.html"><a href="makemodifiers.html"><i class="fa fa-check"></i><b>4</b> Making modifiers with <code>make.modifiers()</code></a><ul>
-<li class="chapter" data-level="4.1" data-path="makemodifiers.html"><a href="makemodifiers.html#the-branch-length-function-branch.length"><i class="fa fa-check"></i><b>4.1</b> The branch length function (<code>branch.length</code>)</a></li>
-<li class="chapter" data-level="4.2" data-path="makemodifiers.html"><a href="makemodifiers.html#the-speciation-function-speciation"><i class="fa fa-check"></i><b>4.2</b> The speciation function (<code>speciation</code>)</a></li>
-<li class="chapter" data-level="4.3" data-path="makemodifiers.html"><a href="makemodifiers.html#the-condition-function-condition"><i class="fa fa-check"></i><b>4.3</b> The condition function (<code>condition</code>)</a></li>
-<li class="chapter" data-level="4.4" data-path="makemodifiers.html"><a href="makemodifiers.html#the-modify-function-modify"><i class="fa fa-check"></i><b>4.4</b> The modify function (<code>modify</code>)</a></li>
-<li class="chapter" data-level="4.5" data-path="makemodifiers.html"><a href="makemodifiers.html#combining-and-editing-modifiers-add"><i class="fa fa-check"></i><b>4.5</b> Combining and editing modifiers (<code>add</code>)</a></li>
-<li class="chapter" data-level="4.6" data-path="makemodifiers.html"><a href="makemodifiers.html#testing-modifiers-test"><i class="fa fa-check"></i><b>4.6</b> Testing modifiers (<code>test</code>)</a></li>
-<li class="chapter" data-level="4.7" data-path="makemodifiers.html"><a href="makemodifiers.html#demo-runnable"><i class="fa fa-check"></i><b>4.7</b> Demo runnable</a></li>
+<li class="chapter" data-level="4.1" data-path="makemodifiers.html"><a href="makemodifiers.html#the-branch-length-function-branch.length"><i class="fa fa-check"></i><b>4.1</b> The branch length function (<code>branch.length</code>)</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="makemodifiers.html"><a href="makemodifiers.html#allowarguments"><i class="fa fa-check"></i><b>4.1.1</b> The allowed arguments</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="makemodifiers.html"><a href="makemodifiers.html#the-selection-function-selection"><i class="fa fa-check"></i><b>4.2</b> The selection function (<code>selection</code>)</a></li>
+<li class="chapter" data-level="4.3" data-path="makemodifiers.html"><a href="makemodifiers.html#the-speciation-function-speciation"><i class="fa fa-check"></i><b>4.3</b> The speciation function (<code>speciation</code>)</a></li>
+<li class="chapter" data-level="4.4" data-path="makemodifiers.html"><a href="makemodifiers.html#summarymodifiers"><i class="fa fa-check"></i><b>4.4</b> Summary of the inputs and outputs for the <code>branch.length</code>, <code>selection</code> and <code>speciation</code> modifiers</a></li>
+<li class="chapter" data-level="4.5" data-path="makemodifiers.html"><a href="makemodifiers.html#the-condition-and-modify-functions-condition-and-modify"><i class="fa fa-check"></i><b>4.5</b> The condition and modify functions (<code>condition</code> and <code>modify</code>)</a></li>
+<li class="chapter" data-level="4.6" data-path="makemodifiers.html"><a href="makemodifiers.html#combining-and-editing-modifiers-add"><i class="fa fa-check"></i><b>4.6</b> Combining and editing modifiers (<code>add</code>)</a></li>
+<li class="chapter" data-level="4.7" data-path="makemodifiers.html"><a href="makemodifiers.html#testing-modifiers-test"><i class="fa fa-check"></i><b>4.7</b> Testing modifiers (<code>test</code>)</a></li>
+<li class="chapter" data-level="4.8" data-path="makemodifiers.html"><a href="makemodifiers.html#demo-runnable"><i class="fa fa-check"></i><b>4.8</b> Demo runnable</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/TGuillerme/dads/" target="blank">Project GitHub page</a></li>
@@ -189,125 +192,345 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="makemodifiers" class="section level1">
 <h1><span class="header-section-number">4</span> Making modifiers with <code>make.modifiers()</code></h1>
-<blockquote>
-<p>TODO: just ideas so far</p>
-</blockquote>
+<p><code>&quot;modifiers&quot;</code> have a similar structure than <code>&quot;traits&quot;</code> where you can design an object with increasing complexity, starting with the simplest modifiers that doesn’t modify anything (using the default arguments):</p>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" data-line-number="1"><span class="co">## Making a default modifier (no modification)</span></a>
+<a class="sourceLine" id="cb79-2" data-line-number="2">my_default_modifiers &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>()</a>
+<a class="sourceLine" id="cb79-3" data-line-number="3">my_default_modifiers</a></code></pre></div>
+<pre><code>##  ---- dads modifiers object ---- 
+## No modifiers applied to the branch length, selection and speciation processes (default).</code></pre>
+<p>Similarly to <code>&quot;traits&quot;</code> objects, <code>&quot;modifiers&quot;</code> are also printed by default using <code>print.dads</code>.
+You can see details about what’s actually in the object using <code>print.dads(my_default_modifiers, all = TRUE)</code>.
+However, contrary to <code>&quot;traits&quot;</code>, you cannot plot <code>&quot;modifiers&quot;</code>.</p>
 <div id="the-branch-length-function-branch.length" class="section level2">
 <h2><span class="header-section-number">4.1</span> The branch length function (<code>branch.length</code>)</h2>
-<p>A branch length function that is constant</p>
-<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" data-line-number="1">constant.brlen &lt;-<span class="st"> </span><span class="cf">function</span>(<span class="dt">bd.params =</span> <span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb79-2" data-line-number="2">                         <span class="dt">n.taxa =</span> <span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb79-3" data-line-number="3">                         <span class="dt">parent.lineage =</span> <span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb79-4" data-line-number="4">                         <span class="dt">trait.values =</span> <span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb79-5" data-line-number="5">                         <span class="dt">modify.fun =</span> <span class="ot">NULL</span>) {</a>
-<a class="sourceLine" id="cb79-6" data-line-number="6">    <span class="kw">return</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb79-7" data-line-number="7">}</a>
-<a class="sourceLine" id="cb79-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb79-9" data-line-number="9">constant_brlen &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params =</span> <span class="kw">list</span>(<span class="dt">extinction =</span> <span class="fl">0.25</span>),</a>
-<a class="sourceLine" id="cb79-10" data-line-number="10">                     <span class="dt">stop.rule =</span> <span class="kw">list</span>(<span class="dt">max.living =</span> <span class="dv">20</span>),</a>
-<a class="sourceLine" id="cb79-11" data-line-number="11">                     <span class="dt">traits    =</span> <span class="kw">make.traits</span>(),</a>
-<a class="sourceLine" id="cb79-12" data-line-number="12">                     <span class="dt">modifiers =</span> <span class="kw">make.modifiers</span>(</a>
-<a class="sourceLine" id="cb79-13" data-line-number="13">                        <span class="dt">branch.length =</span> constant.brlen))</a>
-<a class="sourceLine" id="cb79-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb79-15" data-line-number="15"><span class="kw">plot</span>(constant_brlen, <span class="dt">main =</span> <span class="st">&quot;constant branch length&quot;</span>)</a></code></pre></div>
+<p>The first argument in <code>&quot;modifiers&quot;</code> is the branch length function (<code>branch.length</code>) this is the function that will be executed in <code>dads</code> to generate branch length.
+Note that in the <code>dads</code> algorithm, branch length is not generated <em>directly</em> but actually results of the waiting time.
+In other words, the <code>branch.length</code> function just affects waiting time for all taxa present at any time in the simulation.
+These taxa can then either go extinct (stopping the “growth” of it’s branch length) or survive (continuing the “growth”).</p>
+<p>By default, branch length (or waiting or growth) is a randomly drawn number from an exponential distribution with the rate of the number of taxa multiplied by the speciation and extinction rate: <span class="math inline">\(n \times (\lambda + \mu)\)</span> (where <span class="math inline">\(n\)</span> is the number of taxa currently present in the simulation, <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\mu\)</span> are respectively the speciation and extinction rates).
+This default function is simply called <code>branch.length</code> in <code>dads</code> and can be used as a modifier as follows:</p>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" data-line-number="1"><span class="co">## Specifying the default modifier</span></a>
+<a class="sourceLine" id="cb81-2" data-line-number="2">default_modifiers &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">branch.length =</span> branch.length)</a>
+<a class="sourceLine" id="cb81-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb81-4" data-line-number="4"><span class="co">## Setting some parameters for generating trees</span></a>
+<a class="sourceLine" id="cb81-5" data-line-number="5">bd_params  &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">extinction =</span> <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb81-6" data-line-number="6">stope_rule &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">max.living =</span> <span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb81-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb81-8" data-line-number="8"><span class="co">## Generating a tree with the default branch length parameter</span></a>
+<a class="sourceLine" id="cb81-9" data-line-number="9"><span class="kw">set.seed</span>(<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb81-10" data-line-number="10">default_tree &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params =</span> bd_params,</a>
+<a class="sourceLine" id="cb81-11" data-line-number="11">                     <span class="dt">stop.rule =</span> stope_rule,</a>
+<a class="sourceLine" id="cb81-12" data-line-number="12">                     <span class="dt">modifiers =</span> default_modifiers)</a></code></pre></div>
+<p>Of course, the point of the modularity here is that you can provide your own function for generating branch length.
+For example, we might be interested in what our tree would look like if we’d use a simple constant branch length generation (instead of randomly drawing it from an exponential distribution).
+We can do so by declaring our own <code>branch.length</code> function and adding it to a <code>&quot;modifiers&quot;</code> object.</p>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb82-1" data-line-number="1"><span class="co">## A constant branch length generator</span></a>
+<a class="sourceLine" id="cb82-2" data-line-number="2"><span class="co">## (note that the output must be numeric, not integer)</span></a>
+<a class="sourceLine" id="cb82-3" data-line-number="3">constant.brlen &lt;-<span class="st"> </span><span class="cf">function</span>() {</a>
+<a class="sourceLine" id="cb82-4" data-line-number="4">    <span class="kw">return</span>(<span class="kw">as.numeric</span>(<span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb82-5" data-line-number="5">}</a>
+<a class="sourceLine" id="cb82-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb82-7" data-line-number="7"><span class="co">## Creating the modifiers object</span></a>
+<a class="sourceLine" id="cb82-8" data-line-number="8">constant_modifier &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">branch.length =</span> constant.brlen)</a>
+<a class="sourceLine" id="cb82-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb82-10" data-line-number="10"><span class="co">## Generating a new tree with this modifier</span></a>
+<a class="sourceLine" id="cb82-11" data-line-number="11"><span class="kw">set.seed</span>(<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb82-12" data-line-number="12">modified_tree &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params =</span> bd_params,</a>
+<a class="sourceLine" id="cb82-13" data-line-number="13">                      <span class="dt">stop.rule =</span> stope_rule,</a>
+<a class="sourceLine" id="cb82-14" data-line-number="14">                      <span class="dt">modifiers =</span> constant_modifier)</a></code></pre></div>
+<p>And we can visualise the difference between both resulting trees:</p>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb83-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb83-2" data-line-number="2"><span class="kw">plot</span>(default_tree,  <span class="dt">main =</span> <span class="st">&quot;Default modifier&quot;</span>)</a>
+<a class="sourceLine" id="cb83-3" data-line-number="3"><span class="kw">plot</span>(modified_tree, <span class="dt">main =</span> <span class="st">&quot;Constant branch length</span><span class="ch">\n</span><span class="st">modifier&quot;</span>)</a></code></pre></div>
+<p><img src="dads_manual_files/figure-html/unnamed-chunk-45-1.png" width="672" /></p>
+<p>It is of course to use more complex branch length modifiers that intakes different conditions and specific modification rather than simply always output a value of one.</p>
+<div id="allowarguments" class="section level3">
+<h3><span class="header-section-number">4.1.1</span> The allowed arguments</h3>
+<p>It is of course possible to design some more advanced function to interact with the birth death process.
+You can create a function for <code>branch.length</code>, <code>selection</code> and <code>speciation</code> that involve any of the following arguments:</p>
+<ul>
+<li><code>bd.params</code>: a named list containing <code>&quot;numeric&quot;</code> values that contains the birth death parameters (at least <code>&quot;speciation&quot;</code> and <code>&quot;extinction&quot;</code>);</li>
+<li><code>lineage</code>: a named list containing the lineage data (see below).</li>
+<li><code>trait.values</code>: a <code>&quot;matrix&quot;</code> containing <code>&quot;numeric&quot;</code> values with the trait names as column names and the lineages ID as row numbers (you can use it with the function <code>parent.traits</code> to access the trait of the previous node for example).</li>
+<li><code>modify.fun</code>: a <code>&quot;list&quot;</code> of named <code>&quot;function&quot;</code> (usually passed through <code>condition</code> and <code>modify</code>).</li>
+</ul>
+<p>The <code>lineage</code> list contains the following elements (missing elements are allowed):</p>
+<ul>
+<li><code>lineage$parents</code>: an <code>&quot;integer&quot;</code> vector: the list of parent lineages;</li>
+<li><code>lineage$livings</code>: an <code>&quot;integer&quot;</code> vector: the list of lineages still not extinct;</li>
+<li><code>lineage$drawn</code>: a single <code>&quot;integer&quot;</code>: the ID of the selected lineage;</li>
+<li><code>lineage$current</code>: a single <code>&quot;integer&quot;</code>: the selected lineage (is equal to <code>lineage$livings[lineage$drawn]</code>);</li>
+<li><code>lineage$n</code>: a single <code>&quot;integer&quot;</code>: the current number of non extinct lineage (is equal to <code>length(lineage$livings))</code>;</li>
+<li><code>lineage$split</code>: a <code>&quot;logical&quot;</code> vector: the list of splits for each lineage (<code>TRUE</code>), the number of total tips is equal to <code>sum(!lineage$split)</code>.</li>
+</ul>
+<p>In general, unless you know what you’re doing, you can ignore most arguments for specific modifiers since they are handled automatically within the <code>dads</code> function.
+Therefore any argument can be left undeclared or missing and is always handled internally. For example, if you did not declare <code>n.taxa</code> as a function argument but are using <code>n.taxa</code> in the function, <code>n.taxa</code> will be detected and treated as a current argument automatically as set accordingly within the birth death process (e.g. <code>n.taxa</code> will be set to the current number of taxa every iteration of the process).</p>
+<p>For example, we can create a function that increases branch length proportional to the number of species “alive” at each time of the simulation in a discrete way. I.e. for discrete numbers of taxa, the branch length increases by jumps (ten fold):</p>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb84-1" data-line-number="1"><span class="co">## A more complex binned.branch.length function</span></a>
+<a class="sourceLine" id="cb84-2" data-line-number="2">increasing.brlen &lt;-<span class="st"> </span><span class="cf">function</span>(bd.params, lineage) {</a>
+<a class="sourceLine" id="cb84-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb84-4" data-line-number="4">    <span class="co">## Setting the cumulated birth and death</span></a>
+<a class="sourceLine" id="cb84-5" data-line-number="5">    birth_death &lt;-<span class="st"> </span>bd.params<span class="op">$</span>speciation <span class="op">+</span><span class="st"> </span>bd.params<span class="op">$</span>extinction</a>
+<a class="sourceLine" id="cb84-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb84-7" data-line-number="7">    <span class="co">## Returning branch lengths depending on different number of taxa</span></a>
+<a class="sourceLine" id="cb84-8" data-line-number="8">    <span class="cf">if</span>(lineage<span class="op">$</span>n <span class="op">&lt;=</span><span class="st"> </span><span class="dv">5</span>) {</a>
+<a class="sourceLine" id="cb84-9" data-line-number="9">        <span class="kw">return</span>(<span class="dv">1</span>    <span class="op">*</span><span class="st"> </span><span class="kw">rexp</span>(<span class="dv">1</span>, <span class="kw">sum</span>(<span class="dv">5</span> <span class="op">*</span><span class="st"> </span>birth_death)))</a>
+<a class="sourceLine" id="cb84-10" data-line-number="10">    }</a>
+<a class="sourceLine" id="cb84-11" data-line-number="11">    <span class="cf">if</span>(lineage<span class="op">$</span>n <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span>) {</a>
+<a class="sourceLine" id="cb84-12" data-line-number="12">        <span class="kw">return</span>(<span class="dv">10</span>   <span class="op">*</span><span class="st"> </span><span class="kw">rexp</span>(<span class="dv">1</span>, <span class="kw">sum</span>(<span class="dv">10</span> <span class="op">*</span><span class="st"> </span>birth_death)))   </a>
+<a class="sourceLine" id="cb84-13" data-line-number="13">    }</a>
+<a class="sourceLine" id="cb84-14" data-line-number="14">    <span class="cf">if</span>(lineage<span class="op">$</span>n <span class="op">&lt;=</span><span class="st"> </span><span class="dv">15</span>) {</a>
+<a class="sourceLine" id="cb84-15" data-line-number="15">        <span class="kw">return</span>(<span class="dv">100</span>  <span class="op">*</span><span class="st"> </span><span class="kw">rexp</span>(<span class="dv">1</span>, <span class="kw">sum</span>(<span class="dv">15</span> <span class="op">*</span><span class="st"> </span>birth_death)))      </a>
+<a class="sourceLine" id="cb84-16" data-line-number="16">    }</a>
+<a class="sourceLine" id="cb84-17" data-line-number="17">    <span class="cf">if</span>(lineage<span class="op">$</span>n <span class="op">&lt;=</span><span class="st"> </span><span class="dv">20</span>) {</a>
+<a class="sourceLine" id="cb84-18" data-line-number="18">        <span class="kw">return</span>(<span class="dv">1000</span> <span class="op">*</span><span class="st"> </span><span class="kw">rexp</span>(<span class="dv">1</span>, <span class="kw">sum</span>(<span class="dv">20</span> <span class="op">*</span><span class="st"> </span>birth_death)))</a>
+<a class="sourceLine" id="cb84-19" data-line-number="19">    } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb84-20" data-line-number="20">        <span class="kw">return</span>(<span class="dv">1000</span> <span class="op">*</span><span class="st"> </span><span class="kw">rexp</span>(<span class="dv">1</span>, <span class="kw">sum</span>(lineage<span class="op">$</span>n <span class="op">*</span><span class="st"> </span>birth_death)))</a>
+<a class="sourceLine" id="cb84-21" data-line-number="21">    }</a>
+<a class="sourceLine" id="cb84-22" data-line-number="22">}</a></code></pre></div>
+<p>We can then create it as a <code>&quot;modifiers&quot;</code> object and run a new simulation:</p>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb85-1" data-line-number="1"><span class="co">## Creating a modifiers</span></a>
+<a class="sourceLine" id="cb85-2" data-line-number="2">increasing_modifier &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">branch.length =</span> increasing.brlen)</a>
+<a class="sourceLine" id="cb85-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb85-4" data-line-number="4"><span class="co">## Generating a new tree with this modifier</span></a>
+<a class="sourceLine" id="cb85-5" data-line-number="5"><span class="kw">set.seed</span>(<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb85-6" data-line-number="6">increasing_tree &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params =</span> bd_params,</a>
+<a class="sourceLine" id="cb85-7" data-line-number="7">                        <span class="dt">stop.rule =</span> stope_rule,</a>
+<a class="sourceLine" id="cb85-8" data-line-number="8">                        <span class="dt">modifiers =</span> increasing_modifier)</a></code></pre></div>
+<p>And we can visualise the difference between the resulting trees:</p>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb86-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb86-2" data-line-number="2"><span class="kw">plot</span>(default_tree,    <span class="dt">main =</span> <span class="st">&quot;Default modifier&quot;</span>)</a>
+<a class="sourceLine" id="cb86-3" data-line-number="3"><span class="kw">plot</span>(modified_tree,   <span class="dt">main =</span> <span class="st">&quot;Constant branch length</span><span class="ch">\n</span><span class="st">modifier&quot;</span>)</a>
+<a class="sourceLine" id="cb86-4" data-line-number="4"><span class="kw">plot</span>(increasing_tree, <span class="dt">main =</span> <span class="st">&quot;Increasing branch length</span><span class="ch">\n</span><span class="st">modifier (binned)&quot;</span>)</a></code></pre></div>
+<p><img src="dads_manual_files/figure-html/unnamed-chunk-48-1.png" width="672" /></p>
+</div>
+</div>
+<div id="the-selection-function-selection" class="section level2">
+<h2><span class="header-section-number">4.2</span> The selection function (<code>selection</code>)</h2>
+<p>The <code>selection</code> function is used in the birth death process to know which lineage to select when running a speciation (or extinction!) event.
+By default, this function randomly selects one taxon that is currently not extinct (using: <code>sample(1:n.taxa, 1))</code>.
+Similarly as <code>branch.length</code> it is possible to modify this part of the birth death process.
+For example, we could simply select always the last created lineage (to create a “ladder” or most asymmetric tree):</p>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb87-1" data-line-number="1"><span class="co">## Our function to always select the last taxon</span></a>
+<a class="sourceLine" id="cb87-2" data-line-number="2"><span class="co">## (making sure it returns an integer)</span></a>
+<a class="sourceLine" id="cb87-3" data-line-number="3">select.last &lt;-<span class="st"> </span><span class="cf">function</span>(lineage) {</a>
+<a class="sourceLine" id="cb87-4" data-line-number="4">    <span class="kw">return</span>(<span class="kw">as.integer</span>(lineage<span class="op">$</span>n))</a>
+<a class="sourceLine" id="cb87-5" data-line-number="5">}</a></code></pre></div>
+<blockquote>
+<p>Note that here the function can only intake the <a href="makemodifiers.html#allowarguments">allowed arguments as described above</a> (here <code>n.taxa</code>: the number of current living taxa).</p>
+</blockquote>
+<p>We can then create a <code>&quot;modifiers&quot;</code> object the same way as before using this time the <code>selection</code> argument:</p>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb88-1" data-line-number="1"><span class="co">## A modifier for selection</span></a>
+<a class="sourceLine" id="cb88-2" data-line-number="2">ladderised_modifier &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">selection =</span> select.last)</a>
+<a class="sourceLine" id="cb88-3" data-line-number="3"><span class="co">## Generating a new tree with this modifier</span></a>
+<a class="sourceLine" id="cb88-4" data-line-number="4"><span class="kw">set.seed</span>(<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb88-5" data-line-number="5">ladderised_tree &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params =</span> bd_params,</a>
+<a class="sourceLine" id="cb88-6" data-line-number="6">                        <span class="dt">stop.rule =</span> stope_rule,</a>
+<a class="sourceLine" id="cb88-7" data-line-number="7">                        <span class="dt">modifiers =</span> ladderised_modifier)</a>
+<a class="sourceLine" id="cb88-8" data-line-number="8"><span class="co">## Displaying the results</span></a>
+<a class="sourceLine" id="cb88-9" data-line-number="9"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb88-10" data-line-number="10"><span class="kw">plot</span>(default_tree,    <span class="dt">main =</span> <span class="st">&quot;Default modifier&quot;</span>)</a>
+<a class="sourceLine" id="cb88-11" data-line-number="11"><span class="kw">plot</span>(ladderised_tree, <span class="dt">main =</span> <span class="st">&quot;Ladderising modifier&quot;</span>)</a></code></pre></div>
+<p><img src="dads_manual_files/figure-html/unnamed-chunk-50-1.png" width="672" /></p>
+<p>Again, it is of course possible to make the modifier more complex and in combination with other elements of the tree.
+For example, we can create a <code>&quot;dads&quot;</code> object that also creates a trait a add to it a <code>selection</code> modifier that only selects for tips with positive trait values.</p>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb89-1" data-line-number="1"><span class="co">## Our function that only select taxa with positive trait values</span></a>
+<a class="sourceLine" id="cb89-2" data-line-number="2">select.positive &lt;-<span class="st"> </span><span class="cf">function</span>(trait.values, lineage) {</a>
+<a class="sourceLine" id="cb89-3" data-line-number="3">    <span class="co">## Selecting the taxa with positive traits only</span></a>
+<a class="sourceLine" id="cb89-4" data-line-number="4">    positives &lt;-<span class="st"> </span><span class="kw">as.integer</span>(<span class="kw">rownames</span>(trait.values)[<span class="kw">which</span>(trait.values[, <span class="dv">1</span>] <span class="op">&gt;=</span><span class="st"> </span><span class="dv">0</span>)])</a>
+<a class="sourceLine" id="cb89-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb89-6" data-line-number="6">    <span class="co">## Select the current taxa that descend from a node with a positive value</span></a>
+<a class="sourceLine" id="cb89-7" data-line-number="7">    positive_living &lt;-<span class="st"> </span><span class="kw">cbind</span>(lineage<span class="op">$</span>parents, <span class="kw">seq_along</span>(lineage<span class="op">$</span>split)</a>
+<a class="sourceLine" id="cb89-8" data-line-number="8">                             )[<span class="kw">which</span>(lineage<span class="op">$</span>parents <span class="op">%in%</span><span class="st"> </span>positives), <span class="dv">2</span>]</a>
+<a class="sourceLine" id="cb89-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb89-10" data-line-number="10">    <span class="co">## Select one tip randomly in the ones with descendants with positive values</span></a>
+<a class="sourceLine" id="cb89-11" data-line-number="11">    <span class="kw">return</span>(<span class="kw">sample</span>(<span class="kw">which</span>(lineage<span class="op">$</span>livings <span class="op">%in%</span><span class="st"> </span>positive_living), <span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb89-12" data-line-number="12">}</a>
+<a class="sourceLine" id="cb89-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb89-14" data-line-number="14"><span class="co">## Creating the modifier</span></a>
+<a class="sourceLine" id="cb89-15" data-line-number="15">positive_skew &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">selection =</span> select.positive)</a>
+<a class="sourceLine" id="cb89-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb89-17" data-line-number="17"><span class="co">## Creating a (default) trait object</span></a>
+<a class="sourceLine" id="cb89-18" data-line-number="18">BM_trait &lt;-<span class="st"> </span><span class="kw">make.traits</span>()</a>
+<a class="sourceLine" id="cb89-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb89-20" data-line-number="20"><span class="co">## Simulate a tree and trait with no modifier</span></a>
+<a class="sourceLine" id="cb89-21" data-line-number="21"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb89-22" data-line-number="22">default_dads &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params =</span> bd_params,</a>
+<a class="sourceLine" id="cb89-23" data-line-number="23">                     <span class="dt">stop.rule =</span> stope_rule,</a>
+<a class="sourceLine" id="cb89-24" data-line-number="24">                     <span class="dt">traits    =</span> BM_trait)</a>
+<a class="sourceLine" id="cb89-25" data-line-number="25"></a>
+<a class="sourceLine" id="cb89-26" data-line-number="26"><span class="co">## Simulate a tree and trait with the modifier</span></a>
+<a class="sourceLine" id="cb89-27" data-line-number="27"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb89-28" data-line-number="28">skewed_trait_dads &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params =</span> bd_params,</a>
+<a class="sourceLine" id="cb89-29" data-line-number="29">                          <span class="dt">stop.rule =</span> stope_rule,</a>
+<a class="sourceLine" id="cb89-30" data-line-number="30">                          <span class="dt">traits    =</span> BM_trait,</a>
+<a class="sourceLine" id="cb89-31" data-line-number="31">                          <span class="dt">modifiers =</span> positive_skew)</a>
+<a class="sourceLine" id="cb89-32" data-line-number="32"></a>
+<a class="sourceLine" id="cb89-33" data-line-number="33"><span class="co">## Plotting the differences in trees and traits</span></a>
+<a class="sourceLine" id="cb89-34" data-line-number="34"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb89-35" data-line-number="35"><span class="kw">plot</span>(default_dads, <span class="dt">main =</span> <span class="st">&quot;Default trait and tree&quot;</span>)</a>
+<a class="sourceLine" id="cb89-36" data-line-number="36"><span class="kw">plot</span>(skewed_trait_dads, <span class="dt">main =</span> <span class="st">&quot;Skewed trait and tree&quot;</span>)</a></code></pre></div>
+<p><img src="dads_manual_files/figure-html/unnamed-chunk-51-1.png" width="672" /></p>
 </div>
 <div id="the-speciation-function-speciation" class="section level2">
-<h2><span class="header-section-number">4.2</span> The speciation function (<code>speciation</code>)</h2>
-<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb80-1" data-line-number="1">random.brlen &lt;-<span class="st"> </span><span class="cf">function</span>(<span class="dt">bd.params =</span> <span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb80-2" data-line-number="2">                         <span class="dt">n.taxa =</span> <span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb80-3" data-line-number="3">                         <span class="dt">parent.lineage =</span> <span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb80-4" data-line-number="4">                         <span class="dt">trait.values =</span> <span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb80-5" data-line-number="5">                         <span class="dt">modify.fun =</span> <span class="ot">NULL</span>) {</a>
-<a class="sourceLine" id="cb80-6" data-line-number="6">    <span class="kw">return</span>(<span class="kw">runif</span>(<span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb80-7" data-line-number="7">}</a>
-<a class="sourceLine" id="cb80-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb80-9" data-line-number="9">random.spec  &lt;-<span class="st"> </span><span class="cf">function</span>(<span class="dt">bd.params =</span> <span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb80-10" data-line-number="10">                         <span class="dt">n.taxa =</span> <span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb80-11" data-line-number="11">                         <span class="dt">parent.lineage =</span> <span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb80-12" data-line-number="12">                         <span class="dt">trait.values =</span> <span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb80-13" data-line-number="13">                         <span class="dt">modify.fun =</span> <span class="ot">NULL</span>) {</a>
-<a class="sourceLine" id="cb80-14" data-line-number="14">    <span class="kw">return</span>(<span class="kw">sample</span>(<span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">FALSE</span>), <span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb80-15" data-line-number="15">}</a>
-<a class="sourceLine" id="cb80-16" data-line-number="16"></a>
-<a class="sourceLine" id="cb80-17" data-line-number="17"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb80-18" data-line-number="18">yule_tree &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params =</span> <span class="kw">list</span>(<span class="dt">extinction =</span> <span class="dv">0</span>),</a>
-<a class="sourceLine" id="cb80-19" data-line-number="19">                     <span class="dt">stop.rule =</span> <span class="kw">list</span>(<span class="dt">max.living =</span> <span class="dv">20</span>),</a>
-<a class="sourceLine" id="cb80-20" data-line-number="20">                     <span class="dt">traits    =</span> <span class="kw">make.traits</span>(),</a>
-<a class="sourceLine" id="cb80-21" data-line-number="21">                     <span class="dt">modifiers =</span> <span class="kw">make.modifiers</span>(</a>
-<a class="sourceLine" id="cb80-22" data-line-number="22">                        <span class="dt">branch.length =</span> random.brlen,</a>
-<a class="sourceLine" id="cb80-23" data-line-number="23">                        <span class="dt">speciation    =</span> random.spec))</a>
-<a class="sourceLine" id="cb80-24" data-line-number="24"></a>
-<a class="sourceLine" id="cb80-25" data-line-number="25"><span class="kw">plot</span>(yule_tree, <span class="dt">main =</span> <span class="st">&quot;a (failing) yule(ish) tree&quot;</span>)</a></code></pre></div>
+<h2><span class="header-section-number">4.3</span> The speciation function (<code>speciation</code>)</h2>
+<p>The third function that can be used to modify the birth death process is the <code>speciation</code> function.
+This one is used during the birth death process to decide whether a lineages speciates (creating a node and two new lineages) or goes extinct (creating a tip).</p>
+<blockquote>
+<p>Note that the <code>speciation</code> function only affects tips or nodes before the simulation reaches the <code>stop.rule</code>.
+The then surviving lineages are all automatically transformed into tips.</p>
+</blockquote>
+<p>By default, the <code>speciation</code> function is trigger a speciation even if a number randomly drawn from a uniform distribution is lower than the ratio between the speciation and the speciation and extinction parameter. If the randomly drawn number is higher, the lineage goes extinct.</p>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb90-1" data-line-number="1"><span class="co">## The speciation in pseudo-code:</span></a>
+<a class="sourceLine" id="cb90-2" data-line-number="2"><span class="kw">runif</span>(<span class="dv">1</span>) <span class="op">&lt;</span><span class="st"> </span>speciation<span class="op">/</span><span class="st"> </span>(speciation <span class="op">+</span><span class="st"> </span>extinction)</a></code></pre></div>
+<p>Creating a <code>&quot;modifiers&quot;</code> with a <code>speciation</code> function works the same way as for <code>branch.length</code> and <code>selection</code> but the function that will be used needs to output a logical value (see table <a href="makemodifiers.html#summarymodifiers">below</a>).
+Once the function is created simply input your function for speciation in the modifier and run the <code>dads</code> function with that modifier:</p>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb91-1" data-line-number="1"><span class="co">## Speciating or going extinct randomly</span></a>
+<a class="sourceLine" id="cb91-2" data-line-number="2"><span class="co">## (regardless of the extinction parameter)</span></a>
+<a class="sourceLine" id="cb91-3" data-line-number="3">random.extinct  &lt;-<span class="st"> </span><span class="cf">function</span>() {</a>
+<a class="sourceLine" id="cb91-4" data-line-number="4">    <span class="kw">return</span>(<span class="kw">sample</span>(<span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">FALSE</span>), <span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb91-5" data-line-number="5">}</a>
+<a class="sourceLine" id="cb91-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb91-7" data-line-number="7"><span class="co">## Creating the modifiers object</span></a>
+<a class="sourceLine" id="cb91-8" data-line-number="8">random_extinction &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">speciation =</span> random.extinct)</a>
+<a class="sourceLine" id="cb91-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb91-10" data-line-number="10"><span class="co">## Generating a new tree with this modifier</span></a>
+<a class="sourceLine" id="cb91-11" data-line-number="11"><span class="kw">set.seed</span>(<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb91-12" data-line-number="12">modified_tree &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params =</span> bd_params,</a>
+<a class="sourceLine" id="cb91-13" data-line-number="13">                      <span class="dt">stop.rule =</span> stope_rule,</a>
+<a class="sourceLine" id="cb91-14" data-line-number="14">                      <span class="dt">modifiers =</span> random_extinction)</a>
+<a class="sourceLine" id="cb91-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb91-16" data-line-number="16"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb91-17" data-line-number="17"><span class="kw">plot</span>(default_tree,  <span class="dt">main =</span> <span class="st">&quot;Default modifier&quot;</span>)</a>
+<a class="sourceLine" id="cb91-18" data-line-number="18"><span class="kw">plot</span>(modified_tree, <span class="dt">main =</span> <span class="st">&quot;Random extinction</span><span class="ch">\n</span><span class="st">modifier&quot;</span>)</a></code></pre></div>
+<p>Note how every lineage end up going extinct!
+And again, we can make some more advanced modifiers: for example, one where a tip always goes extinct if their ancestor has a negative trait value (here we will also introduce the utility function <code>parent.trait</code> that automatically selects the trait values of the parent of the current lineage.</p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb92-1" data-line-number="1"><span class="co">## A modifier for removing tips with negative values</span></a>
+<a class="sourceLine" id="cb92-2" data-line-number="2">bias.trait &lt;-<span class="st"> </span><span class="cf">function</span>(trait.values, lineage) {</a>
+<a class="sourceLine" id="cb92-3" data-line-number="3">    <span class="cf">if</span>(<span class="kw">parent.traits</span>(trait.values, lineage) <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) {</a>
+<a class="sourceLine" id="cb92-4" data-line-number="4">        <span class="co">## Go extinct!</span></a>
+<a class="sourceLine" id="cb92-5" data-line-number="5">        <span class="kw">return</span>(<span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb92-6" data-line-number="6">    } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb92-7" data-line-number="7">        <span class="co">## Speciate</span></a>
+<a class="sourceLine" id="cb92-8" data-line-number="8">        <span class="kw">return</span>(<span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb92-9" data-line-number="9">    }</a>
+<a class="sourceLine" id="cb92-10" data-line-number="10">}</a>
+<a class="sourceLine" id="cb92-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb92-12" data-line-number="12"><span class="co">## Creating the modifier</span></a>
+<a class="sourceLine" id="cb92-13" data-line-number="13">biased_trait &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">speciation =</span> bias.trait)</a>
+<a class="sourceLine" id="cb92-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb92-15" data-line-number="15"><span class="co">## Simulate a tree and trait with the modifier</span></a>
+<a class="sourceLine" id="cb92-16" data-line-number="16"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb92-17" data-line-number="17">biased_trait_dads &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params =</span> bd_params,</a>
+<a class="sourceLine" id="cb92-18" data-line-number="18">                          <span class="dt">stop.rule =</span> stope_rule,</a>
+<a class="sourceLine" id="cb92-19" data-line-number="19">                          <span class="dt">traits    =</span> BM_trait,</a>
+<a class="sourceLine" id="cb92-20" data-line-number="20">                          <span class="dt">modifiers =</span> biased_trait)</a>
+<a class="sourceLine" id="cb92-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb92-22" data-line-number="22"><span class="co">## Plotting the differences in trees and traits</span></a>
+<a class="sourceLine" id="cb92-23" data-line-number="23"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb92-24" data-line-number="24"><span class="kw">plot</span>(default_dads, <span class="dt">main =</span> <span class="st">&quot;Default trait and tree&quot;</span>)</a>
+<a class="sourceLine" id="cb92-25" data-line-number="25"><span class="kw">plot</span>(biased_trait_dads, <span class="dt">main =</span> <span class="st">&quot;Biased trait and tree&quot;</span>)</a></code></pre></div>
+<p><img src="dads_manual_files/figure-html/unnamed-chunk-54-1.png" width="672" /></p>
 </div>
-<div id="the-condition-function-condition" class="section level2">
-<h2><span class="header-section-number">4.3</span> The condition function (<code>condition</code>)</h2>
+<div id="summarymodifiers" class="section level2">
+<h2><span class="header-section-number">4.4</span> Summary of the inputs and outputs for the <code>branch.length</code>, <code>selection</code> and <code>speciation</code> modifiers</h2>
+<table>
+<thead>
+<tr class="header">
+<th>modifier name</th>
+<th>accepted input (arguments)</th>
+<th>required output (class)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>branch.length</code></td>
+<td><code>bd.params</code>, <code>lineage</code>, <code>trait.values</code></td>
+<td><code>&quot;numeric&quot;</code></td>
+</tr>
+<tr class="even">
+<td><code>selection</code></td>
+<td><code>bd.params</code>, <code>lineage</code>, <code>trait.values</code></td>
+<td><code>&quot;integer&quot;</code></td>
+</tr>
+<tr class="odd">
+<td><code>speciation</code></td>
+<td><code>bd.params</code>, <code>lineage</code>, <code>trait.values</code></td>
+<td><code>&quot;logical&quot;</code></td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="the-modify-function-modify" class="section level2">
-<h2><span class="header-section-number">4.4</span> The modify function (<code>modify</code>)</h2>
+<div id="the-condition-and-modify-functions-condition-and-modify" class="section level2">
+<h2><span class="header-section-number">4.5</span> The condition and modify functions (<code>condition</code> and <code>modify</code>)</h2>
+<p>In the examples above, we have seen how to specify modifications to the birth death process (via <code>branch.length</code>, <code>selection</code> and <code>speciation</code>), however, one might note that these modifications are not dynamic.
+In other words, throughout the process, the modifications remain constant (even if they are conditional).
+It is however possible to code the <code>&quot;modifiers&quot;</code> so that they can be affected by <code>&quot;events&quot;</code> objects (see next chapter).</p>
+<p>To do so, you can formally declare conditions (<code>condition</code>) and modifications (<code>modify</code>) as internal functions that can then be modified my an <code>&quot;events&quot;</code> object.
+<code>condition</code> and <code>modify</code> are hard coded in the <code>branch.length</code> function that they concern, i.e. they are variables (functions) within the function.</p>
 </div>
 <div id="combining-and-editing-modifiers-add" class="section level2">
-<h2><span class="header-section-number">4.5</span> Combining and editing modifiers (<code>add</code>)</h2>
+<h2><span class="header-section-number">4.6</span> Combining and editing modifiers (<code>add</code>)</h2>
 </div>
 <div id="testing-modifiers-test" class="section level2">
-<h2><span class="header-section-number">4.6</span> Testing modifiers (<code>test</code>)</h2>
+<h2><span class="header-section-number">4.7</span> Testing modifiers (<code>test</code>)</h2>
 </div>
 <div id="demo-runnable" class="section level2">
-<h2><span class="header-section-number">4.7</span> Demo runnable</h2>
-<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" data-line-number="1">bd.params &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">speciation =</span> <span class="dv">1</span>, <span class="dt">extinction =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb81-2" data-line-number="2">traits &lt;-<span class="st"> </span><span class="kw">make.traits</span>()</a>
-<a class="sourceLine" id="cb81-3" data-line-number="3">stop.rule &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">max.taxa =</span> <span class="dv">20</span>, <span class="dt">max.living =</span> <span class="ot">Inf</span>, <span class="dt">max.time =</span> <span class="ot">Inf</span>)</a>
-<a class="sourceLine" id="cb81-4" data-line-number="4">modifiers &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb81-5" data-line-number="5">events &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb81-6" data-line-number="6">null.error &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb81-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb81-8" data-line-number="8"><span class="co">## modifiers</span></a>
-<a class="sourceLine" id="cb81-9" data-line-number="9">condition &lt;-<span class="st"> </span><span class="cf">function</span>(trait.values, parent.lineage) <span class="kw">return</span>(<span class="kw">parent.traits</span>(trait.values, parent.lineage) <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb81-10" data-line-number="10">modify &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">return</span>(x <span class="op">*</span><span class="st"> </span><span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb81-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb81-12" data-line-number="12"><span class="co">## Setting up the different modifiers</span></a>
-<a class="sourceLine" id="cb81-13" data-line-number="13">modify_speciation &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">speciation    =</span> speciation.trait,</a>
-<a class="sourceLine" id="cb81-14" data-line-number="14">                                    <span class="dt">condition     =</span> condition,</a>
-<a class="sourceLine" id="cb81-15" data-line-number="15">                                    <span class="dt">modify        =</span> modify)</a>
-<a class="sourceLine" id="cb81-16" data-line-number="16">modify_brlen &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">branch.length =</span> branch.length.trait,</a>
-<a class="sourceLine" id="cb81-17" data-line-number="17">                               <span class="dt">condition     =</span> condition,</a>
-<a class="sourceLine" id="cb81-18" data-line-number="18">                               <span class="dt">modify        =</span> modify)</a>
-<a class="sourceLine" id="cb81-19" data-line-number="19">modify_speciation_brlen &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">branch.length =</span> branch.length.trait,</a>
-<a class="sourceLine" id="cb81-20" data-line-number="20">                                          <span class="dt">speciation    =</span> speciation.trait,</a>
-<a class="sourceLine" id="cb81-21" data-line-number="21">                                          <span class="dt">condition     =</span> condition,</a>
-<a class="sourceLine" id="cb81-22" data-line-number="22">                                          <span class="dt">modify        =</span> modify)</a>
-<a class="sourceLine" id="cb81-23" data-line-number="23"></a>
-<a class="sourceLine" id="cb81-24" data-line-number="24"><span class="co">## Test normal (no modifiers)</span></a>
-<a class="sourceLine" id="cb81-25" data-line-number="25"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb81-26" data-line-number="26">test &lt;-<span class="st"> </span><span class="kw">dads</span>(bd.params, stop.rule, traits, <span class="dt">null.error =</span> <span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb81-27" data-line-number="27"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb81-28" data-line-number="28"><span class="kw">plot</span>(test<span class="op">$</span>tree)</a>
-<a class="sourceLine" id="cb81-29" data-line-number="29"><span class="kw">plot.dads</span>(test, <span class="dt">main =</span> <span class="st">&quot;random tree + trait&quot;</span>)</a>
-<a class="sourceLine" id="cb81-30" data-line-number="30"></a>
-<a class="sourceLine" id="cb81-31" data-line-number="31"><span class="co">## Test with modifiers</span></a>
-<a class="sourceLine" id="cb81-32" data-line-number="32"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb81-33" data-line-number="33">trait_table &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb81-34" data-line-number="34">test &lt;-<span class="st"> </span><span class="kw">dads</span>(bd.params, stop.rule, traits,</a>
-<a class="sourceLine" id="cb81-35" data-line-number="35">                                <span class="dt">modifiers =</span> modify_speciation,</a>
-<a class="sourceLine" id="cb81-36" data-line-number="36">                                <span class="dt">null.error =</span> <span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb81-37" data-line-number="37"><span class="kw">plot</span>(test<span class="op">$</span>tree)</a>
-<a class="sourceLine" id="cb81-38" data-line-number="38"><span class="kw">plot.dads</span>(test, <span class="dt">main =</span> <span class="st">&quot;Skewed speciation&quot;</span>)</a>
-<a class="sourceLine" id="cb81-39" data-line-number="39"></a>
-<a class="sourceLine" id="cb81-40" data-line-number="40"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb81-41" data-line-number="41">trait_table &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb81-42" data-line-number="42">test &lt;-<span class="st"> </span><span class="kw">dads</span>(bd.params, stop.rule, traits,</a>
-<a class="sourceLine" id="cb81-43" data-line-number="43">                                <span class="dt">modifiers =</span> modify_brlen,</a>
-<a class="sourceLine" id="cb81-44" data-line-number="44">                                <span class="dt">null.error =</span> <span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb81-45" data-line-number="45"><span class="kw">plot</span>(test<span class="op">$</span>tree)</a>
-<a class="sourceLine" id="cb81-46" data-line-number="46"><span class="kw">plot.dads</span>(test, <span class="dt">main =</span> <span class="st">&quot;Skewed branch length&quot;</span>)</a>
-<a class="sourceLine" id="cb81-47" data-line-number="47"></a>
-<a class="sourceLine" id="cb81-48" data-line-number="48"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb81-49" data-line-number="49">trait_table &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb81-50" data-line-number="50">test &lt;-<span class="st"> </span><span class="kw">dads</span>(bd.params, stop.rule, traits,</a>
-<a class="sourceLine" id="cb81-51" data-line-number="51">                                <span class="dt">modifiers =</span> modify_speciation_brlen,</a>
-<a class="sourceLine" id="cb81-52" data-line-number="52">                                <span class="dt">null.error =</span> <span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb81-53" data-line-number="53"><span class="kw">plot</span>(test<span class="op">$</span>tree)</a>
-<a class="sourceLine" id="cb81-54" data-line-number="54"><span class="kw">plot.dads</span>(test, <span class="dt">main =</span> <span class="st">&quot;Skewed branch length and speciation&quot;</span>)</a></code></pre></div>
-<p><img src="dads_manual_files/figure-html/unnamed-chunk-44-1.png" width="768" /></p>
+<h2><span class="header-section-number">4.8</span> Demo runnable</h2>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb93-1" data-line-number="1">bd.params &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">speciation =</span> <span class="dv">1</span>, <span class="dt">extinction =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb93-2" data-line-number="2">traits &lt;-<span class="st"> </span><span class="kw">make.traits</span>()</a>
+<a class="sourceLine" id="cb93-3" data-line-number="3">stop.rule &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">max.taxa =</span> <span class="dv">20</span>, <span class="dt">max.living =</span> <span class="ot">Inf</span>, <span class="dt">max.time =</span> <span class="ot">Inf</span>)</a>
+<a class="sourceLine" id="cb93-4" data-line-number="4">modifiers &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb93-5" data-line-number="5">events &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb93-6" data-line-number="6">null.error &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb93-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb93-8" data-line-number="8"><span class="co">## modifiers</span></a>
+<a class="sourceLine" id="cb93-9" data-line-number="9">condition &lt;-<span class="st"> </span><span class="cf">function</span>(trait.values, parent.lineage) <span class="kw">return</span>(<span class="kw">parent.traits</span>(trait.values, parent.lineage) <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb93-10" data-line-number="10">modify &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">return</span>(x <span class="op">*</span><span class="st"> </span><span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb93-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb93-12" data-line-number="12"><span class="co">## Setting up the different modifiers</span></a>
+<a class="sourceLine" id="cb93-13" data-line-number="13">modify_speciation &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">speciation    =</span> speciation.trait,</a>
+<a class="sourceLine" id="cb93-14" data-line-number="14">                                    <span class="dt">condition     =</span> condition,</a>
+<a class="sourceLine" id="cb93-15" data-line-number="15">                                    <span class="dt">modify        =</span> modify)</a>
+<a class="sourceLine" id="cb93-16" data-line-number="16">modify_brlen &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">branch.length =</span> branch.length.trait,</a>
+<a class="sourceLine" id="cb93-17" data-line-number="17">                               <span class="dt">condition     =</span> condition,</a>
+<a class="sourceLine" id="cb93-18" data-line-number="18">                               <span class="dt">modify        =</span> modify)</a>
+<a class="sourceLine" id="cb93-19" data-line-number="19">modify_speciation_brlen &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">branch.length =</span> branch.length.trait,</a>
+<a class="sourceLine" id="cb93-20" data-line-number="20">                                          <span class="dt">speciation    =</span> speciation.trait,</a>
+<a class="sourceLine" id="cb93-21" data-line-number="21">                                          <span class="dt">condition     =</span> condition,</a>
+<a class="sourceLine" id="cb93-22" data-line-number="22">                                          <span class="dt">modify        =</span> modify)</a>
+<a class="sourceLine" id="cb93-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb93-24" data-line-number="24"><span class="co">## Test normal (no modifiers)</span></a>
+<a class="sourceLine" id="cb93-25" data-line-number="25"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb93-26" data-line-number="26">test &lt;-<span class="st"> </span><span class="kw">dads</span>(bd.params, stop.rule, traits, <span class="dt">null.error =</span> <span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb93-27" data-line-number="27"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb93-28" data-line-number="28"><span class="kw">plot</span>(test<span class="op">$</span>tree)</a>
+<a class="sourceLine" id="cb93-29" data-line-number="29"><span class="kw">plot.dads</span>(test, <span class="dt">main =</span> <span class="st">&quot;random tree + trait&quot;</span>)</a>
+<a class="sourceLine" id="cb93-30" data-line-number="30"></a>
+<a class="sourceLine" id="cb93-31" data-line-number="31"><span class="co">## Test with modifiers</span></a>
+<a class="sourceLine" id="cb93-32" data-line-number="32"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb93-33" data-line-number="33">trait_table &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb93-34" data-line-number="34">test &lt;-<span class="st"> </span><span class="kw">dads</span>(bd.params, stop.rule, traits,</a>
+<a class="sourceLine" id="cb93-35" data-line-number="35">                                <span class="dt">modifiers =</span> modify_speciation,</a>
+<a class="sourceLine" id="cb93-36" data-line-number="36">                                <span class="dt">null.error =</span> <span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb93-37" data-line-number="37"><span class="kw">plot</span>(test<span class="op">$</span>tree)</a>
+<a class="sourceLine" id="cb93-38" data-line-number="38"><span class="kw">plot.dads</span>(test, <span class="dt">main =</span> <span class="st">&quot;Skewed speciation&quot;</span>)</a>
+<a class="sourceLine" id="cb93-39" data-line-number="39"></a>
+<a class="sourceLine" id="cb93-40" data-line-number="40"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb93-41" data-line-number="41">trait_table &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb93-42" data-line-number="42">test &lt;-<span class="st"> </span><span class="kw">dads</span>(bd.params, stop.rule, traits,</a>
+<a class="sourceLine" id="cb93-43" data-line-number="43">                                <span class="dt">modifiers =</span> modify_brlen,</a>
+<a class="sourceLine" id="cb93-44" data-line-number="44">                                <span class="dt">null.error =</span> <span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb93-45" data-line-number="45"><span class="kw">plot</span>(test<span class="op">$</span>tree)</a>
+<a class="sourceLine" id="cb93-46" data-line-number="46"><span class="kw">plot.dads</span>(test, <span class="dt">main =</span> <span class="st">&quot;Skewed branch length&quot;</span>)</a>
+<a class="sourceLine" id="cb93-47" data-line-number="47"></a>
+<a class="sourceLine" id="cb93-48" data-line-number="48"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb93-49" data-line-number="49">trait_table &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb93-50" data-line-number="50">test &lt;-<span class="st"> </span><span class="kw">dads</span>(bd.params, stop.rule, traits,</a>
+<a class="sourceLine" id="cb93-51" data-line-number="51">                                <span class="dt">modifiers =</span> modify_speciation_brlen,</a>
+<a class="sourceLine" id="cb93-52" data-line-number="52">                                <span class="dt">null.error =</span> <span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb93-53" data-line-number="53"><span class="kw">plot</span>(test<span class="op">$</span>tree)</a>
+<a class="sourceLine" id="cb93-54" data-line-number="54"><span class="kw">plot.dads</span>(test, <span class="dt">main =</span> <span class="st">&quot;Skewed branch length and speciation&quot;</span>)</a></code></pre></div>
 
 </div>
 </div>
@@ -367,6 +590,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

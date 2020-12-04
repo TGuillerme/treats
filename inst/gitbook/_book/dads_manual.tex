@@ -111,7 +111,7 @@
 
 \title{dads manual}
 \author{Thomas Guillerme (\href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}}), Alex Slavenko (email) and others}
-\date{2020-11-13}
+\date{2020-12-04}
 
 \begin{document}
 \maketitle
@@ -120,10 +120,8 @@
 \setcounter{tocdepth}{1}
 \tableofcontents
 }
-\hypertarget{dads}{%
-\chapter{\texorpdfstring{\texttt{dads}}{dads}}\label{dads}}
-
-Disparity and diversity simulations.
+\hypertarget{dads-disparity-and-diversity-simulations.}{%
+\chapter{\texorpdfstring{\texttt{dads}: disparity and diversity simulations.}{dads: disparity and diversity simulations.}}\label{dads-disparity-and-diversity-simulations.}}
 
 Allowing to simulate disparity and diversity at the same time with interaction between both.
 
@@ -443,19 +441,18 @@ Note that these are default for a birth death tree and were actually already app
 
 \begin{verbatim}
 ##  ---- dads modifiers object ---- 
-## No modifiers applied to the branch length and speciation processes (default).
+## No modifiers applied to the branch length, selection and speciation processes (default).
 \end{verbatim}
 
 This will not do much to our simulations compared to the previous trait and tree simulation but we can provide our modifiers object to the \texttt{dads} function:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
 \CommentTok{## Setting the simulation parameters}
-\NormalTok{extinction_}\DecValTok{02}\NormalTok{ <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{extinction =} \FloatTok{0.4}\NormalTok{)}
+\NormalTok{extinction_}\DecValTok{02}\NormalTok{ <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{extinction =} \FloatTok{0.2}\NormalTok{)}
 \NormalTok{living_}\DecValTok{20}\NormalTok{     <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{max.living =} \DecValTok{20}\NormalTok{)}
 \NormalTok{BM_trait      <-}\StringTok{ }\KeywordTok{make.traits}\NormalTok{()}
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{4242}\NormalTok{)}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
 \CommentTok{## Simulate disparity and diversity}
 \NormalTok{default_data <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ extinction_}\DecValTok{02}\NormalTok{,}
                      \DataTypeTok{stop.rule =}\NormalTok{ living_}\DecValTok{20}\NormalTok{,}
@@ -468,11 +465,11 @@ This will not do much to our simulations compared to the previous trait and tree
 \begin{verbatim}
 ##  ---- dads object ---- 
 ## Birth death process with modifiers:
-## No modifiers applied to the branch length and speciation processes (default).
+## No modifiers applied to the branch length, selection and speciation processes (default).
 ## 
 ## Simulated diversity data (x$tree):
 ## 
-## Phylogenetic tree with 45 tips and 44 internal nodes.
+## Phylogenetic tree with 24 tips and 23 internal nodes.
 ## 
 ## Tip labels:
 ##   t1, t2, t3, t4, t5, t6, ...
@@ -509,8 +506,8 @@ This function intakes the \texttt{trait.values} and \texttt{parent.lineage} argu
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{## Triggering a modification only if the ancestor trait is negative}
-\NormalTok{negative.ancestor <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(trait.values, parent.lineage) \{}
-    \KeywordTok{return}\NormalTok{(}\KeywordTok{all}\NormalTok{(}\KeywordTok{parent.traits}\NormalTok{(trait.values, parent.lineage) }\OperatorTok{<}\StringTok{ }\DecValTok{0}\NormalTok{))}
+\NormalTok{negative.ancestor <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(trait.values, lineage) \{}
+    \KeywordTok{return}\NormalTok{(}\KeywordTok{all}\NormalTok{(}\KeywordTok{parent.traits}\NormalTok{(trait.values, lineage) }\OperatorTok{<}\StringTok{ }\DecValTok{0}\NormalTok{))}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -538,6 +535,7 @@ If you are an advances \texttt{dads} user, you can design your own \texttt{speci
 \begin{verbatim}
 ##  ---- dads modifiers object ---- 
 ## Default branch length process.
+## Default selection process.
 ## Speciation process is set to speciation with a condition (negative.ancestor) and a modifier (staying.alive).
 \end{verbatim}
 
@@ -546,7 +544,7 @@ We can now simulate our tree and traits with our modifier: species will go extin
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{4242}\NormalTok{)}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
 \CommentTok{## Simulate disparity and diversity}
 \NormalTok{biased_data <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ extinction_}\DecValTok{02}\NormalTok{,}
                     \DataTypeTok{stop.rule =}\NormalTok{ living_}\DecValTok{20}\NormalTok{,}
@@ -560,11 +558,12 @@ We can now simulate our tree and traits with our modifier: species will go extin
 ##  ---- dads object ---- 
 ## Birth death process with modifiers:
 ## Default branch length process.
+## Default selection process.
 ## Speciation process is set to speciation with a condition (negative.ancestor) and a modifier (staying.alive).
 ## 
 ## Simulated diversity data (x$tree):
 ## 
-## Phylogenetic tree with 38 tips and 37 internal nodes.
+## Phylogenetic tree with 22 tips and 21 internal nodes.
 ## 
 ## Tip labels:
 ##   t1, t2, t3, t4, t5, t6, ...
@@ -706,7 +705,7 @@ Note that you can see the multiple options for plotting the trait process by loo
 ##     return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = Sigma * edge.length, 
 ##         ...)))
 ## }
-## <bytecode: 0x7fd7168d5b80>
+## <bytecode: 0x7f7eeee57f58>
 ## <environment: namespace:dads>
 ## 
 ## $A$start
@@ -1042,7 +1041,7 @@ Also, note that the functions below are not equal to the already implemented \te
     \CommentTok{## and depending on branch (edge) length}
 \NormalTok{    result <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DataTypeTok{n =} \DecValTok{1}\NormalTok{, }\DataTypeTok{mean =}\NormalTok{ x0, }\DataTypeTok{sd =}\NormalTok{ sd }\OperatorTok{*}\StringTok{ }\NormalTok{edge.length)}
 
-    \CommentTok{## Return the number}
+    \CommentTok{## Return the number}
     \KeywordTok{return}\NormalTok{(result)}
 \NormalTok{\}}
 \end{Highlighting}
@@ -1064,7 +1063,7 @@ Also, note that the functions below are not equal to the already implemented \te
     \CommentTok{## and depending on branch (edge) length}
 \NormalTok{    result <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DataTypeTok{n =} \DecValTok{1}\NormalTok{, }\DataTypeTok{mean =}\NormalTok{ mean, }\DataTypeTok{sd =}\NormalTok{ sd }\OperatorTok{*}\StringTok{ }\NormalTok{branch.length)}
 
-    \CommentTok{## Return the number}
+    \CommentTok{## Return the number}
     \KeywordTok{return}\NormalTok{(result)}
 \NormalTok{\}}
 \end{Highlighting}
@@ -1073,73 +1072,378 @@ Also, note that the functions below are not equal to the already implemented \te
 \hypertarget{makemodifiers}{%
 \chapter{\texorpdfstring{Making modifiers with \texttt{make.modifiers()}}{Making modifiers with make.modifiers()}}\label{makemodifiers}}
 
-\begin{quote}
-TODO: just ideas so far
-\end{quote}
+\texttt{"modifiers"} have a similar structure than \texttt{"traits"} where you can design an object with increasing complexity, starting with the simplest modifiers that doesn't modify anything (using the default arguments):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Making a default modifier (no modification)}
+\NormalTok{my_default_modifiers <-}\StringTok{ }\KeywordTok{make.modifiers}\NormalTok{()}
+\NormalTok{my_default_modifiers}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  ---- dads modifiers object ---- 
+## No modifiers applied to the branch length, selection and speciation processes (default).
+\end{verbatim}
+
+Similarly to \texttt{"traits"} objects, \texttt{"modifiers"} are also printed by default using \texttt{print.dads}.
+You can see details about what's actually in the object using \texttt{print.dads(my\_default\_modifiers,\ all\ =\ TRUE)}.
+However, contrary to \texttt{"traits"}, you cannot plot \texttt{"modifiers"}.
 
 \hypertarget{the-branch-length-function-branch.length}{%
 \section{\texorpdfstring{The branch length function (\texttt{branch.length})}{The branch length function (branch.length)}}\label{the-branch-length-function-branch.length}}
 
-A branch length function that is constant
+The first argument in \texttt{"modifiers"} is the branch length function (\texttt{branch.length}) this is the function that will be executed in \texttt{dads} to generate branch length.
+Note that in the \texttt{dads} algorithm, branch length is not generated \emph{directly} but actually results of the waiting time.
+In other words, the \texttt{branch.length} function just affects waiting time for all taxa present at any time in the simulation.
+These taxa can then either go extinct (stopping the ``growth'' of it's branch length) or survive (continuing the ``growth'').
+
+By default, branch length (or waiting or growth) is a randomly drawn number from an exponential distribution with the rate of the number of taxa multiplied by the speciation and extinction rate: \(n \times (\lambda + \mu)\) (where \(n\) is the number of taxa currently present in the simulation, \(\lambda\) and \(\mu\) are respectively the speciation and extinction rates).
+This default function is simply called \texttt{branch.length} in \texttt{dads} and can be used as a modifier as follows:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{constant.brlen <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(}\DataTypeTok{bd.params =} \OtherTok{NULL}\NormalTok{,}
-                         \DataTypeTok{n.taxa =} \OtherTok{NULL}\NormalTok{,}
-                         \DataTypeTok{parent.lineage =} \OtherTok{NULL}\NormalTok{,}
-                         \DataTypeTok{trait.values =} \OtherTok{NULL}\NormalTok{,}
-                         \DataTypeTok{modify.fun =} \OtherTok{NULL}\NormalTok{) \{}
-    \KeywordTok{return}\NormalTok{(}\DecValTok{1}\NormalTok{)}
-\NormalTok{\}}
+\CommentTok{## Specifying the default modifier}
+\NormalTok{default_modifiers <-}\StringTok{ }\KeywordTok{make.modifiers}\NormalTok{(}\DataTypeTok{branch.length =}\NormalTok{ branch.length)}
 
-\NormalTok{constant_brlen <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{extinction =} \FloatTok{0.25}\NormalTok{),}
-                     \DataTypeTok{stop.rule =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{max.living =} \DecValTok{20}\NormalTok{),}
-                     \DataTypeTok{traits    =} \KeywordTok{make.traits}\NormalTok{(),}
-                     \DataTypeTok{modifiers =} \KeywordTok{make.modifiers}\NormalTok{(}
-                        \DataTypeTok{branch.length =}\NormalTok{ constant.brlen))}
+\CommentTok{## Setting some parameters for generating trees}
+\NormalTok{bd_params  <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{extinction =} \DecValTok{0}\NormalTok{)}
+\NormalTok{stope_rule <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{max.living =} \DecValTok{20}\NormalTok{)}
 
-\KeywordTok{plot}\NormalTok{(constant_brlen, }\DataTypeTok{main =} \StringTok{"constant branch length"}\NormalTok{)}
+\CommentTok{## Generating a tree with the default branch length parameter}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{0}\NormalTok{)}
+\NormalTok{default_tree <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd_params,}
+                     \DataTypeTok{stop.rule =}\NormalTok{ stope_rule,}
+                     \DataTypeTok{modifiers =}\NormalTok{ default_modifiers)}
 \end{Highlighting}
 \end{Shaded}
+
+Of course, the point of the modularity here is that you can provide your own function for generating branch length.
+For example, we might be interested in what our tree would look like if we'd use a simple constant branch length generation (instead of randomly drawing it from an exponential distribution).
+We can do so by declaring our own \texttt{branch.length} function and adding it to a \texttt{"modifiers"} object.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## A constant branch length generator}
+\CommentTok{## (note that the output must be numeric, not integer)}
+\NormalTok{constant.brlen <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{() \{}
+    \KeywordTok{return}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(}\DecValTok{1}\NormalTok{))}
+\NormalTok{\}}
+
+\CommentTok{## Creating the modifiers object}
+\NormalTok{constant_modifier <-}\StringTok{ }\KeywordTok{make.modifiers}\NormalTok{(}\DataTypeTok{branch.length =}\NormalTok{ constant.brlen)}
+
+\CommentTok{## Generating a new tree with this modifier}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{0}\NormalTok{)}
+\NormalTok{modified_tree <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd_params,}
+                      \DataTypeTok{stop.rule =}\NormalTok{ stope_rule,}
+                      \DataTypeTok{modifiers =}\NormalTok{ constant_modifier)}
+\end{Highlighting}
+\end{Shaded}
+
+And we can visualise the difference between both resulting trees:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(default_tree,  }\DataTypeTok{main =} \StringTok{"Default modifier"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(modified_tree, }\DataTypeTok{main =} \StringTok{"Constant branch length}\CharTok{\textbackslash{}n}\StringTok{modifier"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-45-1.pdf}
+
+It is of course to use more complex branch length modifiers that intakes different conditions and specific modification rather than simply always output a value of one.
+
+\hypertarget{allowarguments}{%
+\subsection{The allowed arguments}\label{allowarguments}}
+
+It is of course possible to design some more advanced function to interact with the birth death process.
+You can create a function for \texttt{branch.length}, \texttt{selection} and \texttt{speciation} that involve any of the following arguments:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{bd.params}: a named list containing \texttt{"numeric"} values that contains the birth death parameters (at least \texttt{"speciation"} and \texttt{"extinction"});
+\item
+  \texttt{lineage}: a named list containing the lineage data (see below).
+\item
+  \texttt{trait.values}: a \texttt{"matrix"} containing \texttt{"numeric"} values with the trait names as column names and the lineages ID as row numbers (you can use it with the function \texttt{parent.traits} to access the trait of the previous node for example).
+\item
+  \texttt{modify.fun}: a \texttt{"list"} of named \texttt{"function"} (usually passed through \texttt{condition} and \texttt{modify}).
+\end{itemize}
+
+The \texttt{lineage} list contains the following elements (missing elements are allowed):
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{lineage\$parents}: an \texttt{"integer"} vector: the list of parent lineages;
+\item
+  \texttt{lineage\$livings}: an \texttt{"integer"} vector: the list of lineages still not extinct;
+\item
+  \texttt{lineage\$drawn}: a single \texttt{"integer"}: the ID of the selected lineage;
+\item
+  \texttt{lineage\$current}: a single \texttt{"integer"}: the selected lineage (is equal to \texttt{lineage\$livings{[}lineage\$drawn{]}});
+\item
+  \texttt{lineage\$n}: a single \texttt{"integer"}: the current number of non extinct lineage (is equal to \texttt{length(lineage\$livings))};
+\item
+  \texttt{lineage\$split}: a \texttt{"logical"} vector: the list of splits for each lineage (\texttt{TRUE}), the number of total tips is equal to \texttt{sum(!lineage\$split)}.
+\end{itemize}
+
+In general, unless you know what you're doing, you can ignore most arguments for specific modifiers since they are handled automatically within the \texttt{dads} function.
+Therefore any argument can be left undeclared or missing and is always handled internally. For example, if you did not declare \texttt{n.taxa} as a function argument but are using \texttt{n.taxa} in the function, \texttt{n.taxa} will be detected and treated as a current argument automatically as set accordingly within the birth death process (e.g. \texttt{n.taxa} will be set to the current number of taxa every iteration of the process).
+
+For example, we can create a function that increases branch length proportional to the number of species ``alive'' at each time of the simulation in a discrete way. I.e. for discrete numbers of taxa, the branch length increases by jumps (ten fold):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## A more complex binned.branch.length function}
+\NormalTok{increasing.brlen <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(bd.params, lineage) \{}
+
+    \CommentTok{## Setting the cumulated birth and death}
+\NormalTok{    birth_death <-}\StringTok{ }\NormalTok{bd.params}\OperatorTok{$}\NormalTok{speciation }\OperatorTok{+}\StringTok{ }\NormalTok{bd.params}\OperatorTok{$}\NormalTok{extinction}
+
+    \CommentTok{## Returning branch lengths depending on different number of taxa}
+    \ControlFlowTok{if}\NormalTok{(lineage}\OperatorTok{$}\NormalTok{n }\OperatorTok{<=}\StringTok{ }\DecValTok{5}\NormalTok{) \{}
+        \KeywordTok{return}\NormalTok{(}\DecValTok{1}    \OperatorTok{*}\StringTok{ }\KeywordTok{rexp}\NormalTok{(}\DecValTok{1}\NormalTok{, }\KeywordTok{sum}\NormalTok{(}\DecValTok{5} \OperatorTok{*}\StringTok{ }\NormalTok{birth_death)))}
+\NormalTok{    \}}
+    \ControlFlowTok{if}\NormalTok{(lineage}\OperatorTok{$}\NormalTok{n }\OperatorTok{<=}\StringTok{ }\DecValTok{10}\NormalTok{) \{}
+        \KeywordTok{return}\NormalTok{(}\DecValTok{10}   \OperatorTok{*}\StringTok{ }\KeywordTok{rexp}\NormalTok{(}\DecValTok{1}\NormalTok{, }\KeywordTok{sum}\NormalTok{(}\DecValTok{10} \OperatorTok{*}\StringTok{ }\NormalTok{birth_death)))   }
+\NormalTok{    \}}
+    \ControlFlowTok{if}\NormalTok{(lineage}\OperatorTok{$}\NormalTok{n }\OperatorTok{<=}\StringTok{ }\DecValTok{15}\NormalTok{) \{}
+        \KeywordTok{return}\NormalTok{(}\DecValTok{100}  \OperatorTok{*}\StringTok{ }\KeywordTok{rexp}\NormalTok{(}\DecValTok{1}\NormalTok{, }\KeywordTok{sum}\NormalTok{(}\DecValTok{15} \OperatorTok{*}\StringTok{ }\NormalTok{birth_death)))      }
+\NormalTok{    \}}
+    \ControlFlowTok{if}\NormalTok{(lineage}\OperatorTok{$}\NormalTok{n }\OperatorTok{<=}\StringTok{ }\DecValTok{20}\NormalTok{) \{}
+        \KeywordTok{return}\NormalTok{(}\DecValTok{1000} \OperatorTok{*}\StringTok{ }\KeywordTok{rexp}\NormalTok{(}\DecValTok{1}\NormalTok{, }\KeywordTok{sum}\NormalTok{(}\DecValTok{20} \OperatorTok{*}\StringTok{ }\NormalTok{birth_death)))}
+\NormalTok{    \} }\ControlFlowTok{else}\NormalTok{ \{}
+        \KeywordTok{return}\NormalTok{(}\DecValTok{1000} \OperatorTok{*}\StringTok{ }\KeywordTok{rexp}\NormalTok{(}\DecValTok{1}\NormalTok{, }\KeywordTok{sum}\NormalTok{(lineage}\OperatorTok{$}\NormalTok{n }\OperatorTok{*}\StringTok{ }\NormalTok{birth_death)))}
+\NormalTok{    \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+We can then create it as a \texttt{"modifiers"} object and run a new simulation:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Creating a modifiers}
+\NormalTok{increasing_modifier <-}\StringTok{ }\KeywordTok{make.modifiers}\NormalTok{(}\DataTypeTok{branch.length =}\NormalTok{ increasing.brlen)}
+
+\CommentTok{## Generating a new tree with this modifier}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{0}\NormalTok{)}
+\NormalTok{increasing_tree <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd_params,}
+                        \DataTypeTok{stop.rule =}\NormalTok{ stope_rule,}
+                        \DataTypeTok{modifiers =}\NormalTok{ increasing_modifier)}
+\end{Highlighting}
+\end{Shaded}
+
+And we can visualise the difference between the resulting trees:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(default_tree,    }\DataTypeTok{main =} \StringTok{"Default modifier"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(modified_tree,   }\DataTypeTok{main =} \StringTok{"Constant branch length}\CharTok{\textbackslash{}n}\StringTok{modifier"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(increasing_tree, }\DataTypeTok{main =} \StringTok{"Increasing branch length}\CharTok{\textbackslash{}n}\StringTok{modifier (binned)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-48-1.pdf}
+
+\hypertarget{the-selection-function-selection}{%
+\section{\texorpdfstring{The selection function (\texttt{selection})}{The selection function (selection)}}\label{the-selection-function-selection}}
+
+The \texttt{selection} function is used in the birth death process to know which lineage to select when running a speciation (or extinction!) event.
+By default, this function randomly selects one taxon that is currently not extinct (using: \texttt{sample(1:n.taxa,\ 1))}.
+Similarly as \texttt{branch.length} it is possible to modify this part of the birth death process.
+For example, we could simply select always the last created lineage (to create a ``ladder'' or most asymmetric tree):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Our function to always select the last taxon}
+\CommentTok{## (making sure it returns an integer)}
+\NormalTok{select.last <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(lineage) \{}
+    \KeywordTok{return}\NormalTok{(}\KeywordTok{as.integer}\NormalTok{(lineage}\OperatorTok{$}\NormalTok{n))}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+Note that here the function can only intake the \protect\hyperlink{allowarguments}{allowed arguments as described above} (here \texttt{n.taxa}: the number of current living taxa).
+\end{quote}
+
+We can then create a \texttt{"modifiers"} object the same way as before using this time the \texttt{selection} argument:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## A modifier for selection}
+\NormalTok{ladderised_modifier <-}\StringTok{ }\KeywordTok{make.modifiers}\NormalTok{(}\DataTypeTok{selection =}\NormalTok{ select.last)}
+\CommentTok{## Generating a new tree with this modifier}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{0}\NormalTok{)}
+\NormalTok{ladderised_tree <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd_params,}
+                        \DataTypeTok{stop.rule =}\NormalTok{ stope_rule,}
+                        \DataTypeTok{modifiers =}\NormalTok{ ladderised_modifier)}
+\CommentTok{## Displaying the results}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(default_tree,    }\DataTypeTok{main =} \StringTok{"Default modifier"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(ladderised_tree, }\DataTypeTok{main =} \StringTok{"Ladderising modifier"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-50-1.pdf}
+
+Again, it is of course possible to make the modifier more complex and in combination with other elements of the tree.
+For example, we can create a \texttt{"dads"} object that also creates a trait a add to it a \texttt{selection} modifier that only selects for tips with positive trait values.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Our function that only select taxa with positive trait values}
+\NormalTok{select.positive <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(trait.values, lineage) \{}
+    \CommentTok{## Selecting the taxa with positive traits only}
+\NormalTok{    positives <-}\StringTok{ }\KeywordTok{as.integer}\NormalTok{(}\KeywordTok{rownames}\NormalTok{(trait.values)[}\KeywordTok{which}\NormalTok{(trait.values[, }\DecValTok{1}\NormalTok{] }\OperatorTok{>=}\StringTok{ }\DecValTok{0}\NormalTok{)])}
+
+    \CommentTok{## Select the current taxa that descend from a node with a positive value}
+\NormalTok{    positive_living <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(lineage}\OperatorTok{$}\NormalTok{parents, }\KeywordTok{seq_along}\NormalTok{(lineage}\OperatorTok{$}\NormalTok{split)}
+\NormalTok{                             )[}\KeywordTok{which}\NormalTok{(lineage}\OperatorTok{$}\NormalTok{parents }\OperatorTok{%in%}\StringTok{ }\NormalTok{positives), }\DecValTok{2}\NormalTok{]}
+
+    \CommentTok{## Select one tip randomly in the ones with descendants with positive values}
+    \KeywordTok{return}\NormalTok{(}\KeywordTok{sample}\NormalTok{(}\KeywordTok{which}\NormalTok{(lineage}\OperatorTok{$}\NormalTok{livings }\OperatorTok{%in%}\StringTok{ }\NormalTok{positive_living), }\DecValTok{1}\NormalTok{))}
+\NormalTok{\}}
+
+\CommentTok{## Creating the modifier}
+\NormalTok{positive_skew <-}\StringTok{ }\KeywordTok{make.modifiers}\NormalTok{(}\DataTypeTok{selection =}\NormalTok{ select.positive)}
+
+\CommentTok{## Creating a (default) trait object}
+\NormalTok{BM_trait <-}\StringTok{ }\KeywordTok{make.traits}\NormalTok{()}
+
+\CommentTok{## Simulate a tree and trait with no modifier}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{default_dads <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd_params,}
+                     \DataTypeTok{stop.rule =}\NormalTok{ stope_rule,}
+                     \DataTypeTok{traits    =}\NormalTok{ BM_trait)}
+
+\CommentTok{## Simulate a tree and trait with the modifier}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{skewed_trait_dads <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd_params,}
+                          \DataTypeTok{stop.rule =}\NormalTok{ stope_rule,}
+                          \DataTypeTok{traits    =}\NormalTok{ BM_trait,}
+                          \DataTypeTok{modifiers =}\NormalTok{ positive_skew)}
+
+\CommentTok{## Plotting the differences in trees and traits}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(default_dads, }\DataTypeTok{main =} \StringTok{"Default trait and tree"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(skewed_trait_dads, }\DataTypeTok{main =} \StringTok{"Skewed trait and tree"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-51-1.pdf}
 
 \hypertarget{the-speciation-function-speciation}{%
 \section{\texorpdfstring{The speciation function (\texttt{speciation})}{The speciation function (speciation)}}\label{the-speciation-function-speciation}}
 
+The third function that can be used to modify the birth death process is the \texttt{speciation} function.
+This one is used during the birth death process to decide whether a lineages speciates (creating a node and two new lineages) or goes extinct (creating a tip).
+
+\begin{quote}
+Note that the \texttt{speciation} function only affects tips or nodes before the simulation reaches the \texttt{stop.rule}.
+The then surviving lineages are all automatically transformed into tips.
+\end{quote}
+
+By default, the \texttt{speciation} function is trigger a speciation even if a number randomly drawn from a uniform distribution is lower than the ratio between the speciation and the speciation and extinction parameter. If the randomly drawn number is higher, the lineage goes extinct.
+
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{random.brlen <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(}\DataTypeTok{bd.params =} \OtherTok{NULL}\NormalTok{,}
-                         \DataTypeTok{n.taxa =} \OtherTok{NULL}\NormalTok{,}
-                         \DataTypeTok{parent.lineage =} \OtherTok{NULL}\NormalTok{,}
-                         \DataTypeTok{trait.values =} \OtherTok{NULL}\NormalTok{,}
-                         \DataTypeTok{modify.fun =} \OtherTok{NULL}\NormalTok{) \{}
-    \KeywordTok{return}\NormalTok{(}\KeywordTok{runif}\NormalTok{(}\DecValTok{1}\NormalTok{))}
-\NormalTok{\}}
-
-\NormalTok{random.spec  <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(}\DataTypeTok{bd.params =} \OtherTok{NULL}\NormalTok{,}
-                         \DataTypeTok{n.taxa =} \OtherTok{NULL}\NormalTok{,}
-                         \DataTypeTok{parent.lineage =} \OtherTok{NULL}\NormalTok{,}
-                         \DataTypeTok{trait.values =} \OtherTok{NULL}\NormalTok{,}
-                         \DataTypeTok{modify.fun =} \OtherTok{NULL}\NormalTok{) \{}
-    \KeywordTok{return}\NormalTok{(}\KeywordTok{sample}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{FALSE}\NormalTok{), }\DecValTok{1}\NormalTok{))}
-\NormalTok{\}}
-
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
-\NormalTok{yule_tree <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{extinction =} \DecValTok{0}\NormalTok{),}
-                     \DataTypeTok{stop.rule =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{max.living =} \DecValTok{20}\NormalTok{),}
-                     \DataTypeTok{traits    =} \KeywordTok{make.traits}\NormalTok{(),}
-                     \DataTypeTok{modifiers =} \KeywordTok{make.modifiers}\NormalTok{(}
-                        \DataTypeTok{branch.length =}\NormalTok{ random.brlen,}
-                        \DataTypeTok{speciation    =}\NormalTok{ random.spec))}
-
-\KeywordTok{plot}\NormalTok{(yule_tree, }\DataTypeTok{main =} \StringTok{"a (failing) yule(ish) tree"}\NormalTok{)}
+\CommentTok{## The speciation in pseudo-code:}
+\KeywordTok{runif}\NormalTok{(}\DecValTok{1}\NormalTok{) }\OperatorTok{<}\StringTok{ }\NormalTok{speciation}\OperatorTok{/}\StringTok{ }\NormalTok{(speciation }\OperatorTok{+}\StringTok{ }\NormalTok{extinction)}
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{the-condition-function-condition}{%
-\section{\texorpdfstring{The condition function (\texttt{condition})}{The condition function (condition)}}\label{the-condition-function-condition}}
+Creating a \texttt{"modifiers"} with a \texttt{speciation} function works the same way as for \texttt{branch.length} and \texttt{selection} but the function that will be used needs to output a logical value (see table \protect\hyperlink{summarymodifiers}{below}).
+Once the function is created simply input your function for speciation in the modifier and run the \texttt{dads} function with that modifier:
 
-\hypertarget{the-modify-function-modify}{%
-\section{\texorpdfstring{The modify function (\texttt{modify})}{The modify function (modify)}}\label{the-modify-function-modify}}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Speciating or going extinct randomly}
+\CommentTok{## (regardless of the extinction parameter)}
+\NormalTok{random.extinct  <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{() \{}
+    \KeywordTok{return}\NormalTok{(}\KeywordTok{sample}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{FALSE}\NormalTok{), }\DecValTok{1}\NormalTok{))}
+\NormalTok{\}}
+
+\CommentTok{## Creating the modifiers object}
+\NormalTok{random_extinction <-}\StringTok{ }\KeywordTok{make.modifiers}\NormalTok{(}\DataTypeTok{speciation =}\NormalTok{ random.extinct)}
+
+\CommentTok{## Generating a new tree with this modifier}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{0}\NormalTok{)}
+\NormalTok{modified_tree <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd_params,}
+                      \DataTypeTok{stop.rule =}\NormalTok{ stope_rule,}
+                      \DataTypeTok{modifiers =}\NormalTok{ random_extinction)}
+
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(default_tree,  }\DataTypeTok{main =} \StringTok{"Default modifier"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(modified_tree, }\DataTypeTok{main =} \StringTok{"Random extinction}\CharTok{\textbackslash{}n}\StringTok{modifier"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Note how every lineage end up going extinct!
+And again, we can make some more advanced modifiers: for example, one where a tip always goes extinct if their ancestor has a negative trait value (here we will also introduce the utility function \texttt{parent.trait} that automatically selects the trait values of the parent of the current lineage.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## A modifier for removing tips with negative values}
+\NormalTok{bias.trait <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(trait.values, lineage) \{}
+    \ControlFlowTok{if}\NormalTok{(}\KeywordTok{parent.traits}\NormalTok{(trait.values, lineage) }\OperatorTok{<}\StringTok{ }\DecValTok{0}\NormalTok{) \{}
+        \CommentTok{## Go extinct!}
+        \KeywordTok{return}\NormalTok{(}\OtherTok{FALSE}\NormalTok{)}
+\NormalTok{    \} }\ControlFlowTok{else}\NormalTok{ \{}
+        \CommentTok{## Speciate}
+        \KeywordTok{return}\NormalTok{(}\OtherTok{TRUE}\NormalTok{)}
+\NormalTok{    \}}
+\NormalTok{\}}
+
+\CommentTok{## Creating the modifier}
+\NormalTok{biased_trait <-}\StringTok{ }\KeywordTok{make.modifiers}\NormalTok{(}\DataTypeTok{speciation =}\NormalTok{ bias.trait)}
+
+\CommentTok{## Simulate a tree and trait with the modifier}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{biased_trait_dads <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd_params,}
+                          \DataTypeTok{stop.rule =}\NormalTok{ stope_rule,}
+                          \DataTypeTok{traits    =}\NormalTok{ BM_trait,}
+                          \DataTypeTok{modifiers =}\NormalTok{ biased_trait)}
+
+\CommentTok{## Plotting the differences in trees and traits}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(default_dads, }\DataTypeTok{main =} \StringTok{"Default trait and tree"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(biased_trait_dads, }\DataTypeTok{main =} \StringTok{"Biased trait and tree"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-54-1.pdf}
+
+\hypertarget{summarymodifiers}{%
+\section{\texorpdfstring{Summary of the inputs and outputs for the \texttt{branch.length}, \texttt{selection} and \texttt{speciation} modifiers}{Summary of the inputs and outputs for the branch.length, selection and speciation modifiers}}\label{summarymodifiers}}
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+modifier name & accepted input (arguments) & required output (class)\tabularnewline
+\midrule
+\endhead
+\texttt{branch.length} & \texttt{bd.params}, \texttt{lineage}, \texttt{trait.values} & \texttt{"numeric"}\tabularnewline
+\texttt{selection} & \texttt{bd.params}, \texttt{lineage}, \texttt{trait.values} & \texttt{"integer"}\tabularnewline
+\texttt{speciation} & \texttt{bd.params}, \texttt{lineage}, \texttt{trait.values} & \texttt{"logical"}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\hypertarget{the-condition-and-modify-functions-condition-and-modify}{%
+\section{\texorpdfstring{The condition and modify functions (\texttt{condition} and \texttt{modify})}{The condition and modify functions (condition and modify)}}\label{the-condition-and-modify-functions-condition-and-modify}}
+
+In the examples above, we have seen how to specify modifications to the birth death process (via \texttt{branch.length}, \texttt{selection} and \texttt{speciation}), however, one might note that these modifications are not dynamic.
+In other words, throughout the process, the modifications remain constant (even if they are conditional).
+It is however possible to code the \texttt{"modifiers"} so that they can be affected by \texttt{"events"} objects (see next chapter).
+
+To do so, you can formally declare conditions (\texttt{condition}) and modifications (\texttt{modify}) as internal functions that can then be modified my an \texttt{"events"} object.
+\texttt{condition} and \texttt{modify} are hard coded in the \texttt{branch.length} function that they concern, i.e.~they are variables (functions) within the function.
 
 \hypertarget{combining-and-editing-modifiers-add}{%
 \section{\texorpdfstring{Combining and editing modifiers (\texttt{add})}{Combining and editing modifiers (add)}}\label{combining-and-editing-modifiers-add}}
@@ -1208,8 +1512,6 @@ A branch length function that is constant
 \KeywordTok{plot.dads}\NormalTok{(test, }\DataTypeTok{main =} \StringTok{"Skewed branch length and speciation"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
-
-\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-44-1.pdf}
 
 \bibliography{../references.bib}
 

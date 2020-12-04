@@ -24,7 +24,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Alex Slavenko (email) and others" />
 
 
-<meta name="date" content="2020-11-13" />
+<meta name="date" content="2020-12-04" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -131,7 +131,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="./">dads manual</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> <code>dads</code></a><ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> <code>dads</code>: disparity and diversity simulations.</a><ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#what-is-dads"><i class="fa fa-check"></i><b>1.1</b> What is <code>dads</code>?</a><ul>
 <li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#modular"><i class="fa fa-check"></i><b>1.1.1</b> Modular?</a></li>
 </ul></li>
@@ -159,13 +159,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="makemodifiers.html"><a href="makemodifiers.html"><i class="fa fa-check"></i><b>4</b> Making modifiers with <code>make.modifiers()</code></a><ul>
-<li class="chapter" data-level="4.1" data-path="makemodifiers.html"><a href="makemodifiers.html#the-branch-length-function-branch.length"><i class="fa fa-check"></i><b>4.1</b> The branch length function (<code>branch.length</code>)</a></li>
-<li class="chapter" data-level="4.2" data-path="makemodifiers.html"><a href="makemodifiers.html#the-speciation-function-speciation"><i class="fa fa-check"></i><b>4.2</b> The speciation function (<code>speciation</code>)</a></li>
-<li class="chapter" data-level="4.3" data-path="makemodifiers.html"><a href="makemodifiers.html#the-condition-function-condition"><i class="fa fa-check"></i><b>4.3</b> The condition function (<code>condition</code>)</a></li>
-<li class="chapter" data-level="4.4" data-path="makemodifiers.html"><a href="makemodifiers.html#the-modify-function-modify"><i class="fa fa-check"></i><b>4.4</b> The modify function (<code>modify</code>)</a></li>
-<li class="chapter" data-level="4.5" data-path="makemodifiers.html"><a href="makemodifiers.html#combining-and-editing-modifiers-add"><i class="fa fa-check"></i><b>4.5</b> Combining and editing modifiers (<code>add</code>)</a></li>
-<li class="chapter" data-level="4.6" data-path="makemodifiers.html"><a href="makemodifiers.html#testing-modifiers-test"><i class="fa fa-check"></i><b>4.6</b> Testing modifiers (<code>test</code>)</a></li>
-<li class="chapter" data-level="4.7" data-path="makemodifiers.html"><a href="makemodifiers.html#demo-runnable"><i class="fa fa-check"></i><b>4.7</b> Demo runnable</a></li>
+<li class="chapter" data-level="4.1" data-path="makemodifiers.html"><a href="makemodifiers.html#the-branch-length-function-branch.length"><i class="fa fa-check"></i><b>4.1</b> The branch length function (<code>branch.length</code>)</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="makemodifiers.html"><a href="makemodifiers.html#allowarguments"><i class="fa fa-check"></i><b>4.1.1</b> The allowed arguments</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="makemodifiers.html"><a href="makemodifiers.html#the-selection-function-selection"><i class="fa fa-check"></i><b>4.2</b> The selection function (<code>selection</code>)</a></li>
+<li class="chapter" data-level="4.3" data-path="makemodifiers.html"><a href="makemodifiers.html#the-speciation-function-speciation"><i class="fa fa-check"></i><b>4.3</b> The speciation function (<code>speciation</code>)</a></li>
+<li class="chapter" data-level="4.4" data-path="makemodifiers.html"><a href="makemodifiers.html#summarymodifiers"><i class="fa fa-check"></i><b>4.4</b> Summary of the inputs and outputs for the <code>branch.length</code>, <code>selection</code> and <code>speciation</code> modifiers</a></li>
+<li class="chapter" data-level="4.5" data-path="makemodifiers.html"><a href="makemodifiers.html#the-condition-and-modify-functions-condition-and-modify"><i class="fa fa-check"></i><b>4.5</b> The condition and modify functions (<code>condition</code> and <code>modify</code>)</a></li>
+<li class="chapter" data-level="4.6" data-path="makemodifiers.html"><a href="makemodifiers.html#combining-and-editing-modifiers-add"><i class="fa fa-check"></i><b>4.6</b> Combining and editing modifiers (<code>add</code>)</a></li>
+<li class="chapter" data-level="4.7" data-path="makemodifiers.html"><a href="makemodifiers.html#testing-modifiers-test"><i class="fa fa-check"></i><b>4.7</b> Testing modifiers (<code>test</code>)</a></li>
+<li class="chapter" data-level="4.8" data-path="makemodifiers.html"><a href="makemodifiers.html#demo-runnable"><i class="fa fa-check"></i><b>4.8</b> Demo runnable</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/TGuillerme/dads/" target="blank">Project GitHub page</a></li>
@@ -319,27 +322,26 @@ By default, this function generates a <code>&quot;modifiers&quot;</code> object 
 <a class="sourceLine" id="cb22-3" data-line-number="3"><span class="co">## What&#39;s in it?</span></a>
 <a class="sourceLine" id="cb22-4" data-line-number="4">default_modifiers</a></code></pre></div>
 <pre><code>##  ---- dads modifiers object ---- 
-## No modifiers applied to the branch length and speciation processes (default).</code></pre>
+## No modifiers applied to the branch length, selection and speciation processes (default).</code></pre>
 <p>This will not do much to our simulations compared to the previous trait and tree simulation but we can provide our modifiers object to the <code>dads</code> function:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb24-2" data-line-number="2"><span class="co">## Setting the simulation parameters</span></a>
-<a class="sourceLine" id="cb24-3" data-line-number="3">extinction_<span class="dv">02</span> &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">extinction =</span> <span class="fl">0.4</span>)</a>
-<a class="sourceLine" id="cb24-4" data-line-number="4">living_<span class="dv">20</span>     &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">max.living =</span> <span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb24-5" data-line-number="5">BM_trait      &lt;-<span class="st"> </span><span class="kw">make.traits</span>()</a>
-<a class="sourceLine" id="cb24-6" data-line-number="6"><span class="kw">set.seed</span>(<span class="dv">4242</span>)</a>
-<a class="sourceLine" id="cb24-7" data-line-number="7"><span class="co">## Simulate disparity and diversity</span></a>
-<a class="sourceLine" id="cb24-8" data-line-number="8">default_data &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params =</span> extinction_<span class="dv">02</span>,</a>
-<a class="sourceLine" id="cb24-9" data-line-number="9">                     <span class="dt">stop.rule =</span> living_<span class="dv">20</span>,</a>
-<a class="sourceLine" id="cb24-10" data-line-number="10">                     <span class="dt">traits    =</span> BM_trait,</a>
-<a class="sourceLine" id="cb24-11" data-line-number="11">                     <span class="dt">modifiers =</span> default_modifiers)</a>
-<a class="sourceLine" id="cb24-12" data-line-number="12">default_data</a></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="co">## Setting the simulation parameters</span></a>
+<a class="sourceLine" id="cb24-2" data-line-number="2">extinction_<span class="dv">02</span> &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">extinction =</span> <span class="fl">0.2</span>)</a>
+<a class="sourceLine" id="cb24-3" data-line-number="3">living_<span class="dv">20</span>     &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">max.living =</span> <span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb24-4" data-line-number="4">BM_trait      &lt;-<span class="st"> </span><span class="kw">make.traits</span>()</a>
+<a class="sourceLine" id="cb24-5" data-line-number="5"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb24-6" data-line-number="6"><span class="co">## Simulate disparity and diversity</span></a>
+<a class="sourceLine" id="cb24-7" data-line-number="7">default_data &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params =</span> extinction_<span class="dv">02</span>,</a>
+<a class="sourceLine" id="cb24-8" data-line-number="8">                     <span class="dt">stop.rule =</span> living_<span class="dv">20</span>,</a>
+<a class="sourceLine" id="cb24-9" data-line-number="9">                     <span class="dt">traits    =</span> BM_trait,</a>
+<a class="sourceLine" id="cb24-10" data-line-number="10">                     <span class="dt">modifiers =</span> default_modifiers)</a>
+<a class="sourceLine" id="cb24-11" data-line-number="11">default_data</a></code></pre></div>
 <pre><code>##  ---- dads object ---- 
 ## Birth death process with modifiers:
-## No modifiers applied to the branch length and speciation processes (default).
+## No modifiers applied to the branch length, selection and speciation processes (default).
 ## 
 ## Simulated diversity data (x$tree):
 ## 
-## Phylogenetic tree with 45 tips and 44 internal nodes.
+## Phylogenetic tree with 24 tips and 23 internal nodes.
 ## 
 ## Tip labels:
 ##   t1, t2, t3, t4, t5, t6, ...
@@ -364,8 +366,8 @@ We can do that by specifying our <code>condition</code> function (when the ances
 For that we can use the <code>parent.traits</code> utility function that is optimised for accessing traits in the birth death process (but you can of course write your own).
 This function intakes the <code>trait.values</code> and <code>parent.lineage</code> arguments, two arguments that you can leave named as they are to facilitate <code>dads</code>s understanding of what you which to asses:</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="co">## Triggering a modification only if the ancestor trait is negative</span></a>
-<a class="sourceLine" id="cb27-2" data-line-number="2">negative.ancestor &lt;-<span class="st"> </span><span class="cf">function</span>(trait.values, parent.lineage) {</a>
-<a class="sourceLine" id="cb27-3" data-line-number="3">    <span class="kw">return</span>(<span class="kw">all</span>(<span class="kw">parent.traits</span>(trait.values, parent.lineage) <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb27-2" data-line-number="2">negative.ancestor &lt;-<span class="st"> </span><span class="cf">function</span>(trait.values, lineage) {</a>
+<a class="sourceLine" id="cb27-3" data-line-number="3">    <span class="kw">return</span>(<span class="kw">all</span>(<span class="kw">parent.traits</span>(trait.values, lineage) <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>))</a>
 <a class="sourceLine" id="cb27-4" data-line-number="4">}</a></code></pre></div>
 <p>Note that we use the function <code>all</code> here to evaluate all traits (if the data is multidimensional).
 We can then provide these two functions (the condition <code>negative.ancestor</code> and how to modify the speciation event when this condition is met <code>staying.alive</code>).
@@ -383,10 +385,11 @@ If you are an advances <code>dads</code> user, you can design your own <code>spe
 <a class="sourceLine" id="cb28-11" data-line-number="11">negatives_extinct</a></code></pre></div>
 <pre><code>##  ---- dads modifiers object ---- 
 ## Default branch length process.
+## Default selection process.
 ## Speciation process is set to speciation with a condition (negative.ancestor) and a modifier (staying.alive).</code></pre>
 <p>Note that the <code>make.modifiers</code> function tests whether the input is compatible with <code>dads</code> by default so unless you have an error message, your <code>modifiers</code> will work!
 We can now simulate our tree and traits with our modifier: species will go extinct if their ancestor have a negative trait value:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">4242</span>)</a>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
 <a class="sourceLine" id="cb30-2" data-line-number="2"><span class="co">## Simulate disparity and diversity</span></a>
 <a class="sourceLine" id="cb30-3" data-line-number="3">biased_data &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params =</span> extinction_<span class="dv">02</span>,</a>
 <a class="sourceLine" id="cb30-4" data-line-number="4">                    <span class="dt">stop.rule =</span> living_<span class="dv">20</span>,</a>
@@ -396,11 +399,12 @@ We can now simulate our tree and traits with our modifier: species will go extin
 <pre><code>##  ---- dads object ---- 
 ## Birth death process with modifiers:
 ## Default branch length process.
+## Default selection process.
 ## Speciation process is set to speciation with a condition (negative.ancestor) and a modifier (staying.alive).
 ## 
 ## Simulated diversity data (x$tree):
 ## 
-## Phylogenetic tree with 38 tips and 37 internal nodes.
+## Phylogenetic tree with 22 tips and 21 internal nodes.
 ## 
 ## Tip labels:
 ##   t1, t2, t3, t4, t5, t6, ...
@@ -478,6 +482,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

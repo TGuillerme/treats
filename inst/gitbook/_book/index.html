@@ -24,7 +24,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Alex Slavenko (email) and others" />
 
 
-<meta name="date" content="2020-11-13" />
+<meta name="date" content="2020-12-04" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -131,7 +131,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="./">dads manual</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> <code>dads</code></a><ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> <code>dads</code>: disparity and diversity simulations.</a><ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#what-is-dads"><i class="fa fa-check"></i><b>1.1</b> What is <code>dads</code>?</a><ul>
 <li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#modular"><i class="fa fa-check"></i><b>1.1.1</b> Modular?</a></li>
 </ul></li>
@@ -159,13 +159,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="makemodifiers.html"><a href="makemodifiers.html"><i class="fa fa-check"></i><b>4</b> Making modifiers with <code>make.modifiers()</code></a><ul>
-<li class="chapter" data-level="4.1" data-path="makemodifiers.html"><a href="makemodifiers.html#the-branch-length-function-branch.length"><i class="fa fa-check"></i><b>4.1</b> The branch length function (<code>branch.length</code>)</a></li>
-<li class="chapter" data-level="4.2" data-path="makemodifiers.html"><a href="makemodifiers.html#the-speciation-function-speciation"><i class="fa fa-check"></i><b>4.2</b> The speciation function (<code>speciation</code>)</a></li>
-<li class="chapter" data-level="4.3" data-path="makemodifiers.html"><a href="makemodifiers.html#the-condition-function-condition"><i class="fa fa-check"></i><b>4.3</b> The condition function (<code>condition</code>)</a></li>
-<li class="chapter" data-level="4.4" data-path="makemodifiers.html"><a href="makemodifiers.html#the-modify-function-modify"><i class="fa fa-check"></i><b>4.4</b> The modify function (<code>modify</code>)</a></li>
-<li class="chapter" data-level="4.5" data-path="makemodifiers.html"><a href="makemodifiers.html#combining-and-editing-modifiers-add"><i class="fa fa-check"></i><b>4.5</b> Combining and editing modifiers (<code>add</code>)</a></li>
-<li class="chapter" data-level="4.6" data-path="makemodifiers.html"><a href="makemodifiers.html#testing-modifiers-test"><i class="fa fa-check"></i><b>4.6</b> Testing modifiers (<code>test</code>)</a></li>
-<li class="chapter" data-level="4.7" data-path="makemodifiers.html"><a href="makemodifiers.html#demo-runnable"><i class="fa fa-check"></i><b>4.7</b> Demo runnable</a></li>
+<li class="chapter" data-level="4.1" data-path="makemodifiers.html"><a href="makemodifiers.html#the-branch-length-function-branch.length"><i class="fa fa-check"></i><b>4.1</b> The branch length function (<code>branch.length</code>)</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="makemodifiers.html"><a href="makemodifiers.html#allowarguments"><i class="fa fa-check"></i><b>4.1.1</b> The allowed arguments</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="makemodifiers.html"><a href="makemodifiers.html#the-selection-function-selection"><i class="fa fa-check"></i><b>4.2</b> The selection function (<code>selection</code>)</a></li>
+<li class="chapter" data-level="4.3" data-path="makemodifiers.html"><a href="makemodifiers.html#the-speciation-function-speciation"><i class="fa fa-check"></i><b>4.3</b> The speciation function (<code>speciation</code>)</a></li>
+<li class="chapter" data-level="4.4" data-path="makemodifiers.html"><a href="makemodifiers.html#summarymodifiers"><i class="fa fa-check"></i><b>4.4</b> Summary of the inputs and outputs for the <code>branch.length</code>, <code>selection</code> and <code>speciation</code> modifiers</a></li>
+<li class="chapter" data-level="4.5" data-path="makemodifiers.html"><a href="makemodifiers.html#the-condition-and-modify-functions-condition-and-modify"><i class="fa fa-check"></i><b>4.5</b> The condition and modify functions (<code>condition</code> and <code>modify</code>)</a></li>
+<li class="chapter" data-level="4.6" data-path="makemodifiers.html"><a href="makemodifiers.html#combining-and-editing-modifiers-add"><i class="fa fa-check"></i><b>4.6</b> Combining and editing modifiers (<code>add</code>)</a></li>
+<li class="chapter" data-level="4.7" data-path="makemodifiers.html"><a href="makemodifiers.html#testing-modifiers-test"><i class="fa fa-check"></i><b>4.7</b> Testing modifiers (<code>test</code>)</a></li>
+<li class="chapter" data-level="4.8" data-path="makemodifiers.html"><a href="makemodifiers.html#demo-runnable"><i class="fa fa-check"></i><b>4.8</b> Demo runnable</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/TGuillerme/dads/" target="blank">Project GitHub page</a></li>
@@ -190,11 +193,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="header">
 <h1 class="title">dads manual</h1>
 <p class="author"><em>Thomas Guillerme (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>), Alex Slavenko (email) and others</em></p>
-<p class="date"><em>2020-11-13</em></p>
+<p class="date"><em>2020-12-04</em></p>
 </div>
-<div id="dads" class="section level1">
-<h1><span class="header-section-number">1</span> <code>dads</code></h1>
-<p>Disparity and diversity simulations.</p>
+<div id="dads-disparity-and-diversity-simulations." class="section level1">
+<h1><span class="header-section-number">1</span> <code>dads</code>: disparity and diversity simulations.</h1>
 <p>Allowing to simulate disparity and diversity at the same time with interaction between both.</p>
 <p>The core of this package is based on the <a href="https://github.com/cran/diversitree/blob/master/R/simulate-bd.R"><code>diversitree</code> birth-death algorithm</a>.</p>
 <div id="what-is-dads" class="section level2">
@@ -297,6 +299,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>
