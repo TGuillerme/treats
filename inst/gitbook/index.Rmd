@@ -48,7 +48,7 @@ You can install this package easily, directly from the github:
 if(!require(devtools)) install.packages("devtools")
 
 ## Installing the latest version directly from GitHub
-install_github("TGuillerme/dads")
+devtools::install_github("TGuillerme/dads")
 ```
 
 ```{r, eval = FALSE, echo = FALSE, message = FALSE}

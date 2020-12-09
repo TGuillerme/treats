@@ -41,13 +41,13 @@ This default function is simply called `branch.length` in `dads` and can be used
 default_modifiers <- make.modifiers(branch.length = branch.length)
 
 ## Setting some parameters for generating trees
-bd_params  <- list(extinction = 0)
-stope_rule <- list(max.living = 20)
+bd_params <- list(extinction = 0)
+stop_rule <- list(max.living = 20)
 
 ## Generating a tree with the default branch length parameter
 set.seed(0)
 default_tree <- dads(bd.params = bd_params,
-                     stop.rule = stope_rule,
+                     stop.rule = stop_rule,
                      modifiers = default_modifiers)
 ```
 
@@ -68,7 +68,7 @@ constant_modifier <- make.modifiers(branch.length = constant.brlen)
 ## Generating a new tree with this modifier
 set.seed(0)
 modified_tree <- dads(bd.params = bd_params,
-                      stop.rule = stope_rule,
+                      stop.rule = stop_rule,
                       modifiers = constant_modifier)
 ``` 
 
@@ -140,7 +140,7 @@ increasing_modifier <- make.modifiers(branch.length = increasing.brlen)
 ## Generating a new tree with this modifier
 set.seed(0)
 increasing_tree <- dads(bd.params = bd_params,
-                        stop.rule = stope_rule,
+                        stop.rule = stop_rule,
                         modifiers = increasing_modifier)
 ``` 
 
@@ -178,7 +178,7 @@ ladderised_modifier <- make.modifiers(selection = select.last)
 ## Generating a new tree with this modifier
 set.seed(0)
 ladderised_tree <- dads(bd.params = bd_params,
-                        stop.rule = stope_rule,
+                        stop.rule = stop_rule,
                         modifiers = ladderised_modifier)
 ## Displaying the results
 par(mfrow = c(1,2))
@@ -212,13 +212,13 @@ BM_trait <- make.traits()
 ## Simulate a tree and trait with no modifier
 set.seed(1)
 default_dads <- dads(bd.params = bd_params,
-                     stop.rule = stope_rule,
+                     stop.rule = stop_rule,
                      traits    = BM_trait)
 
 ## Simulate a tree and trait with the modifier
 set.seed(1)
 skewed_trait_dads <- dads(bd.params = bd_params,
-                          stop.rule = stope_rule,
+                          stop.rule = stop_rule,
                           traits    = BM_trait,
                           modifiers = positive_skew)
 
@@ -260,7 +260,7 @@ random_extinction <- make.modifiers(speciation = random.extinct)
 ## Generating a new tree with this modifier
 set.seed(0)
 modified_tree <- dads(bd.params = bd_params,
-                      stop.rule = stope_rule,
+                      stop.rule = stop_rule,
                       modifiers = random_extinction)
 
 par(mfrow = c(1,2))
@@ -289,7 +289,7 @@ biased_trait <- make.modifiers(speciation = bias.trait)
 ## Simulate a tree and trait with the modifier
 set.seed(1)
 biased_trait_dads <- dads(bd.params = bd_params,
-                          stop.rule = stope_rule,
+                          stop.rule = stop_rule,
                           traits    = BM_trait,
                           modifiers = biased_trait)
 
