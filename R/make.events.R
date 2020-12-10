@@ -18,7 +18,7 @@
 
 make.events <- function() {
 
-    output <- 42
+    output <- 42*10
     class(output) <- c("dads", "events")
     return(output)
 }
