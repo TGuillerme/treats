@@ -3,8 +3,8 @@ Title: Disparity And Diversity Simulations
 Author: Thomas Guillerme [aut, cre, cph],
 	Alex Slavenko [aut, cph]
 Maintainer: Thomas Guillerme <guillert@tcd.ie>
-Version: 0.1.1
-Date: 2020-11-30
+Version: 0.1.2
+Date: 2020-12-11
 Description: Simulating data for null disparity expectations
 Depends:
     R (>= 4.0.0),
