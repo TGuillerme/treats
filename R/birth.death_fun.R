@@ -242,68 +242,32 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
             lineage$n <- lineage$n - 1L
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         ## Trigger events
-        # if(do_events) {
-
-        #     cat("check event: ")
-
-        #     ## Check whether to trigger the event
-        #     if(events$condition(bd.params, lineage, traits, time) && events$trigger < 1L) {
-        #         cat(paste0("triggered at time ", time, "\n"))
-        #         cat(paste0("n taxa pre-event = ", lineage$n, "\n"))
-        #         ## Trigger the event
-        #         switch(events$target,
-        #                taxa      = {
-        #                 lineage   <- events$modification(bd.params, lineage, traits)
-        #                },
-        #                bd.params = {
-        #                 bd.params <- events$modification(bd.params, lineage, traits)
-        #                },
-        #                traits    = {
-        #                 traits     <- events$modification(process, n, start, process.args, trait.names)
-        #                },
-        #                modifiers = {
-        #                  modifiers <- events$modification(branch.length, selection, speciation, condition, modify)
-        #                })
-        #         ## Toggle the trigger tracker
-        #         events$trigger <- events$trigger + 1L
-        #         cat(paste0("n taxa post-event = ", lineage$n, "\n"))
-        #     }
-        # }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        if(do_events) {
+            ## Check whether to trigger the event
+            if(events$condition(bd.params, lineage, traits, time) && events$trigger < 1L) {
+                ## Trigger the event
+                switch(events$target,
+                       taxa      = {
+                            ## Modify the lineage object
+                            lineage   <- events$modification(bd.params, lineage, traits)
+                       },
+                       bd.params = {
+                            ## Modify the birth death parameters
+                            bd.params <- events$modification(bd.params, lineage, traits)
+                       },
+                       traits    = {
+                            ## Modify the traits
+                            traits    <- events$modification(process, n, start, process.args, trait.names)
+                       },
+                       modifiers = {
+                            ## Modify the modifiers
+                            modifiers <- events$modification(branch.length, selection, speciation, condition, modify)
+                       })
+                ## Toggle the trigger tracker
+                events$trigger <- events$trigger + 1L
+            }
+        }
     }
 
     ############

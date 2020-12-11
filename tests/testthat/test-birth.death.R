@@ -225,3 +225,89 @@ test_that("simulating trees + traits works", {
 
 
 # })
+
+test_that("events work", {
+
+    stop.rule <- list(max.time = 5, max.taxa = Inf, max.living = Inf)
+    traits <- NULL
+    modifiers <- NULL
+    bd.params <- list(extinction = 0, speciation = 1)
+
+
+    ## Taxa events
+    ## Random mass extinction at time t
+    time.condition <- function(bd.params, lineage, traits, time) {
+        return(time > 4)
+    }
+
+    extinction.08 <- function(bd.params, lineage, traits) {
+            extinction_strength <- 0.8
+
+            ## Select a portion of the living species to go extinct
+            extinct <- sample(lineage$n, round(lineage$n * extinction_strength))
+
+            ## Update the lineage object
+            lineage$livings <- lineage$livings[-extinct]
+            lineage$n       <- lineage$n - length(extinct)
+            return(lineage)
+    }
+
+    events <- list(
+        ## A triggering tracker (most events can only be triggered once)
+        trigger      = 0L,
+        ## A function that intakes bd.params, lineage, traits
+        condition    = time.condition,
+        ## A character string that is either taxa, bd.params, traits or modifiers
+        target       = "taxa",
+        modification = extinction.08)
+
+    set.seed(1)
+    test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = NULL, modifiers = NULL, events = events)
+    # plot(test$tree) ; axisPhylo()
+    ## 115 taxa generated
+    expect_equal(Ntip(test$tree), 115)
+    ## 57 extinct
+    expect_equal(sum(dispRity::tree.age(test$tree)$age[1:115] > 0), 57)
+    ## Only two ages for tips (0 or 1.732)
+    expect_equal(length(unique(dispRity::tree.age(test$tree)$age[1:115])), 2)
+
+
+
+
+    ## Mass extinction based on trait values at time t
+
+
+
+    ## bd.params events
+    ## Adding extinction after reaching n taxa
+
+    ## Reducing speciation after reaching time t
+
+
+
+
+    ## traits events
+    ## Changing a trait process after time t
+
+    ## Changing a trait argument (e.g. sigma) when a trait reaches value x
+
+
+
+    ## modifiers events
+    ## Adding a speciation condition after reaching time t
+
+    ## Adding a branch length condition when reaching n taxa
+
+    ## Changing the condition of a modifier after reaching trait value x
+
+    ## Changing the modify of a modifier after reaching time t
+
+
+
+
+
+    ## founding events
+    ## Events that generate a new process (founding effects)
+
+
+})
