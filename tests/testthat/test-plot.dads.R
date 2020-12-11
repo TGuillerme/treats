@@ -1,5 +1,3 @@
-context("plot.dads")
-
 test_that("plot.dads works for traits", {
     
     list_of_traits <- make.traits(process = c(no.process, BM.process, OU.process), trait.names = c("No process (normal)", "Brownian motion", "Ornstein-Uhlenbeck"))

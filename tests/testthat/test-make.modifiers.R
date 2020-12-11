@@ -1,5 +1,3 @@
-context("make.modifiers")
-
 ## Test
 test_that("make.modifiers works", {
 

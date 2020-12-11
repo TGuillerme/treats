@@ -1,5 +1,3 @@
-context("make.traits")
-
 ## Test
 test_that("make.traits works", {
 

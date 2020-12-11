@@ -1,5 +1,3 @@
-context("birth.death.tree.traits")
-
 library(dispRity)
 
 ## Test

@@ -1,5 +1,3 @@
-context("print.dads")
-
 ## Test
 test_that("print.dads works for traits", {
 

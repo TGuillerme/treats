@@ -1,5 +1,3 @@
-context("dads")
-
 ## Test
 test_that("dads works for simple birth-deaths", {
 

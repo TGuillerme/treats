@@ -1,5 +1,3 @@
-context("drop.fossils.dads")
-
 ## Test
 test_that("drop.fossils.dads works", {
 
