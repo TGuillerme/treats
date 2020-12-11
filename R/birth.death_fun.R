@@ -102,12 +102,12 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     time <- edge_lengths <- 0
 
     ## Initialise the lineage tracker
-    lineage <- list("parents" = as.integer(0), ## The list of parent lineages
-                    "livings" = as.integer(1), ## The list of lineages still not extinct
-                    "drawn"   = as.integer(1), ## The lineage ID drawn (selected)
-                    "current" = as.integer(1), ## The current focal lineage
-                    "n"       = as.integer(1), ## The number of non extinct lineages
-                    "split"   = FALSE)         ## The topology tracker (sum(!lineage$split) is total number of tips)
+    lineage <- list("parents" = 0L,   # The list of parent lineages
+                    "livings" = 1L,   # The list of lineages still not extinct
+                    "drawn"   = 1L,   # The lineage ID drawn (selected)
+                    "current" = 1L,   # The current focal lineage
+                    "n"       = 1L,   # The number of non extinct lineages
+                    "split"   = FALSE)# The topology tracker (sum(!lineage$split) is total number of tips)
 
     ############
     ## First node (root)
@@ -157,7 +157,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         lineage$split[new_lineage] <- FALSE
         lineage$parents[new_lineage] <- lineage$current
         edge_lengths[new_lineage] <- 0
-        lineage$n <- lineage$n + as.integer(1)
+        lineage$n <- lineage$n + 1L
         lineage$livings <- c(lineage$livings[-lineage$drawn], new_lineage)
 
     } else {
@@ -234,13 +234,76 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
             lineage$split[new_lineage] <- FALSE
             lineage$parents[new_lineage] <- lineage$current
             edge_lengths[new_lineage] <- 0
-            lineage$n <- lineage$n + as.integer(1)
+            lineage$n <- lineage$n + 1L
             lineage$livings <- c(lineage$livings[-lineage$drawn], new_lineage)
         } else {
             ## Go extinct
             lineage$livings <- lineage$livings[-lineage$drawn]
-            lineage$n <- lineage$n - as.integer(1)
+            lineage$n <- lineage$n - 1L
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        ## Trigger events
+        # if(do_events) {
+
+        #     cat("check event: ")
+
+        #     ## Check whether to trigger the event
+        #     if(events$condition(bd.params, lineage, traits, time) && events$trigger < 1L) {
+        #         cat(paste0("triggered at time ", time, "\n"))
+        #         cat(paste0("n taxa pre-event = ", lineage$n, "\n"))
+        #         ## Trigger the event
+        #         switch(events$target,
+        #                taxa      = {
+        #                 lineage   <- events$modification(bd.params, lineage, traits)
+        #                },
+        #                bd.params = {
+        #                 bd.params <- events$modification(bd.params, lineage, traits)
+        #                },
+        #                traits    = {
+        #                 traits     <- events$modification(process, n, start, process.args, trait.names)
+        #                },
+        #                modifiers = {
+        #                  modifiers <- events$modification(branch.length, selection, speciation, condition, modify)
+        #                })
+        #         ## Toggle the trigger tracker
+        #         events$trigger <- events$trigger + 1L
+        #         cat(paste0("n taxa post-event = ", lineage$n, "\n"))
+        #     }
+        # }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     ############
