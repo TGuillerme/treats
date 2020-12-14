@@ -8,12 +8,12 @@ importFrom("graphics","plot")
 
 ##Functions
 export(dads)
-export(make.traits)
 export(print.dads)
 export(plot.dads)
+export(make.traits)
 export(drop.fossil.dads)
 export(make.modifiers)
-# export(make.events)
+export(make.events)
 
 ## Traits
 export(trait.process)
