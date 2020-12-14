@@ -25,14 +25,14 @@
 
 make.events <- function(target, condition, modification, add, test = TRUE, replications = 0) {
 
-    ## Test target
+    ## Test target
     allowed_targets <- c("taxa", "bd.params", "traits", "modifiers")
     check.method(target, allowed_targets, "target argument ")
 
     ## Test condition
     # condition(bd.params, lineage, trait.values, time)
 
-    ## Check add
+    ## Check add
     if(missing(add)) {
         do_add <- FALSE
     } else {
@@ -45,7 +45,7 @@ make.events <- function(target, condition, modification, add, test = TRUE, repli
     check.class(replications, c("numeric", "integer"))
     trigger <- as.integer(0L - replications)
 
-    ## Creating the events object
+    ## Creating the events object
     if(!do_add) {
         events <- list(target  = target,
                        trigger = trigger)
