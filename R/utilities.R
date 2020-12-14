@@ -6,6 +6,7 @@
 #'
 #' @param trait.values   The internal table of trait values
 #' @param lineage        The internal lineage data list
+#' @param current        Whether to consider only the current lineage (\code{TRUE} - default) or all the living lineages (\code{FALSE}).
 #' 
 #' @details
 #' This function is designed to be used internally in \code{dads} to help \code{modifiers}, \code{traits} or \code{events} objects to access the parent traits of the lineages simulated through the internal birth death algorithm. 
@@ -23,6 +24,14 @@
 #' @author Thomas Guillerme
 #' @export
 
-parent.traits <- function(trait.values, lineage) {
-    return(trait.values[which(rownames(trait.values) == lineage$parents[lineage$current]), ,drop = FALSE])
-} 
+parent.traits <- function(trait.values, lineage, current = TRUE) {
+    if(current) {
+        ## Find only the current lineage
+        find <- lineage$parents[lineage$current]
+    } else {
+        ## Find all the descendants from living lineages
+        find <- unique(cbind(seq_along(lineage$split), lineage$parents)[lineage$livings, 2])
+    }
+
+    return(trait.values[as.numeric(rownames(trait.values)) %in% find, , drop = FALSE])
+}

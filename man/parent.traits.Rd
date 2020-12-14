@@ -4,12 +4,14 @@
 \alias{parent.traits}
 \title{Get parent traits}
 \usage{
-parent.traits(trait.values, lineage)
+parent.traits(trait.values, lineage, current = TRUE)
 }
 \arguments{
 \item{trait.values}{The internal table of trait values}
 
 \item{lineage}{The internal lineage data list}
+
+\item{current}{Whether to consider only the current lineage (\code{TRUE} - default) or all the living lineages (\code{FALSE}).}
 }
 \description{
 An internal utility function for \code{modifiers}, \code{traits} or \code{events} to access the value(s) of the parent traits in the \code{dads} algorithm
