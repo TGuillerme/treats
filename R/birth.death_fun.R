@@ -114,19 +114,19 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ############
 
     ## Get the waiting time
-    waiting_time <- initial.modifiers$waiting$fun(bd.params      = bd.params,
+    first_waiting_time <- initial.modifiers$waiting$fun(bd.params      = bd.params,
                                                   lineage        = lineage,
                                                   trait.values   = NULL,
                                                   modify.fun     = NULL)
 
     ## Update the global time (for the first waiting time)
     if(stop.rule$max.time != Inf && time == 0) {
-        stop.rule$max.time <- stop.rule$max.time + waiting_time
+        stop.rule$max.time <- stop.rule$max.time + first_waiting_time
     }
     ## Update the global time
-    time <- time + waiting_time
+    time <- time + first_waiting_time
     ## Updating branch length
-    edge_lengths[lineage$living] <- edge_lengths[lineage$living] + waiting_time
+    edge_lengths[lineage$living] <- edge_lengths[lineage$living] + first_waiting_time
 
     ## Start the trait    
     if(do_traits) {
@@ -172,10 +172,16 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ############
     ## Rest of the tree
     ############
+    # warning("DEBUG birth.deat_fun.R") ; counter <- 0
 
     ## Build the rest of the tree
     while(lineage$n > 0 && lineage$n <= stop.rule$max.living  && sum(!lineage$split) <= stop.rule$max.taxa) {
         
+        # warning("DEBUG birth.deat_fun.R") ; counter <- counter+1
+        # warning("DEBUG birth.deat_fun.R") ; print(counter)
+        # warning("DEBUG birth.deat_fun.R") ; if(counter == 170) break 
+
+
         ## Pick a lineage for the event to happen to:
         lineage$drawn <- modifiers$selecting$fun(bd.params    = bd.params,
                                                  lineage      = lineage,
@@ -245,16 +251,29 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         ## Trigger events
         if(do_events) {
             ## Check whether to trigger the event
-            if(events$condition(bd.params, lineage, traits, time) && events$trigger < 1L) {
+            if(events$condition(bd.params = bd.params,
+                                lineage = lineage,
+                                trait.values = trait_values,
+                                time = time - first_waiting_time)
+               && events$trigger < 1L) {
+
+                # warning("DEBUG birth.death_fun"); break
+
                 ## Trigger the event
                 switch(events$target,
                        taxa      = {
                             ## Modify the lineage object
-                            lineage   <- events$modification(bd.params, lineage, traits)
+                            lineage   <- events$modification(
+                                bd.params    = bd.params,
+                                lineage      = lineage,
+                                trait.values = trait_values)
                        },
                        bd.params = {
                             ## Modify the birth death parameters
-                            bd.params <- events$modification(bd.params, lineage, traits)
+                            bd.params <- events$modification(
+                                bd.param     = bd.params,
+                                lineage      = lineage,
+                                trait.values = trait_values)
                        },
                        traits    = {
                             ## Modify the traits

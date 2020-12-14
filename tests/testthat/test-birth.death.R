@@ -233,25 +233,27 @@ test_that("events work", {
     modifiers <- NULL
     bd.params <- list(extinction = 0, speciation = 1)
 
-
     ## Taxa events
-    ## Random mass extinction at time t
-    time.condition <- function(bd.params, lineage, traits, time) {
-        return(time > 4)
-    }
+## Mass extinction at time t
+time.condition <- function(bd.params, lineage, trait.values, time) {
+    return(time > 4)
+}
+## Function for extinction at 08
+extinction.08 <- function(bd.params, lineage, trait.values) {
+        
+        ## Set the variable
+        extinction_strength <- 0.8
 
-    extinction.08 <- function(bd.params, lineage, traits) {
-            extinction_strength <- 0.8
+        ## Select a portion of the living species to go extinct
+        extinct <- sample(lineage$n, round(lineage$n * extinction_strength))
 
-            ## Select a portion of the living species to go extinct
-            extinct <- sample(lineage$n, round(lineage$n * extinction_strength))
-
-            ## Update the lineage object
-            lineage$livings <- lineage$livings[-extinct]
-            lineage$n       <- lineage$n - length(extinct)
-            return(lineage)
-    }
-
+        ## Update the lineage object
+        lineage$livings <- lineage$livings[-extinct]
+        lineage$n       <- lineage$n - length(extinct)
+        return(lineage)
+}
+    
+    ## Make a dummy events object
     events <- list(
         ## A triggering tracker (most events can only be triggered once)
         trigger      = 0L,
@@ -264,18 +266,55 @@ test_that("events work", {
     set.seed(1)
     test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = NULL, modifiers = NULL, events = events)
     # plot(test$tree) ; axisPhylo()
-    ## 115 taxa generated
-    expect_equal(Ntip(test$tree), 115)
+    ## 165 taxa generated
+    expect_equal(Ntip(test$tree), 165)
     ## 57 extinct
-    expect_equal(sum(dispRity::tree.age(test$tree)$age[1:115] > 0), 57)
-    ## Only two ages for tips (0 or 1.732)
-    expect_equal(length(unique(dispRity::tree.age(test$tree)$age[1:115])), 2)
-
-
+    expect_equal(sum(dispRity::tree.age(test$tree)$age[1:165] > 0), 102)
+    ## Only two ages for tips (0 or 0.998)
+    expect_equal(unique(dispRity::tree.age(test$tree)$age[1:115]), c(0.998, 0))
 
 
     ## Mass extinction based on trait values at time t
+## Function for extinction trait
+extinction.trait <- function(bd.params, lineage, trait.values) {
+    ## Set the variable and the selector
+    trait_limit <- 1 ; selector <- `<`
 
+    ## Select the nodes be traits
+    parent_traits <- parent.traits(trait.values, lineage, current = FALSE)
+    selected_nodes <- as.numeric(names(which(selector(parent_traits[, 1], trait_limit))))
+
+    ## Select the descendants that'll go extinct
+    extinct <- which(lineage$parents %in% selected_nodes)
+
+    ## Update the lineage object
+    lineage$livings <- lineage$livings[!lineage$livings %in% extinct]
+    lineage$n       <- length(lineage$livings)
+    return(lineage)
+}
+
+    ## Make a dummy events object
+    events <- list(
+        trigger      = 0L,
+        condition    = time.condition,
+        target       = "taxa",
+        modification = extinction.trait)
+
+    set.seed(7)
+    test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = make.traits(), modifiers = NULL, events = events)
+    class(test) <- c("dads")
+    plot(test)
+    ## 244 taxa generated
+    expect_equal(Ntip(test$tree), 244)
+    ## 57 extinct
+    expect_equal(sum(dispRity::tree.age(test$tree)$age[1:244] > 0), 89)
+    ## Only two ages for tips
+    expect_equal(unique(dispRity::tree.age(test$tree)$age[1:244]), c(0.974, 0))
+    ## Trait values for living and extinct is different
+    living <- test$data[test$tree$tip.label[dispRity::tree.age(test$tree)$age[1:244] == 0], ]
+    extinct <- test$data[test$tree$tip.label[dispRity::tree.age(test$tree)$age[1:244] == 0.974], ]
+    expect_equal(round(mean(living), 6), 1.929087)
+    expect_equal(round(mean(extinct), 7), -0.5327465)
 
 
     ## bd.params events
