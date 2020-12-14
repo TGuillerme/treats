@@ -32,6 +32,20 @@
  - [ ] add and test `print.events`
  - [ ] test list of events
 
+### Make the following events work:
+Test the following events types
+ - [x] taxa event: mass extinction based on % at time t
+ - [x] taxa event: mass extinction based on traits at time t
+ - [ ] bd.params events: adding extinction parameter after reaching n taxa
+ - [ ] bd.params events: reducing speciation after reaching time t
+ - [ ] traits events: changing trait process at time t
+ - [ ] traits events: changing traits correlation when reaching trait value x for trait 1
+ - [ ] modifiers events: adding a speciation condition after reaching time t
+ - [ ] modifiers events: adding a branch length condition when reaching n taxa
+ - [ ] modifiers events: changing the condition of a modifier after reaching trait value x
+ - [ ] modifiers events: changing the modify of a modifier after reaching time t
+ - [ ] founding events: generate a new birth-death process for the first node to reach trait value x
+
 ## TODO utilities
  
  - [x] add utilities
