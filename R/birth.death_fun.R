@@ -255,8 +255,8 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                                 lineage = lineage,
                                 trait.values = trait_values,
                                 time = time - first_waiting_time)
-               && events$trigger < 1L) {
-
+               && events$trigger < 1L)
+            {
                 # warning("DEBUG birth.death_fun"); break
 
                 ## Trigger the event

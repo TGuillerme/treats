@@ -404,11 +404,11 @@ change.birth.param <- function(bd.params, lineage, trait.values) {
 
     stop.rule$max.time <- 6
 time.condition <- function(bd.params, lineage, trait.values, time) {
-    return(time > 3)
+    return(time > 5)
 }    
 
     traits <- make.traits()
- ## Changing a trait process after time t
+## Changing a trait process after time t
 change.trait.process <- function(traits, bd.params, lineage, trait.values) {
     return(make.traits(process = OU.process, update = traits))
 }
@@ -433,6 +433,46 @@ change.trait.process <- function(traits, bd.params, lineage, trait.values) {
 
 
     ## Changing a trait argument (e.g. sigma) when a trait reaches value x
+
+## Reaching a trait value
+trait.condition <- function(bd.params, lineage, trait.values, time) {
+    return(abs(max(trait.values[, 1])) > 2)
+}
+
+## Removing correlation
+change.trait.correlation <- function(traits, bd.params, lineage, trait.values) {
+    return(make.traits(update = traits, process.args = list(Sigma = matrix(c(10,3,3,2),2,2))))
+}
+
+    ## A 2D correlated BM
+    traits <- make.traits(n = 2, process.args = list(Sigma = matrix(1, 2, 2)))
+
+    events <- list(
+        trigger      = 0L,
+        condition    = trait.condition,
+        target       = "traits",
+        modification = change.trait.correlation)
+
+    stop.rule$max.time <- Inf
+    stop.rule$max.taxa <- 100
+
+    set.seed(8)
+    test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = NULL, events = NULL)
+    set.seed(8)
+    test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = NULL, events = events)
+    ## Visual testing
+    par(mfrow = c(2,1))
+    class(test) <- "dads" ; plot(test, trait = 2)
+    class(test2) <- "dads" ; plot(test2, trait = 2)
+    plot(test$data)
+    plot(test2$data)
+
+    ## Testing the difference in correlation
+    expect_equal(cor(test$data[, 1], test$data[, 2]), 1)
+    expect_lt(cor(test2$data[, 1], test2$data[, 2]), 1)
+
+    ## TODO: 2D plot with times.
+
 
 
 
