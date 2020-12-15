@@ -319,8 +319,79 @@ extinction.trait <- function(bd.params, lineage, trait.values) {
 
     ## bd.params events
     ## Adding extinction after reaching n taxa
+    bd.params <- list(extinction = 0, speciation = 1)
+    stop.rule <- list(max.living = 50, max.time = Inf, max.taxa = Inf)   
+
+## Mass extinction at time t
+taxa.condition <- function(bd.params, lineage, trait.values, time) {
+    return(lineage$n > 30)
+}
+## Function for extinction at 08
+change.death.param <- function(bd.params, lineage, trait.values) {
+        ## Change the death parameter
+        bd.params$extinction <- 1/3
+        return(bd.params)
+}
+    
+    ## Make a dummy events object
+    events <- list(
+        trigger      = 0L,
+        condition    = taxa.condition,
+        target       = "bd.params",
+        modification = change.death.param)
+    ## Testing the results
+    set.seed(2)
+    test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = NULL, modifiers = NULL, events = events)
+    # plot(test$tree)
+    ## 62 tips
+    expect_equal(Ntip(test$tree), 62)
+    ## 50 living (12 fossils)
+    expect_equal(sum(tree.age(test$tree)$age[1:62] == 0),50)
+    ## But bd.params$extinction still 0
+    expect_equal(bd.params$extinction, 0)
+
+
+
+
+
+
 
     ## Reducing speciation after reaching time t
+
+## Time condition
+time.condition <- function(bd.params, lineage, trait.values, time) {
+    return(time > 2)
+}
+## Function for extinction at 08
+change.birth.param <- function(bd.params, lineage, trait.values) {
+        ## Change the death parameter
+        bd.params$speciation <- 1/3
+        return(bd.params)
+} 
+
+    events <- list(
+        trigger      = 0L,
+        condition    = time.condition,
+        target       = "bd.params",
+        modification = change.birth.param)
+    
+    ## Updating the stop.rule
+    stop.rule$max.living <- Inf
+    stop.rule$max.time   <- 4
+    set.seed(42)
+    test1 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = NULL, modifiers = NULL, events = NULL)
+    set.seed(42)
+    test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = NULL, modifiers = NULL, events = events)
+    # plot(test2$tree) ; axisPhylo()
+    ## Both trees have the same age
+    expect_equal(test1$tree$root.time, test2$tree$root.time)
+    ## But the second tree has way less times
+    expect_lt(Ntip(test2$tree), Ntip(test1$tree))
+    expect_equal(c(Ntip(test2$tree), Ntip(test1$tree)), c(39, 122))
+
+
+
+
 
 
 

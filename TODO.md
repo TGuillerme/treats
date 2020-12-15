@@ -36,8 +36,8 @@
 Test the following events types
  - [x] taxa event: mass extinction based on % at time t
  - [x] taxa event: mass extinction based on traits at time t
- - [ ] bd.params events: adding extinction parameter after reaching n taxa
- - [ ] bd.params events: reducing speciation after reaching time t
+ - [x] bd.params events: adding extinction parameter after reaching n taxa
+ - [x] bd.params events: reducing speciation after reaching time t
  - [ ] traits events: changing trait process at time t
  - [ ] traits events: changing traits correlation when reaching trait value x for trait 1
  - [ ] modifiers events: adding a speciation condition after reaching time t
