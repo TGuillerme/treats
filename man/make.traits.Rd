@@ -11,6 +11,7 @@ make.traits(
   process.args,
   trait.names,
   add,
+  update,
   test = TRUE
 )
 }
@@ -27,12 +28,18 @@ make.traits(
 
 \item{add}{Optional, another previous \code{"dads"} traits object to which to add the trait.}
 
+\item{update}{Optional, another previous \code{"dads"} traits object to update (see details).}
+
 \item{test}{Logical, whether to test if the traits object will work with \code{\link{dads}} (\code{TRUE} - default).}
 }
 \description{
 Making traits objects for dads
 }
 \details{
+When using \code{update}, the provided arguments (to \code{make.traits}) will be the ones updated in the \code{"traits"} object.
+If the \code{"traits"} object contains multiple processes, you can specify which ones should be affected with the \code{trait.names} argument.
+Note that you cannot update the \code{traits.names} or the number of traits per processes (\code{n}) not use the \code{add} argument when updating a \code{"traits"} object.
+
 More details about the \code{"dads"} \code{"traits"} objects is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
 }
 \examples{
