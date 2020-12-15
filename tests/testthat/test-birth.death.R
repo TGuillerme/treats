@@ -233,7 +233,13 @@ test_that("events work", {
     modifiers <- NULL
     bd.params <- list(extinction = 0, speciation = 1)
 
+
+
+
+    ###################
     ## Taxa events
+    ###################
+
 ## Mass extinction at time t
 time.condition <- function(bd.params, lineage, trait.values, time) {
     return(time > 4)
@@ -317,7 +323,12 @@ extinction.trait <- function(bd.params, lineage, trait.values) {
     expect_equal(round(mean(extinct), 7), -0.5327465)
 
 
+
+    ###################
     ## bd.params events
+    ###################
+
+
     ## Adding extinction after reaching n taxa
     bd.params <- list(extinction = 0, speciation = 1)
     stop.rule <- list(max.living = 50, max.time = Inf, max.taxa = Inf)   
@@ -349,11 +360,6 @@ change.death.param <- function(bd.params, lineage, trait.values) {
     expect_equal(sum(tree.age(test$tree)$age[1:62] == 0),50)
     ## But bd.params$extinction still 0
     expect_equal(bd.params$extinction, 0)
-
-
-
-
-
 
 
     ## Reducing speciation after reaching time t
@@ -392,12 +398,39 @@ change.birth.param <- function(bd.params, lineage, trait.values) {
 
 
 
-
-
-
-
+    ####################
     ## traits events
-    ## Changing a trait process after time t
+    ####################
+
+    stop.rule$max.time <- 6
+time.condition <- function(bd.params, lineage, trait.values, time) {
+    return(time > 3)
+}    
+
+    traits <- make.traits()
+ ## Changing a trait process after time t
+change.trait.process <- function(traits, bd.params, lineage, trait.values) {
+    return(make.traits(process = OU.process, update = traits))
+}
+    events <- list(
+        trigger      = 0L,
+        condition    = time.condition,
+        target       = "traits",
+        modification = change.trait.process)
+    
+    set.seed(1)
+    test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = NULL, events = NULL)
+    set.seed(1)
+    test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = NULL, events = events)
+    ## Visual testing
+    # par(mfrow = c(1,2))
+    # class(test) <- "dads" ; plot(test, ylim = c(-5, 8))
+    # class(test2) <- "dads" ; plot(test2, ylim = c(-5, 8))
+    expect_false(nrow(test$data) == nrow(test2$data))
+
+
+
+
 
     ## Changing a trait argument (e.g. sigma) when a trait reaches value x
 

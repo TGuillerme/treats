@@ -271,17 +271,25 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                        bd.params = {
                             ## Modify the birth death parameters
                             bd.params <- events$modification(
-                                bd.param     = bd.params,
+                                bd.params    = bd.params,
                                 lineage      = lineage,
                                 trait.values = trait_values)
                        },
                        traits    = {
                             ## Modify the traits
-                            traits    <- events$modification(process, n, start, process.args, trait.names)
+                            traits    <- events$modification(
+                                traits       = traits,
+                                bd.params    = bd.params,
+                                lineage      = lineage,
+                                trait.values = trait_values)
                        },
                        modifiers = {
                             ## Modify the modifiers
-                            modifiers <- events$modification(branch.length, selection, speciation, condition, modify)
+                            modifiers <- events$modification(
+                                modifiers    = modifiers,
+                                bd.params    = bd.params,
+                                lineage      = lineage,
+                                trait.values = trait_values)
                        })
                 ## Toggle the trigger tracker
                 events$trigger <- events$trigger + 1L
