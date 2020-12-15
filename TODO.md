@@ -41,7 +41,7 @@ Test the following events types
  - [x] bd.params events: adding extinction parameter after reaching n taxa
  - [x] bd.params events: reducing speciation after reaching time t
  - [x] traits events: changing trait process at time t
- - [ ] traits events: changing traits correlation when reaching trait value x for trait 1
+ - [x] traits events: changing traits correlation when reaching trait value x for trait 1
  - [ ] modifiers events: adding a speciation condition after reaching time t
  - [ ] modifiers events: adding a branch length condition when reaching n taxa
  - [ ] modifiers events: changing the condition of a modifier after reaching trait value x
@@ -57,3 +57,10 @@ Test the following events types
 ## TODO package
 
  - [ ] add examples in functions
+
+## TODO plot
+
+ - [ ] add a 2/3D plot option for traits (points coloured as a function of time) + optional links
+ - [ ] add a 3D plot version of plot dads with X Y being traits and Z being time
+ - [ ] add a time gradient option for col.
+ - [ ] distinguish tips from nodes with a circle option around the tips (in 2D)

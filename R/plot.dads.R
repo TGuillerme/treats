@@ -5,16 +5,23 @@
 #' @param x \code{dads} data.
 #' @param col Optional, a vector of colours that can be named (see details).
 #' @param ... Any additional options to be passed to plot functions.
-#' @param trait which trait to plot (default is \code{1}).
+#' @param trait which trait to plot (default is \code{1}; see details).
+#' @param use.3D logical, whether to use a 3D plot or not (default is \code{FALSE}; see details).
 #' @param plot.tree logical, whether to plot the underlying tree structure (\code{TRUE}; default) or not (\code{FALSE}).
+#' @param tips.nodes optional, a colour to circle tips and nodes (only used if \code{use.3D = FALSE}).
 #' @param simulations if the input is a \code{dads} \code{traits} object, how many replicates to run (default is \code{100}).
 #' 
 #' @details
 #' The \code{col} option can be either:
 #' \itemize{
 #'      \item an unnamed vector of colours to be applied to \code{"dads"} \code{"traits"} objects (for respectively the median, 50% CI and 95% CI - by default this is \code{col = c("black", "grey", "lightgrey")})
-#'      \item a named vector of colours to be applied to \code{"dads"} objects for the colours of different elements of the plot. By default this is \code{col = c("nodes" = "orange", "fossils" = "lightblue", "livings" = "blue", "edges" = "grey")}. To colour both living and fossil tips the same way, you can use a vector element called \code{"tips"} instead of distinguishing between \code{"fossils"} and \code{"livings"}. 
+#'      \item a named vector of colours to be applied to \code{"dads"} objects for the colours of different elements of the plot. By default this is \code{col = c("nodes" = "orange", "fossils" = "lightblue", "livings" = "blue", "edges" = "grey")}. To colour both living and fossil tips the same way, you can use a vector element called \code{"tips"} instead of distinguishing between \code{"fossils"} and \code{"livings"}.
+#'      \item a \code{function} from which to sample the colours to match the time gradient for each element.
 #' }
+#' 
+#' The \code{trait} option can intake from 1 to 3 traits (if \code{use.3D = TRUE}). If two traits are given (e.g. \code{c(1, 2)}), the default plots a correlation plot between both traits (same for 3 traits if \code{use.3D = TRUE}).
+#' 
+#' The \code{use.3D} option uses the \code{rgl} library to create a 3D plot. The plot displays either a time on the Z axis with two traits on the X and Y axis (if two traits are requested via \code{trait}) or three traits on the X Y and Z (if three traits a requested via \code{trait}).
 #' 
 #' @examples
 #' #plot.dads()
@@ -24,7 +31,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-plot.dads <- function(x, col, ..., trait = 1, plot.tree = TRUE, simulations = 50) {
+plot.dads <- function(x, col, ..., trait = 1, plot.tree = TRUE, simulations = 50, use.3D = FALSE, tips.nodes) {
 
     ## Renaming the x parameter (data is nicer, x is just for the S3 method standards)
     data <- x
