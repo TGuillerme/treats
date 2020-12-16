@@ -9,10 +9,10 @@
   col,
   ...,
   trait = 1,
-  plot.tree = TRUE,
-  simulations = 50,
+  edges = "grey",
+  tips.nodes = NULL,
   use.3D = FALSE,
-  tips.nodes
+  simulations = 50
 )
 }
 \arguments{
@@ -24,13 +24,13 @@
 
 \item{trait}{which trait to plot (default is \code{1}; see details).}
 
-\item{plot.tree}{logical, whether to plot the underlying tree structure (\code{TRUE}; default) or not (\code{FALSE}).}
+\item{edges}{either a colour name to attribute to the edges or \code{NULL} to not display the edges (default is \code{"grey"}).}
 
-\item{simulations}{if the input is a \code{dads} \code{traits} object, how many replicates to run (default is \code{100}).}
+\item{tips.nodes}{optional, a colour to circle tips and nodes (only used if \code{use.3D = FALSE}). By default \code{tips.nodes = NULL}.}
 
 \item{use.3D}{logical, whether to use a 3D plot or not (default is \code{FALSE}; see details).}
 
-\item{tips.nodes}{optional, a colour to circle tips and nodes (only used if \code{use.3D = FALSE}).}
+\item{simulations}{if the input is a \code{dads} \code{traits} object, how many replicates to run (default is \code{50}).}
 }
 \description{
 Plotting dads objects (either a simulated tree and trait(s) or a process for traits objects)
@@ -38,8 +38,8 @@ Plotting dads objects (either a simulated tree and trait(s) or a process for tra
 \details{
 The \code{col} option can be either:
 \itemize{
-     \item an unnamed vector of colours to be applied to \code{"dads"} \code{"traits"} objects (for respectively the median, 50% CI and 95% CI - by default this is \code{col = c("black", "grey", "lightgrey")})
-     \item a named vector of colours to be applied to \code{"dads"} objects for the colours of different elements of the plot. By default this is \code{col = c("nodes" = "orange", "fossils" = "lightblue", "livings" = "blue", "edges" = "grey")}. To colour both living and fossil tips the same way, you can use a vector element called \code{"tips"} instead of distinguishing between \code{"fossils"} and \code{"livings"}.
+     \item a \code{vector} of colours to be applied to \code{"dads"} \code{"traits"} objects (for respectively the median, 50% CI and 95% CI - by default this is \code{col = c("black", "grey", "lightgrey")}). This is the default option when plotting traits.
+     \item a \code{vector} of colours to be applied to \code{"dads"} objects for the colours of different elements of the plot. This vector cycles through different elements of the the tree depending on the length of the vector: if one colour is given, it is applied to all elements; if two colours are given, the first one is applied to the nodes and the second to the tips; if three colours are given, they are applied to the nodes, fossils and living elements respectively. If more colours are given, they are applied in a gradient way to all elements depending on their age (see the \code{function} usage below). Note that you can always name the vector elements for avoiding ambiguities: e.g. \code{col = c("nodes" = "orange", "fossils" = "lightblue", "livings" = "blue")} (the default - you can use the name \code{"tips"} to designate both livings and fossils).
      \item a \code{function} from which to sample the colours to match the time gradient for each element.
 }
 
@@ -48,8 +48,46 @@ The \code{trait} option can intake from 1 to 3 traits (if \code{use.3D = TRUE}).
 The \code{use.3D} option uses the \code{rgl} library to create a 3D plot. The plot displays either a time on the Z axis with two traits on the X and Y axis (if two traits are requested via \code{trait}) or three traits on the X Y and Z (if three traits a requested via \code{trait}).
 }
 \examples{
-#plot.dads()
+## Specifying a trait process
+my_trait <- make.traits()
+## Plotting a trait process
+plot(my_trait, main = "A Brownian Motion")
 
+## Simulating a tree with ten taxa
+my_tree <- dads(stop.rule = list(max.taxa = 10))
+## Plotting a simple birth death tree (using ape::plot.phylo)
+plot(my_tree, main = "A pure birth tree")
+
+## Simulating a tree with traits
+my_data <- dads(stop.rule = list(max.taxa = 10),
+                traits    = my_trait)
+## Plotting the tree and traits
+plot(my_data)
+
+## Specifying a 3D trait process
+my_3D_trait <- make.traits(n = 3)
+## Simulating a birth death tree with that trait
+my_data <- dads(bd.params = list(extinction = 0.2),
+                stop.rule = list(max.living = 50),
+                traits    = my_3D_trait)
+
+## Plotting the second trait and the tree (default)
+## The colours are purple for nodes and blue for tips
+plot(my_data, trait = 2, col = c("purple", "blue"),
+     edges = "pink", tips.nodes = "black")
+
+## Plotting the first and third trait correlation
+## The colours are a heat map based on the elements age
+plot(my_data, trait = c(1,3), col = heatmap,
+     edges = "grey", tips.nodes = "black")
+
+## Plotting the first and third trait correlation in 3D
+plot(my_data, trait = c(1,3), col = rainbow,
+     edges = "grey", tips.nodes = "black", use.3D = TRUE)
+
+## Plotting all traits in 3D (without branch lengths)
+plot(my_data, trait = c(1:3), col = heatmap,
+     edges = NULL, tips.nodes = "black", use.3D = TRUE)
 }
 \seealso{
 

@@ -461,11 +461,11 @@ change.trait.correlation <- function(traits, bd.params, lineage, trait.values) {
     set.seed(8)
     test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = NULL, events = events)
     ## Visual testing
-    par(mfrow = c(2,1))
-    class(test) <- "dads" ; plot(test, trait = 2)
-    class(test2) <- "dads" ; plot(test2, trait = 2)
-    plot(test$data)
-    plot(test2$data)
+    # par(mfrow = c(2,1))
+    # class(test) <- "dads" ; plot(test, trait = 2)
+    # class(test2) <- "dads" ; plot(test2, trait = 2)
+    # plot(test$data)
+    # plot(test2$data)
 
     ## Testing the difference in correlation
     expect_equal(cor(test$data[, 1], test$data[, 2]), 1)

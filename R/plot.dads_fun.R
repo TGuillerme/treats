@@ -117,3 +117,107 @@ get.quantile.col <- function(cis, n_quantiles) {
         (n_quantiles*2) - (cis-1)
         ))
 }
+
+handle.colours <- function(col, points_tree_IDs, points_ages, data) {
+
+    col_scheme <- character()
+    do_gradient <- FALSE
+
+    if(class(col) == "function") {
+        ## Make a colour gradient
+        do_gradient <- TRUE
+        ## Check if the function works
+        col.fun <- col
+        test <- try(col.fun(3), silent = TRUE)
+        if(class(test) == "try-error" || length(test) != 3 || class(test) != "character") {
+            stop("The col function failed to generate a list of colours.", call. = FALSE)
+        }
+    } else {
+        if(col[1] == "default") {
+            ## Default colour scheme
+            col_scheme["nodes"]   <- "orange"
+            col_scheme["fossils"] <- "lightblue"
+            col_scheme["livings"] <- "blue"
+        
+        } else {
+
+            if(class(col) == "character") {
+                ## col is an unamed vector
+                if(is.null(names(col))) {
+                    if((n_col <- length(col)) > 3) {
+                        col_select <- col[1:3]
+                    } else {
+                        if(n_col == 1) {
+                            col_select <- rep(col, 3)
+                        } else {
+                            if(n_col == 2) {
+                                col_select <- c(col[1], col[2], col[2])
+                            }
+                        }
+                    }
+                    ## Attributing the colours
+                    col_scheme["nodes"]   <- col_select[1]
+                    col_scheme["fossils"] <- col_select[2]
+                    col_scheme["livings"] <- col_select[3]
+
+                } else {
+                ## col is a named vector
+                    if(all(c("nodes", "tips") %in% names(col))) {
+                        ## Attribute the colours
+                        col_scheme["nodes"]   <- col["nodes"]
+                        col_scheme["fossils"] <- col["tips"]
+                        col_scheme["livings"] <- col["tips"]
+                    } else {
+                        if(all(c("nodes", "fossils", "livings") %in% names(col))) {
+                            ## Attribute the colours
+                            col_scheme["nodes"]   <- col["nodes"]
+                            col_scheme["fossils"] <- col["fossils"]
+                            col_scheme["livings"] <- col["livings"]
+                        } else {
+                            ## Wrong names
+                            stop("col is a named vector. It must contains the names \"nodes\" and \"tips\" or \"nodes\", \"fossils\" and \"livings\".", call. = FALSE)
+                        }
+                    }                
+                }
+            }
+        }
+    }
+
+    if(!do_gradient) {
+        ## Creating the colour values
+        col_val <- vector("character", length = (Ntip(data$tree) + Nnode(data$tree)))
+
+        ## Nodes
+        col_val[which(points_tree_IDs > Ntip(data$tree))] <- col_scheme["nodes"]
+
+        ## Living
+        if(length(livings <- which(points_ages[points_tree_IDs, "ages"] == 0)) > 0) {
+            col_val[livings] <- col_scheme["livings"]
+        }
+        ## Fossils (the ones remaining)
+        if(length(fossils <- which(col_val == "")) > 0) {
+            col_val[fossils] <- col_scheme["fossils"]
+        }
+    } else {
+
+        ## Sort the data by range
+        histo <- hist(points_ages[points_tree_IDs, "ages"], plot = FALSE)
+        n_col <- length(histo$counts)
+
+        ## Get the colour gradient
+        avail_cols <- rev(col.fun(n_col))
+
+        ## Fill in the first (last) colour
+        col_val <- rep(avail_cols[length(avail_cols)], length(points_ages[points_tree_IDs, "ages"]))
+
+        ## Add the other colours
+        for(colour in rev(1:n_col)) {
+            col_val[(points_ages[points_tree_IDs, "ages"] <= histo$breaks[colour])] <- avail_cols[colour]
+        }
+    }
+
+    ## Identify each point
+    names(col_val) <- points_ages[points_tree_IDs, "elements"]
+
+    return(col_val)
+}
