@@ -4,7 +4,7 @@
 #'
 #' @param x \code{dads} data.
 #' @param col Optional, a vector of colours that can be named (see details).
-#' @param ... Any additional options to be passed to plot functions.
+#' @param ... Any additional options to be passed to plot functions (from \code{graphics} or \code{rgl} if \code{use.3D = TRUE}).
 #' @param trait which trait to plot (default is \code{1}; see details).
 #' @param edges either a colour name to attribute to the edges or \code{NULL} to not display the edges (default is \code{"grey"}).
 #' @param tips.nodes optional, a colour to circle tips and nodes (only used if \code{use.3D = FALSE}). By default \code{tips.nodes = NULL}.
@@ -176,7 +176,6 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
         lines_params$xlim <- points_params$xlim <- NULL
     }
 
-
     ## ylim
     if(is.null(plot_params$ylim)) {
         ## Default scale
@@ -185,11 +184,21 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
         ## Remove ylim option from points and lines
         lines_params$ylim <- points_params$ylim <- NULL
     }
+
+    if(use.3D && is.null(plot_params$zlim)) {
+        ## Default scale
+        plot_params$zlim <- range(points_params$z)
+    } else {
+        ## Remove zlim from points and lines
+        lines_params$zlim <- points_params$zlim <- NULL
+    }
+
     ## main
     if(!is.null(plot_params$main)) {
         ## Remove main option from points and lines        
         lines_params$main <- points_params$main <- NULL
     }
+
     ## xlab
     if(is.null(plot_params$xlab)) {
         ## Default xlab
@@ -202,6 +211,7 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
         ## Remove xlab option from points and lines
         lines_params$xlab <- points_params$xlab <- NULL
     }
+
     ## ylab
     if(is.null(plot_params$ylab)) {
         ## Default ylab
@@ -210,6 +220,16 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
         ## Remove ylab option from points and lines
         lines_params$ylab <- points_params$ylab <- NULL
     }
+
+    ## zlab
+    if(use.3D && is.null(plot_params$zlab)) {
+        ## Default zlab
+        plot_params$zlab <- colnames(data$data)[trait[ifelse(tree_plot, 2, 3)]]
+    } else {
+        ## Remove zlab option from points and lines
+        lines_params$zlab <- points_params$zlab <- NULL
+    }
+
     ## pch
     if(is.null(plot_params$pch)) {
         ## Add the pch for the points only
@@ -217,6 +237,16 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
     } else {
         lines_params$pch <- plot_params$pch <- NULL
     }
+    if(use.3D) {
+        ## Remove pch argument and change it with "p" for rgl::plot3d
+        points_params$pch <- NULL
+        if(is.null(plot_params$type)) {
+            points_params$type <- "p"
+        } else {
+            lines_params$type <- plot_params$type <- NULL
+        }
+    }
+
     ## lty
     if(is.null(plot_params$lty)) {
         ## Add the pch for the points only
@@ -229,13 +259,12 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
     points_params$col <- handle.colours(col, points_tree_IDs, points_ages, data)
 
     ## Plotting the frame
-    plot_params <- c(plot_params, x = list(NULL), y = list(NULL))
-
     if(!use.3D) {
+        plot_params <- c(plot_params, x = list(NULL), y = list(NULL))
         do.call(plot, plot_params)
     } else {
-        stop("not implemented yet")
-        # rgl::plot3d
+        plot_params <- c(plot_params, x = list(NULL), y = list(NULL), z = list(NULL))
+        do.call(rgl::plot3d, plot_params)
     }
 
     ## Plotting the tree (if needed)
@@ -244,10 +273,9 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
         ## Add the colours
         lines_params$col <- edges
 
-        ## Make the points data table
-        points_data <- cbind(points_params$x, points_params$y)[c(data$tree$tip.label, data$tree$node.labe), ]
-
         if(!use.3D) {
+            # ## Make the points data table
+            # points_data <- cbind(points_params$x, points_params$y)[c(data$tree$tip.label, data$tree$node.labe), ]
 
             ## Plotting one edge
             plot.edge <- function(one_edge, points_data, params) {
@@ -262,36 +290,29 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
                   params = lines_params)
 
         } else {
+            ## Plotting one edge (3D)
+            plot.edge3d <- function(one_edge, points_data, params) {
+                params$x <- points_data[one_edge, 1] 
+                params$y <- points_data[one_edge, 2] 
+                params$z <- points_data[one_edge, 3] 
+                do.call(rgl::segments3d, params)
+            }
 
-            stop("not implemented yet")
-            # rgl::segment3d
-
+            ## Plotting all the edges
+            apply(data$tree$edge, 1, plot.edge3d,
+                  points_data = cbind(points_params$x, points_params$y, points_params$z)[c(data$tree$tip.label, data$tree$node.labe), ],
+                  params = lines_params)
         }
-
-
-
     }
 
     ## Plotting the points
     if(!use.3D) {
         do.call(points, points_params)
     } else {
-        stop("not implemented yet")
-
-        
-
-        x <- sort(rnorm(1000))
-        y <- rnorm(1000)
-        z <- rnorm(1000) + atan2(x, y)
-
-        params_3d <- list(x = x, y = y, z = z, col = rainbow(1000))
-        plot3d(x, y, z, col = rainbow(1000))
-
-        do.call(rgl::plot3d, params_3d)
-
-
-
-        # rgl::plot3d
+        ## Switch plotting type
+        switch(points_params$type, 
+            "p" = {points_params$type <- NULL ; do.call(rgl::points3d, points_params)},
+            "s" = {points_params$type <- NULL ; do.call(rgl::spheres3d, points_params)})
     }
 
     if(do_circles && !use.3D) {

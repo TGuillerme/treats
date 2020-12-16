@@ -20,7 +20,7 @@
 
 \item{col}{Optional, a vector of colours that can be named (see details).}
 
-\item{...}{Any additional options to be passed to plot functions.}
+\item{...}{Any additional options to be passed to plot functions (from \code{graphics} or \code{rgl} if \code{use.3D = TRUE}).}
 
 \item{trait}{which trait to plot (default is \code{1}; see details).}
 
