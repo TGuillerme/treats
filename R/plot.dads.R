@@ -151,14 +151,14 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
         points_params$x <- points_ages[points_tree_IDs, "ages"]
         points_params$y <- data$data[, trait[1]]
         if(use.3D) {
-            points_param$z <- data$data[, trait[2]]
+            points_params$z <- data$data[, trait[2]]
         }
     } else {
         ## Get the x, y (and z?) coordinates
         points_params$x <- data$data[, trait[1]]
         points_params$y <- data$data[, trait[2]]
         if(use.3D) {
-            points_param$z <- data$data[, trait[3]]
+            points_params$z <- data$data[, trait[3]]
         }
     }
 
@@ -230,7 +230,13 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
 
     ## Plotting the frame
     plot_params <- c(plot_params, x = list(NULL), y = list(NULL))
-    do.call(plot, plot_params)
+
+    if(!use.3D) {
+        do.call(plot, plot_params)
+    } else {
+        stop("not implemented yet")
+        # rgl::plot3d
+    }
 
     ## Plotting the tree (if needed)
     if(do_edges) {
@@ -241,23 +247,54 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
         ## Make the points data table
         points_data <- cbind(points_params$x, points_params$y)[c(data$tree$tip.label, data$tree$node.labe), ]
 
-        ## Plotting one edge
-        plot.edge <- function(one_edge, points_data, params) {
-            params$x <- points_data[one_edge, 1] 
-            params$y <- points_data[one_edge, 2] 
-            do.call(lines, params)
+        if(!use.3D) {
+
+            ## Plotting one edge
+            plot.edge <- function(one_edge, points_data, params) {
+                params$x <- points_data[one_edge, 1] 
+                params$y <- points_data[one_edge, 2] 
+                do.call(lines, params)
+            }
+
+            ## Plotting all the edges
+            apply(data$tree$edge, 1, plot.edge,
+                  points_data = cbind(points_params$x, points_params$y)[c(data$tree$tip.label, data$tree$node.labe), ],
+                  params = lines_params)
+
+        } else {
+
+            stop("not implemented yet")
+            # rgl::segment3d
+
         }
 
-        ## Plotting all the edges
-        apply(data$tree$edge, 1, plot.edge,
-              points_data = cbind(points_params$x, points_params$y)[c(data$tree$tip.label, data$tree$node.labe), ],
-              params = lines_params)
+
+
     }
 
     ## Plotting the points
-    do.call(points, points_params)
+    if(!use.3D) {
+        do.call(points, points_params)
+    } else {
+        stop("not implemented yet")
 
-    if(do_circles) {
+        
+
+        x <- sort(rnorm(1000))
+        y <- rnorm(1000)
+        z <- rnorm(1000) + atan2(x, y)
+
+        params_3d <- list(x = x, y = y, z = z, col = rainbow(1000))
+        plot3d(x, y, z, col = rainbow(1000))
+
+        do.call(rgl::plot3d, params_3d)
+
+
+
+        # rgl::plot3d
+    }
+
+    if(do_circles && !use.3D) {
         ## Preparing the circles options
         circles_params <- points_params
         circles_params$pch <- 21

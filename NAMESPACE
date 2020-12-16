@@ -5,6 +5,7 @@ import(dispRity)
 
 importFrom("graphics","plot")
 # importFrom("MASS","mvrnorm")
+# importFrom("rgl","plot3d","segment3d")
 
 ##Functions
 export(dads)

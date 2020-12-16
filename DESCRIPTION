@@ -4,7 +4,7 @@ Author: Thomas Guillerme [aut, cre, cph],
 	Alex Slavenko [aut, cph]
 Maintainer: Thomas Guillerme <guillert@tcd.ie>
 Version: 0.1.2
-Date: 2020-12-11
+Date: 2020-12-16
 Description: Simulating data for null disparity expectations
 Depends:
     R (>= 4.0.0),
@@ -12,7 +12,9 @@ Depends:
     dispRity,
     stats
 Imports:
-	graphics
+	graphics,
+	MASS,
+	rgl
 License: GPL-3 | file LICENSE
 Suggests:
     testthat,

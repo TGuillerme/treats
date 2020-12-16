@@ -67,12 +67,12 @@ test_that("example works", {
     ## The colours are a heat map based on the elements age
     plot(my_data, trait = c(1, 3), col = heat.colors,
          edges = "grey", tips.nodes = "black")
-    #'
-    ## Plotting the first and third trait correlation in 3D
-    plot(my_data, trait = c(1,3), col = rainbow,
-         edges = "grey", tips.nodes = "black", use.3D = TRUE)
+    
+    # ## Plotting the first and third trait correlation in 3D
+    # plot(my_data, trait = c(1,3), col = rainbow,
+    #      edges = "grey", tips.nodes = "black", use.3D = TRUE)
 
-    ## Plotting all traits in 3D (without branch lengths)
-    plot(my_data, trait = c(1:3), col = heatmap,
-         edges = NULL, tips.nodes = "black", use.3D = TRUE)
+    # ## Plotting all traits in 3D (without branch lengths)
+    # plot(my_data, trait = c(1:3), col = heatmap,
+    #      edges = NULL, tips.nodes = "black", use.3D = TRUE)
 })

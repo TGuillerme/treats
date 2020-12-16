@@ -198,6 +198,7 @@ handle.colours <- function(col, points_tree_IDs, points_ages, data) {
         if(length(fossils <- which(col_val == "")) > 0) {
             col_val[fossils] <- col_scheme["fossils"]
         }
+        
     } else {
 
         ## Sort the data by range
