@@ -7,7 +7,7 @@
 #' @param ... Any additional options to be passed to plot functions.
 #' @param trait which trait to plot (default is \code{1}; see details).
 #' @param use.3D logical, whether to use a 3D plot or not (default is \code{FALSE}; see details).
-#' @param plot.tree logical, whether to plot the underlying tree structure (\code{TRUE}; default) or not (\code{FALSE}).
+#' @param edges logical, whether to plot the underlying tree structure (\code{TRUE}; default) or not (\code{FALSE}).
 #' @param tips.nodes optional, a colour to circle tips and nodes (only used if \code{use.3D = FALSE}).
 #' @param simulations if the input is a \code{dads} \code{traits} object, how many replicates to run (default is \code{100}).
 #' 
@@ -24,14 +24,51 @@
 #' The \code{use.3D} option uses the \code{rgl} library to create a 3D plot. The plot displays either a time on the Z axis with two traits on the X and Y axis (if two traits are requested via \code{trait}) or three traits on the X Y and Z (if three traits a requested via \code{trait}).
 #' 
 #' @examples
-#' #plot.dads()
+#' ## Specifying a trait process
+#' my_trait <- make.traits()
+#' ## Plotting a trait process
+#' plot(my_trait, main = "A Brownian Motion")
+#' 
+#' ## Simulating a tree with ten taxa
+#' my_tree <- dads(stop.rule = list(max.taxa = 10))
+#' ## Plotting a simple birth death tree (no traits)
+#' plot(my_tree, main = "A pure birth tree")
+#' 
+#' ## Simulating a tree with traits
+#' my_data <- dads(stop.rule = list(max.taxa = 10),
+#'                 traits    = my_trait)
+#' ## Plotting the tree and traits
+#' plot(my_data)
 #'
+#' ## Specifying a 3D trait process
+#' my_3D_trait <- make.traits(n = 3)
+#' ## Simulating a birth death tree with that trait
+#' my_data <- dads(bd.params = list(extinction = 0.2),
+#'                 stop.rule = list(max.living = 50),
+#'                 traits    = my_3D_trait)
+#' ## Plotting the second trait and the tree (default)
+#' ## With extra options
+#' plot(my_data, trait = 2, col = rainbow,
+#'      edges = "pink", tip.nodes = "black")
+#' 
+#' ## Plotting the first and third trait correlation
+#' plot(my_data, trait = c(1,3), col = heatmap,
+#'      edges = "grey", tip.nodes = "black")
+#'
+#' ## Plotting the first and third trait correlation in 3D
+#' plot(my_data, trait = c(1,3), col = heatmap,
+#'      edges = "grey", tip.nodes = "black", use.3D = TRUE)
+#' 
+#' ## Plotting all traits in 3D (without branch lengths)
+#' plot(my_data, trait = c(1:3), col = heatmap,
+#'      edges = FALSE, tip.nodes = "black", use.3D = TRUE)
+
 #' @seealso
 #' 
 #' @author Thomas Guillerme
 #' @export
 
-plot.dads <- function(x, col, ..., trait = 1, plot.tree = TRUE, simulations = 50, use.3D = FALSE, tips.nodes) {
+plot.dads <- function(x, col, ..., trait = 1, edges = "grey", simulations = 50, use.3D = FALSE, tips.nodes) {
 
     ## Renaming the x parameter (data is nicer, x is just for the S3 method standards)
     data <- x
