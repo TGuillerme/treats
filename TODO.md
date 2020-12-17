@@ -61,7 +61,7 @@ Test the following events types
 ## TODO plot
 
  - [x] add a 2/3D plot option for traits (points coloured as a function of time) + optional links
- - [ ] add a 3D plot version of plot dads with X Y being traits and Z being time
+ - [x] add a 3D plot version of plot dads with X Y being traits and Z being time
  - [x] add a time gradient option for col.
  - [x] distinguish tips from nodes with a circle option around the tips (in 2D)
  - [x] change colour to default for edges

@@ -436,7 +436,7 @@ change.trait.process <- function(traits, bd.params, lineage, trait.values) {
 
 ## Reaching a trait value
 trait.condition <- function(bd.params, lineage, trait.values, time) {
-    return(abs(max(trait.values[, 1])) > 2)
+    return(abs(max(trait.values[, 1])) > 3)
 }
 
 ## Removing correlation
@@ -464,20 +464,17 @@ change.trait.correlation <- function(traits, bd.params, lineage, trait.values) {
     # par(mfrow = c(2,1))
     # class(test) <- "dads" ; plot(test, trait = 2)
     # class(test2) <- "dads" ; plot(test2, trait = 2)
-    # plot(test$data)
-    # plot(test2$data)
+    # plot(test, trait = c(1:2))
+    # plot(test2, trait = c(1:2), use.3D = TRUE)
 
     ## Testing the difference in correlation
     expect_equal(cor(test$data[, 1], test$data[, 2]), 1)
     expect_lt(cor(test2$data[, 1], test2$data[, 2]), 1)
 
-    ## TODO: 2D plot with times.
-
-
-
 
     ## modifiers events
     ## Adding a speciation condition after reaching time t
+    
 
     ## Adding a branch length condition when reaching n taxa
 

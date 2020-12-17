@@ -60,19 +60,19 @@ test_that("example works", {
 
     ## Plotting the second trait and the tree (default)
     ## The colours are purple for nodes and blue for tips
-    plot(my_data, trait = 2, col = c("purple", "blue"),
-         edges = "pink", tips.nodes = "black")
+    expect_null(plot(my_data, trait = 2, col = c("purple", "blue"),
+         edges = "pink", tips.nodes = "black"))
 
     ## Plotting the first and third trait correlation
     ## The colours are a heat map based on the elements age
-    plot(my_data, trait = c(1, 3), col = terrain.colors,
-         edges = "grey", tips.nodes = "black")
+    expect_null(plot(my_data, trait = c(1, 3), col = terrain.colors,
+         edges = "grey", tips.nodes = "black"))
     
     ## Plotting the first and third trait correlation in 3D
-    plot(my_data, trait = c(1,3), col = rainbow,
-         edges = "grey", tips.nodes = "black", use.3D = TRUE)
+    expect_null(plot(my_data, trait = c(1,3), col = rainbow,
+         edges = "grey", tips.nodes = "black", use.3D = TRUE))
 
     ## Plotting all traits in 3D (without branch lengths)
-    plot(my_data, trait = c(1:3), col = heat.colors,
-         edges = "grey", tips.nodes = "black", use.3D = TRUE, type = "s", radius = 0.1)
+    expect_null(plot(my_data, trait = c(1:3), col = heat.colors,
+         edges = "grey", tips.nodes = "black", use.3D = TRUE, type = "s", radius = 0.1))
 })
