@@ -1,52 +1,3 @@
-
-# ####
-# # Event modifiers (e.g. make some mass extinction or change the trait correlation matrix after some time)
-# ####
-
-# ## One event
-# event <- list(
-#     when = c("taxa" = 0, "living" = 0, "time" = 0), # Distance
-#     what = c("traits", "living", "taxa"),
-#     event = function()
-#     )
-
-# ## Example of events
-# events <- list(
-#     "mass.extinction" = list(when = c("living" = 10),
-#                              what = c("living"),
-#                              event = list(fun = extinction, args = list(severity = 90))),
-#     "trait.cor"       = list(when = c("time" = 5, "taxa" = 5),
-#                              what = "traits",
-#                              event = list(fun = function(t))) 
-#     )
-
-# ## Mass extinctions:
-# bd.event <- list(
-#     when = c("taxa" = 0, "living" = 0, "time" = 0),
-#     what = c("traits", "living", "taxa"),
-#     event = function()
-#     )
-# #TG: for this one, remove a proportion or number of taxa when the event occurs. It is possible to randomly remove the taxa or remove them as function of their trait value. 
-
-# ## Change in the traits:
-# trait.event <- list(
-#     when = ...,
-#     what = ...,
-#     event = ...)
-# #TG: for this one, just change traits$process or traits$cor when the event occurs
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Simulating traits for one element
 sim.element.trait <- function(one.trait, parent.trait, edge.length) {
     ## Set the simulation arguments
@@ -180,7 +131,6 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         # warning("DEBUG birth.deat_fun.R") ; counter <- counter+1
         # warning("DEBUG birth.deat_fun.R") ; print(counter)
         # warning("DEBUG birth.deat_fun.R") ; if(counter == 170) break 
-
 
         ## Pick a lineage for the event to happen to:
         lineage$drawn <- modifiers$selecting$fun(bd.params    = bd.params,
