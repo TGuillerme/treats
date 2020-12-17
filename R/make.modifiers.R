@@ -281,17 +281,13 @@ make.modifiers <- function(branch.length, selection, speciation, condition, modi
             modifiers$call$waiting$fun <- call.default(match_call$selection)
 
             ## Update the condition
-            if(do_condition) {
-                modifiers$waiting$internal$condition <- condition
-                ## Update the call
-                modifiers$call$waiting$condition <- call.default(match_call$condition)
-            }
+            modifiers$waiting$internal$condition <- condition
             ## Update the modify
-            if(do_condition) {
-                modifiers$waiting$internal$modify <- modify
-                ## Update the call
-                modifiers$call$waiting$modify <- call.default(match_call$modify)
-            }
+            modifiers$waiting$internal$modify <- modify
+
+            ## Update the call
+            modifiers$call$waiting$condition <- call.default(match_call$condition)
+            modifiers$call$waiting$modify <- call.default(match_call$modify)
 
             ## Don't update the condition and the modify further
             do_condition <- do_modify <- FALSE
@@ -304,17 +300,13 @@ make.modifiers <- function(branch.length, selection, speciation, condition, modi
             modifiers$call$selecting$fun <- call.default(match_call$selection)
 
             ## Update the condition
-            if(do_condition) {
-                modifiers$selecting$internal$condition <- condition
-                ## Update the call
-                modifiers$call$selecting$condition <- call.default(match_call$condition)
-            }
+            modifiers$selecting$internal$condition <- condition
             ## Update the modify
-            if(do_condition) {
-                modifiers$selecting$internal$modify <- modify
-                ## Update the call
-                modifiers$call$selecting$modify <- call.default(match_call$modify)
-            }
+            modifiers$selecting$internal$modify <- modify
+            
+            ## Update the call
+            modifiers$call$selecting$condition <- call.default(match_call$condition)
+            modifiers$call$selecting$modify <- call.default(match_call$modify)
 
             ## Don't update the condition and the modify further
             do_condition <- do_modify <- FALSE
@@ -327,17 +319,13 @@ make.modifiers <- function(branch.length, selection, speciation, condition, modi
             modifiers$call$speciating$fun <- call.default(match_call$speciation)
 
             ## Update the condition
-            if(do_condition) {
-                modifiers$speciating$internal$condition <- condition
-                ## Update the call
-                modifiers$call$speciating$condition <- call.default(match_call$condition)
-            }
+            modifiers$speciating$internal$condition <- condition
             ## Update the modify
-            if(do_condition) {
-                modifiers$speciating$internal$modify <- modify
-                ## Update the call
-                modifiers$call$speciating$modify <- call.default(match_call$modify)
-            }
+            modifiers$speciating$internal$modify <- modify
+            
+            ## Update the call
+            modifiers$call$speciating$condition <- call.default(match_call$condition)
+            modifiers$call$speciating$modify <- call.default(match_call$modify)
 
             ## Don't update the condition and the modify further
             do_condition <- do_modify <- FALSE
@@ -355,7 +343,7 @@ make.modifiers <- function(branch.length, selection, speciation, condition, modi
             modifiers$waiting$internal$modify <- modifiers$selecting$internal$modify <- modifiers$speciating$internal$modify <- modify
             ## Update the call
             modifiers$call$waiting$modify <- modifiers$call$selecting$modify <- modifiers$call$speciating$modify <- call.default(match_call$modify)
-        }        
+        }
     }
 
     if(test) {

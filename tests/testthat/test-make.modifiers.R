@@ -196,22 +196,16 @@ test_that("make.modifiers(update) works", {
     ## Speciation is updated
     test1 <- make.modifiers()
     test2 <- make.modifiers(update = test1, speciation = speciation)
-    # ## They are different processes
-    # expect_true(capture_output(print(test1[[1]]$process)) != capture_output(print(test2[[1]]$process)))
+    ## They are different speciating functions
+    expect_true(capture_output(print(test1$speciating$fun)) != capture_output(print(test2$speciating$fun)))
 
-    # test1 <- make.traits(process = list(BM.process, OU.process))
-    # test2 <- make.traits(process = BM.process, trait.names = "B", update = test1)
-    # ## They are different processes for test1
-    # expect_true(capture_output(print(test1[[1]]$process)) != capture_output(print(test1[[2]]$process)))
-    # ## But the same for test2
-    # expect_true(capture_output(print(test2[[1]]$process)) == capture_output(print(test2[[2]]$process)))
+    always.true <- function() return(TRUE)
+    always.false <- function() return(FALSE)
+    test1 <- make.modifiers(branch.length = branch.length, condition = always.true)
+    test2 <- make.modifiers(update = test1, condition = always.false)
+    ## They are different branch.length internals
+    expect_true(capture_output(print(test1$waiting$internal)) != capture_output(print(test2$waiting$internal)))
+    ## But the same functions
+    expect_true(capture_output(print(test1$waiting$fun)) == capture_output(print(test2$waiting$fun)))
 
-    # my_correlations <- matrix(1, ncol = 3, nrow = 3)
-    # test <- make.traits(n = 3, start = c(0, 1, 3),
-    #                     process.args = list(Sigma = my_correlations))
-    # my_correlation2 <- matrix(2, ncol = 3, nrow = 3) 
-    # test2 <- make.traits(update = test,
-    #                      process.args = list(Sigma = my_correlation2))
-    # expect_equal(unique(c(test[[1]]$Sigma)), 1)
-    # expect_equal(unique(c(test2[[1]]$Sigma)), 2)
 })

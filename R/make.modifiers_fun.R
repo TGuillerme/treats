@@ -67,11 +67,11 @@ check.modifiers <- function(modifiers) {
     ## Dummy (basic) arguments
     bd.params    <- list(speciation = 1, extinction = 0)
     trait.values <- rbind(NULL, "1" = c(1))
-    lineage <- list("parents" = 1,     ## The list of parent lineages
-                    "livings" = 1,     ## The list of lineages still not extinct
-                    "drawn"   = 1,     ## The lineage ID drawn (selected)
-                    "current" = 1,     ## The current focal lineage
-                    "n"       = 1,     ## The number of non extinct lineages
+    lineage <- list("parents" = 1L,     ## The list of parent lineages
+                    "livings" = 1L,     ## The list of lineages still not extinct
+                    "drawn"   = 1L,     ## The lineage ID drawn (selected)
+                    "current" = 1L,     ## The current focal lineage
+                    "n"       = 1L,     ## The number of non extinct lineages
                     "split"   = FALSE)
 
 
