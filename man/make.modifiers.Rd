@@ -11,6 +11,7 @@ make.modifiers(
   condition,
   modify,
   add,
+  update,
   test = TRUE
 )
 }
@@ -26,6 +27,8 @@ make.modifiers(
 \item{modify}{A function giving the rule of how to modify the output of \code{branch.length} or \code{speciation} (see details). If missing no modification is used.}
 
 \item{add}{Whether to add this modifier to a \code{"dads"} \code{"modifier"} object.}
+
+\item{update}{Optional, another previous \code{"dads"} modifiers object to update (see details).}
 
 \item{test}{Logical whether to test if the modifiers object will work (default is TRUE).}
 }
@@ -62,6 +65,10 @@ For example a constant modification of the input:
 or a modifier depending on the number of taxa:
 
     \code{modify = function(x, lineage) return(x/lineage$n)}
+
+
+When using \code{update}, the provided arguments (to \code{make.modifiers}) will be the ones updated in the \code{"modifiers"} object.
+If the \code{"modifiers"} object contains multiple modifiers (\code{branch.length}, \code{selection} or \code{speciation}), only the called arguments will be updated (e.g. \code{make.modifiers(update = previous_modifiers, speciation = new_speciation)} will only update the speciation process).
 
 More details about the \code{modifiers} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
 }

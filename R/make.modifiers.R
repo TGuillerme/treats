@@ -8,6 +8,7 @@
 #' @param condition     A function giving the condition on which to modify the output of \code{branch.length} or \code{speciation} (see details). If missing the condition is always met.
 #' @param modify        A function giving the rule of how to modify the output of \code{branch.length} or \code{speciation} (see details). If missing no modification is used.
 #' @param add           Whether to add this modifier to a \code{"dads"} \code{"modifier"} object.
+#' @param update        Optional, another previous \code{"dads"} modifiers object to update (see details).
 #' @param test          Logical whether to test if the modifiers object will work (default is TRUE).
 #' 
 #' @details
@@ -42,6 +43,10 @@
 #' 
 #'     \code{modify = function(x, lineage) return(x/lineage$n)}
 #' 
+#' 
+#' When using \code{update}, the provided arguments (to \code{make.modifiers}) will be the ones updated in the \code{"modifiers"} object.
+#' If the \code{"modifiers"} object contains multiple modifiers (\code{branch.length}, \code{selection} or \code{speciation}), only the called arguments will be updated (e.g. \code{make.modifiers(update = previous_modifiers, speciation = new_speciation)} will only update the speciation process).
+#' 
 #' More details about the \code{modifiers} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
 #' 
 #' @examples
@@ -51,7 +56,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-make.modifiers <- function(branch.length, selection, speciation, condition, modify, add, test = TRUE) {
+make.modifiers <- function(branch.length, selection, speciation, condition, modify, add, update, test = TRUE) {
 
     ## Get the call
     match_call <- match.call()
@@ -110,9 +115,22 @@ make.modifiers <- function(branch.length, selection, speciation, condition, modi
     ## test
     check.class(test, "logical")
 
+    ## Update a modifier
+    do_update <- FALSE
+    if(!missing(update)) {
+        check.class(update, c("dads", "modifiers"))
+        do_update <- TRUE
+    }
+
     ## add
     add_modifiers <- FALSE
     if(!missing(add)) {
+
+        ## Only run if no update
+        if(do_update) {
+            stop("Impossible to add and update a modifiers object at the same time.")
+        }
+
         ## Check input
         if(!(is(add, "dads") && is(add, "modifiers"))) {
             stop("modifiers can only be added to objects of class dads and modifiers.")
@@ -158,99 +176,186 @@ make.modifiers <- function(branch.length, selection, speciation, condition, modi
         update_condition <- update_modify <- FALSE
     }
 
-
-
-    ## Making the waiting modifier
-    if(init_branch_length) {
-        if(!do_branch_length) {
-            modifiers$waiting <- list(fun = branch.length.fast,
-                                        internal = NULL)
-            ## Update the call
-            modifiers$call$waiting$fun <- "default"
+    if(!do_update) {
+        ## Making the waiting modifier
+        if(init_branch_length) {
+            if(!do_branch_length) {
+                modifiers$waiting <- list(fun = branch.length.fast,
+                                            internal = NULL)
+                ## Update the call
+                modifiers$call$waiting$fun <- "default"
+            } else {
+                modifiers$waiting <- list(fun = branch.length,
+                                          internal = list(condition = condition,
+                                                          modify    = modify))
+                ## Update the call
+                modifiers$call$waiting$fun       <- call.default(match_call$branch.length)
+                modifiers$call$waiting$condition <- call.default(match_call$condition)
+                modifiers$call$waiting$modify    <- call.default(match_call$modify)
+            }
         } else {
-            modifiers$waiting <- list(fun = branch.length,
-                                      internal = list(condition = condition,
-                                                      modify    = modify))
-            ## Update the call
-            modifiers$call$waiting$fun       <- call.default(match_call$branch.length)
-            modifiers$call$waiting$condition <- call.default(match_call$condition)
-            modifiers$call$waiting$modify    <- call.default(match_call$modify)
+            if(do_branch_length) {
+                if(update_condition) {
+                    modifiers$waiting$internal$condition <- condition
+                    ## Update the call
+                    modifiers$call$waiting$condition <- call.default(match_call$condition)
+                }
+                if(update_modify) {
+                    modifiers$waiting$internal$modify <- modify
+                    ## Update the call
+                    modifiers$call$waiting$modify    <- call.default(match_call$modify)
+                }
+            }
+        }
+
+        ## Making the selecting modifier
+        if(init_selection) {
+            if(!do_selection) {
+                modifiers$selecting <- list(fun = selection.fast,
+                                             internal = NULL)
+                ## Update the call
+                modifiers$call$selecting$fun <- "default"
+            } else {
+                modifiers$selecting <- list(fun = selection,
+                                             internal = list(condition = condition,
+                                                             modify    = modify))
+                ## Update the call
+                modifiers$call$selecting$fun       <- call.default(match_call$selection)
+                modifiers$call$selecting$condition <- call.default(match_call$condition)
+                modifiers$call$selecting$modify    <- call.default(match_call$modify)
+            }
+        } else {
+            if(do_selection) {
+                if(update_condition) {
+                    modifiers$selecting$internal$condition <- condition
+                    ## Update the call
+                    modifiers$call$selecting$condition     <- call.default(match_call$condition)
+                }
+                if(update_modify) {
+                    modifiers$selecting$internal$modify <- modify
+                    ## Update the call
+                    modifiers$call$selecting$modify     <- call.default(match_call$modify)
+                }
+            }
+        }
+
+        ## Making the speciating modifier
+        if(init_speciation) {
+            if(!do_speciation) {
+                modifiers$speciating <- list(fun = speciation.fast,
+                                             internal = NULL)
+                ## Update the call
+                modifiers$call$speciating$fun <- "default"
+            } else {
+                modifiers$speciating <- list(fun = speciation,
+                                             internal = list(condition = condition,
+                                                             modify    = modify))
+                ## Update the call
+                modifiers$call$speciating$fun       <- call.default(match_call$speciation)
+                modifiers$call$speciating$condition <- call.default(match_call$condition)
+                modifiers$call$speciating$modify    <- call.default(match_call$modify)
+            }
+        } else {
+            if(do_speciation) {
+                if(update_condition) {
+                    modifiers$speciating$internal$condition <- condition
+                    ## Update the call
+                    modifiers$call$speciating$condition     <- call.default(match_call$condition)
+                }
+                if(update_modify) {
+                    modifiers$speciating$internal$modify <- modify
+                    ## Update the call
+                    modifiers$call$speciating$modify     <- call.default(match_call$modify)
+                }
+            }
         }
     } else {
+        ## Update the previous modifiers
+        modifiers <- update
+
+        ## Check what to update
         if(do_branch_length) {
-            if(update_condition) {
+            ## Update only the branch length
+            modifiers$waiting$fun <- branch.length
+            ## Update the call
+            modifiers$call$waiting$fun <- call.default(match_call$selection)
+
+            ## Update the condition
+            if(do_condition) {
                 modifiers$waiting$internal$condition <- condition
                 ## Update the call
                 modifiers$call$waiting$condition <- call.default(match_call$condition)
             }
-            if(update_modify) {
+            ## Update the modify
+            if(do_condition) {
                 modifiers$waiting$internal$modify <- modify
                 ## Update the call
-                modifiers$call$waiting$modify    <- call.default(match_call$modify)
+                modifiers$call$waiting$modify <- call.default(match_call$modify)
             }
-        }
-    }
 
-    ## Making the selecting modifier
-    if(init_selection) {
-        if(!do_selection) {
-            modifiers$selecting <- list(fun = selection.fast,
-                                         internal = NULL)
-            ## Update the call
-            modifiers$call$selecting$fun <- "default"
-        } else {
-            modifiers$selecting <- list(fun = selection,
-                                         internal = list(condition = condition,
-                                                         modify    = modify))
-            ## Update the call
-            modifiers$call$selecting$fun       <- call.default(match_call$selection)
-            modifiers$call$selecting$condition <- call.default(match_call$condition)
-            modifiers$call$selecting$modify    <- call.default(match_call$modify)
+            ## Don't update the condition and the modify further
+            do_condition <- do_modify <- FALSE
         }
-    } else {
+
         if(do_selection) {
-            if(update_condition) {
+            ## Update only the selection
+            modifiers$selecting$fun <- selection
+            ## Update the call
+            modifiers$call$selecting$fun <- call.default(match_call$selection)
+
+            ## Update the condition
+            if(do_condition) {
                 modifiers$selecting$internal$condition <- condition
                 ## Update the call
-                modifiers$call$selecting$condition     <- call.default(match_call$condition)
+                modifiers$call$selecting$condition <- call.default(match_call$condition)
             }
-            if(update_modify) {
+            ## Update the modify
+            if(do_condition) {
                 modifiers$selecting$internal$modify <- modify
                 ## Update the call
-                modifiers$call$selecting$modify     <- call.default(match_call$modify)
+                modifiers$call$selecting$modify <- call.default(match_call$modify)
             }
-        }
-    }
 
-    ## Making the speciating modifier
-    if(init_speciation) {
-        if(!do_speciation) {
-            modifiers$speciating <- list(fun = speciation.fast,
-                                         internal = NULL)
-            ## Update the call
-            modifiers$call$speciating$fun <- "default"
-        } else {
-            modifiers$speciating <- list(fun = speciation,
-                                         internal = list(condition = condition,
-                                                         modify    = modify))
-            ## Update the call
-            modifiers$call$speciating$fun       <- call.default(match_call$speciation)
-            modifiers$call$speciating$condition <- call.default(match_call$condition)
-            modifiers$call$speciating$modify    <- call.default(match_call$modify)
+            ## Don't update the condition and the modify further
+            do_condition <- do_modify <- FALSE
         }
-    } else {
+
         if(do_speciation) {
-            if(update_condition) {
+            ## Update only the speciation
+            modifiers$speciating$fun <- speciation
+            ## Update the call
+            modifiers$call$speciating$fun <- call.default(match_call$speciation)
+
+            ## Update the condition
+            if(do_condition) {
                 modifiers$speciating$internal$condition <- condition
                 ## Update the call
-                modifiers$call$speciating$condition     <- call.default(match_call$condition)
+                modifiers$call$speciating$condition <- call.default(match_call$condition)
             }
-            if(update_modify) {
+            ## Update the modify
+            if(do_condition) {
                 modifiers$speciating$internal$modify <- modify
                 ## Update the call
-                modifiers$call$speciating$modify     <- call.default(match_call$modify)
+                modifiers$call$speciating$modify <- call.default(match_call$modify)
             }
+
+            ## Don't update the condition and the modify further
+            do_condition <- do_modify <- FALSE
         }
+
+        if(do_condition) {
+            ## Update all the conditions
+            modifiers$waiting$internal$condition <- modifiers$selecting$internal$condition <- modifiers$speciating$internal$condition <- condition
+            ## Update the call
+            modifiers$call$waiting$condition <- modifiers$call$selecting$condition <- modifiers$call$speciating$condition <- call.default(match_call$condition)
+        }
+
+        if(do_modify) {
+            ## Update all the modifiers
+            modifiers$waiting$internal$modify <- modifiers$selecting$internal$modify <- modifiers$speciating$internal$modify <- modify
+            ## Update the call
+            modifiers$call$waiting$modify <- modifiers$call$selecting$modify <- modifiers$call$speciating$modify <- call.default(match_call$modify)
+        }        
     }
 
     if(test) {

@@ -9,7 +9,7 @@ check.args <- function(fun, fun_name, modify = FALSE) {
     }
 
     ## Must be a function
-    check.class(fun, "function")
+    check.class(fun, "function", msg = paste0("ction for ", fun_name, " is not a function."))
     ## Check the arguments
     present_args <- names(formals(fun))
     ## Check for incorrect arguments
