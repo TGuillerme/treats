@@ -472,24 +472,49 @@ change.trait.correlation <- function(traits, bd.params, lineage, trait.values) {
     expect_lt(cor(test2$data[, 1], test2$data[, 2]), 1)
 
 
-#     ## modifiers events
-#     ## Adding a speciation condition after reaching time t
-#     stop.rule$max.time <- 6
-# time.condition <- function(bd.params, lineage, trait.values, time) {
-#     return(time > 4)
-# }
+    ## modifiers events
+    ## Adding a speciation condition after reaching time t
+    stop.rule <- list(max.time = 4, max.taxa = Inf, max.living = Inf)
+    bd.params <- list(extinction = 0, speciation = 1)
+
+time.condition <- function(bd.params, lineage, trait.values, time) {
+    return(time > 3)
+}
     
-#     ## A default modifier
-#     modifiers <- make.modifiers()
+    ## A default modifier
+    modifiers <- make.modifiers()
+    traits <- make.traits()
 
-# change.speciation.condition <- function(modifiers, bd.params, lineage, trait.values) {
-#     return(make.modifiers(update = modifiers,
-#                           speciation = speciation,
-#                           condition = trait.condition,
-#                           modify = trait.modify))
-# }
+change.speciation.condition <- function(modifiers, bd.params, lineage, trait.values) {
+    return(make.modifiers(update = modifiers,
+                          speciation = speciation,
+                          condition = function(trait.values, lineage) return(parent.traits(trait.values, lineage) < 0),
+                          modify = function(x, trait.values, lineage) return(x + 1)))
+}
+
+    events <- list(
+        trigger      = 0L,
+        condition    = time.condition,
+        target       = "modifiers",
+        modification = change.speciation.condition)
 
 
+    set.seed(4)
+    test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = modifiers, events = NULL)
+    set.seed(4)
+    test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = modifiers, events = events)
+
+    ## Visual testing
+    # par(mfrow = c(2,1))
+    # class(test) <- "dads" ; plot(test)
+    # class(test2) <- "dads" ; plot(test2)
+
+    ## Less tips in the second tree
+    expect_lt(Ntip(test2$tree), Ntip(test$tree))
+    ## All the extinct tips in tree 2 are younger than the event (age 3)
+    tip_ages <- dispRity::tree.age(test2$tree)[1:Ntip(test2$tree), ]
+    fossils <- which(tip_ages$ages != 0)
+    expect_false(any(tip_ages[fossils, ]$ages > test2$tree$root.time - 3))
 
 
 

@@ -42,7 +42,7 @@ Test the following events types
  - [x] bd.params events: reducing speciation after reaching time t
  - [x] traits events: changing trait process at time t
  - [x] traits events: changing traits correlation when reaching trait value x for trait 1
- - [ ] modifiers events: adding a speciation condition after reaching time t
+ - [x] modifiers events: adding a speciation condition after reaching time t
  - [ ] modifiers events: adding a branch length condition when reaching n taxa
  - [ ] modifiers events: changing the condition of a modifier after reaching trait value x
  - [ ] modifiers events: changing the modify of a modifier after reaching time t
