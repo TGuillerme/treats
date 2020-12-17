@@ -110,7 +110,7 @@ For example, we can create a function that increases branch length proportional 
 ## A more complex binned.branch.length function
 increasing.brlen <- function(bd.params, lineage) {
 
-    ## Setting the cumulated birth and death
+    ## Setting the cumulated birth and death
     birth_death <- bd.params$speciation + bd.params$extinction
 
     ## Returning branch lengths depending on different number of taxa
@@ -275,10 +275,10 @@ And again, we can make some more advanced modifiers: for example, one where a ti
 ## A modifier for removing tips with negative values
 bias.trait <- function(trait.values, lineage) {
     if(parent.traits(trait.values, lineage) < 0) {
-        ## Go extinct!
+        ## Go extinct!
         return(FALSE)
     } else {
-        ## Speciate
+        ## Speciate
         return(TRUE)
     }
 }

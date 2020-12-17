@@ -58,7 +58,7 @@ Test the following events types
 
  - [ ] add examples in functions
 
-## TODO plot
+## TODO plot
 
  - [x] add a 2/3D plot option for traits (points coloured as a function of time) + optional links
  - [x] add a 3D plot version of plot dads with X Y being traits and Z being time

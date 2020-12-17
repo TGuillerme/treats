@@ -293,7 +293,7 @@ extinction.trait <- function(bd.params, lineage, trait.values) {
     ## Select the descendants that'll go extinct
     extinct <- which(lineage$parents %in% selected_nodes)
 
-    ## Update the lineage object
+    ## Update the lineage object
     lineage$livings <- lineage$livings[!lineage$livings %in% extinct]
     lineage$n       <- length(lineage$livings)
     return(lineage)
@@ -364,7 +364,7 @@ change.death.param <- function(bd.params, lineage, trait.values) {
 
     ## Reducing speciation after reaching time t
 
-## Time condition
+## Time condition
 time.condition <- function(bd.params, lineage, trait.values, time) {
     return(time > 2)
 }
@@ -472,9 +472,28 @@ change.trait.correlation <- function(traits, bd.params, lineage, trait.values) {
     expect_lt(cor(test2$data[, 1], test2$data[, 2]), 1)
 
 
-    ## modifiers events
-    ## Adding a speciation condition after reaching time t
+#     ## modifiers events
+#     ## Adding a speciation condition after reaching time t
+#     stop.rule$max.time <- 6
+# time.condition <- function(bd.params, lineage, trait.values, time) {
+#     return(time > 4)
+# }
     
+#     ## A default modifier
+#     modifiers <- make.modifiers()
+
+# change.speciation.condition <- function(modifiers, bd.params, lineage, trait.values) {
+#     return(make.modifiers(update = modifiers,
+#                           speciation = speciation,
+#                           condition = trait.condition,
+#                           modify = trait.modify))
+# }
+
+
+
+
+
+
 
     ## Adding a branch length condition when reaching n taxa
 
