@@ -233,41 +233,18 @@ test_that("events work", {
     modifiers <- NULL
     bd.params <- list(extinction = 0, speciation = 1)
 
-
-
-
     ###################
     ## Taxa events
-    ###################
-
-## Mass extinction at time t
-time.condition <- function(bd.params, lineage, trait.values, time) {
-    return(time > 4)
-}
-## Function for extinction at 08
-extinction.08 <- function(bd.params, lineage, trait.values) {
-        
-        ## Set the variable
-        extinction_strength <- 0.8
-
-        ## Select a portion of the living species to go extinct
-        extinct <- sample(lineage$n, round(lineage$n * extinction_strength))
-
-        ## Update the lineage object
-        lineage$livings <- lineage$livings[-extinct]
-        lineage$n       <- lineage$n - length(extinct)
-        return(lineage)
-}
-    
+    ###################   
     ## Make a dummy events object
     events <- list(
         ## A triggering tracker (most events can only be triggered once)
         trigger      = 0L,
         ## A function that intakes bd.params, lineage, traits
-        condition    = time.condition,
+        condition    = time.condition(4),
         ## A character string that is either taxa, bd.params, traits or modifiers
         target       = "taxa",
-        modification = extinction.08)
+        modification = random.extinction(0.8))
 
     set.seed(1)
     test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = NULL, modifiers = NULL, events = events)
@@ -281,35 +258,17 @@ extinction.08 <- function(bd.params, lineage, trait.values) {
 
 
     ## Mass extinction based on trait values at time t
-## Function for extinction trait
-extinction.trait <- function(bd.params, lineage, trait.values) {
-    ## Set the variable and the selector
-    trait_limit <- 1 ; selector <- `<`
-
-    ## Select the nodes be traits
-    parent_traits <- parent.traits(trait.values, lineage, current = FALSE)
-    selected_nodes <- as.numeric(names(which(selector(parent_traits[, 1], trait_limit))))
-
-    ## Select the descendants that'll go extinct
-    extinct <- which(lineage$parents %in% selected_nodes)
-
-    ## Update the lineage object
-    lineage$livings <- lineage$livings[!lineage$livings %in% extinct]
-    lineage$n       <- length(lineage$livings)
-    return(lineage)
-}
-
     ## Make a dummy events object
     events <- list(
         trigger      = 0L,
-        condition    = time.condition,
+        condition    = time.condition(4),
         target       = "taxa",
-        modification = extinction.trait)
+        modification = trait.extinction(1))
 
     set.seed(7)
     test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = make.traits(), modifiers = NULL, events = events)
     class(test) <- c("dads")
-    plot(test)
+    # plot(test)
     ## 244 taxa generated
     expect_equal(Ntip(test$tree), 244)
     ## 57 extinct
@@ -323,33 +282,20 @@ extinction.trait <- function(bd.params, lineage, trait.values) {
     expect_equal(round(mean(extinct), 7), -0.5327465)
 
 
-
     ###################
     ## bd.params events
     ###################
 
-
     ## Adding extinction after reaching n taxa
     bd.params <- list(extinction = 0, speciation = 1)
     stop.rule <- list(max.living = 50, max.time = Inf, max.taxa = Inf)   
-
-## Mass extinction at time t
-taxa.condition <- function(bd.params, lineage, trait.values, time) {
-    return(lineage$n > 30)
-}
-## Function for extinction at 08
-change.death.param <- function(bd.params, lineage, trait.values) {
-        ## Change the death parameter
-        bd.params$extinction <- 1/3
-        return(bd.params)
-}
-    
+ 
     ## Make a dummy events object
     events <- list(
         trigger      = 0L,
-        condition    = taxa.condition,
+        condition    = taxa.condition(30),
         target       = "bd.params",
-        modification = change.death.param)
+        modification = update.bd.params(1/3, "extinction"))
     ## Testing the results
     set.seed(2)
     test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = NULL, modifiers = NULL, events = events)
@@ -363,23 +309,11 @@ change.death.param <- function(bd.params, lineage, trait.values) {
 
 
     ## Reducing speciation after reaching time t
-
-## Time condition
-time.condition <- function(bd.params, lineage, trait.values, time) {
-    return(time > 2)
-}
-## Function for extinction at 08
-change.birth.param <- function(bd.params, lineage, trait.values) {
-        ## Change the death parameter
-        bd.params$speciation <- 1/3
-        return(bd.params)
-} 
-
     events <- list(
         trigger      = 0L,
-        condition    = time.condition,
+        condition    = time.condition(2),
         target       = "bd.params",
-        modification = change.birth.param)
+        modification = update.bd.params(1/3, "speciation"))
     
     ## Updating the stop.rule
     stop.rule$max.living <- Inf
@@ -403,20 +337,12 @@ change.birth.param <- function(bd.params, lineage, trait.values) {
     ####################
 
     stop.rule$max.time <- 6
-time.condition <- function(bd.params, lineage, trait.values, time) {
-    return(time > 5)
-}    
-
     traits <- make.traits()
-## Changing a trait process after time t
-change.trait.process <- function(traits, bd.params, lineage, trait.values) {
-    return(make.traits(process = OU.process, update = traits))
-}
     events <- list(
         trigger      = 0L,
-        condition    = time.condition,
+        condition    = time.condition(5),
         target       = "traits",
-        modification = change.trait.process)
+        modification = update.traits(process = OU.process))
     
     set.seed(1)
     test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = NULL, events = NULL)
@@ -434,11 +360,6 @@ change.trait.process <- function(traits, bd.params, lineage, trait.values) {
 
     ## Changing a trait argument (e.g. sigma) when a trait reaches value x
 
-## Reaching a trait value
-trait.condition <- function(bd.params, lineage, trait.values, time) {
-    return(abs(max(trait.values[, 1])) > 3)
-}
-
 ## Removing correlation
 change.trait.correlation <- function(traits, bd.params, lineage, trait.values) {
     return(make.traits(update = traits, process.args = list(Sigma = matrix(c(10,3,3,2),2,2))))
@@ -449,9 +370,9 @@ change.trait.correlation <- function(traits, bd.params, lineage, trait.values) {
 
     events <- list(
         trigger      = 0L,
-        condition    = trait.condition,
+        condition    = trait.condition(3, absolute = TRUE),
         target       = "traits",
-        modification = change.trait.correlation)
+        modification = update.traits(process.args = list(Sigma = matrix(c(10,3,3,2),2,2))))
 
     stop.rule$max.time <- Inf
     stop.rule$max.taxa <- 100
@@ -476,10 +397,6 @@ change.trait.correlation <- function(traits, bd.params, lineage, trait.values) {
     ## Adding a speciation condition after reaching time t
     stop.rule <- list(max.time = 4, max.taxa = Inf, max.living = Inf)
     bd.params <- list(extinction = 0, speciation = 1)
-
-time.condition <- function(bd.params, lineage, trait.values, time) {
-    return(time > 3)
-}
     
     ## A default modifier
     modifiers <- make.modifiers()
@@ -494,7 +411,7 @@ change.speciation.condition <- function(modifiers, bd.params, lineage, trait.val
 
     events <- list(
         trigger      = 0L,
-        condition    = time.condition,
+        condition    = time.condition(3),
         target       = "modifiers",
         modification = change.speciation.condition)
 
@@ -516,13 +433,47 @@ change.speciation.condition <- function(modifiers, bd.params, lineage, trait.val
     fossils <- which(tip_ages$ages != 0)
     expect_false(any(tip_ages[fossils, ]$ages > test2$tree$root.time - 3))
 
-
-
-
-
     ## Adding a branch length condition when reaching n taxa
+change.branch.length.modify <- function(modifiers, bd.params, lineage, trait.values) {
+    return(make.modifiers(update = modifiers,
+                          branch.length = branch.length,
+                          modify = function(x, trait.values, lineage) return(x * 100)))
+}
+
+    events <- list(
+        trigger      = 0L,
+        condition    = taxa.condition(30),
+        target       = "modifiers",
+        modification = change.branch.length.modify)
+
+    stop.rule <- list(max.time = Inf, max.taxa = 100, max.living = Inf)
+    bd.params <- list(extinction = 0, speciation = 1)
+    modifiers <- make.modifiers()
+    traits <- make.traits()
+
+    set.seed(5)
+    test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = modifiers, events = NULL)
+    set.seed(5)
+    test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = modifiers, events = events)
+
+    # # Visual testing
+    # par(mfrow = c(2,1))
+    # class(test) <- "dads" ; plot(test)
+    # class(test2) <- "dads" ; plot(test2)
+
+    ## Same number of tips
+    expect_equal(Ntip(test2$tree), Ntip(test$tree))
+    ## There is a bigger proportion of short branches in test than in test2
+    prop_short_test <- length(which(test$tree$edge.length < 1))/length(test$tree$edge.length)
+    prop_short_test2 <- length(which(test2$tree$edge.length < 1))/length(test2$tree$edge.length)
+    expect_lt(prop_short_test2, prop_short_test)
+
+
 
     ## Changing the condition of a modifier after reaching trait value x
+
+
+
 
     ## Changing the modify of a modifier after reaching time t
 

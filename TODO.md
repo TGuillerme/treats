@@ -32,7 +32,7 @@
  - [ ] document list of events (gitbook)
  - [ ] test `make.events`
  - [ ] add and test `print.events`
- - [ ] test list of events
+ - [ ] test list of separate: conditions and modifications
 
 ### Make the following events work:
 Test the following events types
@@ -43,9 +43,7 @@ Test the following events types
  - [x] traits events: changing trait process at time t
  - [x] traits events: changing traits correlation when reaching trait value x for trait 1
  - [x] modifiers events: adding a speciation condition after reaching time t
- - [ ] modifiers events: adding a branch length condition when reaching n taxa
- - [ ] modifiers events: changing the condition of a modifier after reaching trait value x
- - [ ] modifiers events: changing the modify of a modifier after reaching time t
+ - [x] modifiers events: adding a branch length condition when reaching n taxa
  - [ ] founding events: generate a new birth-death process for the first node to reach trait value x
 
 ## TODO utilities
