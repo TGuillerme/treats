@@ -54,7 +54,7 @@
 #' 
 #' ## Plotting the first and third trait correlation
 #' ## The colours are a heat map based on the elements age
-#' plot(my_data, trait = c(1,3), col = heatmap,
+#' plot(my_data, trait = c(1,3), col = terrain.colors,
 #'      edges = "grey", tips.nodes = "black")
 #'
 #' ## Plotting the first and third trait correlation in 3D
@@ -62,7 +62,7 @@
 #'      edges = "grey", tips.nodes = "black", use.3D = TRUE)
 #' 
 #' ## Plotting all traits in 3D (without branch lengths)
-#' plot(my_data, trait = c(1:3), col = heatmap,
+#' plot(my_data, trait = c(1:3), col = heat.colors,
 #'      edges = NULL, tips.nodes = "black", use.3D = TRUE)
 
 #' @seealso
