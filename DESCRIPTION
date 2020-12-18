@@ -14,7 +14,7 @@ Depends:
 Imports:
 	graphics,
 	MASS,
-	rgl
+	rgl,
 License: GPL-3 | file LICENSE
 Suggests:
     testthat,

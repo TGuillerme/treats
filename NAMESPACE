@@ -4,8 +4,8 @@ import(stats)
 import(dispRity)
 
 importFrom("graphics","plot")
-# importFrom("MASS","mvrnorm")
-# importFrom("rgl","plot3d","segment3d")
+importFrom("MASS","mvrnorm")
+importFrom("rgl","plot3d","segments3d","spheres3d","points3d")
 
 ##Functions
 export(dads)
