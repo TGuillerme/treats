@@ -34,12 +34,12 @@ export(condition)
 export(time.condition)
 export(taxa.condition)
 export(trait.condition)
-#export(modification)
-#export(mass.extinction)
-#export(trait.extinction)
-#export(update.bd.params)
-#export(update.traits)
-#export(update.modifiers\n"
+export(modification)
+export(mass.extinction)
+export(trait.extinction)
+export(update.bd.params)
+export(update.traits)
+export(update.modifiers)
 
 
 ## Utilities
