@@ -45,7 +45,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-make.traits <- function(process = BM.process, n, start, process.args, trait.names, add, update, test = TRUE) {
+make.traits <- function(process = BM.process, n = NULL, start = NULL, process.args = NULL, trait.names = NULL, add = NULL, update = NULL, test = TRUE) {
 
     match_call <- match.call()
 
@@ -59,7 +59,7 @@ make.traits <- function(process = BM.process, n, start, process.args, trait.name
     }
 
     ## Check the number of traits
-    if(!missing(n)) {
+    if(!is.null(n)) {
         check.class(n, c("integer", "numeric"))        
         if(n_processes > 1 && length(n) == 1) { 
             ## Multiply the number of traits per processes
@@ -75,7 +75,7 @@ make.traits <- function(process = BM.process, n, start, process.args, trait.name
     }
 
     ## Check the starting values
-    if(!missing(start)) {
+    if(!is.null(start)) {
         check.class(start, c("integer", "numeric"))
         if(length(start) != sum(n)) {
             if(length(start) > 1) {
@@ -92,7 +92,7 @@ make.traits <- function(process = BM.process, n, start, process.args, trait.name
 
     ## Check add
     add_traits <- FALSE
-    if(!missing(add)) {
+    if(!is.null(add)) {
         if(!(is(add, "dads") && is(add, "traits"))) {
             stop("traits can only be added to objects of class dads and traits.")
         }
@@ -123,7 +123,7 @@ make.traits <- function(process = BM.process, n, start, process.args, trait.name
 
     ## Check the additional arguments
     add_process_args <- FALSE
-    if(!missing(process.args)) {
+    if(!is.null(process.args)) {
         add_process_args <- TRUE
         check.class(process.args, "list")
         if(n_processes == 1) {
@@ -148,7 +148,7 @@ make.traits <- function(process = BM.process, n, start, process.args, trait.name
     } 
 
     ## Check the names
-    if(!missing(trait.names)) {
+    if(!is.null(trait.names)) {
         check.class(trait.names, c("character", "numeric", "integer"))
         check.length(trait.names, n_processes, " must be the same length as the number of process(es).")
         ## Making the trait names (+ the previous ones)
@@ -170,7 +170,7 @@ make.traits <- function(process = BM.process, n, start, process.args, trait.name
 
     ## Check the update argument
     do_update <- FALSE
-    if(!missing(update)) {
+    if(!is.null(update)) {
         ## Only run if no add
         if(add_traits) {
             stop("Impossible to add and update a traits object at the same time.")
@@ -178,7 +178,7 @@ make.traits <- function(process = BM.process, n, start, process.args, trait.name
         check.class(update, c("dads", "traits"))
         do_update <- TRUE
         ## Check if any names is given and unchanged
-        if(missing(trait.names)) {
+        if(is.null(trait.names)) {
             update_process <- names(update)
         } else {
             if(any(wrong_names <- !(trait.names %in% names(update)))) {

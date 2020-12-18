@@ -6,12 +6,12 @@
 \usage{
 make.traits(
   process = BM.process,
-  n,
-  start,
-  process.args,
-  trait.names,
-  add,
-  update,
+  n = NULL,
+  start = NULL,
+  process.args = NULL,
+  trait.names = NULL,
+  add = NULL,
+  update = NULL,
   test = TRUE
 )
 }

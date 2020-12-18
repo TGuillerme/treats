@@ -5,13 +5,13 @@
 \title{make.modifiers}
 \usage{
 make.modifiers(
-  branch.length,
-  selection,
-  speciation,
-  condition,
-  modify,
-  add,
-  update,
+  branch.length = NULL,
+  selection = NULL,
+  speciation = NULL,
+  condition = NULL,
+  modify = NULL,
+  add = NULL,
+  update = NULL,
   test = TRUE
 )
 }
@@ -22,9 +22,9 @@ make.modifiers(
 
 \item{speciation}{A function for triggering the speciation events (can be left empty for the default speciation function; see details).}
 
-\item{condition}{A function giving the condition on which to modify the output of \code{branch.length} or \code{speciation} (see details). If missing the condition is always met.}
+\item{condition}{A function giving the condition on which to modify the output of \code{branch.length} or \code{speciation} (see details). If \code{NULL} the condition is always met.}
 
-\item{modify}{A function giving the rule of how to modify the output of \code{branch.length} or \code{speciation} (see details). If missing no modification is used.}
+\item{modify}{A function giving the rule of how to modify the output of \code{branch.length} or \code{speciation} (see details). If \code{NULL} no modification is used.}
 
 \item{add}{Whether to add this modifier to a \code{"dads"} \code{"modifier"} object.}
 

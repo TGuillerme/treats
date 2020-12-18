@@ -5,8 +5,8 @@
 #' @param branch.length A function for the waiting time generating branch length (can be left empty for the defeault branch length function; see details).
 #' @param selection     A function for selecting the lineage(s) affected by speciation (can be left empty for the default selection function; see details).
 #' @param speciation    A function for triggering the speciation events (can be left empty for the default speciation function; see details).
-#' @param condition     A function giving the condition on which to modify the output of \code{branch.length} or \code{speciation} (see details). If missing the condition is always met.
-#' @param modify        A function giving the rule of how to modify the output of \code{branch.length} or \code{speciation} (see details). If missing no modification is used.
+#' @param condition     A function giving the condition on which to modify the output of \code{branch.length} or \code{speciation} (see details). If \code{NULL} the condition is always met.
+#' @param modify        A function giving the rule of how to modify the output of \code{branch.length} or \code{speciation} (see details). If \code{NULL} no modification is used.
 #' @param add           Whether to add this modifier to a \code{"dads"} \code{"modifier"} object.
 #' @param update        Optional, another previous \code{"dads"} modifiers object to update (see details).
 #' @param test          Logical whether to test if the modifiers object will work (default is TRUE).
@@ -56,7 +56,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-make.modifiers <- function(branch.length, selection, speciation, condition, modify, add, update, test = TRUE) {
+make.modifiers <- function(branch.length = NULL, selection = NULL, speciation = NULL, condition = NULL, modify = NULL, add = NULL, update = NULL, test = TRUE) {
 
     ## Get the call
     match_call <- match.call()
@@ -68,7 +68,7 @@ make.modifiers <- function(branch.length, selection, speciation, condition, modi
 
     ## Check branch length
     do_branch_length <- FALSE
-    if(!missing(branch.length)) {
+    if(!is.null(branch.length)) {
         ## Checking the arguments
         branch.length <- check.args(branch.length, fun_name = "branch length")
         do_branch_length <- TRUE
@@ -76,7 +76,7 @@ make.modifiers <- function(branch.length, selection, speciation, condition, modi
 
     ## Check selection
     do_selection <- FALSE
-    if(!missing(selection)) {
+    if(!is.null(selection)) {
         ## Checking the arguments
         selection <- check.args(selection, fun_name = "selection")
         do_selection <- TRUE
@@ -84,7 +84,7 @@ make.modifiers <- function(branch.length, selection, speciation, condition, modi
 
     ## Check speciation
     do_speciation <- FALSE
-    if(!missing(speciation)) {
+    if(!is.null(speciation)) {
         ## Checking the arguments
         speciation <- check.args(speciation, fun_name = "speciation")
         do_speciation <- TRUE
@@ -92,7 +92,7 @@ make.modifiers <- function(branch.length, selection, speciation, condition, modi
 
     ## Check condition
     do_condition <- FALSE
-    if(!missing(condition)) {
+    if(!is.null(condition)) {
         ## Checking the arguments
         condition <- check.args(condition, fun_name = "condition")
         do_condition <- TRUE
@@ -103,7 +103,7 @@ make.modifiers <- function(branch.length, selection, speciation, condition, modi
 
     ## Check modify
     do_modify <- FALSE
-    if(!missing(modify)) {
+    if(!is.null(modify)) {
         ## Checking the arguments
         modify <- check.args(modify, fun_name = "modify", modify = TRUE)
         do_modify <- TRUE
@@ -117,14 +117,14 @@ make.modifiers <- function(branch.length, selection, speciation, condition, modi
 
     ## Update a modifier
     do_update <- FALSE
-    if(!missing(update)) {
+    if(!is.null(update)) {
         check.class(update, c("dads", "modifiers"))
         do_update <- TRUE
     }
 
     ## add
     add_modifiers <- FALSE
-    if(!missing(add)) {
+    if(!is.null(add)) {
 
         ## Only run if no update
         if(do_update) {
