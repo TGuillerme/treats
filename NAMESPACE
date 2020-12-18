@@ -11,18 +11,16 @@ importFrom("rgl","plot3d","segments3d","spheres3d","points3d")
 export(dads)
 export(print.dads)
 export(plot.dads)
-export(make.traits)
-export(drop.fossil.dads)
-export(make.modifiers)
-export(make.events)
 
 ## Traits
+export(make.traits)
 export(trait.process)
 export(BM.process)
 export(OU.process)
 export(no.process)
 
 ## Modifiers
+export(make.modifiers)
 export(modifiers)
 export(branch.length)
 export(branch.length.trait)
@@ -30,7 +28,22 @@ export(selection)
 export(speciation)
 export(speciation.trait)
 
+## Events
+export(make.events)
+export(condition)
+export(time.condition)
+export(taxa.condition)
+export(trait.condition)
+#export(modification)
+#export(mass.extinction)
+#export(trait.extinction)
+#export(update.bd.params)
+#export(update.traits)
+#export(update.modifiers\n"
+
+
 ## Utilities
+export(drop.fossil.dads)
 export(parent.traits)
 
 ##S3 
