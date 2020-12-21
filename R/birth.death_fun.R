@@ -25,7 +25,6 @@ sim.living.tips <- function(living, trait_table, traits) {
 }
 
 
-
 ## Run a birth death process to generate both tree and traits
 birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events = NULL, null.error = FALSE) {
   
@@ -91,7 +90,8 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     if(initial.modifiers$speciating$fun(bd.params    = bd.params,
                                         lineage      = NULL,
                                         trait.values = NULL,
-                                        modify.fun   = NULL)) {
+                                        modify.fun   = NULL))
+    {
         ## Speciating:
         if(lineage$n == stop.rule$max.living) {
             ## Don't add this one
@@ -110,7 +110,6 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         edge_lengths[new_lineage] <- 0
         lineage$n <- lineage$n + 1L
         lineage$livings <- c(lineage$livings[-lineage$drawn], new_lineage)
-
     } else {
         ## Cannot go further
         if(!null.error) {
@@ -123,14 +122,15 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ############
     ## Rest of the tree
     ############
-    # warning("DEBUG birth.deat_fun.R") ; counter <- 0
+    # warning("DEBUG birth.death_fun.R") ; counter <- 0
+    # warning("DEBUG birth.death_fun.R") ; set.seed(8)
 
     ## Build the rest of the tree
     while(lineage$n > 0 && lineage$n <= stop.rule$max.living  && sum(!lineage$split) <= stop.rule$max.taxa) {
         
-        # warning("DEBUG birth.deat_fun.R") ; counter <- counter+1
-        # warning("DEBUG birth.deat_fun.R") ; print(counter)
-        # warning("DEBUG birth.deat_fun.R") ; if(counter == 170) break 
+        # warning("DEBUG birth.death_fun.R") ; counter <- counter+1
+        # warning("DEBUG birth.death_fun.R") ; print(counter)
+        # warning("DEBUG birth.death_fun.R") ; if(counter == 170) break 
 
         ## Pick a lineage for the event to happen to:
         lineage$drawn <- modifiers$selecting$fun(bd.params    = bd.params,
@@ -176,7 +176,8 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         if(modifiers$speciating$fun(bd.params    = bd.params,
                                     lineage      = lineage,
                                     trait.values = trait_values,
-                                    modify.fun   = modifiers$speciating$internal)) {
+                                    modify.fun   = modifiers$speciating$internal))
+        {
             
             ## Speciating:
             if(lineage$n == stop.rule$max.living) {

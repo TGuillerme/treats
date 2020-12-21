@@ -173,19 +173,19 @@ update.modifiers <- function(x, branch.length = NULL, selection = NULL, speciati
     }
 
     if(!is.null(branch.length)) {
-        body(change.modifiers)[[2]][[3]] <- eval(substitute(branch.length))
+        body(change.modifiers)[[2]][[3]] <- branch.length
     }
     if(!is.null(selection)) {
-        body(change.modifiers)[[3]][[3]] <- eval(substitute(selection))
+        body(change.modifiers)[[3]][[3]] <- selection
     }
     if(!is.null(speciation)) {
-        body(change.modifiers)[[4]][[3]] <- eval(substitute(speciation))
+        body(change.modifiers)[[4]][[3]] <- speciation
     }
     if(!is.null(condition)) {
-        body(change.modifiers)[[5]][[3]] <- eval(substitute(condition))
+        body(change.modifiers)[[5]][[3]] <- condition
     }
     if(!is.null(modify)) {
-        body(change.modifiers)[[6]][[3]] <- eval(substitute(modify))
+        body(change.modifiers)[[6]][[3]] <- modify
     }
     return(change.modifiers)
 }

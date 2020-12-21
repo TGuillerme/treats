@@ -359,12 +359,6 @@ test_that("events work", {
 
 
     ## Changing a trait argument (e.g. sigma) when a trait reaches value x
-
-## Removing correlation
-change.trait.correlation <- function(traits, bd.params, lineage, trait.values) {
-    return(make.traits(update = traits, process.args = list(Sigma = matrix(c(10,3,3,2),2,2))))
-}
-
     ## A 2D correlated BM
     traits <- make.traits(n = 2, process.args = list(Sigma = matrix(1, 2, 2)))
 
@@ -402,19 +396,15 @@ change.trait.correlation <- function(traits, bd.params, lineage, trait.values) {
     modifiers <- make.modifiers()
     traits <- make.traits()
 
-change.speciation.condition <- function(modifiers, bd.params, lineage, trait.values) {
-    return(make.modifiers(update = modifiers,
-                          speciation = speciation,
-                          condition = function(trait.values, lineage) return(parent.traits(trait.values, lineage) < 0),
-                          modify = function(x, trait.values, lineage) return(x + 1)))
-}
-
+    ## New condition and new modifier
+    new.condition <- function(trait.values, lineage) return(parent.traits(trait.values, lineage) < 0)
+    new.modify    <- function(x, trait.values, lineage) return(x + 1)
+    
     events <- list(
         trigger      = 0L,
         condition    = time.condition(3),
         target       = "modifiers",
-        modification = change.speciation.condition)
-
+        modification = update.modifiers(speciation = speciation, condition = new.condition, modify = new.modify))
 
     set.seed(4)
     test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = modifiers, events = NULL)
@@ -433,18 +423,14 @@ change.speciation.condition <- function(modifiers, bd.params, lineage, trait.val
     fossils <- which(tip_ages$ages != 0)
     expect_false(any(tip_ages[fossils, ]$ages > test2$tree$root.time - 3))
 
-    ## Adding a branch length condition when reaching n taxa
-change.branch.length.modify <- function(modifiers, bd.params, lineage, trait.values) {
-    return(make.modifiers(update = modifiers,
-                          branch.length = branch.length,
-                          modify = function(x, trait.values, lineage) return(x * 100)))
-}
 
+    ## Adding a branch length condition when reaching n taxa
+    new.modify <- function(x, trait.values, lineage) return(x * 100)
     events <- list(
         trigger      = 0L,
         condition    = taxa.condition(30),
         target       = "modifiers",
-        modification = change.branch.length.modify)
+        modification = update.modifiers(branch.length = branch.length, modify = new.modify))
 
     stop.rule <- list(max.time = Inf, max.taxa = 100, max.living = Inf)
     bd.params <- list(extinction = 0, speciation = 1)
@@ -467,17 +453,6 @@ change.branch.length.modify <- function(modifiers, bd.params, lineage, trait.val
     prop_short_test <- length(which(test$tree$edge.length < 1))/length(test$tree$edge.length)
     prop_short_test2 <- length(which(test2$tree$edge.length < 1))/length(test2$tree$edge.length)
     expect_lt(prop_short_test2, prop_short_test)
-
-
-
-    ## Changing the condition of a modifier after reaching trait value x
-
-
-
-
-    ## Changing the modify of a modifier after reaching time t
-
-
 
 
 
