@@ -158,6 +158,22 @@ test_that("make.traits(update) works", {
                          process.args = list(Sigma = my_correlation2))
     expect_equal(unique(c(test[[1]]$Sigma)), 1)
     expect_equal(unique(c(test2[[1]]$Sigma)), 2)
+
+    ## Complex update
+    traits <- make.traits(n = 2, process.args = list(Sigma = matrix(1, 2, 2)))
+    traits <- make.traits(process = OU.process, trait.name = "noupdate", add = traits)
+
+    ## Update just the Sigma for the two traits of the first process
+    traits2 <- make.traits(update = traits, process.args = list(Sigma = matrix(c(10,3,3,2),2,2)), trait.name = "A", start = 1)
+
+    expect_equal(traits$A$Sigma, matrix(1, 2, 2))
+    expect_equal(traits2$A$Sigma, matrix(c(10,3,3,2),2,2))
+    expect_equal(traits$A$start, c(0,0))
+    expect_equal(traits2$A$start, c(1,1))
+    expect_equal(traits2$noupdate$start, 0)
+
+
+
 })
 
 

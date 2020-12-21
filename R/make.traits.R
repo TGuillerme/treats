@@ -49,17 +49,32 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
 
     match_call <- match.call()
 
-    ## Check the process(es)
-    process_class <- check.class(process, c("function", "list"))
-    n_processes <- length(process)
-    if(process_class == "list") {
-        silent <- lapply(process, check.class, "function")
+    ## Check whether the process needs to be updated
+    if(is.null(update)) {
+        do_update <- FALSE
     } else {
-        process <- list(process)
+        check.class(update, c("dads", "traits"))
+        do_update <- TRUE
+    }
+
+    ## Set the process to default if update and process is null
+    if(do_update && is.null(process)) {
+        ## Set the process to the previous one(s)
+        process <- lapply(update, `[[`, "process")
+        n_processes <- length(process)
+    } else {
+        ## Check the process(es)
+        process_class <- check.class(process, c("function", "list"))
+        n_processes <- length(process)
+        if(process_class == "list") {
+            silent <- lapply(process, check.class, "function")
+        } else {
+            process <- list(process)
+        }
     }
 
     ## Check the number of traits
-    if(!is.null(n)) {
+    if(!is.null(n) && !do_update) {
         check.class(n, c("integer", "numeric"))        
         if(n_processes > 1 && length(n) == 1) { 
             ## Multiply the number of traits per processes
@@ -70,8 +85,12 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
             }
         }
     } else {
-        ## Default number of traits (one trait per process)
-        n <- rep(1, n_processes)
+        if(!do_update) {
+            ## Default number of traits (one trait per process)
+            n <- rep(1, n_processes)
+        } else {
+            n <- length(unlist(lapply(update, `[[`, "trait_id")))
+        }
     }
 
     ## Check the starting values
@@ -93,6 +112,9 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
     ## Check add
     add_traits <- FALSE
     if(!is.null(add)) {
+        if(do_update) {
+            stop("Impossible to add and update a traits object at the same time.")
+        }
         if(!(is(add, "dads") && is(add, "traits"))) {
             stop("traits can only be added to objects of class dads and traits.")
         }
@@ -135,13 +157,15 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
             process.args <- list(process.args)
         } else {
             ## Make sure the process correspond to the right list
-            if(length(process.args) != n_processes) {
-                stop(paste0("You must provide additional arguments for every process (", n_processes, "). You can provide NULL arguments for processes that don't need extra arguments e.g.\n\n    process.args = list(list(NULL),\n                        list(extra.arg = some_extra_argument))\n\nwill only provide extra arguments to the second process."))
-            }
-            ## Check if each arguments are named (unless NULL)
-            for(one_process in 1:n_processes) {
-                if(is.null(names(process.args[[one_process]])) && !is.null(process.args[[one_process]][[1]])) {
-                    stop("process.args must be a named list of arguments.")
+            if(!do_update) {
+                if(length(process.args) != n_processes) {
+                    stop(paste0("You must provide additional arguments for every process (", n_processes, "). You can provide NULL arguments for processes that don't need extra arguments e.g.\n\n    process.args = list(list(NULL),\n                        list(extra.arg = some_extra_argument))\n\nwill only provide extra arguments to the second process."))
+                }
+                ## Check if each arguments are named (unless NULL)
+                for(one_process in 1:n_processes) {
+                    if(is.null(names(process.args[[one_process]])) && !is.null(process.args[[one_process]][[1]])) {
+                        stop("process.args must be a named list of arguments.")
+                    }
                 }
             }
         }
@@ -172,9 +196,6 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
     do_update <- FALSE
     if(!is.null(update)) {
         ## Only run if no add
-        if(add_traits) {
-            stop("Impossible to add and update a traits object at the same time.")
-        }
         check.class(update, c("dads", "traits"))
         do_update <- TRUE
         ## Check if any names is given and unchanged
@@ -215,6 +236,7 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
         ## Add names
         names(traits) <- trait_names
     } else {
+
         ## Update the traits
         traits <- update
 
@@ -227,7 +249,7 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
             ## Update the process
             traits[[updates[[i]]]]$process <- process[[i]]
             ## Update the starting value
-            traits[[updates[[i]]]]$start   <- start_values[[i]]
+            traits[[updates[[i]]]]$start   <- start_values[[i]][1:length(traits[[updates[[i]]]]$start)]
 
             if(add_process_args) {
                 ## Replacing/adding optional arguments if not NULL
