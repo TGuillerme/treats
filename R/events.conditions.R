@@ -63,7 +63,7 @@ taxa.condition <- function(x, condition = `>`, living = TRUE) {
 ## A condition based on a specific trait value \code{x} for a certain trait (default is \code{trait = 1}). This value can be absolute or not (default is \code{absolute = FALSE}).
 trait.condition <- function(x, condition = `>`, trait = 1, what = max, absolute = FALSE) {
     if(absolute) {
-        return(function(bd.params, lineage, trait.values, time) {return(abs(condition(what(trait.values[, trait]), x)))})
+        return(function(bd.params, lineage, trait.values, time) {return(condition(abs(what(trait.values[, trait])), x))})
     } else {
         return(function(bd.params, lineage, trait.values, time) {return(condition(what(trait.values[, trait]), x))})
     }
