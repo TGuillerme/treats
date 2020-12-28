@@ -69,10 +69,10 @@ test_that("example works", {
          edges = "grey", tips.nodes = "black"))
     
     ## Plotting the first and third trait correlation in 3D
-    expect_null(plot(my_data, trait = c(1,3), col = rainbow,
-         edges = "grey", tips.nodes = "black", use.3D = TRUE))
+    # expect_null(plot(my_data, trait = c(1,3), col = rainbow,
+         # edges = "grey", tips.nodes = "black", use.3D = TRUE))
 
     ## Plotting all traits in 3D (without branch lengths)
-    expect_null(plot(my_data, trait = c(1:3), col = heat.colors,
-         edges = "grey", tips.nodes = "black", use.3D = TRUE, type = "s", radius = 0.1))
+    # expect_null(plot(my_data, trait = c(1:3), col = heat.colors,
+         # edges = "grey", tips.nodes = "black", use.3D = TRUE, type = "s", radius = 0.1))
 })
