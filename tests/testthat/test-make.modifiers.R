@@ -44,7 +44,7 @@ test_that("make.modifiers works", {
 
     ## Wrong arguments for add
     error <- capture_error(make.modifiers(add = TRUE))
-    expect_equal(error[[1]], "modifiers can only be added to objects of class dads and modifiers.")
+    expect_equal(error[[1]], "You can only add to a \"dads\" \"modifiers\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.modifiers")
 
     ## Wrong arguments for test
     error <- capture_error(make.modifiers(test = "whatever"))
@@ -182,7 +182,7 @@ test_that("make.modifiers(update) works", {
 
     ## Sanitizing
     error <- capture_error(make.modifiers(update = "bob"))
-    expect_equal(error[[1]], "update must be of class dads or modifiers.")
+    expect_equal(error[[1]], "You can only update a \"dads\" \"modifiers\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.modifiers")
     test <- make.modifiers()
     error <- capture_error(make.modifiers(update = test, branch.length = "what"))
     expect_equal(error[[1]], "function for branch length is not a function.")

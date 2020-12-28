@@ -15,7 +15,7 @@ test_that("make.traits works", {
     error <- capture_error(make.traits(process.args = "nope"))
     expect_equal(error[[1]], "process.args must be of class list.")
     error <- capture_error(make.traits(add = TRUE))
-    expect_equal(error[[1]], "traits can only be added to objects of class dads and traits.")
+    expect_equal(error[[1]], "You can only add to a \"dads\" \"traits\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.traits")
     error <- capture_error(make.traits(test = "TRUE"))
     expect_equal(error[[1]], "test must be of class logical.")
 
@@ -126,7 +126,7 @@ test_that("make.traits(update) works", {
 
     ## Sanitizing
     error <- capture_error(make.traits(update = "bob"))
-    expect_equal(error[[1]], "update must be of class dads or traits.")
+    expect_equal(error[[1]], "You can only update a \"dads\" \"traits\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.traits")
     test <- make.traits()
     error <- capture_error(make.traits(update = test, trait.names = "what"))
     expect_equal(error[[1]], "No process(es) called what to update.")

@@ -118,8 +118,11 @@ make.modifiers <- function(branch.length = NULL, selection = NULL, speciation = 
     ## Update a modifier
     do_update <- FALSE
     if(!is.null(update)) {
-        check.class(update, c("dads", "modifiers"))
-        do_update <- TRUE
+        if(is(update, "dads") && is(update, "modifiers")) {
+            do_update <- TRUE
+        } else {
+            stop("You can only update a \"dads\" \"modifiers\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.modifiers", call. = FALSE)
+        }
     }
 
     ## add
@@ -133,7 +136,7 @@ make.modifiers <- function(branch.length = NULL, selection = NULL, speciation = 
 
         ## Check input
         if(!(is(add, "dads") && is(add, "modifiers"))) {
-            stop("modifiers can only be added to objects of class dads and modifiers.")
+            stop("You can only add to a \"dads\" \"modifiers\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.modifiers", call. = FALSE)
         }
 
         ## Update the modifiers

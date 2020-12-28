@@ -53,8 +53,11 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
     if(is.null(update)) {
         do_update <- FALSE
     } else {
-        check.class(update, c("dads", "traits"))
-        do_update <- TRUE
+        if(is(update, "dads") && is(update, "traits")) {
+            do_update <- TRUE
+        } else {
+            stop("You can only update a \"dads\" \"traits\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.traits", call. = FALSE)
+        }
     }
 
     ## Set the process to default if update and process is null
@@ -116,7 +119,7 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
             stop("Impossible to add and update a traits object at the same time.")
         }
         if(!(is(add, "dads") && is(add, "traits"))) {
-            stop("traits can only be added to objects of class dads and traits.")
+            stop("You can only add to a \"dads\" \"traits\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.traits", call. = FALSE)
         }
         add_traits <- TRUE
         ## Find the previous names (to not duplicate names)
@@ -195,8 +198,6 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
     ## Check the update argument
     do_update <- FALSE
     if(!is.null(update)) {
-        ## Only run if no add
-        check.class(update, c("dads", "traits"))
         do_update <- TRUE
         ## Check if any names is given and unchanged
         if(is.null(trait.names)) {
