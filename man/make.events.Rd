@@ -10,21 +10,24 @@ make.events(
   modification,
   add,
   test = TRUE,
+  event.name,
   replications = 0
 )
 }
 \arguments{
 \item{target}{What to modify, can be \code{"taxa"}, \code{"bd.params"}, \code{"traits"} or \code{"modifiers"} (see details).}
 
-\item{condition}{A function returning a logical to trigger the event (see details).}
+\item{condition}{A \code{function} returning a logical to trigger the event (see details).}
 
-\item{modification}{The modification to bring through the event (see details).}
+\item{modification}{A \code{function} bringing the modification to the event (see details).}
 
-\item{add}{Whether to add this modifier to an \code{"events"} object.}
+\item{add}{Another \code{"events"} to object to add this event.}
 
-\item{test}{Logical whether to test if the events object will work (default is \code{TRUE})}
+\item{test}{A \code{logical}, whether to test if the events object will work (default is \code{TRUE})}
 
-\item{replications}{A numeric or integer value for repeating the event (by default, the event is not repeated: \code{repeat = 0}).}
+\item{event.name}{Optional, a \code{"character"} string to name the event.}
+
+\item{replications}{A numeric or integer value for repeating the event (by default, the event is not repeated: \code{replications = 0}).}
 }
 \description{
 Making events objects for dads

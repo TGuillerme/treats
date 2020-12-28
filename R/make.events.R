@@ -2,12 +2,13 @@
 #'
 #' @description Making events objects for dads
 #'
-#' @param target       What to modify, can be \code{"taxa"}, \code{"bd.params"}, \code{"traits"} or \code{"modifiers"} (see details).
-#' @param condition    A function returning a logical to trigger the event (see details).
-#' @param modification The modification to bring through the event (see details).
-#' @param add   Whether to add this modifier to an \code{"events"} object.
-#' @param test  Logical whether to test if the events object will work (default is \code{TRUE})
-#' @param replications A numeric or integer value for repeating the event (by default, the event is not repeated: \code{repeat = 0}).
+#' @param target        What to modify, can be \code{"taxa"}, \code{"bd.params"}, \code{"traits"} or \code{"modifiers"} (see details).
+#' @param condition     A \code{function} returning a logical to trigger the event (see details).
+#' @param modification  A \code{function} bringing the modification to the event (see details).
+#' @param add           Another \code{"events"} to object to add this event.
+#' @param test          A \code{logical}, whether to test if the events object will work (default is \code{TRUE})
+#' @param event.name    Optional, a \code{"character"} string to name the event.
+#' @param replications  A numeric or integer value for repeating the event (by default, the event is not repeated: \code{replications = 0}).
 #' 
 #' @details 
 #' 
@@ -23,14 +24,17 @@
 #' @author Thomas Guillerme
 #' @export
 
-make.events <- function(target, condition, modification, add, test = TRUE, replications = 0) {
+make.events <- function(target, condition, modification, add, test = TRUE, event.name, replications = 0) {
 
     ## Test target
     allowed_targets <- c("taxa", "bd.params", "traits", "modifiers")
     check.method(target, allowed_targets, "target argument ")
 
     ## Test condition
-    # condition(bd.params, lineage, trait.values, time)
+    condition <- check.args.events(condition, fun_name = "condition", condition = TRUE)
+
+    ## Test modification
+    modification <- check.args.events(modification, fun_name = "modification")
 
     ## Check add
     if(missing(add)) {
@@ -47,34 +51,16 @@ make.events <- function(target, condition, modification, add, test = TRUE, repli
 
     ## Creating the events object
     if(!do_add) {
-        events <- list(target  = target,
-                       trigger = trigger)
+        events <- list(target       = target,
+                       trigger      = trigger,
+                       condition    = condition,
+                       modification = modification)
     }
 
-    ## Test different modifications
-    switch(events$target,
-           taxa      = {
-                ## Modify the lineage object
-                lineage   <- events$modification(bd.params, lineage, trait.values)
-           },
-           bd.params = {
-                ## Modify the birth death parameters
-                bd.params <- events$modification(bd.params, lineage, trait.values)
-           },
-           traits    = {
-                ## Modify the traits
-                traits    <- events$modification(process, n, start, process.args, trait.names)
-           },
-           modifiers = {
-                ## Modify the modifiers
-                modifiers <- events$modification(branch.length, selection, speciation, condition, modify)
-           })
-
-
-                ## Toggle the trigger tracker
-                events$trigger <- events$trigger + 1L
-
-
+    ## Testing the event object
+    if(test) {
+        check.events(events)
+    }
 
     class(output) <- c("dads", "events")
     return(output)
