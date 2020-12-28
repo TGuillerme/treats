@@ -1,5 +1,12 @@
 ## Check if traits work
-check.traits <- function(traits) {
+check.traits <- function(traits, events = FALSE) {
+
+    if(events) {
+        events_msg <- "The dads traits object returned by the modification function does not work: "
+    } else {
+        events_msg <- ""
+    }
+
     ## Make dummy edge.length
     edge.length <- 42
     ## Make dummy parent trait
@@ -24,7 +31,7 @@ check.traits <- function(traits) {
                 failure_messages <- c(failure_messages, "trait ", one_trait, ": ", try_success[[one_trait]][[1]], "\n")
             }
         }
-        stop(paste0(error_msg, trait_failed, paste0(failure_messages, collapse = "")))
+        stop(paste0(events_msg, error_msg, trait_failed, paste0(failure_messages, collapse = "")))
     } else {
         return(NULL)
     }

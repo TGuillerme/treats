@@ -350,7 +350,7 @@ make.modifiers <- function(branch.length = NULL, selection = NULL, speciation = 
     }
 
     if(test) {
-        check.modifiers(modifiers)
+        check.modifiers(modifiers, events = FALSE)
     }
 
     class(modifiers) <- c("dads", "modifiers")
