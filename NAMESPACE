@@ -3,7 +3,7 @@ import(ape)
 import(stats)
 import(dispRity)
 
-importFrom("graphics","plot")
+importFrom("graphics","plot", "points", "lines")
 importFrom("MASS","mvrnorm")
 importFrom("rgl","plot3d","segments3d","spheres3d","points3d")
 
