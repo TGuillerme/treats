@@ -11,16 +11,6 @@ addons:
     packages:
       - libmagick++-dev
 
-
-## do not build vignettes or manual
-env:
-  global:
-    - R_BUILD_ARGS="--no-build-vignettes --no-manual"
-    - R_CHECK_ARGS="--no-build-vignettes --no-manual --timings" 
-r_build_args: --no-build-vignettes --no-manual
-r_check_args: --no-build-vignettes --no-manual --timings
-
-
 branches:
   only:
     - master
