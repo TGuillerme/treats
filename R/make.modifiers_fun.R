@@ -1,5 +1,5 @@
 ## Checking and filling arguments for modifiers
-check.args <- function(fun, fun_name, modify = FALSE) {
+check.args.modifiers <- function(fun, fun_name, modify = FALSE) {
 
     ## The required arguments (internal)
     required_args <- c("bd.params", "lineage", "trait.values", "modify.fun")
