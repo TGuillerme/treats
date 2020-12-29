@@ -16,13 +16,8 @@ branches:
     - master
     - release
 
-
-r_packages:
+r_binary_packages:
   - rgl
-
-# r_binary_packages:
-#   - rgl
-
 
 # Code coverage
 r_packages:
