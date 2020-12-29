@@ -30,7 +30,7 @@ parent.traits <- function(trait.values, lineage, current = TRUE) {
         find <- lineage$parents[lineage$current]
     } else {
         ## Find all the descendants from living lineages
-        find <- unique(cbind(seq_along(lineage$split), lineage$parents)[lineage$livings, ][, 2])
+        find <- unique(cbind(seq_along(lineage$split), lineage$parents)[lineage$livings, , drop = FALSE][, 2])
     }
 
     return(trait.values[as.numeric(rownames(trait.values)) %in% find, , drop = FALSE])
