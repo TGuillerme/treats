@@ -3,6 +3,9 @@ language: r
 cache: packages
 warnings_are_errors: false
 
+r_binary_packages:
+  - rgl  
+  
 addons:
   apt:
     update: true
@@ -15,9 +18,6 @@ branches:
   only:
     - master
     - release
-
-r_binary_packages:
-  - rgl
 
 # Code coverage
 r_packages:
