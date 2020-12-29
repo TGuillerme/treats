@@ -3,6 +3,9 @@ language: r
 cache: packages
 warnings_are_errors: false
 
+r_binary_packages:
+  - rgl  
+  
 addons:
   apt:
     update: true
@@ -10,19 +13,14 @@ addons:
       - sourceline: 'ppa:opencpu/imagemagick'
     packages:
       - libmagick++-dev
+      - libglu1-mesa-dev
+      - freeglut3-dev
+      - mesa-common-dev
 
 branches:
   only:
     - master
     - release
-
-
-r_packages:
-  - rgl
-
-# r_binary_packages:
-#   - rgl
-
 
 # Code coverage
 r_packages:
