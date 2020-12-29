@@ -31,10 +31,15 @@ make.events <- function(target, condition, modification, add, test = TRUE, event
     check.method(target, allowed_targets, "target argument ")
 
     ## Test condition
-    condition <- check.args.events(condition, fun_name = "condition", condition = TRUE)
+    condition <- check.args(condition, fun_name = "condition", required_args = c("bd.params", "lineage", "trait.values", "time"))
 
     ## Test modification
-    modification <- check.args.events(modification, fun_name = "modification")
+    need_args <- switch(target,
+        taxa      = c("taxa", "bd.params", "traits", "modifiers"),
+        bd.params = c("taxa", "bd.params", "traits", "modifiers"),
+        traits    = c("traits", "taxa", "bd.params", "traits", "modifiers"),
+        modifiers = c("modifiers", "taxa", "bd.params", "traits", "modifiers"))
+    modification <- check.args(modification, fun_name = "modification", required_args = need_args)
 
     ## Check add
     if(missing(add)) {
@@ -62,13 +67,6 @@ make.events <- function(target, condition, modification, add, test = TRUE, event
         check.events(events)
     }
 
-    class(output) <- c("dads", "events")
-    return(output)
+    class(events) <- c("dads", "events")
+    return(events)
 }
-
-# ## Change in the traits:
-# trait.event <- list(
-#     when = ...,
-#     what = ...,
-#     event = ...)
-# #TG: for this one, just change traits$process or traits$cor when the event occurs

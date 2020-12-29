@@ -133,10 +133,35 @@ check.list <- function(list, check.fun, condition, ...) {
 
 
 ## Checking dads specific class
-check.dads <- function(object, class, msg, errorif = FALSE) {
+check.args <- function(fun, fun_name, required_args) {
 
-    ## Checking if the object is at least of dads class
-    check.class(object, class =  "dads")
+    ## Must be a function
+    check.class(fun, "function", msg = paste0("ction for ", fun_name, " is not a function."))
+    ## Check the arguments
+    present_args <- names(formals(fun))
+    ## Check for incorrect arguments
+    if(any(incorrect_args <- is.na(match(present_args, required_args)))) {
+        stop(paste0("The ", fun_name, " function cannot recognise the ", paste(present_args[incorrect_args], collapse = ", "), " argument", ifelse(sum(incorrect_args) > 1, "s.", ".")), call. = FALSE)
+    }
+    ## Add the missing arguments
+    used_args <- methods::formalArgs(fun)
+    if(any(missing_args <- !(required_args %in% used_args))) {
 
+        ## List of missings
+        to_add_args <- required_args[missing_args]
+
+        ## Add the missing arguments recursively
+        while(length(to_add_args) != 0) {
+            ## Create one new argument
+            new_arg <- alist(NULL)
+            names(new_arg) <- to_add_args[1]
+            ## Add the new argument
+            formals(fun) <- c(formals(fun), new_arg)
+            ## Recursively reduce the list
+            to_add_args <- to_add_args[-1]
+        }
+    }
+
+    return(fun)
 }
 

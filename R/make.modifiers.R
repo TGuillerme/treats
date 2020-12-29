@@ -70,7 +70,7 @@ make.modifiers <- function(branch.length = NULL, selection = NULL, speciation = 
     do_branch_length <- FALSE
     if(!is.null(branch.length)) {
         ## Checking the arguments
-        branch.length <- check.args.modifiers(branch.length, fun_name = "branch length")
+        branch.length <- check.args(branch.length, fun_name = "branch length", required_args = c("bd.params", "lineage", "trait.values", "modify.fun"))
         do_branch_length <- TRUE
     }
 
@@ -78,7 +78,7 @@ make.modifiers <- function(branch.length = NULL, selection = NULL, speciation = 
     do_selection <- FALSE
     if(!is.null(selection)) {
         ## Checking the arguments
-        selection <- check.args.modifiers(selection, fun_name = "selection")
+        selection <- check.args(selection, fun_name = "selection", required_args = c("bd.params", "lineage", "trait.values", "modify.fun"))
         do_selection <- TRUE
     }
 
@@ -86,7 +86,7 @@ make.modifiers <- function(branch.length = NULL, selection = NULL, speciation = 
     do_speciation <- FALSE
     if(!is.null(speciation)) {
         ## Checking the arguments
-        speciation <- check.args.modifiers(speciation, fun_name = "speciation")
+        speciation <- check.args(speciation, fun_name = "speciation", required_args = c("bd.params", "lineage", "trait.values", "modify.fun"))
         do_speciation <- TRUE
     }
 
@@ -94,7 +94,7 @@ make.modifiers <- function(branch.length = NULL, selection = NULL, speciation = 
     do_condition <- FALSE
     if(!is.null(condition)) {
         ## Checking the arguments
-        condition <- check.args.modifiers(condition, fun_name = "condition")
+        condition <- check.args(condition, fun_name = "condition", required_args = c("bd.params", "lineage", "trait.values", "modify.fun"))
         do_condition <- TRUE
     } else {
         ## Default condition
@@ -105,7 +105,7 @@ make.modifiers <- function(branch.length = NULL, selection = NULL, speciation = 
     do_modify <- FALSE
     if(!is.null(modify)) {
         ## Checking the arguments
-        modify <- check.args.modifiers(modify, fun_name = "modify", modify = TRUE)
+        modify <- check.args(modify, fun_name = "modify", required_args = c("x", "bd.params", "lineage", "trait.values", "modify.fun"))
         do_modify <- TRUE
     } else {
         ## Default modify
