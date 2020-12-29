@@ -35,10 +35,10 @@ make.events <- function(target, condition, modification, add, test = TRUE, event
 
     ## Test modification
     need_args <- switch(target,
-        taxa      = c("taxa", "bd.params", "traits", "modifiers"),
-        bd.params = c("taxa", "bd.params", "traits", "modifiers"),
-        traits    = c("traits", "taxa", "bd.params", "traits", "modifiers"),
-        modifiers = c("modifiers", "taxa", "bd.params", "traits", "modifiers"))
+        taxa      = c("bd.params", "lineage", "trait.values"),
+        bd.params = c("bd.params", "lineage", "trait.values"),
+        traits    = c("traits", "bd.params", "lineage", "trait.values"),
+        modifiers = c("modifiers", "bd.params", "lineage", "trait.values"))
     modification <- check.args(modification, fun_name = "modification", required_args = need_args)
 
     ## Check add

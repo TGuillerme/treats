@@ -35,10 +35,10 @@ check.events <- function(events) {
                         silent = TRUE)
 
     ## Debrief
-    if(class(test_condition) == "try-error") {
+    if(is(test_condition, "try-error")) {
         stop(paste0("The condition function from the events object failed with the following error message", ifelse(length(test_condition) > 1, "s:\n", ":\n"), paste(test_condition, collapse = "\n")), call. = FALSE)
     } else {
-        if(class(test_condition) != "logical") {
+        if(!is(test_condition, "logical")) {
             stop(paste0("The condition function from the events object did not produce a logical value (it produced a ", paste(class(test_condition), collapse = ","), " instead)."))
         }
     }
@@ -78,8 +78,16 @@ check.events <- function(events) {
 
 
     ## Debrief
-    if(class(test_modification) == "try-error") {
-        stop(paste0("The modification function from the events object failed with the following error message", ifelse(length(test_modification) > 1, "s:\n", ":\n"), paste(test_modification, collapse = "\n")), call. = FALSE)
+    if(is(test_modification, "try-error")) {
+
+        ## List of exceptions
+        error_exceptions <- c("incompatible arguments")
+        exception <- any(sapply(error_exceptions, grep, test_modification[[1]]))
+        if(!exception) {
+            stop(paste0("The modification function from the events object failed with the following error message", ifelse(length(test_modification) > 1, "s:\n", ":\n"), paste(test_modification, collapse = "\n")), call. = FALSE)
+        } else {
+            return(NULL)
+        }
     } else {
 
         switch(events$target,
@@ -105,6 +113,7 @@ check.events <- function(events) {
 
             traits    = {
                 if(!is(test_modification, "dads") && !is(test_modification, "traits")) {
+                    ## Check if the error comes from additional args (i.e. wrong dummy traits object)
                     stop(paste0("The modification function targeting \"traits\" must output a dads traits object. Currently the modification function output is a ", paste(class(test_modification), collapse = ", "), "."))
                 } else {
                     check.traits(test_modification, events = TRUE)

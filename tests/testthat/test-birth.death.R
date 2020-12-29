@@ -236,15 +236,9 @@ test_that("events work", {
     ###################
     ## Taxa events
     ###################   
-    ## Make a dummy events object
-    events <- list(
-        ## A triggering tracker (most events can only be triggered once)
-        trigger      = 0L,
-        ## A function that intakes bd.params, lineage, traits
-        condition    = time.condition(4),
-        ## A character string that is either taxa, bd.params, traits or modifiers
-        target       = "taxa",
-        modification = random.extinction(0.8))
+    events <- make.events(target = "taxa",
+                          condition = time.condition(4),
+                          modification = random.extinction(0.8))
 
     set.seed(1)
     test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = NULL, modifiers = NULL, events = events)
@@ -258,12 +252,9 @@ test_that("events work", {
 
 
     ## Mass extinction based on trait values at time t
-    ## Make a dummy events object
-    events <- list(
-        trigger      = 0L,
-        condition    = time.condition(4),
-        target       = "taxa",
-        modification = trait.extinction(1))
+    events <- make.events(target = "taxa",
+                          condition = time.condition(4),
+                          modification = trait.extinction(1))
 
     set.seed(7)
     test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = make.traits(), modifiers = NULL, events = events)
@@ -291,8 +282,7 @@ test_that("events work", {
     stop.rule <- list(max.living = 50, max.time = Inf, max.taxa = Inf)   
  
     ## Make a dummy events object
-    events <- list(
-        trigger      = 0L,
+    events <- make.events(
         condition    = taxa.condition(30),
         target       = "bd.params",
         modification = update.bd.params(1/3, "extinction"))
@@ -309,8 +299,7 @@ test_that("events work", {
 
 
     ## Reducing speciation after reaching time t
-    events <- list(
-        trigger      = 0L,
+    events <- make.events(
         condition    = time.condition(2),
         target       = "bd.params",
         modification = update.bd.params(1/3, "speciation"))
@@ -338,8 +327,7 @@ test_that("events work", {
 
     stop.rule$max.time <- 6
     traits <- make.traits()
-    events <- list(
-        trigger      = 0L,
+    events <- make.events(
         condition    = time.condition(5),
         target       = "traits",
         modification = update.traits(process = OU.process))
@@ -362,8 +350,7 @@ test_that("events work", {
     ## A 2D correlated BM
     traits <- make.traits(n = 2, process.args = list(Sigma = matrix(1, 2, 2)))
 
-    events <- list(
-        trigger      = 0L,
+    events <- make.events(
         condition    = trait.condition(3, absolute = TRUE),
         target       = "traits",
         modification = update.traits(process.args = list(Sigma = matrix(c(10,3,3,2),2,2))))
@@ -400,8 +387,7 @@ test_that("events work", {
     new.condition <- function(trait.values, lineage) return(parent.traits(trait.values, lineage) < 0)
     new.modify    <- function(x, trait.values, lineage) return(x + 1)
     
-    events <- list(
-        trigger      = 0L,
+    events <- make.events(
         condition    = time.condition(3),
         target       = "modifiers",
         modification = update.modifiers(speciation = speciation, condition = new.condition, modify = new.modify))
@@ -426,8 +412,7 @@ test_that("events work", {
 
     ## Adding a branch length condition when reaching n taxa
     new.modify <- function(x, trait.values, lineage) return(x * 100)
-    events <- list(
-        trigger      = 0L,
+    events <- make.events(
         condition    = taxa.condition(30),
         target       = "modifiers",
         modification = update.modifiers(branch.length = branch.length, modify = new.modify))
