@@ -442,7 +442,47 @@ test_that("events work", {
 
 
     ## founding events
-    ## Events that generate a new process (founding effects)
+    bd.params1 <- list(speciation = 1, extinction = 0.3)
+    bd.params2 <- list(speciation = 1, extinction = 0)
 
+    founding.event <- function(stop.rule, time, lineage) {
+
+        # bd.params <- NULL
+        bd.params <- list(speciation = 2, extinction = 0)
+        traits    <- NULL
+        modifiers <- NULL
+        events    <- NULL
+
+        ## Update the stop rule
+        stop_rule_updated <- stop.rule
+        if(stop_rule_updated$max.time != Inf) {
+            stop_rule_updated$max.time <- stop_rule_updated$max.time - time
+        }
+        if(stop_rule_updated$max.living != Inf) {
+            stop_rule_updated$max.living <- stop_rule_updated$max.living - lineage$n
+        }
+        if(stop_rule_updated$max.taxa != Inf) {
+            stop_rule_updated$max.living <- stop_rule_updated$max.taxa - sum(!lineage$split)
+        }
+
+        ## Run the founding event
+        return(birth.death.tree.traits(stop.rule = stop_rule_updated, bd.params, traits, modifiers, events))
+    }
+
+
+
+
+
+
+    bd.params <- list(speciation = 1, extinction = 0.3)
+    stop.rule <- list(max.taxa = Inf, max.living = 30, max.time = Inf)
+
+    ## Events that generate a new process (founding effects)
+    events <- list(trigger      = 0L,
+                   condition    = taxa.condition(10),
+                   target       = "founding",
+                   modification = founding.event)
+
+    test <- birth.death.tree.traits(bd.params = bd.params1, stop.rule = stop.rule, traits = traits1, modifiers = NULL, events = NULL)
 
 })

@@ -52,6 +52,10 @@ Test the following events types
  - [ ] add manual for utilities
  - [ ] add test for `parent.traits`
 
+## TODO dads
+
+ - [ ] remove upper boundary on `bd.params`
+
 ## TODO package
 
  - [ ] add examples in functions

@@ -241,6 +241,23 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                                 bd.params    = bd.params,
                                 lineage      = lineage,
                                 trait.values = trait_values)
+                       },
+                       founding = {
+                            ## Create a new independent birth death process
+                            founding_tree <- events$modification(
+                                stop.rule = stop.rule,
+                                time      = time,
+                                lineage   = lineage)
+
+                            ## Record the root of the founding tree
+                            founding_root <- lineage$livings[lineage$drawn]
+
+                            ## Record the age of the founding tree start
+                            founding_tree_root_age <- time - first_waiting_time
+
+                            ## Make the current taxa extinct
+                            lineage$livings <- lineage$livings[-lineage$drawn]
+                            lineage$n <- lineage$n - 1L   
                        })
                 ## Toggle the trigger tracker
                 events$trigger <- events$trigger + 1L
@@ -316,6 +333,38 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                  node.label  = paste0("n", 1:n_nodes),
                  edge.length = table$edge_lengths)
     class(tree) <- "phylo"
+
+    if(!is.null(events) && events$target == "founding") {
+
+        # ## Get the founding tree stop.rule info
+        # founding_tree_ages   <- tree.age(founding_tree$tree)
+        # founding_total_age   <- founding_tree_age + founding_tree$tree$root.time
+        # founding_tree_living <- sum(founding_tree_ages$ages == min(founding_tree_ages$ages))
+        # founding_tree_taxa   <- Ntip(founding_tree$tree)
+
+        # ## Get the normal tree tips and node depth info
+        # tree_elements_depth <- node.depth.edgelength(tree)
+
+
+
+
+
+
+
+        ## Rename the tips and nodes of the founding tree
+        founding_tree$tree$tip.label <- paste0("t", (n_tips+1):(n_tips+Ntip(founding_tree$tree)))
+        founding_tree$tree$node.label <- paste0("n", (n_nodes+1):(n_nodes+Nnode(founding_tree$tree)))
+
+        ## Combine both trees
+        tree <- bind.tree(tree, founding_tree$tree, where = cbind(table$parent2, table$element2)[which(table$element == founding_root), 2])
+
+        ## Recalculate tips trait values for the founding tree
+        if(do_traits) {
+            ## Rename the rownames in the dataset
+            warning("TODO: birth.death_fun: traits for founding_tree tips")
+        }
+    }
+
     ## Adding the root time
     tree$root.time <- max(dispRity::tree.age(tree)$age)
 
