@@ -124,9 +124,10 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ############
     # warning("DEBUG birth.death_fun.R") ; counter <- 0
     # warning("DEBUG birth.death_fun.R") ; set.seed(8)
+    # warning("DEBUG birth.death_fun.R") ; record <- c("start recording events:\n")
 
     ## Build the rest of the tree
-    while(lineage$n > 0 && lineage$n <= stop.rule$max.living  && sum(!lineage$split) <= stop.rule$max.taxa) {
+    while(lineage$n > 0 && lineage$n <= stop.rule$max.living && sum(!lineage$split) <= stop.rule$max.taxa) {
         
         # warning("DEBUG birth.death_fun.R") ; counter <- counter+1
         # warning("DEBUG birth.death_fun.R") ; print(counter)
@@ -243,6 +244,10 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                                 trait.values = trait_values)
                        },
                        founding = {
+
+                            warning("DEBUG birth.death") ; print("ping")
+                            warning("DEBUG birth.death") ; record <- c(record, paste0("event triggered at time ", time, "\n"))
+
                             ## Create a new independent birth death process
                             founding_tree <- events$modification(
                                 stop.rule = stop.rule,
@@ -250,7 +255,14 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                                 lineage   = lineage)
 
                             ## Record the root of the founding tree
+
+                            warning("TODO: add a way to select the target for founding (default is lineage$drawn)")
+
+                            warning("DEBUG birth.death") ; record <- c(record, paste0("drawn lineage is ", lineage$drawn, "\n"))
+
                             founding_root <- lineage$livings[lineage$drawn]
+
+                            warning("DEBUG birth.death") ; record <- c(record, paste0("which corresponds to element ", founding_root, "\n"))
 
                             ## Record the age of the founding tree start
                             founding_tree_root_age <- time - first_waiting_time
@@ -294,20 +306,6 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         table$is_split[table$element == last_parent] <- FALSE
     } 
 
-    ## Adding the traits to the table
-    if(do_traits) {
-        trait_table <- cbind(parent = table$parent, element = table$element, edge = table$edge_lengths, trait_values[match(table$element, rownames(trait_values)), ])
-        ## Add the root value
-        trait_table <- rbind(c(parent = 0, element = 1, edge = 0, trait_values[1, ]),
-                             trait_table)
-        ## Find the living tips
-        living_tips <- which(is.na(rownames(trait_table)))
-        ## Simulate the traits for the living tips and add them to the trait table
-        if(length(living_tips) > 0) {
-            trait_table[living_tips, -c(1:3)] <- t(sapply(living_tips, sim.living.tips, trait_table, traits, simplify = TRUE))
-        }
-    }
-
     ############
     ## Creating the tree object
     ############
@@ -334,36 +332,75 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                  edge.length = table$edge_lengths)
     class(tree) <- "phylo"
 
-    if(!is.null(events) && events$target == "founding") {
-
-        # ## Get the founding tree stop.rule info
-        # founding_tree_ages   <- tree.age(founding_tree$tree)
-        # founding_total_age   <- founding_tree_age + founding_tree$tree$root.time
-        # founding_tree_living <- sum(founding_tree_ages$ages == min(founding_tree_ages$ages))
-        # founding_tree_taxa   <- Ntip(founding_tree$tree)
-
-        # ## Get the normal tree tips and node depth info
-        # tree_elements_depth <- node.depth.edgelength(tree)
+    # if(!is.null(events) && events$target == "founding") {
 
 
+    #     warning("DEBUG birth.death") ; tree_bkp <- tree
+
+
+    #     ## Rename the tips and nodes of the founding tree
+    #     founding_tree$tree$tip.label <- paste0("t", (n_tips+1):(n_tips+Ntip(founding_tree$tree)))
+    #     founding_tree$tree$node.label <- paste0("n", (n_nodes+1):(n_nodes+Nnode(founding_tree$tree)))
+
+    #     ## Get the binding position on the tree
+    #     binding_position <- cbind(table$parent2, table$element2)[which(table$element == founding_root), 2]
+
+    #     ## Eventually stretching the tips of the founding_tree_table
+    #     if(stop.rule$max.time != Inf) {
+
+    #         ## Get the normal tree tips and node depth info
+    #         normal_tree_table <- cbind(tree$edge, dist.nodes(tree)[,Ntip(tree)+1][tree$edge[, 2]])
+
+    #         ## Get the founding tree tips and node depth information
+    #         founding_tree_table <- cbind(founding_tree$tree$edge, dist.nodes(founding_tree$tree)[,Ntip(founding_tree$tree)+1][founding_tree$tree$edge[, 2]] + founding_tree_root_age)
+
+    #         ## Stretch the tree edge
+    #         if((stretch <- max(normal_tree_table[,3]) - max(founding_tree_table[,3])) > 0) {
+    #             tree$edge.length[which(tree$edge[,2] == binding_position)] <- tree$edge.length[which(tree$edge[,2] == binding_position)] + stretch
+    #         }
+    #     }
+
+    #     ## Combine both trees
+    #     combined_tree <- bind.tree(tree, founding_tree$tree, where = binding_position)
+
+
+    #     if(rules$max.time != Inf) {
+    #         ## Temporary solution
+    #         combined_tree$root.time <- max(tree.age(combined_tree)$ages)
+    #         combined_tree <- paleotree::timeSliceTree(combined_tree, sliceTime = combined_tree$root.time - stop.rule$max.time, plot = FALSE)
+    #         combined_tree$root.time <- stop.rule$max.time
+    #     }
+
+    #     if(rules$max.living) {
+    #         ## Go to a point in the past where there are less livings
+    #         combined_tree_table <- tree.age(combined_tree, digits = 8)
+    #         n_living <- sum(combined_tree_table$ages == 0)
+
+
+    #         ## TODO:
+    #         # ## Make a selection slider using the dispRity code:
+    #         # ## Get nodes and tips ages
+    #         # node_age <- round(castor::get_all_distances_to_root(tree), rounding)
+
+    #         # ## Find the edges that are crossed
+    #         # crossed_edges <- which((node_age[ tree$edge[, 1] ] < slice_time) & (node_age[tree$edge[, 2] ] >= slice_time))
+
+    #         # ## Then write a while loop that just goes back in past until there the taxa are removed
+
+    #     }
+
+    #     if(rules$max.taxa) {
+    #         ## Go to a point in the past where there are less taxa
+    #     }
 
 
 
-
-
-        ## Rename the tips and nodes of the founding tree
-        founding_tree$tree$tip.label <- paste0("t", (n_tips+1):(n_tips+Ntip(founding_tree$tree)))
-        founding_tree$tree$node.label <- paste0("n", (n_nodes+1):(n_nodes+Nnode(founding_tree$tree)))
-
-        ## Combine both trees
-        tree <- bind.tree(tree, founding_tree$tree, where = cbind(table$parent2, table$element2)[which(table$element == founding_root), 2])
-
-        ## Recalculate tips trait values for the founding tree
-        if(do_traits) {
-            ## Rename the rownames in the dataset
-            warning("TODO: birth.death_fun: traits for founding_tree tips")
-        }
-    }
+    #     ## Recalculate tips trait values for the founding tree
+    #     if(do_traits) {
+    #         ## Rename the rownames in the dataset
+    #         warning("TODO: birth.death_fun: traits for founding_tree tips")
+    #     }
+    # }
 
     ## Adding the root time
     tree$root.time <- max(dispRity::tree.age(tree)$age)
@@ -388,8 +425,24 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         }
     }
 
-    ## Renaming the trait_values
+    ## Adding the traits to the table
     if(do_traits) {
+
+        # TODO: return shorter table if founding (don't calculate tips)
+        # TODO: update the trait table from the tree not table???
+
+        trait_table <- cbind(parent = table$parent, element = table$element, edge = table$edge_lengths, trait_values[match(table$element, rownames(trait_values)), ])
+        ## Add the root value
+        trait_table <- rbind(c(parent = 0, element = 1, edge = 0, trait_values[1, ]),
+                             trait_table)
+        ## Find the living tips
+        living_tips <- which(is.na(rownames(trait_table)))
+        ## Simulate the traits for the living tips and add them to the trait table
+        if(length(living_tips) > 0) {
+            trait_table[living_tips, -c(1:3)] <- t(sapply(living_tips, sim.living.tips, trait_table, traits, simplify = TRUE))
+        }
+
+        ## Renaming the trait_values
         trait_table <- trait_table[, -c(1:3), drop = FALSE]
         rownames(trait_table) <- c(tree$tip.label, tree$node.label)[c(n_tips+1, table$element2)]
         ## Add the column names (if missing)
