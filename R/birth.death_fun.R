@@ -252,7 +252,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                             ## Record the root of the founding tree
                             founding_root <- lineage$livings[lineage$drawn]
 
-                            ## Record the age of the founding tree start
+                            ## Record the age of the founding tree start
                             founding_tree_root_age <- time - first_waiting_time
 
                             ## Make the current taxa extinct
