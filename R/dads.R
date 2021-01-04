@@ -81,9 +81,8 @@ dads <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events =
             if(any(!(c(is(bd.params$speciation, "numeric") ||
                        is(bd.params$speciation, "integer"),
                        length(bd.params$speciation) == 1,
-                       !bd.params$speciation <= 0,
-                       !bd.params$speciation > 1)))) {
-                stop("bd.params$speciation must be a single numeric value in the (0, 1] interval.", call. = FALSE)
+                       !bd.params$speciation <= 0)))) {
+                stop("bd.params$speciation must be a single numeric value greater than 0.", call. = FALSE)
             }
         }
         if(is.null(bd.params$extinction)) {
@@ -94,9 +93,8 @@ dads <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events =
             if(any(!(c(is(bd.params$extinction, "numeric") ||
                        is(bd.params$extinction, "integer"),
                        length(bd.params$extinction) == 1,
-                       !bd.params$extinction < 0,
-                       !bd.params$extinction >= 1)))) {
-                stop("bd.params$extinction must be a single numeric value in the [0, 1) interval.", call. = FALSE)
+                       !bd.params$extinction < 0)))) {
+                stop("bd.params$extinction must be a single numeric value greater or equal to 0.", call. = FALSE)
             }
         }
     }
