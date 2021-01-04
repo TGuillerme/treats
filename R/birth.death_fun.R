@@ -316,7 +316,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
 
     ## Getting the tips and nodes labels
     tree_tips_labels <- paste0("t", 1:n_tips)
-    tree_node_labels <- paste0("n", 1:n_tips)
+    tree_node_labels <- paste0("n", 1:n_nodes)
     tree <- list(edge        = cbind(table$parent2, table$element2),
                  Nnode       = n_nodes,
                  tip.label   = tree_tips_labels,
@@ -489,7 +489,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
 
         ## Renaming the trait_values
         trait_table <- trait_table[, -c(1:3), drop = FALSE]
-        rownames(trait_table) <- c(tree_tip_labels, tree_node_labels)[c(n_tips+1, table$element2)]
+        rownames(trait_table) <- c(tree_tips_labels, tree_node_labels)[c(n_tips+1, table$element2)]
 
         ## Add the column names (if missing)
         if(length(missing_names <- which(colnames(trait_table) == "")) > 0) {
