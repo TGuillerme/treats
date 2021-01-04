@@ -341,7 +341,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         combined_tree <- bind.tree(tree, founding_tree$tree, where = binding_position)
 
         ## Adjust for the other stop rules (but time rule gets priority)
-        if(stop.rules$max.time == Inf) {
+        if(stop.rule$max.time == Inf) {
             ## Getting the ages of each tips in both trees
             founding_ages <- tree.age(founding_tree$tree, digits = 15)
             tree_ages     <- tree.age(tree, digits = 15)
