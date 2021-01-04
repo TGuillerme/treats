@@ -124,7 +124,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ############
     # warning("DEBUG birth.death_fun.R") ; counter <- 0
     # warning("DEBUG birth.death_fun.R") ; set.seed(8)
-    warning("DEBUG birth.death_fun.R") ; record <- c("start recording events:\n")
+    # warning("DEBUG birth.death_fun.R") ; record <- c("start recording events:\n")
 
     ## Build the rest of the tree
     while(lineage$n > 0 && lineage$n <= stop.rule$max.living && sum(!lineage$split) <= stop.rule$max.taxa) {
@@ -245,9 +245,6 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                        },
                        founding = {
 
-                            warning("DEBUG birth.death") ; print("ping")
-                            warning("DEBUG birth.death") ; record <- c(record, paste0("event triggered at time ", time, "\n"))
-
                             ## Create a new independent birth death process
                             founding_tree <- events$modification(
                                 stop.rule = stop.rule,
@@ -255,14 +252,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                                 lineage   = lineage)
 
                             ## Record the root of the founding tree
-
-                            warning("TODO: add a way to select the target for founding (default is lineage$drawn)")
-
-                            warning("DEBUG birth.death") ; record <- c(record, paste0("drawn lineage is ", lineage$drawn, "\n"))
-
                             founding_root <- lineage$livings[lineage$drawn]
-
-                            warning("DEBUG birth.death") ; record <- c(record, paste0("which corresponds to element ", founding_root, "\n"))
 
                             ## Record the age of the founding tree start
                             founding_tree_root_age <- time - first_waiting_time
@@ -325,38 +315,33 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     table$parent2[is.na(table$parent2)] <- n_tips + 1
 
     ## Getting the tips and nodes labels
+    tree_tips_labels <- paste0("t", 1:n_tips)
+    tree_node_labels <- paste0("n", 1:n_tips)
     tree <- list(edge        = cbind(table$parent2, table$element2),
                  Nnode       = n_nodes,
-                 tip.label   = paste0("t", 1:n_tips),
-                 node.label  = paste0("n", 1:n_nodes),
+                 tip.label   = tree_tips_labels,
+                 node.label  = tree_node_labels,
                  edge.length = table$edge_lengths)
     class(tree) <- "phylo"
 
     if(!is.null(events) && events$target == "founding") {
-
-
-        warning("DEBUG birth.death") ; tree_bkp <- tree
-
-
         ## Rename the tips and nodes of the founding tree
         founding_tree$tree$tip.label <- paste0("t", (n_tips+1):(n_tips+Ntip(founding_tree$tree)))
         founding_tree$tree$node.label <- paste0("n", (n_nodes+1):(n_nodes+Nnode(founding_tree$tree)))
 
+        ## Rename the tips and nodes of the data
+        if(do_traits) {
+            warning("TODO: birth.death_fun: traits for founding_tree tips")
+        }
+
         ## Get the binding position on the tree
         binding_position <- cbind(table$parent2, table$element2)[which(table$element == founding_root), 2]
-
-        # ## Eventually stretching the tips of the founding_tree_table
-        # if(stop.rule$max.time != Inf) {
-
-
-        # }
 
         ## Combine both trees
         combined_tree <- bind.tree(tree, founding_tree$tree, where = binding_position)
 
-
         ## Adjust for the other stop rules (but time rule gets priority)
-        if(rules$max.time == Inf) {
+        if(stop.rules$max.time == Inf) {
             ## Getting the ages of each tips in both trees
             founding_ages <- tree.age(founding_tree$tree, digits = 15)
             tree_ages     <- tree.age(tree, digits = 15)
@@ -388,25 +373,45 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
             }
 
             ## Adjust for number of living taxa
-            if(stop.rule$max.living != Inf) {
+            if(stop.rule$max.living != Inf || stop.rule$max.taxa != Inf) {
+
+                ## Selecting the criteria to optimise
+                if(stop.rule$max.taxa == Inf) {
+                    ## Don't do all tips (just living)
+                    do_all_tips <- FALSE
+                } else {
+                    ## Don't do all tips if max.taxa is lower than max.living (just living) else, do all tips
+                    do_all_tips <- stop.rule$max.taxa < stop.rule$max.living
+                }
 
                 ## Go to a point in the past where there are less livings
                 digits <- 6
                 tips_ages <- round(dist.nodes(combined_tree)[,Ntip(combined_tree)+1], digits)
-                n_living <- sum(tips_ages == round(max(tips_ages), digits))
 
-                warning("BIG DEBUG")
-                combined_tree$root.time <- max(node.depth.edgelength(combined_tree)[1:Ntip(combined_tree)])
+                ## Select the different criterias to optimise (living or all tips)
+                if(!do_all_tips) {
+                    tips_criteria <- sum(tips_ages == round(max(tips_ages), digits))
+                } else {
+                    tips_criteria <- Ntip(combined_tree)
+                }
+                
+                ## Initialise values for the loop
+                root_time <- max(tips_ages)
                 time <- 0
-                slider <- combined_tree$root.time * 0.01 # 1% of the root age
+                slider <- root_time * 0.01 # 1% of the root age
 
-                while(n_living > stop.rule$max.living) {
-                    ## Increase the time (decrease)
+                while(tips_criteria > stop.rule$max.living) {
+                    ## Increase the time (decrease)
                     time <- time + slider
-                    slice_time <- combined_tree$root.time-time
+                    slice_time <- root_time - time
                     ## Find the number of living taxa (crossed edges then)
-                    crossed_edges <- which((tips_ages[ combined_tree$edge[, 1] ] < slice_time) & (tips_ages[combined_tree$edge[, 2] ] >= slice_time))
-                    n_living <- length(crossed_edges)
+                    crossed_edges <- which((tips_ages[combined_tree$edge[, 1] ] < slice_time) & (tips_ages[combined_tree$edge[, 2] ] >= slice_time))
+                    tips_criteria <- length(crossed_edges)
+                    
+                    ## Also count the fossils
+                    if(do_all_tips) {
+                        tips_criteria <- tips_criteria + sum(tips_ages[1:Ntip(combined_tree)] < slice_time)
+                    }
                 }
 
                 ## Trimming the tree (inspired by the paleotree::timeSliceTree function)
@@ -421,24 +426,23 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                     }
                 }
 
-                reduced_tree <- drop.tip(combined_tree, tip_to_drop)
-                nodes_depth <- node.depth.edgelength(reduced_tree)
-                crossed_edges <- (nodes_depth[reduced_tree$edge[, 2] ] >= slice_time)
-                crossed_node_depth <- nodes_depth[reduced_tree$edge[crossed_edges, 1]]
-                reduced_tree$edge.length[crossed_edges] <- slice_time-crossed_node_depth
-            } else {
-                ## stop.rule$max.taxa != Inf
+                ## Trim the combined tree
+                combined_tree <- drop.tip(combined_tree, tip_to_drop)
+                nodes_depth <- node.depth.edgelength(combined_tree)
+                crossed_edges <- (nodes_depth[combined_tree$edge[, 2] ] >= slice_time)
+                crossed_node_depth <- nodes_depth[combined_tree$edge[crossed_edges, 1]]
+                combined_tree$edge.length[crossed_edges] <- slice_time-crossed_node_depth
             }
-
-
         }
-
 
         ## Recalculate tips trait values for the founding tree
         if(do_traits) {
             ## Rename the rownames in the dataset
             warning("TODO: birth.death_fun: traits for founding_tree tips")
         }
+
+        ## Replace the tree by the combined tree
+        tree <- combined_tree
     }
 
     ## Adding the root time
@@ -467,6 +471,8 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ## Adding the traits to the table
     if(do_traits) {
 
+        warning("TODO: birth.death_fun: traits for founding_tree tips")
+
         # TODO: return shorter table if founding (don't calculate tips)
         # TODO: update the trait table from the tree not table???
 
@@ -483,7 +489,8 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
 
         ## Renaming the trait_values
         trait_table <- trait_table[, -c(1:3), drop = FALSE]
-        rownames(trait_table) <- c(tree$tip.label, tree$node.label)[c(n_tips+1, table$element2)]
+        rownames(trait_table) <- c(tree_tip_labels, tree_node_labels)[c(n_tips+1, table$element2)]
+
         ## Add the column names (if missing)
         if(length(missing_names <- which(colnames(trait_table) == "")) > 0) {
             colnames(trait_table)[missing_names] <- names(traits)
