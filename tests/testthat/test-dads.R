@@ -9,19 +9,15 @@ test_that("dads works for simple birth-deaths", {
     error <- capture_error(dads(bd.params = list(1, 2), stop.rule = list(max.taxa = 10)))
     expect_equal(error[[1]], "bd.params must be a named list.")
     
-    error <- capture_error(dads(bd.params = list(speciation = 2), stop.rule = list(max.taxa = 10)))
-    expect_equal(error[[1]], "bd.params$speciation must be a single numeric value in the (0, 1] interval.")
     error <- capture_error(dads(bd.params = list(speciation = 0), stop.rule = list(max.taxa = 10)))
-    expect_equal(error[[1]], "bd.params$speciation must be a single numeric value in the (0, 1] interval.")
+    expect_equal(error[[1]], "bd.params$speciation must be a single numeric value greater than 0.")
     error <- capture_error(dads(bd.params = list(speciation = "ha"), stop.rule = list(max.taxa = 10)))
-    expect_equal(error[[1]], "bd.params$speciation must be a single numeric value in the (0, 1] interval.")
+    expect_equal(error[[1]], "bd.params$speciation must be a single numeric value greater than 0.")
 
     error <- capture_error(dads(bd.params = list(extinction = -2), stop.rule = list(max.taxa = 10)))
-    expect_equal(error[[1]], "bd.params$extinction must be a single numeric value in the [0, 1) interval.")
-    error <- capture_error(dads(bd.params = list(extinction = 1), stop.rule = list(max.taxa = 10)))
-    expect_equal(error[[1]], "bd.params$extinction must be a single numeric value in the [0, 1) interval.")
+    expect_equal(error[[1]], "bd.params$extinction must be a single numeric value greater or equal to 0.")
     error <- capture_error(dads(bd.params = list(extinction = "ha"), stop.rule = list(max.taxa = 10)))
-    expect_equal(error[[1]], "bd.params$extinction must be a single numeric value in the [0, 1) interval.")
+    expect_equal(error[[1]], "bd.params$extinction must be a single numeric value greater or equal to 0.")
 
 
     error <- capture_error(dads())
