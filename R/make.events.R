@@ -9,6 +9,7 @@
 #' @param test          A \code{logical}, whether to test if the events object will work (default is \code{TRUE})
 #' @param event.name    Optional, a \code{"character"} string to name the event.
 #' @param replications  A numeric or integer value for repeating the event (by default, the event is not repeated: \code{replications = 0}).
+#' @param additional.args Optional, a named \code{list} of additional arguments to be used in the event.
 #' 
 #' @details 
 #' 
@@ -24,7 +25,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-make.events <- function(target, condition, modification, add, test = TRUE, event.name, replications = 0) {
+make.events <- function(target, condition, modification, add, test = TRUE, event.name, replications = 0, additional.args) {
 
     ## Test target
     allowed_targets <- c("taxa", "bd.params", "traits", "modifiers")
@@ -54,12 +55,27 @@ make.events <- function(target, condition, modification, add, test = TRUE, event
     check.class(replications, c("numeric", "integer"))
     trigger <- as.integer(0L - replications)
 
+    ## Check additional.args
+    if(!missing(additional.args)) {
+        more_args <- TRUE
+        check.class(additional.args, "list")
+        if(is.null(names(additional.args))) {
+            stop("additional.args argument must be a named list.", call. = FALSE)
+        }
+    } else {
+        more_args <- FALSE
+    }
+
     ## Creating the events object
     if(!do_add) {
         events <- list(target       = target,
                        trigger      = trigger,
                        condition    = condition,
-                       modification = modification)
+                       modification = modification,
+                       args         = NULL)
+    }
+    if(more_args) {
+        events$args <- additional.args
     }
 
     ## Testing the event object

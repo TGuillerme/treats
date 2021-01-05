@@ -11,7 +11,8 @@ make.events(
   add,
   test = TRUE,
   event.name,
-  replications = 0
+  replications = 0,
+  additional.args
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ make.events(
 \item{event.name}{Optional, a \code{"character"} string to name the event.}
 
 \item{replications}{A numeric or integer value for repeating the event (by default, the event is not repeated: \code{replications = 0}).}
+
+\item{additional.args}{Optional, a named \code{list} of additional arguments to be used in the event.}
 }
 \description{
 Making events objects for dads

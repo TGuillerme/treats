@@ -2,7 +2,7 @@
 check.events <- function(events) {
 
     ## Check the content at the first level
-    required_names <- c("target", "trigger", "condition", "modification")
+    required_names <- c("target", "trigger", "condition", "modification") # args is not mandatory
     if(any(missing <- is.na(match(names(events), required_names)))) {
         stop(paste0("events must have the following elements: ", paste(required_names, collapse = ", "), "."), call. = FALSE)
     }
