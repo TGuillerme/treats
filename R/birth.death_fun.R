@@ -26,7 +26,7 @@ sim.living.tips <- function(living, trait_table, traits) {
 
 
 ## Run a birth death process to generate both tree and traits
-birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events = NULL, null.error = FALSE) {
+birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE) {
   
     ############
     ## Initialising
@@ -50,6 +50,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
 
     ## Initialising the values
     time <- edge_lengths <- 0
+    was_alive <- 0L # recording which lineage go extinct (when extinction happens). 0L is no extinction.
 
     ## Initialise the lineage tracker
     lineage <- list("parents" = 0L,   # The list of parent lineages
@@ -110,6 +111,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         edge_lengths[new_lineage] <- 0
         lineage$n <- lineage$n + 1L
         lineage$livings <- c(lineage$livings[-lineage$drawn], new_lineage)
+        was_alive <- 0L
     } else {
         ## Cannot go further
         if(!null.error) {
@@ -194,11 +196,15 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
             edge_lengths[new_lineage] <- 0
             lineage$n <- lineage$n + 1L
             lineage$livings <- c(lineage$livings[-lineage$drawn], new_lineage)
+            was_alive <- 0L
         } else {
             ## Go extinct
+            was_alive <- lineage$livings[lineage$drawn]
             lineage$livings <- lineage$livings[-lineage$drawn]
             lineage$n <- lineage$n - 1L
+            
         }
+
 
         ## Trigger events
         if(do_events) {
@@ -251,15 +257,42 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                                 time      = time,
                                 lineage   = lineage)
 
+                            ## Select the founding root 
+                            ## Default
+                            if(was_alive == 0) {
+                                ## Select one of the two taxa from the speciation event to go extinct
+
+                                ## Speciating
+                                new_lineage <- length(lineage$split) + 1:2
+                                lineage$split[lineage$current] <- TRUE
+                                lineage$split[new_lineage] <- FALSE
+                                lineage$parents[new_lineage] <- lineage$current
+                                edge_lengths[new_lineage] <- 0
+                                lineage$n <- lineage$n + 1L
+                                lineage$livings <- c(lineage$livings[-lineage$drawn], new_lineage)
+                                
+                                was_alive <- lineage$livings[lineage$drawn]
+                                lineage$livings <- lineage$livings[-lineage$drawn]
+                                lineage$n <- lineage$n - 1L
+
+                            } else {
+                                founding_root <- was_alive
+                            }
+
+                            ## And making it extinct
+
+
+
                             ## Record the root of the founding tree
                             founding_root <- lineage$livings[lineage$drawn]
 
                             ## Record the age of the founding tree start
                             founding_tree_root_age <- time - first_waiting_time
 
-                            ## Make the current taxa extinct
-                            lineage$livings <- lineage$livings[-lineage$drawn]
-                            lineage$n <- lineage$n - 1L   
+                            # ## Make the current taxa extinct
+                            # lineage$livings <- lineage$livings[-lineage$drawn]
+                            # lineage$n <- lineage$n - 1L   
+
                        })
                 ## Toggle the trigger tracker
                 events$trigger <- events$trigger + 1L
@@ -325,9 +358,16 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     class(tree) <- "phylo"
 
     if(!is.null(events) && events$target == "founding") {
+
+        if(!is.null(events$args) && !is.null(events$args$prefix) && is(events$args$prefix, "character")) {
+            tree_prefix <- events$args$prefix
+        } else {
+            tree_prefix <- NULL
+        }
+
         ## Rename the tips and nodes of the founding tree
-        founding_tree$tree$tip.label <- paste0("t", (n_tips+1):(n_tips+Ntip(founding_tree$tree)))
-        founding_tree$tree$node.label <- paste0("n", (n_nodes+1):(n_nodes+Nnode(founding_tree$tree)))
+        founding_tree$tree$tip.label <- paste0(tree_prefix, "t", (n_tips+1):(n_tips+Ntip(founding_tree$tree)))
+        founding_tree$tree$node.label <- paste0(tree_prefix, "n", (n_nodes+1):(n_nodes+Nnode(founding_tree$tree)))
 
         ## Rename the tips and nodes of the data
         if(do_traits) {
@@ -453,18 +493,31 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     achieved <- list(max.living = length(which(dispRity::tree.age(tree)$age == 0)),
                      max.taxa   = Ntip(tree),
                      max.time   = tree$root.time + edge_lengths[1])
+
+    warning("DEBUG")
+    cat("Root time + edge_length[1]:\n")
+    print(tree$root.time)
+    print(edge_lengths[1])
+    cat("stop.rule$max.time:\n")
+    print(stop.rule$max.time)
+    cat("achieved:\n")
+    print(stop.rule$max.time == (tree$root.time + edge_lengths[1]))
+
+
     ## Find if any matches the requested ones
-    check.requested <- function(requested, achieved){
-        if(requested == Inf) {TRUE} else {achieved == requested}
-    }
-    achieved <- unlist(mapply(check.requested, stop.rule[names(achieved)], achieved))
-    
-    ## Warning or fail
-    if(any(!achieved)) {
-        if(!null.error) {
-            warning("The simulation stopped before reaching any of the stopping rule.", call. = FALSE)
-        } else {
-            return(NULL)
+    if(check.results) {
+        check.requested <- function(requested, achieved){
+            if(requested == Inf) {TRUE} else {achieved == requested}
+        }
+        achieved <- unlist(mapply(check.requested, stop.rule[names(achieved)], achieved))
+        
+        ## Warning or fail
+        if(any(!achieved)) {
+            if(!null.error) {
+                warning("The simulation stopped before reaching any of the stopping rule.", call. = FALSE)
+            } else {
+                return(NULL)
+            }
         }
     }
 

@@ -441,10 +441,21 @@ test_that("events work", {
 
 
 
-    ## founding events
-    bd.params1 <- list(speciation = 1, extinction = 0.3)
-    bd.params2 <- list(speciation = 1, extinction = 0)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ## founding events
     founding.event <- function(stop.rule, time, lineage) {
 
         # bd.params <- NULL
@@ -466,23 +477,37 @@ test_that("events work", {
         }
 
         ## Run the founding event
-        return(birth.death.tree.traits(stop.rule = stop_rule_updated, bd.params, traits, modifiers, events))
+        return(birth.death.tree.traits(stop.rule = stop_rule_updated, bd.params, traits, modifiers, events, check.results = FALSE))
     }
 
-
-
-
-
-
+    ## Normal birth death params
     bd.params <- list(speciation = 1, extinction = 0.3)
-    stop.rule <- list(max.taxa = Inf, max.living = 30, max.time = Inf)
+
+    stop.rule.time <- list(max.taxa = Inf, max.living = Inf, max.time = 4)
+    stop.rule.taxa <- list(max.taxa = 50, max.living = Inf, max.time = Inf)
+    stop.rule.living <- list(max.taxa = Inf, max.living = 50, max.time = Inf)
 
     ## Events that generate a new process (founding effects)
     events <- list(trigger      = 0L,
                    condition    = taxa.condition(10),
                    target       = "founding",
-                   modification = founding.event)
+                   modification = founding.event,
+                   args         = list(prefix = "founding_"))
 
-    test <- birth.death.tree.traits(bd.params = bd.params1, stop.rule = stop.rule, traits = traits1, modifiers = NULL, events = NULL)
+    set.seed(1)
+    test_bd_time <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.time, traits = NULL, modifiers = NULL, events = NULL)
+    expect_is(test_bd_time$tree, "phylo")
+    expect_equal(Ntip(test_bd_time$tree), 40)
+    expect_equal(sum(tree.age(test_bd_time$tree)$ages == 0), 30)
+
+    set.seed(1)
+    test_bdfound_time <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.time, traits = NULL, modifiers = NULL, events = events)
+    expect_is(test_bdfound_time$tree, "phylo")
+    expect_equal(Ntip(test_bdfound_time$tree), 64)
+    expect_equal(sum(tree.age(test_bdfound_time$tree)$ages == 0), 55)
+    ## Founding tree has no fossils
+    founding_tips <- grep("founding_", test_bdfound_time$tree$tip.label)
+    expect_equal(length(founding_tips), 28)
+    expect_equal(Ntip(drop.tip(test_bdfound_time$tree, tip = test_bdfound_time$tree$tip.label[-founding_tips])), length(founding_tips))
 
 })
