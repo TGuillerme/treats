@@ -1,5 +1,5 @@
 #' @name events.modifications
-#' @aliases modification,
+#' @aliases modification, mass.extinction, trait.extinction, update.bd.params, update.traits, update.modifiers, founding.event
 #' @title events.modifications
 #'
 #' @description Inbuilt modifications functions for helping designing events
@@ -56,6 +56,8 @@ modification <- function(x) {
     cat("   ?update.traits\n")
     cat("For the modifiers target:\n")
     cat("   ?update.modifiers\n")
+    cat("For the founding targer:\n")
+    cat("   ?founding.event\n")
     return(invisible())
 } 
 
@@ -188,4 +190,47 @@ update.modifiers <- function(x, branch.length = NULL, selection = NULL, speciati
         body(change.modifiers)[[6]][[3]] <- modify
     }
     return(change.modifiers)
+}
+
+## Founding events
+founding.event <- function(x, bd.params = NULL, traits = NULL, modifiers = NULL, events = NULL) {
+
+    ## founding events
+    founding.fun <- function(stop.rule, time, lineage) {
+
+        bd.params <- NULL
+        traits    <- NULL
+        modifiers <- NULL
+        events    <- NULL
+
+        ## Update the stop rule
+        stop_rule_updated <- stop.rule
+        if(stop_rule_updated$max.time != Inf) {
+            stop_rule_updated$max.time <- stop_rule_updated$max.time - time
+        }
+        if(stop_rule_updated$max.living != Inf) {
+            stop_rule_updated$max.living <- stop_rule_updated$max.living - lineage$n
+        }
+        if(stop_rule_updated$max.taxa != Inf) {
+            stop_rule_updated$max.living <- stop_rule_updated$max.taxa - sum(!lineage$split)
+        }
+
+        ## Run the founding event
+        return(birth.death.tree.traits(stop.rule = stop_rule_updated, bd.params, traits, modifiers, events, check.results = FALSE))
+    }
+
+    if(!is.null(bd.params)) {
+        body(founding.fun)[[2]][[3]] <- bd.params
+    }
+    if(!is.null(traits)) {
+        body(founding.fun)[[3]][[3]] <- traits
+    }
+    if(!is.null(modifiers)) {
+        body(founding.fun)[[4]][[3]] <- modifiers
+    }
+    if(!is.null(events)) {
+        body(founding.fun)[[5]][[3]] <- events
+    }
+
+    return(founding.fun)
 }

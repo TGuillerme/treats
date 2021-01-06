@@ -40,7 +40,7 @@ export(trait.extinction)
 export(update.bd.params)
 export(update.traits)
 export(update.modifiers)
-
+export(founding.event)
 
 ## Utilities
 export(drop.fossil.dads)

@@ -4,6 +4,12 @@
 \alias{events.modifications}
 \alias{modification}
 \alias{modification,}
+\alias{mass.extinction,}
+\alias{trait.extinction,}
+\alias{update.bd.params,}
+\alias{update.traits,}
+\alias{update.modifiers,}
+\alias{founding.event}
 \title{events.modifications}
 \usage{
 modification(x, ...)
