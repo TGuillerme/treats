@@ -282,7 +282,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                                 time      = time,
                                 lineage   = lineage)
                        })
-                
+
                 ## Toggle the trigger tracker
                 events$trigger <- events$trigger + 1L
             }
@@ -347,6 +347,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     class(tree) <- "phylo"
 
     if(!is.null(events) && events$target == "founding") {
+        ## Using a prefix?
         if(!is.null(events$args) && !is.null(events$args$prefix) && is(events$args$prefix, "character")) {
             tree_prefix <- events$args$prefix
         } else {
@@ -371,13 +372,13 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         ## Adjust for the other stop rules (but time rule gets priority)
         if(stop.rule$max.time == Inf) {
             ## Getting the ages of each tips in both trees
-            founding_ages <- tree.age(founding_tree$tree, digits = 15)
-            tree_ages     <- tree.age(tree, digits = 15)
-            combined_ages <- tree.age(combined_tree, digits = 15)
+            founding_ages <- tree.age(founding_tree$tree, digits = 8)
+            tree_ages     <- tree.age(tree, digits = 8)
+            combined_ages <- tree.age(combined_tree, digits = 8)
 
             ## Getting the list of living tips in both trees
-            founding_living <- founding_ages$elements[founding_ages$ages == 0]
-            tree_living     <- tree_ages$elements[tree_ages$ages == 0]
+            founding_living <- founding_ages$elements[founding_ages$ages == min(founding_ages$ages)]
+            tree_living     <- tree_ages$elements[tree_ages$ages == min(tree_ages$ages)]
 
             ## Getting the ages of the living tips in the combined tree
             comb_foun_ages <- combined_ages$ages[combined_ages$elements %in% founding_living]
@@ -389,15 +390,15 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
             if(living_diff != 0) {
 
                 ## Select which ones are the younger tips
-                if(living_diff < 0) {
-                    younger_tips <- founding_living
+                if(living_diff > 0) {
+                    older_tips <- tree_living
                 } else {
-                    younger_tips <- tree_living
+                    older_tips <- founding_living
                 }
 
                 ## Adding the living_diff to their edges
-                younger_tips_edges <- which(combined_tree$edge[, 2] %in% which(combined_tree$tip.label %in% founding_living))
-                combined_tree$edge.length[younger_tips_edges] <- combined_tree$edge.length[younger_tips_edges] + abs(living_diff)
+                older_tips_edges <- which(combined_tree$edge[, 2] %in% which(combined_tree$tip.label %in% older_tips))
+                combined_tree$edge.length[older_tips_edges] <- combined_tree$edge.length[older_tips_edges] + abs(living_diff)
             }
 
             ## Adjust for number of living taxa
@@ -407,9 +408,11 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                 if(stop.rule$max.taxa == Inf) {
                     ## Don't do all tips (just living)
                     do_all_tips <- FALSE
+                    max_criteria <- stop.rule$max.living
                 } else {
                     ## Don't do all tips if max.taxa is lower than max.living (just living) else, do all tips
                     do_all_tips <- stop.rule$max.taxa < stop.rule$max.living
+                    max_criteria <- do_all_tips
                 }
 
                 ## Go to a point in the past where there are less livings
@@ -428,7 +431,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                 time <- 0
                 slider <- root_time * 0.01 # 1% of the root age
 
-                while(tips_criteria > stop.rule$max.living) {
+                while(tips_criteria > max_criteria) {
                     ## Increase the time (decrease)
                     time <- time + slider
                     slice_time <- root_time - time
@@ -455,9 +458,9 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                 }
 
                 ## Trim the combined tree
-                combined_tree <- drop.tip(combined_tree, tip_to_drop)
+                combined_tree <- drop.tip(combined_tree, tips_to_drop)
                 nodes_depth <- node.depth.edgelength(combined_tree)
-                crossed_edges <- (nodes_depth[combined_tree$edge[, 2] ] >= slice_time)
+                crossed_edges <- (nodes_depth[combined_tree$edge[, 2]] >= slice_time)
                 crossed_node_depth <- nodes_depth[combined_tree$edge[crossed_edges, 1]]
                 combined_tree$edge.length[crossed_edges] <- slice_time-crossed_node_depth
             }
