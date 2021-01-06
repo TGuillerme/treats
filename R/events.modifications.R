@@ -34,7 +34,13 @@
 #'      \itemize{
 #'          \item \code{update.modifiers}: this function updates a \code{"dads"} \code{"modifiers"} object. This function takes as arguments any arguments that can be updated in \code{\link{make.modifiers}}, namely \code{branch.length}, \code{selection}, \code{speciation}, \code{condition} and \code{modify}.
 #'      }
+#' 
+#' \item modifications for the target \code{"founding"} 
+#'      \itemize{
+#'          \item \code{founding.event}: this function runs an independent birth-death process when the condition is met. This function takes the arguments \code{"bd.params"}, \code{"traits"}, \code{"modifiers"} and \code{"events"} as they would normally be specified for the \code{\link{dads}} function. Note that the \code{stop.rule} and other arguments are handled internally (the \code{stop.rule} argument is updated to match the time and number of taxa when the founding event is triggered).
+#'      }
 #' }
+#' 
 #' 
 #' More details about the \code{events} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
 #' 
