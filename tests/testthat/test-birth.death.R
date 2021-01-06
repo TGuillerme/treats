@@ -443,57 +443,23 @@ test_that("events work", {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     ## founding events
-    founding.event <- function(stop.rule, time, lineage) {
 
-        # bd.params <- NULL
-        bd.params <- list(speciation = 2, extinction = 0)
-        traits    <- NULL
-        modifiers <- NULL
-        events    <- NULL
-
-        ## Update the stop rule
-        stop_rule_updated <- stop.rule
-        if(stop_rule_updated$max.time != Inf) {
-            stop_rule_updated$max.time <- stop_rule_updated$max.time - time
-        }
-        if(stop_rule_updated$max.living != Inf) {
-            stop_rule_updated$max.living <- stop_rule_updated$max.living - lineage$n
-        }
-        if(stop_rule_updated$max.taxa != Inf) {
-            stop_rule_updated$max.living <- stop_rule_updated$max.taxa - sum(!lineage$split)
-        }
-
-        ## Run the founding event
-        return(birth.death.tree.traits(stop.rule = stop_rule_updated, bd.params, traits, modifiers, events, check.results = FALSE))
-    }
-
-    ## Normal birth death params
-    bd.params <- list(speciation = 1, extinction = 0.3)
-
+    ## Stop rules to test
     stop.rule.time <- list(max.taxa = Inf, max.living = Inf, max.time = 4)
     stop.rule.taxa <- list(max.taxa = 50, max.living = Inf, max.time = Inf)
     stop.rule.living <- list(max.taxa = Inf, max.living = 50, max.time = Inf)
 
-    ## Events that generate a new process (founding effects)
-    events <- list(trigger      = 0L,
-                   condition    = taxa.condition(10),
-                   target       = "founding",
-                   modification = founding.event,
-                   args         = list(prefix = "founding_"))
+    ## Normal bd params
+    bd.params <- list(speciation = 1, extinction = 0.3)
 
+    ## Events that generate a new process (founding effects)
+    events <- make.events(condition    = taxa.condition(10),
+                          target       = "founding",
+                          modification = founding.event(bd.params = list(speciation = 2,
+                                                                         extinction = 0)),
+                          additional.args = list(prefix = "founding_"))
+    
     set.seed(1)
     test_bd_time <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.time, traits = NULL, modifiers = NULL, events = NULL)
     expect_is(test_bd_time$tree, "phylo")
