@@ -19,7 +19,8 @@ check.events <- function(events) {
     first_waiting_time <- time <- 0
     traits <- make.traits()
     modifiers <- make.modifiers(branch.length = branch.length, speciation = speciation, selection = selection)
-
+    stop.rule <- list("max.time" = Inf, max.taxa = 10, max.living = 10)
+    time <- 0
 
     ## Check if the trigger is negative
     if(events$trigger > 0L) {
@@ -44,9 +45,9 @@ check.events <- function(events) {
     }
 
     ## Check the target
-    allowed_targets <- c("taxa", "bd.params", "traits", "modifiers")
+    allowed_targets <- c("taxa", "bd.params", "traits", "modifiers", "founding")
     check.method(events$target, allowed_targets, "target argument ")
-
+    
     ## Check the modification on the different targets
     switch(events$target,
         taxa      = {
@@ -74,7 +75,14 @@ check.events <- function(events) {
                             bd.params    = bd.params,
                             lineage      = lineage,
                             trait.values = trait_values)
-            , silent = TRUE)})
+            , silent = TRUE)},
+        founding = {
+            test_modification <- try(events$modification(
+                            stop.rule    = stop.rule,
+                            time         = time,
+                            lineage      = lineage)
+            , silent = TRUE)}
+        )
 
 
     ## Debrief
@@ -125,6 +133,16 @@ check.events <- function(events) {
                     stop(paste0("The modification function targeting \"modifiers\" must output a dads modifiers object. Currently the modification function output is a ", paste(class(test_modification), collapse = ", "), "."))
                 } else {
                     check.modifiers(test_modification, events = TRUE)
+                }
+            },
+
+            founding = {
+                if(!is(test_modification, "list")) {
+                    stop(paste0("The modification function targeting \"founding\" must output a named list containing at least a \"phylo\" object. Currently the modification function output is a ", paste(class(test_modification), collapse = ", "), "."))
+                } else {
+                    if(!is(test_modification$tree, "phylo")) {
+                        stop(paste0("The modification function targeting \"founding\" must output a named list containing at least a \"phylo\" object. Currently the modification function output is a list with the following elements: ", paste(names(test_modification), collapse = ", "), "."))
+                    }
                 }
             })
       }

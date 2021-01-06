@@ -28,8 +28,8 @@
 make.events <- function(target, condition, modification, add, test = TRUE, event.name, replications = 0, additional.args) {
 
     ## Test target
-    allowed_targets <- c("taxa", "bd.params", "traits", "modifiers")
-    check.method(target, allowed_targets, "target argument ")
+    allowed_targets <- c("taxa", "bd.params", "traits", "modifiers", "founding")
+    check.method(target, allowed_targets, "target argument")
 
     ## Test condition
     condition <- check.args(condition, fun_name = "condition", required_args = c("bd.params", "lineage", "trait.values", "time"))
@@ -39,7 +39,8 @@ make.events <- function(target, condition, modification, add, test = TRUE, event
         taxa      = c("bd.params", "lineage", "trait.values"),
         bd.params = c("bd.params", "lineage", "trait.values"),
         traits    = c("traits", "bd.params", "lineage", "trait.values"),
-        modifiers = c("modifiers", "bd.params", "lineage", "trait.values"))
+        modifiers = c("modifiers", "bd.params", "lineage", "trait.values"),
+        founding  = c("stop.rule", "time", "lineage"))
     modification <- check.args(modification, fun_name = "modification", required_args = need_args)
 
     ## Check add
