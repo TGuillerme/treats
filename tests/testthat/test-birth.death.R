@@ -503,11 +503,11 @@ test_that("events work", {
     set.seed(1)
     test_bdfound_time <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.time, traits = NULL, modifiers = NULL, events = events)
     expect_is(test_bdfound_time$tree, "phylo")
-    expect_equal(Ntip(test_bdfound_time$tree), 64)
-    expect_equal(sum(tree.age(test_bdfound_time$tree)$ages == 0), 55)
+    expect_equal(Ntip(test_bdfound_time$tree), 88)
+    expect_equal(sum(tree.age(test_bdfound_time$tree)$ages == 0), 81)
     ## Founding tree has no fossils
     founding_tips <- grep("founding_", test_bdfound_time$tree$tip.label)
-    expect_equal(length(founding_tips), 28)
+    expect_equal(length(founding_tips), 53)
     expect_equal(Ntip(drop.tip(test_bdfound_time$tree, tip = test_bdfound_time$tree$tip.label[-founding_tips])), length(founding_tips))
 
 })

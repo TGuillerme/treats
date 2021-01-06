@@ -201,10 +201,8 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
             ## Go extinct
             was_alive <- lineage$livings[lineage$drawn]
             lineage$livings <- lineage$livings[-lineage$drawn]
-            lineage$n <- lineage$n - 1L
-            
+            lineage$n <- lineage$n - 1L   
         }
-
 
         ## Trigger events
         if(do_events) {
@@ -215,8 +213,6 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                                 time = time - first_waiting_time)
                && events$trigger < 1L)
             {
-                # warning("DEBUG birth.death_fun"); break
-
                 ## Trigger the event
                 switch(events$target,
                        taxa      = {
@@ -251,49 +247,42 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                        },
                        founding = {
 
+                            ## Select the founding root 
+                            if(!is.null(events$args) && !is.null(events$args$founding.root) && is(events$args$founding.root, "function")) {
+
+                                ## Select the founding root using a function
+                                select_root   <- events$args$founding.root(lineage, trait_values)
+                                lineage       <- select_root$lineage
+                                founding_root <- select_root$founding_root
+                            } else {
+                                ## By default the founding root is either the last taxa (if extinction) or one of the two new taxa (if speciation)
+                                if(was_alive == 0) {
+                                    ## Select one of the two taxa from the speciation event to go extinct
+                                    founding_root <- sample(new_lineage, 1)
+
+                                    ## Adding a mini waiting time to avoid 0 brlen
+                                    short_wait <- mean(edge_lengths)*0.01
+                                    edge_lengths[lineage$livings] <- edge_lengths[lineage$livings] + short_wait
+                                    time <- time + short_wait
+
+                                    ## Make one of the two available tips extinct
+                                    lineage$livings <- lineage$livings[!(lineage$livings %in% founding_root)]
+                                    lineage$n <- lineage$n - 1L
+                                } else {
+                                    ## Record the founding root
+                                    founding_root <- was_alive
+                                }
+                                ## Record the founding root age
+                                founding_tree_root_age <- time - first_waiting_time
+                            }
+
                             ## Create a new independent birth death process
                             founding_tree <- events$modification(
                                 stop.rule = stop.rule,
                                 time      = time,
                                 lineage   = lineage)
-
-                            ## Select the founding root 
-                            ## Default
-                            if(was_alive == 0) {
-                                ## Select one of the two taxa from the speciation event to go extinct
-
-                                ## Speciating
-                                new_lineage <- length(lineage$split) + 1:2
-                                lineage$split[lineage$current] <- TRUE
-                                lineage$split[new_lineage] <- FALSE
-                                lineage$parents[new_lineage] <- lineage$current
-                                edge_lengths[new_lineage] <- 0
-                                lineage$n <- lineage$n + 1L
-                                lineage$livings <- c(lineage$livings[-lineage$drawn], new_lineage)
-                                
-                                was_alive <- lineage$livings[lineage$drawn]
-                                lineage$livings <- lineage$livings[-lineage$drawn]
-                                lineage$n <- lineage$n - 1L
-
-                            } else {
-                                founding_root <- was_alive
-                            }
-
-                            ## And making it extinct
-
-
-
-                            ## Record the root of the founding tree
-                            founding_root <- lineage$livings[lineage$drawn]
-
-                            ## Record the age of the founding tree start
-                            founding_tree_root_age <- time - first_waiting_time
-
-                            # ## Make the current taxa extinct
-                            # lineage$livings <- lineage$livings[-lineage$drawn]
-                            # lineage$n <- lineage$n - 1L   
-
                        })
+                
                 ## Toggle the trigger tracker
                 events$trigger <- events$trigger + 1L
             }
@@ -358,7 +347,6 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     class(tree) <- "phylo"
 
     if(!is.null(events) && events$target == "founding") {
-
         if(!is.null(events$args) && !is.null(events$args$prefix) && is(events$args$prefix, "character")) {
             tree_prefix <- events$args$prefix
         } else {
@@ -493,16 +481,6 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     achieved <- list(max.living = length(which(dispRity::tree.age(tree)$age == 0)),
                      max.taxa   = Ntip(tree),
                      max.time   = tree$root.time + edge_lengths[1])
-
-    warning("DEBUG")
-    cat("Root time + edge_length[1]:\n")
-    print(tree$root.time)
-    print(edge_lengths[1])
-    cat("stop.rule$max.time:\n")
-    print(stop.rule$max.time)
-    cat("achieved:\n")
-    print(stop.rule$max.time == (tree$root.time + edge_lengths[1]))
-
 
     ## Find if any matches the requested ones
     if(check.results) {
