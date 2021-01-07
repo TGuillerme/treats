@@ -17,6 +17,11 @@ test_that("make.events works", {
 
     error <- capture_error(make.events(target = "traits", condition = condition.test.ok, modification = modification.test.ok, additional.args = "bib"))
     expect_equal(error[[1]], "additional.args must be of class list.")
+
+    event <- make.events(target = "traits", condition = condition.test.ok, modification = modification.test.ok)
+    print <- capture_output(print(event))
+    expect_equal(print, " ---- dads events object ---- \nEvent targeting \"traits\" to be triggered 1 time.\nThe condition function is: condition.test.ok\nThe modification function is: modification.test.ok")
+
 })
 
 # test_that("More that one events works", {

@@ -102,3 +102,13 @@ print.modifiers.info <- function(x) {
         cat(".\n")
     }
 }
+
+## Function for printing the events info
+print.events.info <- function(x) {
+    cat(paste0("Event targeting \"", x$target, "\" to be triggered ", x$trigger+1, " time", ifelse(x$trigger < 0, "s.", ".")))
+    cat("\n")
+    condition_fun <- if(class(x$call$condition) == "name") {x$call$condition} else {x$call$condition[[1]]}
+    cat(paste0("The condition function is: ", condition_fun, "\n"))
+    modification_fun <- if(class(x$call$modification) == "name") {x$call$modification} else {x$call$modification[[1]]}
+    cat(paste0("The modification function is: ", modification_fun, "\n"))
+}
