@@ -412,7 +412,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                 } else {
                     ## Don't do all tips if max.taxa is lower than max.living (just living) else, do all tips
                     do_all_tips <- stop.rule$max.taxa < stop.rule$max.living
-                    max_criteria <- do_all_tips
+                    max_criteria <- ifelse(do_all_tips, stop.rule$max.taxa, stop.rule$max.living)
                 }
 
                 ## Go to a point in the past where there are less livings

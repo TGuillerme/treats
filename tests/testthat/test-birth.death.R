@@ -488,10 +488,26 @@ test_that("events work", {
     test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.taxa, traits = NULL, modifiers = NULL, events = events)
     expect_is(test2$tree, "phylo")
     expect_equal(Ntip(test2$tree), 50)
-    expect_equal(sum(tree.age(test2$tree)$ages == 0), 81)
+    expect_equal(sum(tree.age(test2$tree)$ages == 0), 37)
     ## Founding tree has no fossils
     founding_tips <- grep("founding_", test2$tree$tip.label)
-    expect_equal(length(founding_tips), 53)
+    expect_equal(length(founding_tips), 15)
     expect_equal(Ntip(drop.tip(test2$tree, tip = test2$tree$tip.label[-founding_tips])), length(founding_tips))
 
+    ## Max living
+    set.seed(8)
+    test1 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.living, traits = NULL, modifiers = NULL, events = NULL)
+    expect_is(test1$tree, "phylo")
+    expect_equal(Ntip(test1$tree), 69)
+    expect_equal(sum(tree.age(test1$tree)$ages == 0), 50)
+
+    set.seed(8)
+    expect_warning(test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.living, traits = NULL, modifiers = NULL, events = events))
+    expect_is(test2$tree, "phylo")
+    expect_equal(Ntip(test2$tree), 59)
+    expect_equal(sum(tree.age(test2$tree)$ages == 0), 48)
+    ## Founding tree has no fossils
+    founding_tips <- grep("founding_", test2$tree$tip.label)
+    expect_equal(length(founding_tips), 28)
+    expect_equal(Ntip(drop.tip(test2$tree, tip = test2$tree$tip.label[-founding_tips])), length(founding_tips))
 })
