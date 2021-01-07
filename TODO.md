@@ -22,16 +22,16 @@
  - [x] document list of modifiers (Rd)
  - [x] test `make.modifiers`
  - [x] add and test `print.modifiers`
- - [ ] add and test `update` argument
+ - [x] add and test `update` argument
 
 ## TODO events
 
  - [ ] make list of events
- - [ ] `make.events`
+ - [x] `make.events`
  - [ ] document list of events (Rd)
  - [ ] document list of events (gitbook)
- - [ ] test `make.events`
- - [ ] add and test `print.events`
+ - [x] test `make.events`
+ - [x] add and test `print.events`
  - [ ] test list of separate: conditions and modifications
 
 ### Make the following events work:
@@ -44,7 +44,7 @@ Test the following events types
  - [x] traits events: changing traits correlation when reaching trait value x for trait 1
  - [x] modifiers events: adding a speciation condition after reaching time t
  - [x] modifiers events: adding a branch length condition when reaching n taxa
- - [ ] founding events: generate a new birth-death process for the first node to reach trait value x
+ - [x] founding events: generate a new birth-death process for the first node to reach trait value x
 
 ## TODO utilities
  
@@ -54,7 +54,7 @@ Test the following events types
 
 ## TODO dads
 
- - [ ] remove upper boundary on `bd.params`
+ - [x] remove upper boundary on `bd.params`
 
 ## TODO package
 
