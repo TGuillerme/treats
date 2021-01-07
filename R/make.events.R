@@ -27,6 +27,8 @@
 
 make.events <- function(target, condition, modification, add, test = TRUE, event.name, replications = 0, additional.args) {
 
+    match_call <- match.call()
+
     ## Test target
     allowed_targets <- c("taxa", "bd.params", "traits", "modifiers", "founding")
     check.method(target, allowed_targets, "target argument")
@@ -73,7 +75,8 @@ make.events <- function(target, condition, modification, add, test = TRUE, event
                        trigger      = trigger,
                        condition    = condition,
                        modification = modification,
-                       args         = NULL)
+                       args         = NULL,
+                       call         = match_call)
     }
     if(more_args) {
         events$args <- additional.args
