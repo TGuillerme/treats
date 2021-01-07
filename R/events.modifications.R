@@ -37,7 +37,7 @@
 #' 
 #' \item modifications for the target \code{"founding"} 
 #'      \itemize{
-#'          \item \code{founding.event}: this function runs an independent birth-death process when the condition is met. This function takes the arguments \code{"bd.params"}, \code{"traits"}, \code{"modifiers"} and \code{"events"} as they would normally be specified for the \code{\link{dads}} function. Note that the \code{stop.rule} and other arguments are handled internally (the \code{stop.rule} argument is updated to match the time and number of taxa when the founding event is triggered).
+#'          \item \code{founding.event}: this function runs an independent birth-death process when the condition is met. This function takes the arguments \code{"bd.params"}, \code{"traits"}, \code{"modifiers"} and \code{"events"} as they would normally be specified for the \code{\link{dads}} function. The \code{stop.rule} and other arguments are handled internally: namely the \code{stop.rule} argument is updated to match the time and number of taxa when the founding event is triggered. \emph{Note that this can lead to the simulation stopping just before reaching the \code{max.taxa} or \code{max.living} stop rule}.
 #'      }
 #' }
 #' 
