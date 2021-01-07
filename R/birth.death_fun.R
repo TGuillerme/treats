@@ -204,6 +204,8 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
             lineage$n <- lineage$n - 1L   
         }
 
+        # warning("DEBUG"); reached_event <- TRUE
+
         ## Trigger events
         if(do_events) {
             ## Check whether to trigger the event
@@ -213,6 +215,9 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                                 time = time - first_waiting_time)
                && events$trigger < 1L)
             {
+
+                # warning("DEBUG"); triggered_event <- TRUE
+
                 ## Trigger the event
                 switch(events$target,
                        taxa      = {
@@ -281,6 +286,8 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                                 stop.rule = stop.rule,
                                 time      = time,
                                 lineage   = lineage)
+
+                            # warning("DEBUG"); triggered_founding <- TRUE
                        })
 
                 ## Toggle the trigger tracker
@@ -355,13 +362,17 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         }
 
         ## Rename the tips and nodes of the founding tree
-        founding_tree$tree$tip.label <- paste0(tree_prefix, "t", (n_tips+1):(n_tips+Ntip(founding_tree$tree)))
-        founding_tree$tree$node.label <- paste0(tree_prefix, "n", (n_nodes+1):(n_nodes+Nnode(founding_tree$tree)))
+        tip_names_updated <- paste0(tree_prefix, "t", (n_tips+1):(n_tips+Ntip(founding_tree$tree)))
+        node_names_updated <- paste0(tree_prefix, "n", (n_nodes+1):(n_nodes+Nnode(founding_tree$tree)))
 
         ## Rename the tips and nodes of the data
         if(do_traits) {
-            warning("TODO: birth.death_fun: traits for founding_tree tips")
+            rownames(founding_tree$data) <- c(tip_names_updated, node_names_updated)[match(rownames(founding_tree$data), c(founding_tree$tree$tip.label, founding_tree$tree$node.label))]
         }
+
+        ## Update the tipe and node numbers
+        founding_tree$tree$tip.label  <- tip_names_updated
+        founding_tree$tree$node.label <- node_names_updated
 
         ## Get the binding position on the tree
         binding_position <- cbind(table$parent2, table$element2)[which(table$element == founding_root), 2]
@@ -466,12 +477,6 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
             }
         }
 
-        ## Recalculate tips trait values for the founding tree
-        if(do_traits) {
-            ## Rename the rownames in the dataset
-            warning("TODO: birth.death_fun: traits for founding_tree tips")
-        }
-
         ## Replace the tree by the combined tree
         tree <- combined_tree
     }
@@ -504,12 +509,6 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
 
     ## Adding the traits to the table
     if(do_traits) {
-
-        warning("TODO: birth.death_fun: traits for founding_tree tips")
-
-        # TODO: return shorter table if founding (don't calculate tips)
-        # TODO: update the trait table from the tree not table???
-
         trait_table <- cbind(parent = table$parent, element = table$element, edge = table$edge_lengths, trait_values[match(table$element, rownames(trait_values)), ])
         ## Add the root value
         trait_table <- rbind(c(parent = 0, element = 1, edge = 0, trait_values[1, ]),
@@ -528,6 +527,16 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         ## Add the column names (if missing)
         if(length(missing_names <- which(colnames(trait_table) == "")) > 0) {
             colnames(trait_table)[missing_names] <- names(traits)
+        }
+
+        ## Adding the founding data to the trait_table
+        if(!is.null(events) && events$target == "founding") {
+
+            ## Combining the trait tables
+            trait_table <- rbind(trait_table, founding_tree$data)
+
+            ## Removing any tips/nodes that ended up not being present in the tree
+            trait_table <- trait_table[rownames(trait_table) %in% c(tree$tip.label, tree$node.label), , drop = FALSE]
         }
     }
 

@@ -510,4 +510,73 @@ test_that("events work", {
     founding_tips <- grep("founding_", test2$tree$tip.label)
     expect_equal(length(founding_tips), 28)
     expect_equal(Ntip(drop.tip(test2$tree, tip = test2$tree$tip.label[-founding_tips])), length(founding_tips))
+
+
+    ## Founding events with traits
+    ## Stop rules to test
+    stop.rule.time <- list(max.taxa = Inf, max.living = Inf, max.time = 4)
+    stop.rule.taxa <- list(max.taxa = 50, max.living = Inf, max.time = Inf)
+    stop.rule.living <- list(max.taxa = Inf, max.living = 50, max.time = Inf)
+
+    ## Normal bd params
+    bd.params <- list(speciation = 1, extinction = 0.3)
+    traits <- make.traits()
+
+    ## Events that generate a new process (founding effects)
+    events <- make.events(condition    = taxa.condition(10),
+                          target       = "founding",
+                          modification = founding.event(
+                            bd.params = list(speciation = 2, extinction = 0),
+                                             traits = make.traits(process = OU.process)),
+                          additional.args = list(prefix = "founding_"))
+    
+    ## Max time
+    set.seed(18)
+    test1 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.time, traits = traits, modifiers = NULL, events = NULL)
+    expect_is(test1$tree, "phylo")
+    expect_equal(Ntip(test1$tree), 84)
+    expect_is(test1$data, c("matrix", "array"))
+    expect_equal(dim(test1$data), c(84+83, 1))
+
+
+    set.seed(18)
+    test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.time, traits = traits, modifiers = NULL, events = events)
+    expect_is(test2$tree, "phylo")
+    expect_equal(Ntip(test2$tree), 122)
+    expect_is(test2$data, c("matrix", "array"))
+    expect_equal(dim(test2$data), c(122+121, 1))
+
+
+    ## Max taxa
+    set.seed(19)
+    test1 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.taxa, traits = traits, modifiers = NULL, events = NULL)
+    expect_is(test1$tree, "phylo")
+    expect_equal(Ntip(test1$tree), 50)
+    expect_is(test1$data, c("matrix", "array"))
+    expect_equal(dim(test1$data), c(50+49, 1))
+
+    set.seed(19)
+    expect_warning(test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.taxa, traits = traits, modifiers = NULL, events = events))
+    expect_is(test2$tree, "phylo")
+    expect_equal(Ntip(test2$tree), 49)
+    expect_is(test2$data, c("matrix", "array"))
+    expect_equal(dim(test2$data), c(49+48, 1))
+    
+
+    ## Max living
+    set.seed(20)
+    test1 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.living, traits = traits, modifiers = NULL, events = NULL)
+    expect_is(test1$tree, "phylo")
+    expect_equal(Ntip(test1$tree), 68)
+    expect_equal(sum(tree.age(test1$tree)$ages == 0), 50)
+    expect_is(test1$data, c("matrix", "array"))
+    expect_equal(dim(test1$data), c(68+67, 1))
+
+    set.seed(20)
+    expect_warning(test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.living, traits = traits, modifiers = NULL, events = events))
+    expect_is(test2$tree, "phylo")
+    expect_equal(Ntip(test2$tree), 52)
+    expect_equal(sum(tree.age(test2$tree)$ages == 0), 45)
+    expect_is(test2$data, c("matrix", "array"))
+    expect_equal(dim(test2$data), c(52+51, 1))
 })
