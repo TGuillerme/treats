@@ -1,0 +1,221 @@
+---
+title: "Thorough example"
+author: "Thomas Guillerme (guillert@tcd.ie)"
+date: "`r Sys.Date()`"
+bibliography: [../References.bib, ../packages.bib]
+output:
+  html_document: default
+  pdf_document: default
+---
+
+# Thorough example
+
+Here we are going to look at an example on how to simulate complex evolutionary histories with `dads`.
+
+Let say we want to simulate the following story:
+
+ 1. A lineage evolves in a normal birth-death fashion (with extinction) from a single origin and with two traits called:
+    - "Distance": the physical distance between species in an arbitrary 1D space (evolving in a Brownian motion).
+    - "Variable": a 2D uncorrelated Ornstein-Uhlenbeck trait that corresponds to some traits the lineages have.
+ During the whole process, species that are more distant from their ancestor have a greater change of speciating.
+
+Three events then happen during the evolutionary history of this lineage: 
+
+ 2. "Correlation event": after reaching a certain number of taxa an event happens making the "Variable" trait dimensions become correlated.
+ 3. "Selective extinction event": after reaching a certain point in time, lineages with their "Distance" values in some interval goes extinct.
+ 4. "Founding event": after reaching a value for the "Distance" trait, a founding event happens with a new birth-death process with no extinction and where the "Variable" is now a 2D correlated Brownian Motion.
+ 5. "Mass extinction event": after reaching a certain number of taxa in the "Founding event", 80% of taxa go extinct randomly.
+
+We are going to run each step one by one in a cumulative manner to see how they pile up:
+
+## Step 1:
+
+### The birth death parameters
+
+First let's set the overall birth death parameters (a speciation of 1.2 and an extinction of 0.3):
+
+```{r}
+## The birth death parameters
+bd_params <- list(speciation = 1.2, extinction = 0.3)
+## The stopping rule
+stop_rule <- list(max.time = 4)
+```
+
+And let's quickly test if the simulation works by running a birth death tree without traits and anything:
+
+```{r}
+## Running a birth death tree 
+results <- dads(bd.params = bd_params,
+                stop.rule = stop_rule,
+                null.error = 100) # This option will try the requested options up until a 100 times
+
+## And displaying the results
+plot(results)
+axisPhylo()
+```
+
+### The traits
+
+Then let's create the traits:
+
+```{r}
+## The OU 2D trait correlation
+correlation <- matrix(0, 2, 2)
+
+## The trait object
+two_traits <- make.traits(process = c(BM.process, OU.process), n = c(1, 2), 
+                          process.args = list(list(NULL), list(Sigma = correlation)),
+                          trait.names = c("Distance", "Variables"))
+#TODO: fix OU with correlation
+```
+
+Note that specifying the correlation matrix is not necessary here _per se_ (since no correlation is the default) but we will modify it through an event later on so it's good practice to have it properly stated before hand (to avoid any confusion).
+
+We can then run the tree with the traits:
+
+```{r}
+## Running a birth death tree 
+results <- dads(bd.params  = bd_params,
+                stop.rule  = stop_rule,
+                traits     = two_traits,
+                null.error = 100)
+
+## And displaying the results
+par(mfrow = c(1,2))
+plot(results, trait = 1, main = "Trait 1: Distance")
+plot(results, trait = c(2,3), main = "Variables correlation")
+
+## TODO: debug correlation!
+```
+
+### The modifiers
+
+
+```{r}
+## Make a distance modifier
+distance_speciation <- make.modifiers(speciation = NULL,
+                                      condition = NULL,
+                                      modify = NULL) 
+```
+
+```{r}
+## Running a birth death tree 
+results <- dads(bd.params  = bd_params,
+                stop.rule  = stop_rule,
+                traits     = two_traits,
+                modifiers  = distance_speciation,
+                null.error = 100)
+
+## And displaying the results
+par(mfrow = c(1,2))
+plot(results, trait = 1, main = "Trait 1: Distance")
+plot(results, trait = c(2,3), main = "Variables correlation")
+```
+
+## Step 2:
+ 2. "Correlation event": after reaching a certain number of taxa an event happens making the "Variable" trait dimensions become correlated.
+
+```{r}
+## The correlation change event
+events_list <- make.events(event.name   = "Correlation",
+                           target       = "traits",
+                           condition    = taxa.condition(30),
+                           modification = update.traits(
+                    process.args = list(Sigma = matrix(c(0.7, 0, 0, 0.7), 2, 2)),
+                    trait.names  = "Variables"))
+#TODO: fix bug here
+```
+
+```{r}
+## Running a birth death tree 
+results <- dads(bd.params  = bd_params,
+                stop.rule  = stop_rule,
+                traits     = two_traits,
+                modifiers  = distance_speciation,
+                events     = events_list,
+                null.error = 100)
+
+## And displaying the results
+par(mfrow = c(1,2))
+plot(results, trait = 1, main = "Trait 1: Distance")
+plot(results, trait = c(2,3), main = "Variables correlation")
+## TODO: debug correlation!
+```
+
+## Step 3:
+ 3. "Selective extinction event": after reaching a certain point in time, lineages with their "Distance" values in some interval goes extinct.
+
+```{r}
+## Adding the selective event
+events_list <- make.events(event.name   = "Selection",
+                           add          = events_list,
+                           target       = "taxa",
+                           condition    = time.condition(4),
+                           modification = trait.extinction(1, condition = `>`),
+                           event.name   = "Selection")
+```
+
+```{r}
+## Running a birth death tree 
+results <- dads(bd.params  = bd_params,
+                stop.rule  = stop_rule,
+                traits     = two_traits,
+                modifiers  = distance_speciation,
+                events     = events_list,
+                null.error = 100)
+
+## And displaying the results
+par(mfrow = c(1,2))
+plot(results, trait = 1, main = "Trait 1: Distance")
+plot(results, trait = c(2,3), main = "Variables correlation")
+## TODO: debug correlation!
+```
+
+## Step 4 and 5:
+ 4. "Founding event": after reaching a value for the "Distance" trait, a founding event happens with a new birth-death process with no extinction and where the "Variable" is now a 2D correlated Brownian Motion.
+ 5. "Mass extinction event": after reaching a certain number of taxa in the "Founding event", 80% of taxa go extinct randomly.
+
+```{r}
+## The new trait for the founding event
+new_traits <- make.traits(process = c(BM.process, BM.process), n = c(1, 2), 
+                          process.args = list(
+                              list(NULL),
+                              list(Sigma = matrix(c(0.7, 0, 0, 0.7), 2, 2))),
+                          trait.names = c("Distance", "Variables"))
+#TODO: set starting value to be ancestors' value
+
+## The mass extinction event after reaching 50 taxa
+mass_extinction <- make.events(target       = "taxa",
+                               condition    = taxa.condition(50),
+                               modification = random.extinction(0.8))
+```
+
+```{r}
+## The selective event
+events_list <- make.events(event.name   = "Founding", 
+                           add          = events_list,
+                           target       = "founding",
+                           condition    = trait.condition(3),
+                           modification = founding.event(traits    = new_traits,
+                                                         events    = mass_extinction,
+                                                         bd.params = list(
+                                                            speciation = 2,
+                                                            extinction = 0)))
+#TODO: fix bug
+```
+
+```{r}
+## Running a birth death tree 
+results <- dads(bd.params  = bd_params,
+                stop.rule  = stop_rule,
+                traits     = two_traits,
+                modifiers  = distance_speciation,
+                events     = events_list,
+                null.error = 100)
+
+## And displaying the results
+par(mfrow = c(1,2))
+plot(results, trait = 1, main = "Trait 1: Distance")
+plot(results, trait = c(2,3), main = "Variables correlation")
+## TODO: debug correlation!
+```
