@@ -90,11 +90,16 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
             one_trait <- data[[trait]]
 
             ##TODO: handle colours!
+            if(missing(col)) {
+                col <- "default"
+            }
 
             ## Plotting the results
             plot.simulation(main = names(data)[[trait]],
-                    replicate(simulations,
-                        sim.motion(one_trait, steps = 100)))
+                            data = replicate(simulations, 
+                                             sim.motion(one_trait, steps = 100),
+                                             simplify = FALSE),
+                            col  = col, ...)
         }
 
         return(invisible())

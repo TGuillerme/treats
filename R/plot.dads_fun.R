@@ -1,9 +1,5 @@
 ## Simulates a process based on a traits object
 sim.motion <- function(one_trait, steps) {    
-    if(length(one_trait$trait_id) > 1) {
-        stop("Multidimensional traits cannot be simulated in the current dads version.", call. = FALSE)
-    }
-
     ## Initialising the simulation
     output <- one_trait$start
     count <- 1
@@ -12,15 +8,15 @@ sim.motion <- function(one_trait, steps) {
     parameters$x0 <- one_trait$start
     parameters$start <- parameters$trait_id <- parameters$process <- NULL
     ## First step
-    output <- c(do.call(process, parameters), output)
+    output <- rbind(do.call(process, parameters), output)
     
     ## Following steps
     while(count < (steps-1)) {
         count <- count + 1
-        parameters$x0 <- output[1]
-        output <- c(do.call(process, parameters), output)
+        parameters$x0 <- output[1, ]
+        output <- rbind(do.call(process, parameters), output)
     }
-    return(rev(output))
+    return(output[rev(1:nrow(output)), , drop = FALSE])
 }
 
 # ' @title Plot simulation
@@ -32,75 +28,137 @@ sim.motion <- function(one_trait, steps) {
 # ' @param quantiles the quantiles to display (default is \code{c(95, 50)})
 # ' @param ... any additional argument to be passed to \code{\link[graphics]{plot}}.
 
-plot.simulation <- function(data, cent.tend = mean, quantiles = c(95, 50), ...) {
-
-    ## Get the data central tendency
-    central_tendency <- apply(data, 1, cent.tend)
-    ## Get the quantiles
-    cis <- CI.converter(quantiles)
-    n_quantiles <- length(quantiles)
-    quantiles_data <- t(apply(data, 1, quantile, probs = cis))
-    ## Get the length of the simulations
-    n_points <- nrow(data)
-
-    ## Set the plotting parameters
-    plot_params <- list(...)
-    if(is.null(plot_params$ylim)) {
-        plot_params$ylim <- range(data)
-    }
-    if(is.null(plot_params$xlim)) {
-        plot_params$xlim <- c(1, n_points)
-    }
-    if(is.null(plot_params$col)) {
-        ## Handle colours if input col is < length(quantiles) + 1
-        colfun <- grDevices::colorRampPalette(c("grey", "lightgrey"))
-        plot_params$col <- c("black", rev(colfun(length(quantiles))))
-    }
-    if(is.null(plot_params$xlab)) {
-        plot_params$xlab <- c("Time")
-    }
-    if(is.null(plot_params$ylab)) {
-        plot_params$ylab <- c("Simulated traits")
-    }
-
-
-    ## Adding the empty plot:
-    empty_plot <- list(x = NULL, y = NULL)
-    empty_plot <- c(empty_plot, plot_params)
-    do.call(plot, empty_plot)
-
-    ## Adding the polygons
-    poly_args <- list(border = "NA", density = NULL)
-    poly_args <- c(poly_args, plot_params)
-    poly_args$x <- c(1:n_points)
-    poly_args$x <- c(poly_args$x, rev(poly_args$x))
-
-    ## Loop through the polygons
-    for (one_ci in 1:n_quantiles) {
-        ## Select the quantiles columns
-        quantiles_col <- get.quantile.col(one_ci, n_quantiles)
-        ## Set the y values
-        poly_args$y <- quantiles_data[, quantiles_col[1]]
-        poly_args$y <- c(poly_args$y, rev(quantiles_data[, quantiles_col[2]]))
-        ## Set up the colour
-        poly_args$col <- plot_params$col[one_ci+1]
-
-        ## Plot the polygon
-        do.call(polygon, poly_args)
-    }
-
-    ## Add the central tendency
-    line_args <- list(x = 1:n_points, y = central_tendency)
-    if(is.null(plot_params$lty)) {
-        line_args$lty <- 1
-    } else {
-        line_args$lty <- plot_params$lty
-    }
-    line_args$col <- plot_params$col[1]
-
-    ## Add the central tendency
-    do.call(lines, line_args)
+plot.simulation <- function(data, cent.tend = mean, quantiles = c(95, 50), col, use.3D, trait, ...) {
     
+    ## Whether to use 3D plots or not
+    is_1D <- ncol(data[[1]]) == 1
+    do_3D <- (use.3D && !is_1D)
+    ## Selecting the traits
+    if(do_3D) {
+        trait <- trait[1:2]
+    } else {
+        trait <- trait[1]
+    }
+
+
+    ## Combine the data together per column
+    data_cols <- list()
+    data_cols[[1]] <- do.call(cbind, lapply(data, function(x, column) return(x[, column]), column = trait[1]))
+    if(do_3D) {
+        data_cols[[2]] <- do.call(cbind, lapply(data, function(x, column) return(x[, column]), column = trait[2]))
+    }
+
+    ## Get the length of the simulations
+    n_points <- nrow(data_cols[[trait[1]]])
+
+    if(!do_3D) {
+        ## Get the data central tendency
+        central_tendency <- apply(data_cols[[1]], 1, cent.tend)
+    
+        ## Get the quantiles
+        cis <- CI.converter(quantiles)
+        n_quantiles <- length(quantiles)
+        quantiles_data <- t(apply(data_cols[[1]], 1, quantile, probs = cis))
+
+        ## Set the plotting parameters
+        plot_params <- list(...)
+        if(is.null(plot_params$ylim)) {
+            plot_params$ylim <- range(data_cols[[1]])
+        }
+        if(is.null(plot_params$xlim)) {
+            plot_params$xlim <- c(1, n_points)
+        }
+        if(is.null(plot_params$xlab)) {
+            plot_params$xlab <- c("Time")
+        }
+        if(is.null(plot_params$ylab)) {
+            plot_params$ylab <- c("Simulated traits")
+        }
+
+        ## Handleing colors
+        if(missing(col) || col == "default" || !do_3D) {
+            ## Handle colours if input col is < length(quantiles) + 1
+            colfun <- grDevices::colorRampPalette(c("grey", "lightgrey"))
+            plot_params$col <- c("black", rev(colfun(length(quantiles))))
+        } else {
+            if(col == "default") {
+                plot_params$col <- "grey"
+            } else {
+                plot_params$col <- col
+            }
+        }
+
+        ## Adding the empty plot:
+        empty_plot <- list(x = NULL, y = NULL)
+        empty_plot <- c(empty_plot, plot_params)
+        do.call(plot, empty_plot)
+
+        ## Adding the polygons
+        poly_args <- list(border = "NA", density = NULL)
+        poly_args <- c(poly_args, plot_params)
+        poly_args$x <- c(1:n_points)
+        poly_args$x <- c(poly_args$x, rev(poly_args$x))
+
+        ## Loop through the polygons
+        for (one_ci in 1:n_quantiles) {
+            ## Select the quantiles columns
+            quantiles_col <- get.quantile.col(one_ci, n_quantiles)
+            ## Set the y values
+            poly_args$y <- quantiles_data[, quantiles_col[1]]
+            poly_args$y <- c(poly_args$y, rev(quantiles_data[, quantiles_col[2]]))
+            ## Set up the colour
+            poly_args$col <- plot_params$col[one_ci+1]
+
+            ## Plot the polygon
+            do.call(polygon, poly_args)
+        }
+
+        ## Add the central tendency
+        line_args <- list(x = 1:n_points, y = central_tendency)
+        if(is.null(plot_params$lty)) {
+            line_args$lty <- 1
+        } else {
+            line_args$lty <- plot_params$lty
+        }
+        line_args$col <- plot_params$col[1]
+
+        ## Add the central tendency
+        do.call(lines, line_args)
+    } else {
+
+        ## 3D plot
+        ## Set the plotting parameters
+        plot_params <- list(...)
+        if(is.null(plot_params$ylim)) {
+            plot_params$ylim <- range(data_cols[[1]])
+        }
+        if(is.null(plot_params$zlim)) {
+            plot_params$zlim <- range(data_cols[[2]])
+        }
+        if(is.null(plot_params$xlim)) {
+            plot_params$xlim <- c(1, n_points)
+        }
+        if(is.null(plot_params$xlab)) {
+            plot_params$xlab <- c("Time")
+        }
+        if(is.null(plot_params$ylab)) {
+            plot_params$ylab <- c("Simulated traits (D1)")
+        }
+        if(is.null(plot_params$zlab)) {
+            plot_params$zlab <- c("Simulated traits (D2)")
+        }
+        if(is.null(plot_params$pch)) {
+            plot_params$pch <- 19
+        }
+
+        ## Get the values sorted
+        plot_params$x <- rep(1:n_points, ncol(data_cols[[1]]))
+        plot_params$y <- c(data_cols[[1]])
+        plot_params$z <- c(data_cols[[2]])
+
+        ## Plot the results
+        do.call(rgl::plot3d, plot_params)
+    }
     return(invisible())
 }
 
