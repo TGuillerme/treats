@@ -77,11 +77,11 @@ BM.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), ...) {
 }
 
 ## The OU process
-OU.process <- function(x0, edge.length = 1, var = diag(length(x0)), alpha = 1, theta = 0, ...) {
+OU.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), alpha = 1, theta = 0, ...) {
     ## Calculate the means
     means <- theta + (x0 - theta) * exp(-alpha)
     ## Calculate the Sigma
-    sd <- sqrt(var/(2 * alpha) * (1 - exp(-2 * alpha)))
+    sd <- sqrt(Sigma/(2 * alpha) * (1 - exp(-2 * alpha)))
     ## Get the traits
     return(t(MASS::mvrnorm(n = 1, mu = means, Sigma = sd * edge.length, ...)))
 }
