@@ -89,6 +89,9 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
             ## Selecting the trait
             one_trait <- data[[trait]]
 
+            ## Selecting the trait ids
+            trait_ids <- seq_along(one_trait$trait_id)
+
             ##TODO: handle colours!
             if(missing(col)) {
                 col <- "default"
@@ -99,7 +102,7 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
                             data = replicate(simulations, 
                                              sim.motion(one_trait, steps = 100),
                                              simplify = FALSE),
-                            col  = col, ...)
+                            col  = col, use.3D = use.3D, trait = trait_ids, ...)
         }
 
         return(invisible())
