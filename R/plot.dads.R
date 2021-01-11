@@ -98,11 +98,10 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
             }
 
             ## Plotting the results
-            plot.simulation(main = names(data)[[trait]],
-                            data = replicate(simulations, 
+            plot.simulation(data = replicate(simulations, 
                                              sim.motion(one_trait, steps = 100),
                                              simplify = FALSE),
-                            col  = col, use.3D = use.3D, trait = trait_ids, ...)
+                            col = col, use.3D = use.3D, trait = trait_ids, ...)
         }
 
         return(invisible())
