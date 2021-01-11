@@ -177,9 +177,9 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
     ## Check the names
     if(!is.null(trait.names)) {
         check.class(trait.names, c("character", "numeric", "integer"))
-        if(!is.null(process)) {
-            check.length(trait.names, n_processes, " must be the same length as the number of process(es).")
-        }
+        # if(!is.null(process)) {
+        #     check.length(trait.names, n_processes, " must be the same length as the number of process(es).")
+        # }
         ## Making the trait names (+ the previous ones)
         trait_names <- c(previous_names, trait.names)
     } else {
