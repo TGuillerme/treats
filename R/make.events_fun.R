@@ -17,7 +17,7 @@ check.events <- function(events) {
                     "n"       = 1L,     ## The number of non extinct lineages
                     "split"   = FALSE)
     first_waiting_time <- time <- 0
-    traits <- make.traits()
+    traits <- make.traits(process = c(BM.process, BM.process, BM.process))
     modifiers <- make.modifiers(branch.length = branch.length, speciation = speciation, selection = selection)
     stop.rule <- list("max.time" = Inf, max.taxa = 10, max.living = 10)
     time <- 0
@@ -84,13 +84,12 @@ check.events <- function(events) {
             , silent = TRUE)}
         )
 
-
     ## Debrief
-    if(is(test_modification, "try-error")) {
+    if(is(test_modification, "try-error") && events$target != "traits") {
 
         ## List of exceptions
-        error_exceptions <- c("incompatible arguments")
-        exception <- any(sapply(error_exceptions, grep, test_modification[[1]]))
+        error_exceptions <- c("incompatible arguments", "No process", "parent_traits\\[, which_trait\\]")
+        exception <- any(unlist(sapply(error_exceptions, grep, test_modification[[1]])))
         if(!exception) {
             stop(paste0("The modification function from the events object failed with the following error message", ifelse(length(test_modification) > 1, "s:\n", ":\n"), paste(test_modification, collapse = "\n")), call. = FALSE)
         } else {
@@ -119,14 +118,14 @@ check.events <- function(events) {
                 }
             },
 
-            traits    = {
-                if(!is(test_modification, "dads") && !is(test_modification, "traits")) {
-                    ## Check if the error comes from additional args (i.e. wrong dummy traits object)
-                    stop(paste0("The modification function targeting \"traits\" must output a dads traits object. Currently the modification function output is a ", paste(class(test_modification), collapse = ", "), "."))
-                } else {
-                    check.traits(test_modification, events = TRUE)
-                }
-            },
+            # traits    = {
+            #     if(!is(test_modification, "dads") && !is(test_modification, "traits")) {
+            #         ## Check if the error comes from additional args (i.e. wrong dummy traits object)
+            #         stop(paste0("The modification function targeting \"traits\" must output a dads traits object. Currently the modification function output is a ", paste(class(test_modification), collapse = ", "), "."))
+            #     } else {
+            #         check.traits(test_modification, events = TRUE)
+            #     }
+            # },
 
             modifiers = {
                 if(!is(test_modification, "dads") && !is(test_modification, "modifiers")) {

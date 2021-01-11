@@ -71,20 +71,38 @@ make.events <- function(target, condition, modification, add, test = TRUE, event
 
     ## Creating the events object
     if(!do_add) {
-        events <- list(target       = target,
+        events <- list(
+                  list(target       = target,
+                       trigger      = trigger,
+                       condition    = condition,
+                       modification = modification,
+                       args         = NULL,
+                       call         = match_call)
+                  )
+    } else {
+        events <- add
+        events[[length(events) + 1]] <-
+                  list(target       = target,
                        trigger      = trigger,
                        condition    = condition,
                        modification = modification,
                        args         = NULL,
                        call         = match_call)
     }
+
+    ## Naming the event
+    if(!missing(event.name)) {
+        names(events)[[length(events)]] <- event.name
+    }
+
+    ## Adding additional arguments
     if(more_args) {
-        events$args <- additional.args
+        events[[length(events)]]$args <- additional.args
     }
 
     ## Testing the event object
     if(test) {
-        check.events(events)
+        check.events(events[[length(events)]])
     }
 
     class(events) <- c("dads", "events")

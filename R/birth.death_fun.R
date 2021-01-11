@@ -24,6 +24,10 @@ sim.living.tips <- function(living, trait_table, traits) {
     )
 }
 
+## Check the events triggering (the first one gets triggered)
+trigger.events <- function(one_event, bd.params, lineage, trait.values, time) {
+    return(one_event$condition(bd.params = bd.params, lineage = lineage, trait.values = trait.values, time = time) && one_event$trigger < 1L)
+}
 
 ## Run a birth death process to generate both tree and traits
 birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE) {
@@ -133,7 +137,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         
         # warning("DEBUG birth.death_fun.R") ; counter <- counter+1
         # warning("DEBUG birth.death_fun.R") ; print(counter)
-        # warning("DEBUG birth.death_fun.R") ; if(counter == 170) break 
+        # warning("DEBUG birth.death_fun.R") ; if(counter == 123) break 
 
         ## Pick a lineage for the event to happen to:
         lineage$drawn <- modifiers$selecting$fun(bd.params    = bd.params,
@@ -208,35 +212,37 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
 
         ## Trigger events
         if(do_events) {
-            ## Check whether to trigger the event
-            if(events$condition(bd.params = bd.params,
-                                lineage = lineage,
-                                trait.values = trait_values,
-                                time = time - first_waiting_time)
-               && events$trigger < 1L)
-            {
+            ## Check all the events that can be triggered
+            triggers <- unlist(lapply(events, trigger.events,
+                                            bd.params = bd.params,
+                                            lineage = lineage,
+                                            trait.values = trait_values,
+                                            time = time - first_waiting_time))
 
-                # warning("DEBUG"); triggered_event <- TRUE
+            if(any(triggers)) {
+                
+                ## Selecting the first triggerable event
+                selected_event <- which(triggers)[1]
 
                 ## Trigger the event
-                switch(events$target,
+                switch(events[[selected_event]]$target,
                        taxa      = {
                             ## Modify the lineage object
-                            lineage   <- events$modification(
+                            lineage   <- events[[selected_event]]$modification(
                                 bd.params    = bd.params,
                                 lineage      = lineage,
                                 trait.values = trait_values)
                        },
                        bd.params = {
                             ## Modify the birth death parameters
-                            bd.params <- events$modification(
+                            bd.params <- events[[selected_event]]$modification(
                                 bd.params    = bd.params,
                                 lineage      = lineage,
                                 trait.values = trait_values)
                        },
                        traits    = {
                             ## Modify the traits
-                            traits    <- events$modification(
+                            traits    <- events[[selected_event]]$modification(
                                 traits       = traits,
                                 bd.params    = bd.params,
                                 lineage      = lineage,
@@ -244,7 +250,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                        },
                        modifiers = {
                             ## Modify the modifiers
-                            modifiers <- events$modification(
+                            modifiers <- events[[selected_event]]$modification(
                                 modifiers    = modifiers,
                                 bd.params    = bd.params,
                                 lineage      = lineage,
@@ -253,10 +259,12 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                        founding = {
 
                             ## Select the founding root 
-                            if(!is.null(events$args) && !is.null(events$args$founding.root) && is(events$args$founding.root, "function")) {
+                            if(!is.null(events[[selected_event]]$args) &&
+                               !is.null(events[[selected_event]]$args$founding.root) &&
+                                is(events[[selected_event]]$args$founding.root, "function")) {
 
                                 ## Select the founding root using a function
-                                select_root   <- events$args$founding.root(lineage, trait_values)
+                                select_root   <- events[[selected_event]]$args$founding.root(lineage, trait_values)
                                 lineage       <- select_root$lineage
                                 founding_root <- select_root$founding_root
                             } else {
@@ -282,16 +290,14 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                             }
 
                             ## Create a new independent birth death process
-                            founding_tree <- events$modification(
+                            founding_tree <- events[[selected_event]]$modification(
                                 stop.rule = stop.rule,
                                 time      = time,
                                 lineage   = lineage)
-
-                            # warning("DEBUG"); triggered_founding <- TRUE
                        })
 
                 ## Toggle the trigger tracker
-                events$trigger <- events$trigger + 1L
+                events[[selected_event]]$trigger <- events[[selected_event]]$trigger + 1L
             }
         }
     }
@@ -353,10 +359,16 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                  edge.length = table$edge_lengths)
     class(tree) <- "phylo"
 
-    if(!is.null(events) && events$target == "founding") {
+    if(!is.null(events) && any(unlist(lapply(events, function(x) return(x$target))) %in% "founding")) {
+
+        ## The founding event
+        found_event <- which(unlist(lapply(events, function(x) return(x$target))) %in% "founding")[1]
+
+        #TODO: bug if more than one founding event!
+
         ## Using a prefix?
-        if(!is.null(events$args) && !is.null(events$args$prefix) && is(events$args$prefix, "character")) {
-            tree_prefix <- events$args$prefix
+        if(!is.null(events[[found_event]]$args) && !is.null(events[[found_event]]$args$prefix) && is(events[[found_event]]$args$prefix, "character")) {
+            tree_prefix <- events[[found_event]]$args$prefix
         } else {
             tree_prefix <- NULL
         }
@@ -530,7 +542,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         }
 
         ## Adding the founding data to the trait_table
-        if(!is.null(events) && events$target == "founding") {
+        if(!is.null(events) && any(unlist(lapply(events, function(x) return(x$target))) %in% "founding")) {
 
             ## Combining the trait tables
             trait_table <- rbind(trait_table, founding_tree$data)
