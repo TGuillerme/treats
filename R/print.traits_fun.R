@@ -111,4 +111,5 @@ print.events.info <- function(x) {
     cat(paste0("The condition function is: ", condition_fun, "\n"))
     modification_fun <- if(class(x$call$modification) == "name") {x$call$modification} else {x$call$modification[[1]]}
     cat(paste0("The modification function is: ", modification_fun, "\n"))
+    cat("\n")
 }
