@@ -93,7 +93,7 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
             if(use.3D) {
                 trait_ids <- seq_along(one_trait$trait_id)
             } else {
-                traits_ids <- 1
+                trait_ids <- 1
             }
 
             ##TODO: handle colours!
