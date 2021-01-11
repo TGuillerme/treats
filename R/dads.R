@@ -137,7 +137,7 @@ dads <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events =
     ## events
     if(!is.null(events)) {
         if(is(events, "dads") && is(events, "events")) {
-            check.events(events)
+            lapply(events, check.events)
         } else {
             stop("events must be of class \"dads\" \"events\". Use make.events() to format the object correctly.")
         }
@@ -155,8 +155,10 @@ dads <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events =
     output <- NULL
 
     while(is.null(output) || counter < max.counter) {
+
         ## Simulating the traits and tree
         output <- birth.death.tree.traits(bd.params, stop.rule, traits = traits, modifiers = modifiers, events = events, null.error = null.error)
+
         ## Update the counter
         counter <- counter + 1
     }
