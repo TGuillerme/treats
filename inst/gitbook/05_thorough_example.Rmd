@@ -17,12 +17,12 @@ Let say we want to simulate the following story:
  1. A lineage evolves in a normal birth-death fashion (with extinction) from a single origin and with two traits called:
     - "Distance": the physical distance between species in an arbitrary 1D space (evolving in a Brownian motion).
     - "Variable": a 2D uncorrelated Ornstein-Uhlenbeck trait that corresponds to some traits the lineages have.
- During the whole process, species that are more distant from their ancestor have a greater change of speciating.
+ During the whole process, lineages that are more further away from the other species in terms of distance have a higher change of speciating (proportional to that distance).
 
 Three events then happen during the evolutionary history of this lineage: 
 
- 2. "Correlation event": after reaching a certain number of taxa an event happens making the "Variable" trait dimensions become correlated.
- 3. "Selective extinction event": after reaching a certain point in time, lineages with their "Distance" values in some interval goes extinct.
+ 2. "Correlation event": after reaching a certain number of taxa an event happens making the "Variables" trait dimensions become correlated.
+ 3. "Selective extinction event": after reaching a certain point in time, lineages with their "Variables" values that are negative go extinct
  4. "Founding event": after reaching a value for the "Distance" trait, a founding event happens with a new birth-death process with no extinction and where the "Variable" is now a 2D correlated Brownian Motion.
  5. "Mass extinction event": after reaching a certain number of taxa in the "Founding event", 80% of taxa go extinct randomly.
 
@@ -59,14 +59,20 @@ axisPhylo()
 Then let's create the traits:
 
 ```{r}
-## The OU 2D trait correlation
-correlation <- matrix(0, 2, 2)
-
 ## The trait object
-two_traits <- make.traits(process = c(BM.process, OU.process), n = c(1, 2), 
-                          process.args = list(list(NULL), list(Sigma = correlation)),
+two_traits <- make.traits(process = c(BM.process, OU.process), n = c(1, 2),
                           trait.names = c("Distance", "Variables"))
-#TODO: fix OU with correlation
+```
+
+
+```{r}
+## Visualise the 1D trait (BM.process)
+plot(two_traits, trait = 1)
+```
+
+```{r, eval = FALSE}
+## Visualise the 2D trait (uncorrelated OU.process)
+plot(two_traits, trait = 2, use.3D = TRUE)
 ```
 
 Note that specifying the correlation matrix is not necessary here _per se_ (since no correlation is the default) but we will modify it through an event later on so it's good practice to have it properly stated before hand (to avoid any confusion).
@@ -84,18 +90,18 @@ results <- dads(bd.params  = bd_params,
 par(mfrow = c(1,2))
 plot(results, trait = 1, main = "Trait 1: Distance")
 plot(results, trait = c(2,3), main = "Variables correlation")
-
-## TODO: debug correlation!
 ```
 
 ### The modifiers
 
 
 ```{r}
+## Speciation event is more likely if lineage's ancestor is further away from the mean trait value
+distance.modify <- function(x, trait.values, lineage) return(x + x * abs(parent.traits(trait.values, lineage)[1] - mean(trait.values[,1])))
+
 ## Make a distance modifier
-distance_speciation <- make.modifiers(speciation = NULL,
-                                      condition = NULL,
-                                      modify = NULL) 
+distance.speciation <- make.modifiers(speciation = speciation,
+                                      modify = distance.modify)
 ```
 
 ```{r}
@@ -103,7 +109,7 @@ distance_speciation <- make.modifiers(speciation = NULL,
 results <- dads(bd.params  = bd_params,
                 stop.rule  = stop_rule,
                 traits     = two_traits,
-                modifiers  = distance_speciation,
+                modifiers  = distance.speciation,
                 null.error = 100)
 
 ## And displaying the results
@@ -123,7 +129,6 @@ events_list <- make.events(event.name   = "Correlation",
                            modification = update.traits(
                     process.args = list(Sigma = matrix(c(0.7, 0, 0, 0.7), 2, 2)),
                     trait.names  = "Variables"))
-#TODO: fix bug here
 ```
 
 ```{r}
@@ -131,7 +136,7 @@ events_list <- make.events(event.name   = "Correlation",
 results <- dads(bd.params  = bd_params,
                 stop.rule  = stop_rule,
                 traits     = two_traits,
-                modifiers  = distance_speciation,
+                modifiers  = distance.speciation,
                 events     = events_list,
                 null.error = 100)
 
@@ -139,11 +144,10 @@ results <- dads(bd.params  = bd_params,
 par(mfrow = c(1,2))
 plot(results, trait = 1, main = "Trait 1: Distance")
 plot(results, trait = c(2,3), main = "Variables correlation")
-## TODO: debug correlation!
 ```
 
 ## Step 3:
- 3. "Selective extinction event": after reaching a certain point in time, lineages with their "Distance" values in some interval goes extinct.
+ 3. "Selective extinction event": after reaching a certain point in time, lineages with their "Variables" values that are negative go extinct
 
 ```{r}
 ## Adding the selective event
@@ -151,8 +155,7 @@ events_list <- make.events(event.name   = "Selection",
                            add          = events_list,
                            target       = "taxa",
                            condition    = time.condition(4),
-                           modification = trait.extinction(1, condition = `>`),
-                           event.name   = "Selection")
+                           modification = trait.extinction(0, condition = `<`, trait = 2))
 ```
 
 ```{r}
@@ -160,7 +163,7 @@ events_list <- make.events(event.name   = "Selection",
 results <- dads(bd.params  = bd_params,
                 stop.rule  = stop_rule,
                 traits     = two_traits,
-                modifiers  = distance_speciation,
+                modifiers  = distance.speciation,
                 events     = events_list,
                 null.error = 100)
 
@@ -168,7 +171,6 @@ results <- dads(bd.params  = bd_params,
 par(mfrow = c(1,2))
 plot(results, trait = 1, main = "Trait 1: Distance")
 plot(results, trait = c(2,3), main = "Variables correlation")
-## TODO: debug correlation!
 ```
 
 ## Step 4 and 5:
@@ -177,12 +179,8 @@ plot(results, trait = c(2,3), main = "Variables correlation")
 
 ```{r}
 ## The new trait for the founding event
-new_traits <- make.traits(process = c(BM.process, BM.process), n = c(1, 2), 
-                          process.args = list(
-                              list(NULL),
-                              list(Sigma = matrix(c(0.7, 0, 0, 0.7), 2, 2))),
+new_traits <- make.traits(process = c(BM.process, BM.process), n = c(1, 2),
                           trait.names = c("Distance", "Variables"))
-#TODO: set starting value to be ancestors' value
 
 ## The mass extinction event after reaching 50 taxa
 mass_extinction <- make.events(target       = "taxa",
@@ -200,8 +198,8 @@ events_list <- make.events(event.name   = "Founding",
                                                          events    = mass_extinction,
                                                          bd.params = list(
                                                             speciation = 2,
-                                                            extinction = 0)))
-#TODO: fix bug
+                                                            extinction = 0)),
+                           additional.args = list(prefix = "found_"))
 ```
 
 ```{r}
@@ -209,7 +207,7 @@ events_list <- make.events(event.name   = "Founding",
 results <- dads(bd.params  = bd_params,
                 stop.rule  = stop_rule,
                 traits     = two_traits,
-                modifiers  = distance_speciation,
+                modifiers  = distance.speciation,
                 events     = events_list,
                 null.error = 100)
 
@@ -217,5 +215,4 @@ results <- dads(bd.params  = bd_params,
 par(mfrow = c(1,2))
 plot(results, trait = 1, main = "Trait 1: Distance")
 plot(results, trait = c(2,3), main = "Variables correlation")
-## TODO: debug correlation!
 ```
