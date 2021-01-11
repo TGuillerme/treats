@@ -55,6 +55,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ## Initialising the values
     time <- edge_lengths <- 0
     was_alive <- 0L # recording which lineage go extinct (when extinction happens). 0L is no extinction.
+    founding_tree <- NULL
 
     ## Initialise the lineage tracker
     lineage <- list("parents" = 0L,   # The list of parent lineages
@@ -359,7 +360,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                  edge.length = table$edge_lengths)
     class(tree) <- "phylo"
 
-    if(!is.null(events) && any(unlist(lapply(events, function(x) return(x$target))) %in% "founding")) {
+    if(!is.null(founding_tree)) {
 
         ## The founding event
         found_event <- which(unlist(lapply(events, function(x) return(x$target))) %in% "founding")[1]
@@ -542,7 +543,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         }
 
         ## Adding the founding data to the trait_table
-        if(!is.null(events) && any(unlist(lapply(events, function(x) return(x$target))) %in% "founding")) {
+        if(!is.null(founding_tree)) {
 
             ## Combining the trait tables
             trait_table <- rbind(trait_table, founding_tree$data)
