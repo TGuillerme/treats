@@ -27,7 +27,6 @@ print.dads <- function(x, all = FALSE, ...) {
     } else {
         ## Dual class dads objects
         if(length(class(x)) > 1) {
-            ## randtest
             switch(class(x)[[2]],
                 traits = {
                     cat(" ---- dads traits object ---- \n")
@@ -35,7 +34,7 @@ print.dads <- function(x, all = FALSE, ...) {
                 },
                 events = {
                     cat(" ---- dads events object ---- \n")
-                    print.events.info(x)
+                    lapply(x, print.events.info)
                 },
                 modifiers = {
                     cat(" ---- dads modifiers object ---- \n")
@@ -58,7 +57,7 @@ print.dads <- function(x, all = FALSE, ...) {
                 print.modifiers.info(x$modifiers)
             } 
             if(!is.null(x$events)) {
-                print.events.info(x$events)
+                lapply(x$events, print.events.info)
             }
             cat("\n")
         }
