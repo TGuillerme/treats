@@ -81,9 +81,9 @@ OU.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), alpha = 1,
     ## Calculate the means
     means <- theta + (x0 - theta) * exp(-alpha)
     ## Calculate the Sigma
-    sd <- sqrt(Sigma/(2 * alpha) * (1 - exp(-2 * alpha)))
+    Sigma <- Sigma/(2 * alpha) * (1 - exp(-2 * alpha))
     ## Get the traits
-    return(t(MASS::mvrnorm(n = 1, mu = means, Sigma = sd * edge.length, ...)))
+    return(t(MASS::mvrnorm(n = 1, mu = means, Sigma = Sigma * edge.length, ...)))
 }
 
 ## no.process
