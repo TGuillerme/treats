@@ -90,7 +90,11 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
             one_trait <- data[[trait]]
 
             ## Selecting the trait ids
-            trait_ids <- seq_along(one_trait$trait_id)
+            if(use.3D) {
+                trait_ids <- seq_along(one_trait$trait_id)
+            } else {
+                traits_ids <- 1
+            }
 
             ##TODO: handle colours!
             if(missing(col)) {
