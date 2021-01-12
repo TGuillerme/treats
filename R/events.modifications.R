@@ -1,5 +1,5 @@
 #' @name events.modifications
-#' @aliases modification, mass.extinction, trait.extinction, update.bd.params, update.traits, update.modifiers, founding.event
+#' @aliases modification, random.extinction, trait.extinction, update.bd.params, update.traits, update.modifiers, founding.event
 #' @title events.modifications
 #'
 #' @description Inbuilt modifications functions for helping designing events
@@ -54,7 +54,7 @@
 modification <- function(x) {
     cat("List of inbuilt modification functions in dads:\n")
     cat("For the taxa target:\n")
-    cat("   ?mass.extinction\n")
+    cat("   ?random.extinction\n")
     cat("   ?trait.extinction\n")
     cat("For the bd.params target:\n")
     cat("   ?update.bd.params\n")
@@ -68,14 +68,50 @@ modification <- function(x) {
 } 
 
 ## Random mass extinction modification
-random.extinction <- function(x) {
+# random.extinction <- function(x) {
+#     ## The function prototype
+#     extinction.variable <- function(bd.params, lineage, trait.values) {
+#         ## Set the variable
+#         extinction_strength <- NULL
+
+#         ## Select a portion of the living species to go extinct
+#         extinct <- sample(lineage$n, round(lineage$n * extinction_strength))
+
+#         ## Update the lineage object
+#         lineage$livings <- lineage$livings[-extinct]
+#         lineage$n       <- lineage$n - length(extinct)
+#         return(lineage)
+#     }
+
+#     ## Editing the extinction strength
+#     body(extinction.variable)[[2]][[3]] <- eval(substitute(x))
+#     return(extinction.variable)
+# }
+
+# stop("DEBUG")
+## 1- Get the current environment
+## 2- Generate the function
+## 3- Send the function to the previous environment
+# stop("DEBUG")
+# power1 <- function(exp) {
+#     function(x) {
+#         x ^ exp
+#     }
+# }
+
+# square <- power1(2)
+# cube <- power1(3)
+# square(3)
+# cube(3)
+
+## Random mass extinction modification
+random.extinction <- function(x){
+
     ## The function prototype
     extinction.variable <- function(bd.params, lineage, trait.values) {
-        ## Set the variable
-        extinction_strength <- NULL
-
+        
         ## Select a portion of the living species to go extinct
-        extinct <- sample(lineage$n, round(lineage$n * extinction_strength))
+        extinct <- sample(lineage$n, round(lineage$n * x))
 
         ## Update the lineage object
         lineage$livings <- lineage$livings[-extinct]
@@ -83,8 +119,6 @@ random.extinction <- function(x) {
         return(lineage)
     }
 
-    ## Editing the extinction strength
-    body(extinction.variable)[[2]][[3]] <- eval(substitute(x))
     return(extinction.variable)
 }
 
@@ -93,14 +127,9 @@ trait.extinction <- function(x, condition = `<`, trait = 1) {
 
     ## Function for extinction trait
     extinction.trait <- function(bd.params, lineage, trait.values) {
-        ## Set the variable and the selector
-        trait_limit <- NULL
-        selector    <- NULL
-        which_trait <- NULL
-
         ## Select the nodes be traits
         parent_traits <- parent.traits(trait.values, lineage, current = FALSE)
-        selected_nodes <- as.numeric(names(which(selector(parent_traits[, which_trait], trait_limit))))
+        selected_nodes <- as.numeric(names(which(condition(parent_traits[, trait], x))))
 
         ## Select the descendants that'll go extinct
         extinct <- which(lineage$parents %in% selected_nodes)
@@ -110,27 +139,18 @@ trait.extinction <- function(x, condition = `<`, trait = 1) {
         lineage$n       <- length(lineage$livings)
         return(lineage)
     }
-
-    ## Editing the extinction trait
-    body(extinction.trait)[[2]][[3]] <- eval(substitute(x))
-    body(extinction.trait)[[3]][[3]] <- eval(substitute(condition))
-    body(extinction.trait)[[4]][[3]] <- eval(substitute(trait))
     return(extinction.trait)
 }
 
 ## Updating the bd.params
 update.bd.params <- function(x, parameter) {
     change.bd.param <- function(bd.params, lineage, trait.values) {
-        ## Change the death parameter
-        value <- NULL
-        parameter  <- NULL
-        bd.params[parameter] <- value
+        ## Change a parameter
+        bd.params[parameter] <- x
         return(bd.params)
     }
 
     ## Editing the update bd.params function
-    body(change.bd.param)[[2]][[3]] <- eval(substitute(x))
-    body(change.bd.param)[[3]][[3]] <- eval(substitute(parameter))
     return(change.bd.param)
 }
 
@@ -138,26 +158,13 @@ update.bd.params <- function(x, parameter) {
 update.traits <- function(x, process = NULL, process.args = NULL, trait.names = NULL) {
 
     change.traits <- function(traits, bd.params, lineage, trait.values) {
-        ## Setting the varianbes
-        up_process <- NULL
-        up_args    <- NULL
-        up_names   <- NULL
-
+        ## Changing the traits
         return(make.traits(update       = traits,
-                           process      = up_process,
-                           process.args = up_args,
-                           trait.names  = up_names))
+                           process      = process,
+                           process.args = process.args,
+                           trait.names  = trait.names))
     }
 
-    if(!is.null(process)) {
-        body(change.traits)[[2]][[3]] <- eval(substitute(process))
-    }
-    if(!is.null(process.args)) {
-        body(change.traits)[[3]][[3]] <- eval(substitute(process.args))
-    }
-    if(!is.null(trait.names)) {
-        body(change.traits)[[4]][[3]] <- eval(substitute(trait.names))
-    }
     return(change.traits)
 }
 
@@ -165,35 +172,13 @@ update.traits <- function(x, process = NULL, process.args = NULL, trait.names = 
 update.modifiers <- function(x, branch.length = NULL, selection = NULL, speciation = NULL, condition = NULL, modify = NULL) {
 
     change.modifiers <- function(modifiers, bd.params, lineage, trait.values) {
-        ## Setting the varianbes
-        up_branch.length <- NULL
-        up_selection     <- NULL
-        up_speciation    <- NULL
-        up_condition     <- NULL
-        up_modify        <- NULL
-
+        ## Setting the variables
         return(make.modifiers(update        = modifiers,
-                              branch.length = up_branch.length,
-                              selection     = up_selection,
-                              speciation    = up_speciation,
-                              condition     = up_condition,
-                              modify        = up_modify))
-    }
-
-    if(!is.null(branch.length)) {
-        body(change.modifiers)[[2]][[3]] <- branch.length
-    }
-    if(!is.null(selection)) {
-        body(change.modifiers)[[3]][[3]] <- selection
-    }
-    if(!is.null(speciation)) {
-        body(change.modifiers)[[4]][[3]] <- speciation
-    }
-    if(!is.null(condition)) {
-        body(change.modifiers)[[5]][[3]] <- condition
-    }
-    if(!is.null(modify)) {
-        body(change.modifiers)[[6]][[3]] <- modify
+                              branch.length = branch.length,
+                              selection     = selection,
+                              speciation    = speciation,
+                              condition     = condition,
+                              modify        = modify))
     }
     return(change.modifiers)
 }
@@ -203,12 +188,6 @@ founding.event <- function(x, bd.params = NULL, traits = NULL, modifiers = NULL,
 
     ## founding events
     founding.fun <- function(stop.rule, time, lineage) {
-
-        bd.params <- NULL
-        traits    <- NULL
-        modifiers <- NULL
-        events    <- NULL
-
         ## Update the stop rule
         stop_rule_updated <- stop.rule
         if(stop_rule_updated$max.time != Inf) {
@@ -225,18 +204,6 @@ founding.event <- function(x, bd.params = NULL, traits = NULL, modifiers = NULL,
         return(birth.death.tree.traits(stop.rule = stop_rule_updated, bd.params, traits, modifiers, events, check.results = FALSE))
     }
 
-    if(!is.null(bd.params)) {
-        body(founding.fun)[[2]][[3]] <- bd.params
-    }
-    if(!is.null(traits)) {
-        body(founding.fun)[[3]][[3]] <- traits
-    }
-    if(!is.null(modifiers)) {
-        body(founding.fun)[[4]][[3]] <- modifiers
-    }
-    if(!is.null(events)) {
-        body(founding.fun)[[5]][[3]] <- events
-    }
-
     return(founding.fun)
 }
+

@@ -4,7 +4,7 @@
 \alias{events.modifications}
 \alias{modification}
 \alias{modification,}
-\alias{mass.extinction,}
+\alias{random.extinction,}
 \alias{trait.extinction,}
 \alias{update.bd.params,}
 \alias{update.traits,}
