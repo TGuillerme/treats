@@ -111,7 +111,7 @@
 
 \title{dads manual}
 \author{Thomas Guillerme (\href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}}), Alex Slavenko (email) and others}
-\date{2020-12-04}
+\date{2021-01-12}
 
 \begin{document}
 \maketitle
@@ -156,7 +156,7 @@ You can install this package easily, directly from the github:
 \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(devtools)) }\KeywordTok{install.packages}\NormalTok{(}\StringTok{"devtools"}\NormalTok{)}
 
 \CommentTok{## Installing the latest version directly from GitHub}
-\KeywordTok{install_github}\NormalTok{(}\StringTok{"TGuillerme/dads"}\NormalTok{)}
+\NormalTok{devtools}\OperatorTok{::}\KeywordTok{install_github}\NormalTok{(}\StringTok{"TGuillerme/dads"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -705,7 +705,7 @@ Note that you can see the multiple options for plotting the trait process by loo
 ##     return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = Sigma * edge.length, 
 ##         ...)))
 ## }
-## <bytecode: 0x7f7eeee57f58>
+## <bytecode: 0x7faff6222240>
 ## <environment: namespace:dads>
 ## 
 ## $A$start
@@ -1108,13 +1108,13 @@ This default function is simply called \texttt{branch.length} in \texttt{dads} a
 \NormalTok{default_modifiers <-}\StringTok{ }\KeywordTok{make.modifiers}\NormalTok{(}\DataTypeTok{branch.length =}\NormalTok{ branch.length)}
 
 \CommentTok{## Setting some parameters for generating trees}
-\NormalTok{bd_params  <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{extinction =} \DecValTok{0}\NormalTok{)}
-\NormalTok{stope_rule <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{max.living =} \DecValTok{20}\NormalTok{)}
+\NormalTok{bd_params <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{extinction =} \DecValTok{0}\NormalTok{)}
+\NormalTok{stop_rule <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{max.living =} \DecValTok{20}\NormalTok{)}
 
 \CommentTok{## Generating a tree with the default branch length parameter}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{0}\NormalTok{)}
 \NormalTok{default_tree <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd_params,}
-                     \DataTypeTok{stop.rule =}\NormalTok{ stope_rule,}
+                     \DataTypeTok{stop.rule =}\NormalTok{ stop_rule,}
                      \DataTypeTok{modifiers =}\NormalTok{ default_modifiers)}
 \end{Highlighting}
 \end{Shaded}
@@ -1137,7 +1137,7 @@ We can do so by declaring our own \texttt{branch.length} function and adding it 
 \CommentTok{## Generating a new tree with this modifier}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{0}\NormalTok{)}
 \NormalTok{modified_tree <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd_params,}
-                      \DataTypeTok{stop.rule =}\NormalTok{ stope_rule,}
+                      \DataTypeTok{stop.rule =}\NormalTok{ stop_rule,}
                       \DataTypeTok{modifiers =}\NormalTok{ constant_modifier)}
 \end{Highlighting}
 \end{Shaded}
@@ -1202,7 +1202,7 @@ For example, we can create a function that increases branch length proportional 
 \CommentTok{## A more complex binned.branch.length function}
 \NormalTok{increasing.brlen <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(bd.params, lineage) \{}
 
-    \CommentTok{## Setting the cumulated birth and death}
+    \CommentTok{## Setting the cumulated birth and death}
 \NormalTok{    birth_death <-}\StringTok{ }\NormalTok{bd.params}\OperatorTok{$}\NormalTok{speciation }\OperatorTok{+}\StringTok{ }\NormalTok{bd.params}\OperatorTok{$}\NormalTok{extinction}
 
     \CommentTok{## Returning branch lengths depending on different number of taxa}
@@ -1234,7 +1234,7 @@ We can then create it as a \texttt{"modifiers"} object and run a new simulation:
 \CommentTok{## Generating a new tree with this modifier}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{0}\NormalTok{)}
 \NormalTok{increasing_tree <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd_params,}
-                        \DataTypeTok{stop.rule =}\NormalTok{ stope_rule,}
+                        \DataTypeTok{stop.rule =}\NormalTok{ stop_rule,}
                         \DataTypeTok{modifiers =}\NormalTok{ increasing_modifier)}
 \end{Highlighting}
 \end{Shaded}
@@ -1283,7 +1283,7 @@ We can then create a \texttt{"modifiers"} object the same way as before using th
 \CommentTok{## Generating a new tree with this modifier}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{0}\NormalTok{)}
 \NormalTok{ladderised_tree <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd_params,}
-                        \DataTypeTok{stop.rule =}\NormalTok{ stope_rule,}
+                        \DataTypeTok{stop.rule =}\NormalTok{ stop_rule,}
                         \DataTypeTok{modifiers =}\NormalTok{ ladderised_modifier)}
 \CommentTok{## Displaying the results}
 \KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
@@ -1321,13 +1321,13 @@ For example, we can create a \texttt{"dads"} object that also creates a trait a 
 \CommentTok{## Simulate a tree and trait with no modifier}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
 \NormalTok{default_dads <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd_params,}
-                     \DataTypeTok{stop.rule =}\NormalTok{ stope_rule,}
+                     \DataTypeTok{stop.rule =}\NormalTok{ stop_rule,}
                      \DataTypeTok{traits    =}\NormalTok{ BM_trait)}
 
 \CommentTok{## Simulate a tree and trait with the modifier}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
 \NormalTok{skewed_trait_dads <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd_params,}
-                          \DataTypeTok{stop.rule =}\NormalTok{ stope_rule,}
+                          \DataTypeTok{stop.rule =}\NormalTok{ stop_rule,}
                           \DataTypeTok{traits    =}\NormalTok{ BM_trait,}
                           \DataTypeTok{modifiers =}\NormalTok{ positive_skew)}
 
@@ -1377,7 +1377,7 @@ Once the function is created simply input your function for speciation in the mo
 \CommentTok{## Generating a new tree with this modifier}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{0}\NormalTok{)}
 \NormalTok{modified_tree <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd_params,}
-                      \DataTypeTok{stop.rule =}\NormalTok{ stope_rule,}
+                      \DataTypeTok{stop.rule =}\NormalTok{ stop_rule,}
                       \DataTypeTok{modifiers =}\NormalTok{ random_extinction)}
 
 \KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
@@ -1394,10 +1394,10 @@ And again, we can make some more advanced modifiers: for example, one where a ti
 \CommentTok{## A modifier for removing tips with negative values}
 \NormalTok{bias.trait <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(trait.values, lineage) \{}
     \ControlFlowTok{if}\NormalTok{(}\KeywordTok{parent.traits}\NormalTok{(trait.values, lineage) }\OperatorTok{<}\StringTok{ }\DecValTok{0}\NormalTok{) \{}
-        \CommentTok{## Go extinct!}
+        \CommentTok{## Go extinct!}
         \KeywordTok{return}\NormalTok{(}\OtherTok{FALSE}\NormalTok{)}
 \NormalTok{    \} }\ControlFlowTok{else}\NormalTok{ \{}
-        \CommentTok{## Speciate}
+        \CommentTok{## Speciate}
         \KeywordTok{return}\NormalTok{(}\OtherTok{TRUE}\NormalTok{)}
 \NormalTok{    \}}
 \NormalTok{\}}
@@ -1408,7 +1408,7 @@ And again, we can make some more advanced modifiers: for example, one where a ti
 \CommentTok{## Simulate a tree and trait with the modifier}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
 \NormalTok{biased_trait_dads <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd_params,}
-                          \DataTypeTok{stop.rule =}\NormalTok{ stope_rule,}
+                          \DataTypeTok{stop.rule =}\NormalTok{ stop_rule,}
                           \DataTypeTok{traits    =}\NormalTok{ BM_trait,}
                           \DataTypeTok{modifiers =}\NormalTok{ biased_trait)}
 
@@ -1454,62 +1454,683 @@ To do so, you can formally declare conditions (\texttt{condition}) and modificat
 \hypertarget{demo-runnable}{%
 \section{Demo runnable}\label{demo-runnable}}
 
+\hypertarget{makeevents}{%
+\chapter{\texorpdfstring{Making events with \texttt{make.events()}}{Making events with make.events()}}\label{makeevents}}
+
+\hypertarget{conditions}{%
+\section{Conditions}\label{conditions}}
+
+\hypertarget{modifications}{%
+\section{Modifications}\label{modifications}}
+
+\hypertarget{some-events-examples}{%
+\section{Some events examples}\label{some-events-examples}}
+
+\hypertarget{random-mass-extinction-after-some-time}{%
+\subsection{Random mass extinction after some time}\label{random-mass-extinction-after-some-time}}
+
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{bd.params <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{speciation =} \DecValTok{1}\NormalTok{, }\DataTypeTok{extinction =} \DecValTok{1}\OperatorTok{/}\DecValTok{3}\NormalTok{)}
+\CommentTok{## Simulation parameters}
+\NormalTok{stop.rule <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{max.time =} \DecValTok{5}\NormalTok{)}
+\NormalTok{bd.params <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{extinction =} \DecValTok{0}\NormalTok{, }\DataTypeTok{speciation =} \DecValTok{1}\NormalTok{)}
+
+\CommentTok{## 80% mass extinction at time 4}
+\NormalTok{mass_extinction <-}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
+                      \DataTypeTok{target =} \StringTok{"taxa"}\NormalTok{,}
+                      \DataTypeTok{condition =} \KeywordTok{time.condition}\NormalTok{(}\DecValTok{4}\NormalTok{),}
+                      \DataTypeTok{modification =} \KeywordTok{random.extinction}\NormalTok{(}\FloatTok{0.8}\NormalTok{))}
+
+\CommentTok{## Running the simulations}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{results <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
+                \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
+                \DataTypeTok{events    =}\NormalTok{ mass_extinction)}
+\CommentTok{## Plotting the results}
+\KeywordTok{plot}\NormalTok{(results, }\DataTypeTok{show.tip.label =} \OtherTok{FALSE}\NormalTok{)}
+\KeywordTok{axisPhylo}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-57-1.pdf}
+
+\hypertarget{extinction-based-on-a-trait-value-after-some-time}{%
+\subsection{Extinction based on a trait value after some time}\label{extinction-based-on-a-trait-value-after-some-time}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Simulation parameters}
+\NormalTok{stop.rule <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{max.time =} \DecValTok{5}\NormalTok{)}
+\NormalTok{bd.params <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{extinction =} \DecValTok{0}\NormalTok{, }\DataTypeTok{speciation =} \DecValTok{1}\NormalTok{)}
+
+\CommentTok{## Extinction of any tips with trait < 1 at time 4}
+\NormalTok{trait_extinction <-}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
+                      \DataTypeTok{target =} \StringTok{"taxa"}\NormalTok{,}
+                      \DataTypeTok{condition =} \KeywordTok{time.condition}\NormalTok{(}\DecValTok{4}\NormalTok{),}
+                      \DataTypeTok{modification =} \KeywordTok{trait.extinction}\NormalTok{(}\DecValTok{1}\NormalTok{))}
+
+\CommentTok{## Running the simulations}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{7}\NormalTok{)}
+\NormalTok{results <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
+                \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
+                \DataTypeTok{traits    =} \KeywordTok{make.traits}\NormalTok{(),}
+                \DataTypeTok{events    =}\NormalTok{ trait_extinction)}
+\CommentTok{## Plotting the results}
+\KeywordTok{plot}\NormalTok{(results)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-58-1.pdf}
+
+\hypertarget{adding-a-background-extinction-after-reaching-a-number-of-living-taxa}{%
+\subsection{Adding a background extinction after reaching a number of living taxa}\label{adding-a-background-extinction-after-reaching-a-number-of-living-taxa}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Simulation parameters}
+\NormalTok{stop.rule <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{max.living =} \DecValTok{50}\NormalTok{)}
+\NormalTok{bd.params <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{extinction =} \DecValTok{0}\NormalTok{, }\DataTypeTok{speciation =} \DecValTok{1}\NormalTok{)}
+
+\CommentTok{## Adding an extinction parameter after 30 taxa}
+\NormalTok{background_extinction <-}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
+                      \DataTypeTok{condition    =} \KeywordTok{taxa.condition}\NormalTok{(}\DecValTok{30}\NormalTok{),}
+                      \DataTypeTok{target       =} \StringTok{"bd.params"}\NormalTok{,}
+                      \DataTypeTok{modification =} \KeywordTok{update.bd.params}\NormalTok{(}\DecValTok{1}\OperatorTok{/}\DecValTok{3}\NormalTok{, }\StringTok{"extinction"}\NormalTok{))}
+
+\CommentTok{## Running the simulations}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{2}\NormalTok{)}
+\NormalTok{results <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
+                \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
+                \DataTypeTok{events    =}\NormalTok{ background_extinction)}
+\CommentTok{## Plotting the results}
+\KeywordTok{plot}\NormalTok{(results)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-59-1.pdf}
+
+\hypertarget{reducing-speciation-after-some-time}{%
+\subsection{Reducing speciation after some time}\label{reducing-speciation-after-some-time}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Simulation parameters}
+\NormalTok{stop.rule <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{max.time =} \DecValTok{4}\NormalTok{)}
+\NormalTok{bd.params <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{extinction =} \DecValTok{0}\NormalTok{, }\DataTypeTok{speciation =} \DecValTok{1}\NormalTok{)}
+
+\CommentTok{## Reducing speciation after reaching time 2}
+\NormalTok{reduced_speciation <-}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
+                      \DataTypeTok{condition    =} \KeywordTok{time.condition}\NormalTok{(}\DecValTok{2}\NormalTok{),}
+                      \DataTypeTok{target       =} \StringTok{"bd.params"}\NormalTok{,}
+                      \DataTypeTok{modification =} \KeywordTok{update.bd.params}\NormalTok{(}\DecValTok{1}\OperatorTok{/}\DecValTok{3}\NormalTok{, }\StringTok{"speciation"}\NormalTok{))}
+
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{42}\NormalTok{)}
+\NormalTok{no_event <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
+                 \DataTypeTok{stop.rule =}\NormalTok{ stop.rule)}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{42}\NormalTok{)}
+\NormalTok{reduced_speciation_event <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
+                                 \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
+                                 \DataTypeTok{events    =}\NormalTok{ reduced_speciation)}
+
+\CommentTok{## Plot both trees}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(no_event, }\DataTypeTok{main =} \StringTok{"No event"}\NormalTok{)}
+\KeywordTok{axisPhylo}\NormalTok{()}
+\KeywordTok{plot}\NormalTok{(reduced_speciation_event, }\DataTypeTok{main =} \StringTok{"Reduced speciation after time 2"}\NormalTok{)}
+\KeywordTok{axisPhylo}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-60-1.pdf}
+
+\hypertarget{changing-trait-process-after-some-time}{%
+\subsection{Changing trait process after some time}\label{changing-trait-process-after-some-time}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Simulation parameters}
+\NormalTok{bd.params <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{extinction =} \DecValTok{0}\NormalTok{, }\DataTypeTok{speciation =} \DecValTok{1}\NormalTok{)}
+\NormalTok{stop.rule <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{max.time =} \DecValTok{6}\NormalTok{)}
+\NormalTok{traits    <-}\StringTok{ }\KeywordTok{make.traits}\NormalTok{()}
+
+\CommentTok{## Create an event to change the trait process}
+\NormalTok{change_process <-}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
+                  \DataTypeTok{condition    =} \KeywordTok{time.condition}\NormalTok{(}\DecValTok{5}\NormalTok{),}
+                  \DataTypeTok{target       =} \StringTok{"traits"}\NormalTok{,}
+                  \DataTypeTok{modification =} \KeywordTok{update.traits}\NormalTok{(}\DataTypeTok{process =}\NormalTok{ OU.process))}
+
+\CommentTok{## Run the simulations}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{no_change <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
+                  \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
+                  \DataTypeTok{traits    =}\NormalTok{ traits)}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{process_change <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
+                       \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
+                       \DataTypeTok{traits    =}\NormalTok{ traits,}
+                       \DataTypeTok{events    =}\NormalTok{ change_process)}
+\CommentTok{## Plot the results}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(no_change, }\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{7}\NormalTok{, }\DecValTok{7}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(process_change, }\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{7}\NormalTok{, }\DecValTok{7}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-61-1.pdf}
+
+\hypertarget{changing-trait-correlation-after-reaching-a-trait-value}{%
+\subsection{Changing trait correlation after reaching a trait value}\label{changing-trait-correlation-after-reaching-a-trait-value}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Set the parameters}
+\NormalTok{stop.rule <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{max.taxa =} \DecValTok{100}\NormalTok{)}
+\NormalTok{bd.params <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{extinction =} \DecValTok{0}\NormalTok{, }\DataTypeTok{speciation =} \DecValTok{1}\NormalTok{)}
+
+\CommentTok{## A correlated trait}
+\NormalTok{traits <-}\StringTok{ }\KeywordTok{make.traits}\NormalTok{(}\DataTypeTok{n =} \DecValTok{2}\NormalTok{, }\DataTypeTok{process.args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{Sigma =} \KeywordTok{matrix}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{)))}
+
+\CommentTok{## Event changing a trait correlation}
+\NormalTok{change_correlation <-}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
+    \DataTypeTok{condition    =} \KeywordTok{trait.condition}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DataTypeTok{absolute =} \OtherTok{TRUE}\NormalTok{),}
+    \DataTypeTok{target       =} \StringTok{"traits"}\NormalTok{,}
+    \DataTypeTok{modification =} \KeywordTok{update.traits}\NormalTok{(}\DataTypeTok{process.args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{Sigma =} \KeywordTok{matrix}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{),}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{))))}
+
+\CommentTok{## Run the simulations}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{8}\NormalTok{)}
+\NormalTok{no_event <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
+                 \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
+                 \DataTypeTok{traits    =}\NormalTok{ traits)}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{8}\NormalTok{)}
+\NormalTok{change_correlation <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
+                           \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
+                           \DataTypeTok{traits    =}\NormalTok{ traits,}
+                           \DataTypeTok{events    =}\NormalTok{ change_correlation)}
+\CommentTok{## Visual testing}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(no_event, }\DataTypeTok{trait =} \DecValTok{2}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(change_correlation, }\DataTypeTok{trait =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-62-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# plot(no_event, trait = c(1:2))}
+\CommentTok{# plot(change_correlation, trait = c(1:2), use.3D = TRUE)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{event-for-changing-a-modifier}{%
+\subsection{Event for changing a modifier}\label{event-for-changing-a-modifier}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Set the parameters}
+\NormalTok{stop.rule <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{max.time =} \DecValTok{4}\NormalTok{)}
+\NormalTok{bd.params <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{extinction =} \DecValTok{0}\NormalTok{, }\DataTypeTok{speciation =} \DecValTok{1}\NormalTok{)}
+
+\CommentTok{## Using a default trait and modifier object}
+\NormalTok{modifiers <-}\StringTok{ }\KeywordTok{make.modifiers}\NormalTok{()}
 \NormalTok{traits <-}\StringTok{ }\KeywordTok{make.traits}\NormalTok{()}
-\NormalTok{stop.rule <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{max.taxa =} \DecValTok{20}\NormalTok{, }\DataTypeTok{max.living =} \OtherTok{Inf}\NormalTok{, }\DataTypeTok{max.time =} \OtherTok{Inf}\NormalTok{)}
-\NormalTok{modifiers <-}\StringTok{ }\OtherTok{NULL}
-\NormalTok{events <-}\StringTok{ }\OtherTok{NULL}
-\NormalTok{null.error <-}\StringTok{ }\OtherTok{NULL}
 
-\CommentTok{## modifiers}
-\NormalTok{condition <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(trait.values, parent.lineage) }\KeywordTok{return}\NormalTok{(}\KeywordTok{parent.traits}\NormalTok{(trait.values, parent.lineage) }\OperatorTok{<}\StringTok{ }\DecValTok{0}\NormalTok{)}
-\NormalTok{modify <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x) }\KeywordTok{return}\NormalTok{(x }\OperatorTok{*}\StringTok{ }\DecValTok{20}\NormalTok{)}
+\CommentTok{## New condition and new modifier (increasing speciation if trait is negative)}
+\NormalTok{new.condition <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(trait.values, lineage) \{}
+    \KeywordTok{return}\NormalTok{(}\KeywordTok{parent.traits}\NormalTok{(trait.values, lineage) }\OperatorTok{<}\StringTok{ }\DecValTok{0}\NormalTok{)}
+\NormalTok{\}}
+\NormalTok{new.modify    <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x, trait.values, lineage) \{}
+  \KeywordTok{return}\NormalTok{(x }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{)}
+\NormalTok{\}}
 
-\CommentTok{## Setting up the different modifiers}
-\NormalTok{modify_speciation <-}\StringTok{ }\KeywordTok{make.modifiers}\NormalTok{(}\DataTypeTok{speciation    =}\NormalTok{ speciation.trait,}
-                                    \DataTypeTok{condition     =}\NormalTok{ condition,}
-                                    \DataTypeTok{modify        =}\NormalTok{ modify)}
-\NormalTok{modify_brlen <-}\StringTok{ }\KeywordTok{make.modifiers}\NormalTok{(}\DataTypeTok{branch.length =}\NormalTok{ branch.length.trait,}
-                               \DataTypeTok{condition     =}\NormalTok{ condition,}
-                               \DataTypeTok{modify        =}\NormalTok{ modify)}
-\NormalTok{modify_speciation_brlen <-}\StringTok{ }\KeywordTok{make.modifiers}\NormalTok{(}\DataTypeTok{branch.length =}\NormalTok{ branch.length.trait,}
-                                          \DataTypeTok{speciation    =}\NormalTok{ speciation.trait,}
-                                          \DataTypeTok{condition     =}\NormalTok{ condition,}
-                                          \DataTypeTok{modify        =}\NormalTok{ modify)}
+\CommentTok{## Update the modifier}
+\NormalTok{change_speciation <-}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
+    \DataTypeTok{condition    =} \KeywordTok{time.condition}\NormalTok{(}\DecValTok{3}\NormalTok{),}
+    \DataTypeTok{target       =} \StringTok{"modifiers"}\NormalTok{,}
+    \DataTypeTok{modification =} \KeywordTok{update.modifiers}\NormalTok{(}\DataTypeTok{speciation =}\NormalTok{ speciation,}
+                                    \DataTypeTok{condition  =}\NormalTok{ new.condition,}
+                                    \DataTypeTok{modify     =}\NormalTok{ new.modify))}
 
-\CommentTok{## Test normal (no modifiers)}
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
-\NormalTok{test <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(bd.params, stop.rule, traits, }\DataTypeTok{null.error =} \DecValTok{20}\NormalTok{)}
-\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{,}\DecValTok{2}\NormalTok{))}
-\KeywordTok{plot}\NormalTok{(test}\OperatorTok{$}\NormalTok{tree)}
-\KeywordTok{plot.dads}\NormalTok{(test, }\DataTypeTok{main =} \StringTok{"random tree + trait"}\NormalTok{)}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{4}\NormalTok{)}
+\NormalTok{no_event <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
+                 \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
+                 \DataTypeTok{traits    =}\NormalTok{ traits,}
+                 \DataTypeTok{modifiers =}\NormalTok{ modifiers)}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{4}\NormalTok{)}
+\NormalTok{change_spec <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
+                    \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
+                    \DataTypeTok{traits    =}\NormalTok{ traits,}
+                    \DataTypeTok{modifiers =}\NormalTok{ modifiers,}
+                    \DataTypeTok{events    =}\NormalTok{ change_speciation)}
 
-\CommentTok{## Test with modifiers}
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
-\NormalTok{trait_table <-}\StringTok{ }\OtherTok{NULL}
-\NormalTok{test <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(bd.params, stop.rule, traits,}
-                                \DataTypeTok{modifiers =}\NormalTok{ modify_speciation,}
-                                \DataTypeTok{null.error =} \DecValTok{20}\NormalTok{)}
-\KeywordTok{plot}\NormalTok{(test}\OperatorTok{$}\NormalTok{tree)}
-\KeywordTok{plot.dads}\NormalTok{(test, }\DataTypeTok{main =} \StringTok{"Skewed speciation"}\NormalTok{)}
+\CommentTok{## Visualise the results}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(no_event, }\DataTypeTok{main =} \StringTok{"No event"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(change_spec, }\DataTypeTok{main =} \StringTok{"Increase extinction for negative traits}\CharTok{\textbackslash{}n}\StringTok{after time 3"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
-\NormalTok{trait_table <-}\StringTok{ }\OtherTok{NULL}
-\NormalTok{test <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(bd.params, stop.rule, traits,}
-                                \DataTypeTok{modifiers =}\NormalTok{ modify_brlen,}
-                                \DataTypeTok{null.error =} \DecValTok{20}\NormalTok{)}
-\KeywordTok{plot}\NormalTok{(test}\OperatorTok{$}\NormalTok{tree)}
-\KeywordTok{plot.dads}\NormalTok{(test, }\DataTypeTok{main =} \StringTok{"Skewed branch length"}\NormalTok{)}
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-63-1.pdf}
 
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
-\NormalTok{trait_table <-}\StringTok{ }\OtherTok{NULL}
-\NormalTok{test <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(bd.params, stop.rule, traits,}
-                                \DataTypeTok{modifiers =}\NormalTok{ modify_speciation_brlen,}
-                                \DataTypeTok{null.error =} \DecValTok{20}\NormalTok{)}
-\KeywordTok{plot}\NormalTok{(test}\OperatorTok{$}\NormalTok{tree)}
-\KeywordTok{plot.dads}\NormalTok{(test, }\DataTypeTok{main =} \StringTok{"Skewed branch length and speciation"}\NormalTok{)}
+\hypertarget{changing-branch-length-when-reaching-n-taxa}{%
+\subsection{Changing branch length when reaching n taxa}\label{changing-branch-length-when-reaching-n-taxa}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Parameters}
+\NormalTok{bd.params <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{extinction =} \DecValTok{0}\NormalTok{, }\DataTypeTok{speciation =} \DecValTok{1}\NormalTok{)}
+\NormalTok{stop.rule <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{max.taxa =} \DecValTok{100}\NormalTok{)}
+\NormalTok{modifiers <-}\StringTok{ }\KeywordTok{make.modifiers}\NormalTok{()}
+\NormalTok{traits <-}\StringTok{ }\KeywordTok{make.traits}\NormalTok{()}
+
+\CommentTok{## multiplying branch length 100 folds}
+\NormalTok{new.modify <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x, trait.values, lineage) \{}
+  \KeywordTok{return}\NormalTok{(x }\OperatorTok{*}\StringTok{ }\DecValTok{100}\NormalTok{)}
+\NormalTok{\}}
+
+\CommentTok{## Event for increasing branch length after reaching 30 taxa}
+\NormalTok{increase_brlen <-}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
+                  \DataTypeTok{condition    =} \KeywordTok{taxa.condition}\NormalTok{(}\DecValTok{30}\NormalTok{),}
+                  \DataTypeTok{target       =} \StringTok{"modifiers"}\NormalTok{,}
+                  \DataTypeTok{modification =} \KeywordTok{update.modifiers}\NormalTok{(}
+                                    \DataTypeTok{branch.length =}\NormalTok{ branch.length,}
+                                    \DataTypeTok{modify =}\NormalTok{ new.modify))}
+
+\CommentTok{## Run the simulations}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{5}\NormalTok{)}
+\NormalTok{no_event <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
+                 \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
+                 \DataTypeTok{traits    =}\NormalTok{ traits,}
+                 \DataTypeTok{modifiers =}\NormalTok{ modifiers)}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{5}\NormalTok{)}
+\NormalTok{increased_brlen <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
+                        \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
+                        \DataTypeTok{traits    =}\NormalTok{ traits,}
+                        \DataTypeTok{modifiers =}\NormalTok{ modifiers,}
+                        \DataTypeTok{events    =}\NormalTok{ increase_brlen)}
+
+\CommentTok{## Visualise the results}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(no_event, }\DataTypeTok{main =} \StringTok{"No event"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(increased_brlen, }\DataTypeTok{main =} \StringTok{"Increase branch length}\CharTok{\textbackslash{}n}\StringTok{after 30 taxa"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-64-1.pdf}
+
+\hypertarget{founding-event-a-subtree-with-no-fossils}{%
+\subsection{Founding event: a subtree with no fossils}\label{founding-event-a-subtree-with-no-fossils}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Set up parameters}
+\NormalTok{stop.rule <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{max.time =} \DecValTok{4}\NormalTok{)}
+\NormalTok{bd.params <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{speciation =} \DecValTok{1}\NormalTok{, }\DataTypeTok{extinction =} \FloatTok{0.3}\NormalTok{)}
+
+\CommentTok{## Events that generate a new process (founding effects)}
+\NormalTok{founding_event <-}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
+                  \DataTypeTok{condition    =} \KeywordTok{taxa.condition}\NormalTok{(}\DecValTok{10}\NormalTok{),}
+                  \DataTypeTok{target       =} \StringTok{"founding"}\NormalTok{,}
+                  \DataTypeTok{modification =} \KeywordTok{founding.event}\NormalTok{(}
+                                    \DataTypeTok{bd.params =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{speciation =} \DecValTok{2}\NormalTok{,}
+                                                     \DataTypeTok{extinction =} \DecValTok{0}\NormalTok{)),}
+                  \DataTypeTok{additional.args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{prefix =} \StringTok{"founding_"}\NormalTok{))}
+    
+\CommentTok{## Simulations}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{11}\NormalTok{)}
+\NormalTok{founding_tree <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
+                      \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
+                      \DataTypeTok{events    =}\NormalTok{ founding_event)}
+\KeywordTok{plot}\NormalTok{(founding_tree, }\DataTypeTok{cex =} \FloatTok{0.4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-65-1.pdf}
+
+\hypertarget{founding-event-with-traits}{%
+\subsection{Founding event with traits}\label{founding-event-with-traits}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Set up parameters}
+\NormalTok{stop.rule <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{max.time =} \DecValTok{4}\NormalTok{)}
+\NormalTok{bd.params <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{speciation =} \DecValTok{1}\NormalTok{, }\DataTypeTok{extinction =} \FloatTok{0.3}\NormalTok{)}
+\NormalTok{traits    <-}\StringTok{ }\KeywordTok{make.traits}\NormalTok{()}
+
+\CommentTok{## Events that generate a new process (founding effects)}
+\NormalTok{founding_event <-}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
+                  \DataTypeTok{condition    =} \KeywordTok{taxa.condition}\NormalTok{(}\DecValTok{10}\NormalTok{),}
+                  \DataTypeTok{target       =} \StringTok{"founding"}\NormalTok{,}
+                  \DataTypeTok{modification =} \KeywordTok{founding.event}\NormalTok{(}
+                                    \DataTypeTok{bd.params =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{speciation =} \DecValTok{2}\NormalTok{,}
+                                                     \DataTypeTok{extinction =} \DecValTok{0}\NormalTok{),}
+                                    \DataTypeTok{traits =} \KeywordTok{make.traits}\NormalTok{(}\DataTypeTok{process =}\NormalTok{ OU.process)),}
+                  \DataTypeTok{additional.args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{prefix =} \StringTok{"founding_"}\NormalTok{))}
+
+\CommentTok{## Simulating the tree}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{19}\NormalTok{)}
+\NormalTok{founding_tree <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
+                      \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
+                      \DataTypeTok{traits    =} \KeywordTok{make.traits}\NormalTok{(),}
+                      \DataTypeTok{events    =}\NormalTok{ founding_event)}
+\KeywordTok{plot}\NormalTok{(founding_tree)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-66-1.pdf}
+
+\hypertarget{thorough-example}{%
+\chapter{Thorough example}\label{thorough-example}}
+
+Here we are going to look at an example on how to simulate complex evolutionary histories with \texttt{dads}.
+
+Let say we want to simulate the following story:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  A lineage evolves in a normal birth-death fashion (with extinction) from a single origin and with two traits called:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    ``Distance'': the physical distance between species in an arbitrary 1D space (evolving in a Brownian motion).
+  \item
+    ``Variable'': a 2D uncorrelated Ornstein-Uhlenbeck trait that corresponds to some traits the lineages have.
+    During the whole process, lineages that are more further away from the other species in terms of distance have a higher change of speciating (proportional to that distance).
+  \end{itemize}
+\end{enumerate}
+
+Three events then happen during the evolutionary history of this lineage:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  ``Correlation event'': after reaching a certain number of taxa an event happens making the ``Variables'' trait dimensions become correlated.
+\item
+  ``Selective extinction event'': after reaching a certain point in time, lineages with their ``Variables'' values that are negative go extinct
+\item
+  ``Founding event'': after reaching a value for the ``Distance'' trait, a founding event happens with a new birth-death process with no extinction and where the ``Variable'' is now a 2D correlated Brownian Motion.
+\item
+  ``Mass extinction event'': after reaching a certain number of taxa in the ``Founding event'', 80\% of taxa go extinct randomly.
+\end{enumerate}
+
+We are going to run each step one by one in a cumulative manner to see how they pile up:
+
+\hypertarget{step-1}{%
+\section{Step 1:}\label{step-1}}
+
+\hypertarget{the-birth-death-parameters}{%
+\subsection{The birth death parameters}\label{the-birth-death-parameters}}
+
+First let's set the overall birth death parameters (a speciation of 1.2 and an extinction of 0.3):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## The birth death parameters}
+\NormalTok{bd_params <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{speciation =} \FloatTok{1.2}\NormalTok{, }\DataTypeTok{extinction =} \FloatTok{0.3}\NormalTok{)}
+\CommentTok{## The stopping rule}
+\NormalTok{stop_rule <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{max.time =} \DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+And let's quickly test if the simulation works by running a birth death tree without traits and anything:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{0}\NormalTok{) }\CommentTok{# 123 also works}
+\CommentTok{## Running a birth death tree }
+\NormalTok{results <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd_params,}
+                \DataTypeTok{stop.rule =}\NormalTok{ stop_rule)}
+
+\CommentTok{## And displaying the results}
+\KeywordTok{plot}\NormalTok{(results)}
+\KeywordTok{axisPhylo}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-68-1.pdf}
+
+\hypertarget{the-traits}{%
+\subsection{The traits}\label{the-traits}}
+
+Then let's create the traits:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## The trait object}
+\NormalTok{two_traits <-}\StringTok{ }\KeywordTok{make.traits}\NormalTok{(}\DataTypeTok{process =} \KeywordTok{c}\NormalTok{(BM.process, OU.process), }\DataTypeTok{n =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{),}
+                          \DataTypeTok{trait.names =} \KeywordTok{c}\NormalTok{(}\StringTok{"Distance"}\NormalTok{, }\StringTok{"Variables"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Visualise the 1D trait (BM.process)}
+\KeywordTok{plot}\NormalTok{(two_traits, }\DataTypeTok{trait =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-70-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Visualise the 2D trait (uncorrelated OU.process)}
+\KeywordTok{plot}\NormalTok{(two_traits, }\DataTypeTok{trait =} \DecValTok{2}\NormalTok{, }\DataTypeTok{use.3D =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Note that specifying the correlation matrix is not necessary here \emph{per se} (since no correlation is the default) but we will modify it through an event later on so it's good practice to have it properly stated before hand (to avoid any confusion).
+
+We can then run the tree with the traits:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{0}\NormalTok{)}
+\CommentTok{## Running a birth death tree }
+\NormalTok{results <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params  =}\NormalTok{ bd_params,}
+                \DataTypeTok{stop.rule  =}\NormalTok{ stop_rule,}
+                \DataTypeTok{traits     =}\NormalTok{ two_traits)}
+
+\CommentTok{## And displaying the results}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(results, }\DataTypeTok{trait =} \DecValTok{1}\NormalTok{, }\DataTypeTok{main =} \StringTok{"Trait 1: Distance"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(results, }\DataTypeTok{trait =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{), }\DataTypeTok{main =} \StringTok{"Variables correlation"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-72-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Visualising the tree in 3D}
+\KeywordTok{plot}\NormalTok{(results, }\DataTypeTok{trait =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{), }\DataTypeTok{use.3D =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{the-modifiers}{%
+\subsection{The modifiers}\label{the-modifiers}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Speciation event is more likely if lineage's ancestor is further away from the mean trait value}
+\NormalTok{distance.modify <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x, trait.values, lineage) }\KeywordTok{return}\NormalTok{(x }\OperatorTok{+}\StringTok{ }\NormalTok{x }\OperatorTok{*}\StringTok{ }\KeywordTok{abs}\NormalTok{(}\KeywordTok{parent.traits}\NormalTok{(trait.values, lineage)[}\DecValTok{1}\NormalTok{] }\OperatorTok{-}\StringTok{ }\KeywordTok{mean}\NormalTok{(trait.values[,}\DecValTok{1}\NormalTok{])))}
+
+\CommentTok{## Make a distance modifier}
+\NormalTok{distance.speciation <-}\StringTok{ }\KeywordTok{make.modifiers}\NormalTok{(}\DataTypeTok{speciation =}\NormalTok{ speciation,}
+                                      \DataTypeTok{modify =}\NormalTok{ distance.modify)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{42}\NormalTok{)}
+\CommentTok{## Running a birth death tree }
+\NormalTok{results <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params  =}\NormalTok{ bd_params,}
+                \DataTypeTok{stop.rule  =}\NormalTok{ stop_rule,}
+                \DataTypeTok{traits     =}\NormalTok{ two_traits,}
+                \DataTypeTok{modifiers  =}\NormalTok{ distance.speciation)}
+
+\CommentTok{## And displaying the results}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(results, }\DataTypeTok{trait =} \DecValTok{1}\NormalTok{, }\DataTypeTok{main =} \StringTok{"Trait 1: Distance"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(results, }\DataTypeTok{trait =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{), }\DataTypeTok{main =} \StringTok{"Variables correlation"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-75-1.pdf}
+
+\hypertarget{step-2}{%
+\section{Step 2:}\label{step-2}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  ``Correlation event'': after reaching a certain number of taxa an event happens making the ``Variable'' trait dimensions become correlated.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## The correlation change event}
+\NormalTok{events_list <-}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}\DataTypeTok{event.name   =} \StringTok{"Correlation"}\NormalTok{,}
+                           \DataTypeTok{target       =} \StringTok{"traits"}\NormalTok{,}
+                           \DataTypeTok{condition    =} \KeywordTok{taxa.condition}\NormalTok{(}\DecValTok{30}\NormalTok{),}
+                           \DataTypeTok{modification =} \KeywordTok{update.traits}\NormalTok{(}
+                    \DataTypeTok{process.args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{Sigma =} \KeywordTok{matrix}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\FloatTok{0.7}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\FloatTok{0.7}\NormalTok{), }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{)),}
+                    \DataTypeTok{trait.names  =} \StringTok{"Variables"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{8}\NormalTok{)}
+\CommentTok{## Running a birth death tree }
+\NormalTok{results <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params  =}\NormalTok{ bd_params,}
+                \DataTypeTok{stop.rule  =}\NormalTok{ stop_rule,}
+                \DataTypeTok{traits     =}\NormalTok{ two_traits,}
+                \DataTypeTok{modifiers  =}\NormalTok{ distance.speciation,}
+                \DataTypeTok{events     =}\NormalTok{ events_list)}
+
+\CommentTok{## And displaying the results}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(results, }\DataTypeTok{trait =} \DecValTok{1}\NormalTok{, }\DataTypeTok{main =} \StringTok{"Trait 1: Distance"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(results, }\DataTypeTok{trait =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{), }\DataTypeTok{main =} \StringTok{"Variables correlation"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dads_manual_files/figure-latex/unnamed-chunk-77-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Visualising the tree in 3D}
+\KeywordTok{plot}\NormalTok{(results, }\DataTypeTok{trait =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{), }\DataTypeTok{use.3D =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{step-3}{%
+\section{Step 3:}\label{step-3}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  ``Selective extinction event'': after reaching a certain point in time, lineages with their ``Variables'' values that are negative go extinct
+\end{enumerate}
+
+\hypertarget{bugged-from-here}{%
+\chapter{BUGGED FROM HERE}\label{bugged-from-here}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Adding the selective event}
+\NormalTok{events_list <-}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}\DataTypeTok{event.name   =} \StringTok{"Selection"}\NormalTok{,}
+                           \DataTypeTok{add          =}\NormalTok{ events_list,}
+                           \DataTypeTok{target       =} \StringTok{"taxa"}\NormalTok{,}
+                           \DataTypeTok{condition    =} \KeywordTok{time.condition}\NormalTok{(}\DecValTok{4}\NormalTok{),}
+                           \DataTypeTok{modification =} \KeywordTok{trait.extinction}\NormalTok{(}\DataTypeTok{x =} \DecValTok{0}\NormalTok{, }\DataTypeTok{condition =} \StringTok{`}\DataTypeTok{<}\StringTok{`}\NormalTok{, }\DataTypeTok{trait =} \DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+Problem with \texttt{modification} argument here
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Running a birth death tree }
+\NormalTok{results <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params  =}\NormalTok{ bd_params,}
+                \DataTypeTok{stop.rule  =}\NormalTok{ stop_rule,}
+                \DataTypeTok{traits     =}\NormalTok{ two_traits,}
+                \DataTypeTok{modifiers  =}\NormalTok{ distance.speciation,}
+                \DataTypeTok{events     =}\NormalTok{ events_list)}
+
+\CommentTok{## And displaying the results}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(results, }\DataTypeTok{trait =} \DecValTok{1}\NormalTok{, }\DataTypeTok{main =} \StringTok{"Trait 1: Distance"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(results, }\DataTypeTok{trait =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{), }\DataTypeTok{main =} \StringTok{"Variables correlation"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{step-4-and-5}{%
+\section{Step 4 and 5:}\label{step-4-and-5}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  ``Founding event'': after reaching a value for the ``Distance'' trait, a founding event happens with a new birth-death process with no extinction and where the ``Variable'' is now a 2D correlated Brownian Motion.
+\item
+  ``Mass extinction event'': after reaching a certain number of taxa in the ``Founding event'', 80\% of taxa go extinct randomly.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## The new trait for the founding event}
+\NormalTok{new_traits <-}\StringTok{ }\KeywordTok{make.traits}\NormalTok{(}\DataTypeTok{process =} \KeywordTok{c}\NormalTok{(BM.process, BM.process), }\DataTypeTok{n =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{),}
+                          \DataTypeTok{trait.names =} \KeywordTok{c}\NormalTok{(}\StringTok{"Distance"}\NormalTok{, }\StringTok{"Variables"}\NormalTok{))}
+
+\CommentTok{## The mass extinction event after reaching 50 taxa}
+\NormalTok{mass_extinction <-}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}\DataTypeTok{target       =} \StringTok{"taxa"}\NormalTok{,}
+                               \DataTypeTok{condition    =} \KeywordTok{taxa.condition}\NormalTok{(}\DecValTok{50}\NormalTok{),}
+                               \DataTypeTok{modification =} \KeywordTok{random.extinction}\NormalTok{(}\FloatTok{0.8}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## The selective event}
+\NormalTok{events_list <-}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}\DataTypeTok{event.name   =} \StringTok{"Founding"}\NormalTok{, }
+                           \DataTypeTok{add          =}\NormalTok{ events_list,}
+                           \DataTypeTok{target       =} \StringTok{"founding"}\NormalTok{,}
+                           \DataTypeTok{condition    =} \KeywordTok{trait.condition}\NormalTok{(}\DecValTok{3}\NormalTok{),}
+                           \DataTypeTok{modification =} \KeywordTok{founding.event}\NormalTok{(}\DataTypeTok{traits    =}\NormalTok{ new_traits,}
+                                                         \DataTypeTok{events    =}\NormalTok{ mass_extinction,}
+                                                         \DataTypeTok{bd.params =} \KeywordTok{list}\NormalTok{(}
+                                                            \DataTypeTok{speciation =} \DecValTok{2}\NormalTok{,}
+                                                            \DataTypeTok{extinction =} \DecValTok{0}\NormalTok{)),}
+                           \DataTypeTok{additional.args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{prefix =} \StringTok{"found_"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Running a birth death tree }
+\NormalTok{results <-}\StringTok{ }\KeywordTok{dads}\NormalTok{(}\DataTypeTok{bd.params  =}\NormalTok{ bd_params,}
+                \DataTypeTok{stop.rule  =}\NormalTok{ stop_rule,}
+                \DataTypeTok{traits     =}\NormalTok{ two_traits,}
+                \DataTypeTok{modifiers  =}\NormalTok{ distance.speciation,}
+                \DataTypeTok{events     =}\NormalTok{ events_list,}
+                \DataTypeTok{null.error =} \DecValTok{100}\NormalTok{)}
+
+\CommentTok{## And displaying the results}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(results, }\DataTypeTok{trait =} \DecValTok{1}\NormalTok{, }\DataTypeTok{main =} \StringTok{"Trait 1: Distance"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(results, }\DataTypeTok{trait =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{), }\DataTypeTok{main =} \StringTok{"Variables correlation"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 

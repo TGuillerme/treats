@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>dads manual</title>
+  <title>6 Thorough example | dads manual</title>
   <meta name="description" content="dads R package vignette" />
   <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="dads manual" />
+  <meta property="og:title" content="6 Thorough example | dads manual" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="TGuillerme/dads" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="dads manual" />
+  <meta name="twitter:title" content="6 Thorough example | dads manual" />
   
   <meta name="twitter:description" content="dads R package vignette" />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="getting-started.html"/>
+<link rel="prev" href="makeevents.html"/>
+<link rel="next" href="bugged-from-here.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -218,57 +218,128 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">dads manual</h1>
-<p class="author"><em>Thomas Guillerme (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>), Alex Slavenko (email) and others</em></p>
-<p class="date"><em>2021-01-12</em></p>
+<div id="thorough-example" class="section level1">
+<h1><span class="header-section-number">6</span> Thorough example</h1>
+<p>Here we are going to look at an example on how to simulate complex evolutionary histories with <code>dads</code>.</p>
+<p>Let say we want to simulate the following story:</p>
+<ol style="list-style-type: decimal">
+<li>A lineage evolves in a normal birth-death fashion (with extinction) from a single origin and with two traits called:
+<ul>
+<li>“Distance”: the physical distance between species in an arbitrary 1D space (evolving in a Brownian motion).</li>
+<li>“Variable”: a 2D uncorrelated Ornstein-Uhlenbeck trait that corresponds to some traits the lineages have.
+During the whole process, lineages that are more further away from the other species in terms of distance have a higher change of speciating (proportional to that distance).</li>
+</ul></li>
+</ol>
+<p>Three events then happen during the evolutionary history of this lineage:</p>
+<ol start="2" style="list-style-type: decimal">
+<li>“Correlation event”: after reaching a certain number of taxa an event happens making the “Variables” trait dimensions become correlated.</li>
+<li>“Selective extinction event”: after reaching a certain point in time, lineages with their “Variables” values that are negative go extinct</li>
+<li>“Founding event”: after reaching a value for the “Distance” trait, a founding event happens with a new birth-death process with no extinction and where the “Variable” is now a 2D correlated Brownian Motion.</li>
+<li>“Mass extinction event”: after reaching a certain number of taxa in the “Founding event”, 80% of taxa go extinct randomly.</li>
+</ol>
+<p>We are going to run each step one by one in a cumulative manner to see how they pile up:</p>
+<div id="step-1" class="section level2">
+<h2><span class="header-section-number">6.1</span> Step 1:</h2>
+<div id="the-birth-death-parameters" class="section level3">
+<h3><span class="header-section-number">6.1.1</span> The birth death parameters</h3>
+<p>First let’s set the overall birth death parameters (a speciation of 1.2 and an extinction of 0.3):</p>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb104-1" data-line-number="1"><span class="co">## The birth death parameters</span></a>
+<a class="sourceLine" id="cb104-2" data-line-number="2">bd_params &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">speciation =</span> <span class="fl">1.2</span>, <span class="dt">extinction =</span> <span class="fl">0.3</span>)</a>
+<a class="sourceLine" id="cb104-3" data-line-number="3"><span class="co">## The stopping rule</span></a>
+<a class="sourceLine" id="cb104-4" data-line-number="4">stop_rule &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">max.time =</span> <span class="dv">4</span>)</a></code></pre></div>
+<p>And let’s quickly test if the simulation works by running a birth death tree without traits and anything:</p>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb105-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">0</span>) <span class="co"># 123 also works</span></a>
+<a class="sourceLine" id="cb105-2" data-line-number="2"><span class="co">## Running a birth death tree </span></a>
+<a class="sourceLine" id="cb105-3" data-line-number="3">results &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params =</span> bd_params,</a>
+<a class="sourceLine" id="cb105-4" data-line-number="4">                <span class="dt">stop.rule =</span> stop_rule)</a>
+<a class="sourceLine" id="cb105-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb105-6" data-line-number="6"><span class="co">## And displaying the results</span></a>
+<a class="sourceLine" id="cb105-7" data-line-number="7"><span class="kw">plot</span>(results)</a>
+<a class="sourceLine" id="cb105-8" data-line-number="8"><span class="kw">axisPhylo</span>()</a></code></pre></div>
+<p><img src="dads_manual_files/figure-html/unnamed-chunk-68-1.png" width="672" /></p>
 </div>
-<div id="dads-disparity-and-diversity-simulations." class="section level1">
-<h1><span class="header-section-number">1</span> <code>dads</code>: disparity and diversity simulations.</h1>
-<p>Allowing to simulate disparity and diversity at the same time with interaction between both.</p>
-<p>The core of this package is based on the <a href="https://github.com/cran/diversitree/blob/master/R/simulate-bd.R"><code>diversitree</code> birth-death algorithm</a>.</p>
-<div id="what-is-dads" class="section level2">
-<h2><span class="header-section-number">1.1</span> What is <code>dads</code>?</h2>
-<p>There are some very good packages out there to simulate birth death trees (like <a href="https://github.com/tanja819/TreeSim">TreeSim</a>) or even packages simulating traits (disparity) and diversity jointly (like <a href="https://github.com/cran/RPANDA">RPANDA</a> or <a href="https://github.com/PuttickMacroevolution/PETER">PETER</a>).
-We strongly advice you have a look at these packages first as they might be more appropriate for your tasks.</p>
-<p><code>dads</code> aims to be a highly modular and friendly version of all these packages: it allows to simulate disparity and diversity jointly with a vast array of options that can be easily modified by users.
-For example, you can easily generate any type of process to generate a trait (BM, OU, something else, etc…) in multiple dependent or independent dimensions through <code>&quot;traits&quot;</code> objects.
-You can then specify how the traits should affect disparity through <code>&quot;modifiers&quot;</code> objects. And finally you can create events (like mass extinctions) through <code>&quot;events&quot;</code> objects.
-These objects and how to modify them will be detailed throughout this manual.
-Finally we are putting an emphasise in the development of this package on the speed and reliability of the functions.</p>
-<div id="modular" class="section level3">
-<h3><span class="header-section-number">1.1.1</span> Modular?</h3>
-<p>Because their is an infinite way you might want to generate disparity and diversity (different traits, different modifiers and different events), the <code>dads</code> package is designed to make all these parts easy to code separately and integrate them easily in the <code>dads</code> core functions.
-This allows you to simulate finely tuned multidimensional data for your specific project!</p>
+<div id="the-traits" class="section level3">
+<h3><span class="header-section-number">6.1.2</span> The traits</h3>
+<p>Then let’s create the traits:</p>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb106-1" data-line-number="1"><span class="co">## The trait object</span></a>
+<a class="sourceLine" id="cb106-2" data-line-number="2">two_traits &lt;-<span class="st"> </span><span class="kw">make.traits</span>(<span class="dt">process =</span> <span class="kw">c</span>(BM.process, OU.process), <span class="dt">n =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb106-3" data-line-number="3">                          <span class="dt">trait.names =</span> <span class="kw">c</span>(<span class="st">&quot;Distance&quot;</span>, <span class="st">&quot;Variables&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb107-1" data-line-number="1"><span class="co">## Visualise the 1D trait (BM.process)</span></a>
+<a class="sourceLine" id="cb107-2" data-line-number="2"><span class="kw">plot</span>(two_traits, <span class="dt">trait =</span> <span class="dv">1</span>)</a></code></pre></div>
+<p><img src="dads_manual_files/figure-html/unnamed-chunk-70-1.png" width="672" /></p>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb108-1" data-line-number="1"><span class="co">## Visualise the 2D trait (uncorrelated OU.process)</span></a>
+<a class="sourceLine" id="cb108-2" data-line-number="2"><span class="kw">plot</span>(two_traits, <span class="dt">trait =</span> <span class="dv">2</span>, <span class="dt">use.3D =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p>Note that specifying the correlation matrix is not necessary here <em>per se</em> (since no correlation is the default) but we will modify it through an event later on so it’s good practice to have it properly stated before hand (to avoid any confusion).</p>
+<p>We can then run the tree with the traits:</p>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb109-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb109-2" data-line-number="2"><span class="co">## Running a birth death tree </span></a>
+<a class="sourceLine" id="cb109-3" data-line-number="3">results &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params  =</span> bd_params,</a>
+<a class="sourceLine" id="cb109-4" data-line-number="4">                <span class="dt">stop.rule  =</span> stop_rule,</a>
+<a class="sourceLine" id="cb109-5" data-line-number="5">                <span class="dt">traits     =</span> two_traits)</a>
+<a class="sourceLine" id="cb109-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb109-7" data-line-number="7"><span class="co">## And displaying the results</span></a>
+<a class="sourceLine" id="cb109-8" data-line-number="8"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb109-9" data-line-number="9"><span class="kw">plot</span>(results, <span class="dt">trait =</span> <span class="dv">1</span>, <span class="dt">main =</span> <span class="st">&quot;Trait 1: Distance&quot;</span>)</a>
+<a class="sourceLine" id="cb109-10" data-line-number="10"><span class="kw">plot</span>(results, <span class="dt">trait =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>), <span class="dt">main =</span> <span class="st">&quot;Variables correlation&quot;</span>)</a></code></pre></div>
+<p><img src="dads_manual_files/figure-html/unnamed-chunk-72-1.png" width="672" /></p>
+<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb110-1" data-line-number="1"><span class="co">## Visualising the tree in 3D</span></a>
+<a class="sourceLine" id="cb110-2" data-line-number="2"><span class="kw">plot</span>(results, <span class="dt">trait =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>), <span class="dt">use.3D =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+</div>
+<div id="the-modifiers" class="section level3">
+<h3><span class="header-section-number">6.1.3</span> The modifiers</h3>
+<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb111-1" data-line-number="1"><span class="co">## Speciation event is more likely if lineage&#39;s ancestor is further away from the mean trait value</span></a>
+<a class="sourceLine" id="cb111-2" data-line-number="2">distance.modify &lt;-<span class="st"> </span><span class="cf">function</span>(x, trait.values, lineage) <span class="kw">return</span>(x <span class="op">+</span><span class="st"> </span>x <span class="op">*</span><span class="st"> </span><span class="kw">abs</span>(<span class="kw">parent.traits</span>(trait.values, lineage)[<span class="dv">1</span>] <span class="op">-</span><span class="st"> </span><span class="kw">mean</span>(trait.values[,<span class="dv">1</span>])))</a>
+<a class="sourceLine" id="cb111-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb111-4" data-line-number="4"><span class="co">## Make a distance modifier</span></a>
+<a class="sourceLine" id="cb111-5" data-line-number="5">distance.speciation &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">speciation =</span> speciation,</a>
+<a class="sourceLine" id="cb111-6" data-line-number="6">                                      <span class="dt">modify =</span> distance.modify)</a></code></pre></div>
+<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb112-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">42</span>)</a>
+<a class="sourceLine" id="cb112-2" data-line-number="2"><span class="co">## Running a birth death tree </span></a>
+<a class="sourceLine" id="cb112-3" data-line-number="3">results &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params  =</span> bd_params,</a>
+<a class="sourceLine" id="cb112-4" data-line-number="4">                <span class="dt">stop.rule  =</span> stop_rule,</a>
+<a class="sourceLine" id="cb112-5" data-line-number="5">                <span class="dt">traits     =</span> two_traits,</a>
+<a class="sourceLine" id="cb112-6" data-line-number="6">                <span class="dt">modifiers  =</span> distance.speciation)</a>
+<a class="sourceLine" id="cb112-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb112-8" data-line-number="8"><span class="co">## And displaying the results</span></a>
+<a class="sourceLine" id="cb112-9" data-line-number="9"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb112-10" data-line-number="10"><span class="kw">plot</span>(results, <span class="dt">trait =</span> <span class="dv">1</span>, <span class="dt">main =</span> <span class="st">&quot;Trait 1: Distance&quot;</span>)</a>
+<a class="sourceLine" id="cb112-11" data-line-number="11"><span class="kw">plot</span>(results, <span class="dt">trait =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>), <span class="dt">main =</span> <span class="st">&quot;Variables correlation&quot;</span>)</a></code></pre></div>
+<p><img src="dads_manual_files/figure-html/unnamed-chunk-75-1.png" width="672" /></p>
 </div>
 </div>
-<div id="installing-and-running-the-package" class="section level2">
-<h2><span class="header-section-number">1.2</span> Installing and running the package</h2>
-<p>You can install this package easily, directly from the github:
-<!-- TG: I do intend to release it on CRAN later on --></p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co">## Checking if devtools is already installed</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(devtools)) <span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co">## Installing the latest version directly from GitHub</span></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5">devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;TGuillerme/dads&quot;</span>)</a></code></pre></div>
+<div id="step-2" class="section level2">
+<h2><span class="header-section-number">6.2</span> Step 2:</h2>
+<ol start="2" style="list-style-type: decimal">
+<li>“Correlation event”: after reaching a certain number of taxa an event happens making the “Variable” trait dimensions become correlated.</li>
+</ol>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb113-1" data-line-number="1"><span class="co">## The correlation change event</span></a>
+<a class="sourceLine" id="cb113-2" data-line-number="2">events_list &lt;-<span class="st"> </span><span class="kw">make.events</span>(<span class="dt">event.name   =</span> <span class="st">&quot;Correlation&quot;</span>,</a>
+<a class="sourceLine" id="cb113-3" data-line-number="3">                           <span class="dt">target       =</span> <span class="st">&quot;traits&quot;</span>,</a>
+<a class="sourceLine" id="cb113-4" data-line-number="4">                           <span class="dt">condition    =</span> <span class="kw">taxa.condition</span>(<span class="dv">30</span>),</a>
+<a class="sourceLine" id="cb113-5" data-line-number="5">                           <span class="dt">modification =</span> <span class="kw">update.traits</span>(</a>
+<a class="sourceLine" id="cb113-6" data-line-number="6">                    <span class="dt">process.args =</span> <span class="kw">list</span>(<span class="dt">Sigma =</span> <span class="kw">matrix</span>(<span class="kw">c</span>(<span class="fl">0.7</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.7</span>), <span class="dv">2</span>, <span class="dv">2</span>)),</a>
+<a class="sourceLine" id="cb113-7" data-line-number="7">                    <span class="dt">trait.names  =</span> <span class="st">&quot;Variables&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb114-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">8</span>)</a>
+<a class="sourceLine" id="cb114-2" data-line-number="2"><span class="co">## Running a birth death tree </span></a>
+<a class="sourceLine" id="cb114-3" data-line-number="3">results &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params  =</span> bd_params,</a>
+<a class="sourceLine" id="cb114-4" data-line-number="4">                <span class="dt">stop.rule  =</span> stop_rule,</a>
+<a class="sourceLine" id="cb114-5" data-line-number="5">                <span class="dt">traits     =</span> two_traits,</a>
+<a class="sourceLine" id="cb114-6" data-line-number="6">                <span class="dt">modifiers  =</span> distance.speciation,</a>
+<a class="sourceLine" id="cb114-7" data-line-number="7">                <span class="dt">events     =</span> events_list)</a>
+<a class="sourceLine" id="cb114-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb114-9" data-line-number="9"><span class="co">## And displaying the results</span></a>
+<a class="sourceLine" id="cb114-10" data-line-number="10"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb114-11" data-line-number="11"><span class="kw">plot</span>(results, <span class="dt">trait =</span> <span class="dv">1</span>, <span class="dt">main =</span> <span class="st">&quot;Trait 1: Distance&quot;</span>)</a>
+<a class="sourceLine" id="cb114-12" data-line-number="12"><span class="kw">plot</span>(results, <span class="dt">trait =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>), <span class="dt">main =</span> <span class="st">&quot;Variables correlation&quot;</span>)</a></code></pre></div>
+<p><img src="dads_manual_files/figure-html/unnamed-chunk-77-1.png" width="672" /></p>
+<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb115-1" data-line-number="1"><span class="co">## Visualising the tree in 3D</span></a>
+<a class="sourceLine" id="cb115-2" data-line-number="2"><span class="kw">plot</span>(results, <span class="dt">trait =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>), <span class="dt">use.3D =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 </div>
-<div id="help" class="section level2">
-<h2><span class="header-section-number">1.3</span> Help</h2>
-<p>If you need help with the package, hopefully the following manual will be useful.
-However, parts of this package are still in development and some other parts are probably not covered.
-Thus if you have suggestions or comments on on what has already been developed or will be developed, please send me an email (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>) or if you are a GitHub user, directly create an issue on the <a href="https://github.com/TGuillerme/dads">GitHub page</a>.
-Doing so will not only hopefully help you but also other users since it will help improve this manual!</p>
-</div>
-<div id="how-does-dads-work" class="section level2">
-<h2><span class="header-section-number">1.4</span> How does <code>dads</code> work?</h2>
-<p>Basically, the <code>dads</code> function intakes your personalised <code>traits</code>, <code>modifiers</code> and <code>events</code> to generate your disparity and diversity.
-You will find more details about how these objects (<code>traits</code>, <code>modifiers</code> and <code>events</code>) work in the rest of the tutorial but here is a graphical representation of how <code>dads</code> work:</p>
-<div class="figure">
-<embed src="dads_structure.pdf" />
-<p class="caption">Schematised summary of the <code>dads</code> package architecture</p>
-</div>
-
-<pre><code>## Loading required package: dispRity</code></pre>
+<div id="step-3" class="section level2">
+<h2><span class="header-section-number">6.3</span> Step 3:</h2>
+<ol start="3" style="list-style-type: decimal">
+<li>“Selective extinction event”: after reaching a certain point in time, lineages with their “Variables” values that are negative go extinct</li>
+</ol>
 </div>
 </div>
             </section>
@@ -276,8 +347,8 @@ You will find more details about how these objects (<code>traits</code>, <code>m
           </div>
         </div>
       </div>
-
-<a href="getting-started.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="makeevents.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bugged-from-here.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -308,7 +379,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/TGuillerme/dads/inst/gitbook/edit/master/index.Rmd",
+"link": "https://github.com/TGuillerme/dads/inst/gitbook/edit/master/05_thorough_example.Rmd",
 "text": "Edit"
 },
 "history": {
