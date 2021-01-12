@@ -88,7 +88,7 @@ check.events <- function(events) {
     if(is(test_modification, "try-error") && events$target != "traits") {
 
         ## List of exceptions
-        error_exceptions <- c("incompatible arguments", "No process", "parent_traits\\[, which_trait\\]")
+        error_exceptions <- c("incompatible arguments", "No process", "parent_traits")
         exception <- any(unlist(sapply(error_exceptions, grep, test_modification[[1]])))
         if(!exception) {
             stop(paste0("The modification function from the events object failed with the following error message", ifelse(length(test_modification) > 1, "s:\n", ":\n"), paste(test_modification, collapse = "\n")), call. = FALSE)
