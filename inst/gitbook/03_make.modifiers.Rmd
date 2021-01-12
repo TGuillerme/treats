@@ -153,6 +153,7 @@ plot(modified_tree,   main = "Constant branch length\nmodifier")
 plot(increasing_tree, main = "Increasing branch length\nmodifier (binned)")
 ```
 
+
 ## The selection function (`selection`)
 
 The `selection` function is used in the birth death process to know which lineage to select when running a speciation (or extinction!) event.
@@ -331,62 +332,11 @@ To do so, you can formally declare conditions (`condition`) and modifications (`
 ## Testing modifiers (`test`)
 
 
+
+
+
 ## Demo runnable
 
 ```{r, fig.height = 16, fig.width = 8, eval = FALSE}
-bd.params <- list(speciation = 1, extinction = 1/3)
-traits <- make.traits()
-stop.rule <- list(max.taxa = 20, max.living = Inf, max.time = Inf)
-modifiers <- NULL
-events <- NULL
-null.error <- NULL
-
-## modifiers
-condition <- function(trait.values, parent.lineage) return(parent.traits(trait.values, parent.lineage) < 0)
-modify <- function(x) return(x * 20)
-
-## Setting up the different modifiers
-modify_speciation <- make.modifiers(speciation    = speciation.trait,
-                                    condition     = condition,
-                                    modify        = modify)
-modify_brlen <- make.modifiers(branch.length = branch.length.trait,
-                               condition     = condition,
-                               modify        = modify)
-modify_speciation_brlen <- make.modifiers(branch.length = branch.length.trait,
-                                          speciation    = speciation.trait,
-                                          condition     = condition,
-                                          modify        = modify)
-
-## Test normal (no modifiers)
-set.seed(1)
-test <- dads(bd.params, stop.rule, traits, null.error = 20)
-par(mfrow = c(4,2))
-plot(test$tree)
-plot.dads(test, main = "random tree + trait")
-
-## Test with modifiers
-set.seed(1)
-trait_table <- NULL
-test <- dads(bd.params, stop.rule, traits,
-                                modifiers = modify_speciation,
-                                null.error = 20)
-plot(test$tree)
-plot.dads(test, main = "Skewed speciation")
-
-set.seed(1)
-trait_table <- NULL
-test <- dads(bd.params, stop.rule, traits,
-                                modifiers = modify_brlen,
-                                null.error = 20)
-plot(test$tree)
-plot.dads(test, main = "Skewed branch length")
-
-set.seed(1)
-trait_table <- NULL
-test <- dads(bd.params, stop.rule, traits,
-                                modifiers = modify_speciation_brlen,
-                                null.error = 20)
-plot(test$tree)
-plot.dads(test, main = "Skewed branch length and speciation")
 
 ```
