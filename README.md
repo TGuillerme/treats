@@ -6,9 +6,12 @@
 
 # dads
 
-(really) early demo version
+(less) early demo version
 
-> DON'T USE THIS PACKAGE FOR RESEARCH, it's not guaranteed at all it does what it says (yet).
+> DON'T USE THIS PACKAGE FOR PUBLICATIONS, it's not guaranteed at all it does what it says (yet).
+
+However, if you use it for research (e.g. as a sandbox tool), I'd really value your feedback!
+
 
 ## Installing `dads`
 
@@ -30,5 +33,4 @@ Authors and contributors
 -------
 
 * [Thomas Guillerme](http://tguillerme.github.io)
-* Alex Slavenko
 * More people!

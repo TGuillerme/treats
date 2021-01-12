@@ -1,8 +1,11 @@
-dads v0.1.2 (2020-12-14) 
+dads v0.1.3 (2021-01-12) 
 =========================
 
 ### NEW FEATURES
  
+ * added a list of pre-made `modification` and `condition` for events.
+ * `events` are now fully handled and modular.
+ * `make.events` function for helping to make events.
  * `make.modifiers` now has a `select.taxa` argument.
  * `"events"` class objects are now implemented and fully functional with the `make.events` function and the pre-made `mass.extinction` and `founding.event` events.
 
