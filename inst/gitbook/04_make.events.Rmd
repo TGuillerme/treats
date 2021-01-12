@@ -49,6 +49,10 @@ axisPhylo()
 ### Extinction based on a trait value after some time
 
 ```{r}
+## Simulation parameters
+stop.rule <- list(max.time = 5)
+bd.params <- list(extinction = 0, speciation = 1)
+
 ## Extinction of any tips with trait < 1 at time 4
 trait_extinction <- make.events(
                       target = "taxa",
@@ -92,6 +96,7 @@ plot(results)
 ```{r}
 ## Simulation parameters
 stop.rule <- list(max.time = 4)
+bd.params <- list(extinction = 0, speciation = 1)
 
 ## Reducing speciation after reaching time 2
 reduced_speciation <- make.events(
@@ -119,8 +124,9 @@ axisPhylo()
 
 ```{r}
 ## Simulation parameters
+bd.params <- list(extinction = 0, speciation = 1)
 stop.rule <- list(max.time = 6)
-traits <- make.traits()
+traits    <- make.traits()
 
 ## Create an event to change the trait process
 change_process <- make.events(
@@ -132,16 +138,16 @@ change_process <- make.events(
 set.seed(1)
 no_change <- dads(bd.params = bd.params,
                   stop.rule = stop.rule,
-                  traits = traits)
+                  traits    = traits)
 set.seed(1)
 process_change <- dads(bd.params = bd.params,
                        stop.rule = stop.rule,
-                       traits = traits,
-                       events = events)
+                       traits    = traits,
+                       events    = change_process)
 ## Plot the results
 par(mfrow = c(1,2))
-plot(no_change, ylim = c(-5, 8))
-plot(process_change, ylim = c(-5, 8))
+plot(no_change, ylim = c(-7, 7))
+plot(process_change, ylim = c(-7, 7))
 ```
 
 ### Changing trait correlation after reaching a trait value
@@ -149,6 +155,7 @@ plot(process_change, ylim = c(-5, 8))
 ```{r}
 ## Set the parameters
 stop.rule <- list(max.taxa = 100)
+bd.params <- list(extinction = 0, speciation = 1)
 
 ## A correlated trait
 traits <- make.traits(n = 2, process.args = list(Sigma = matrix(1, 2, 2)))
@@ -168,7 +175,7 @@ set.seed(8)
 change_correlation <- dads(bd.params = bd.params,
                            stop.rule = stop.rule,
                            traits    = traits,
-                           events    = events)
+                           events    = change_correlation)
 ## Visual testing
 par(mfrow = c(1,2))
 plot(no_event, trait = 2)
@@ -226,6 +233,7 @@ plot(change_spec, main = "Increase extinction for negative traits\nafter time 3"
 
 ```{r}
 ## Parameters
+bd.params <- list(extinction = 0, speciation = 1)
 stop.rule <- list(max.taxa = 100)
 modifiers <- make.modifiers()
 traits <- make.traits()

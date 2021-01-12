@@ -44,10 +44,10 @@ stop_rule <- list(max.time = 4)
 And let's quickly test if the simulation works by running a birth death tree without traits and anything:
 
 ```{r}
+set.seed(0) # 123 also works
 ## Running a birth death tree 
 results <- dads(bd.params = bd_params,
-                stop.rule = stop_rule,
-                null.error = 100) # This option will try the requested options up until a 100 times
+                stop.rule = stop_rule)
 
 ## And displaying the results
 plot(results)
@@ -70,7 +70,7 @@ two_traits <- make.traits(process = c(BM.process, OU.process), n = c(1, 2),
 plot(two_traits, trait = 1)
 ```
 
-```{r, eval = FALSE}
+```{r}
 ## Visualise the 2D trait (uncorrelated OU.process)
 plot(two_traits, trait = 2, use.3D = TRUE)
 ```
@@ -80,16 +80,21 @@ Note that specifying the correlation matrix is not necessary here _per se_ (sinc
 We can then run the tree with the traits:
 
 ```{r}
+set.seed(0)
 ## Running a birth death tree 
 results <- dads(bd.params  = bd_params,
                 stop.rule  = stop_rule,
-                traits     = two_traits,
-                null.error = 100)
+                traits     = two_traits)
 
 ## And displaying the results
 par(mfrow = c(1,2))
 plot(results, trait = 1, main = "Trait 1: Distance")
 plot(results, trait = c(2,3), main = "Variables correlation")
+```
+
+```{r}
+## Visualising the tree in 3D
+plot(results, trait = c(2,3), use.3D = TRUE)
 ```
 
 ### The modifiers
@@ -105,12 +110,12 @@ distance.speciation <- make.modifiers(speciation = speciation,
 ```
 
 ```{r}
+set.seed(42)
 ## Running a birth death tree 
 results <- dads(bd.params  = bd_params,
                 stop.rule  = stop_rule,
                 traits     = two_traits,
-                modifiers  = distance.speciation,
-                null.error = 100)
+                modifiers  = distance.speciation)
 
 ## And displaying the results
 par(mfrow = c(1,2))
@@ -132,13 +137,13 @@ events_list <- make.events(event.name   = "Correlation",
 ```
 
 ```{r}
+set.seed(8)
 ## Running a birth death tree 
 results <- dads(bd.params  = bd_params,
                 stop.rule  = stop_rule,
                 traits     = two_traits,
                 modifiers  = distance.speciation,
-                events     = events_list,
-                null.error = 100)
+                events     = events_list)
 
 ## And displaying the results
 par(mfrow = c(1,2))
@@ -146,26 +151,37 @@ plot(results, trait = 1, main = "Trait 1: Distance")
 plot(results, trait = c(2,3), main = "Variables correlation")
 ```
 
+```{r, eval = FALSE}
+## Visualising the tree in 3D
+plot(results, trait = c(2,3), use.3D = TRUE)
+```
+
+
 ## Step 3:
  3. "Selective extinction event": after reaching a certain point in time, lineages with their "Variables" values that are negative go extinct
 
-```{r}
+
+# BUGGED FROM HERE
+
+
+```{r, eval = FALSE}
 ## Adding the selective event
 events_list <- make.events(event.name   = "Selection",
                            add          = events_list,
                            target       = "taxa",
                            condition    = time.condition(4),
-                           modification = trait.extinction(0, condition = `<`, trait = 2))
+                           modification = trait.extinction(x = 0, condition = `<`, trait = 2))
 ```
+Problem with `modification` argument here
 
-```{r}
+
+```{r, eval = FALSE}
 ## Running a birth death tree 
 results <- dads(bd.params  = bd_params,
                 stop.rule  = stop_rule,
                 traits     = two_traits,
                 modifiers  = distance.speciation,
-                events     = events_list,
-                null.error = 100)
+                events     = events_list)
 
 ## And displaying the results
 par(mfrow = c(1,2))
@@ -177,7 +193,7 @@ plot(results, trait = c(2,3), main = "Variables correlation")
  4. "Founding event": after reaching a value for the "Distance" trait, a founding event happens with a new birth-death process with no extinction and where the "Variable" is now a 2D correlated Brownian Motion.
  5. "Mass extinction event": after reaching a certain number of taxa in the "Founding event", 80% of taxa go extinct randomly.
 
-```{r}
+```{r, eval = FALSE}
 ## The new trait for the founding event
 new_traits <- make.traits(process = c(BM.process, BM.process), n = c(1, 2),
                           trait.names = c("Distance", "Variables"))
@@ -188,7 +204,7 @@ mass_extinction <- make.events(target       = "taxa",
                                modification = random.extinction(0.8))
 ```
 
-```{r}
+```{r, eval = FALSE}
 ## The selective event
 events_list <- make.events(event.name   = "Founding", 
                            add          = events_list,
@@ -202,7 +218,7 @@ events_list <- make.events(event.name   = "Founding",
                            additional.args = list(prefix = "found_"))
 ```
 
-```{r}
+```{r, eval = FALSE}
 ## Running a birth death tree 
 results <- dads(bd.params  = bd_params,
                 stop.rule  = stop_rule,
