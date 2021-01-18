@@ -14,6 +14,8 @@
  - [x] add and test `print.traits`
  - [x] add and test `update` argument
  - [ ] test list of traits
+ - [ ] add `multi.OU.process`
+ - [ ] add `repulsion.BM.process`
 
 ## TODO modifiers
 
