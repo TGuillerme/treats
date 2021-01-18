@@ -1,5 +1,5 @@
 #' @name trait.process
-#' @aliases BM.process OU.process no.process multi.OU.process repulsion.BM.process
+#' @aliases BM.process OU.process no.process multi.peak.process repulsion.BM.process
 #' @title Trait processes
 #'
 #' @description Different trait processes implemented in dads.
@@ -24,9 +24,9 @@
 #'      \item{OU.process} A Ornstein-Uhlenbeck process (uni or multidimensional). This function is based on \code{\link[MASS]{mvrnorm}}.
 #'      This process can take following optional arguments:
 #'          \itemize{
-#'               \item \code{var} the traits variance/covariance (default is \code{diag(length(x0))}).
+#'               \item \code{Sigma} the traits variance/covariance (default is \code{diag(length(x0))}).
 #'               \item \code{alpha} the alpha parameter (default = is \code{1}).
-#'               \item \code{theta} the theta parameter (default = is \code{0}).
+#'               \item \code{optimum} the theta parameter (default = is \code{0}).
 #'               \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
 #'          }
 #'      
@@ -36,6 +36,16 @@
 #'               \item \code{fun} a random number function (default is \code{\link[stats]{rnorm}}).
 #'               \item \code{...} any named additional argument to be passed to \code{fun}.
 #'          }
+#' 
+#'      \item{multi.peak.process} A Ornstein-Uhlenbeck process (uni or multidimensional) with multiple optimal values. This function is based on \code{\link[MASS]{mvrnorm}}.
+#'      This process can take following optional arguments:
+#'          \itemize{
+#'               \item \code{Sigma} the traits variance/covariance (default is \code{diag(length(x0))}).
+#'               \item \code{alpha} the alpha parameter (default = is \code{1}).
+#'               \item \code{peaks} the multiple optimal values to be attracted to (default = is \code{0}). This can be a \code{numeric} vector to be applied to all the values of \code{x0} or a \code{list} of the same length as \code{x0} for different multiple optimums for each \code{x0}.
+#'               \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
+#'          }
+#' 
 #' }
 #' 
 #' More details about the \code{trait.process} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
@@ -77,9 +87,9 @@ BM.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), ...) {
 }
 
 ## The OU process
-OU.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), alpha = 1, theta = 0, ...) {
+OU.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), alpha = 1, optimum = 0, ...) {
     ## Calculate the means
-    means <- theta + (x0 - theta) * exp(-alpha)
+    means <- optimum + (x0 - optimum) * exp(-alpha)
     ## Calculate the Sigma
     Sigma <- Sigma/(2 * alpha) * (1 - exp(-2 * alpha))
     ## Get the traits
@@ -91,9 +101,21 @@ no.process <- function(x0, edge.length = 1, fun = stats::rnorm, ...) {
     return(fun(n = 1, ...))
 }
 
+## Multi peak internals
+peak.diff <- function(x, peaks) return(abs(x - peaks))
+closest.peak <- function(diff, peaks) return(peaks[which(diff == min(diff)[1])])
 ## The multiple optimum OU process
-multi.OU.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), alpha = 1, optimums = 0, ...) {
-    stop("Not implemented yet!")
+multi.peak.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), alpha = 1, peaks = 0, ...) {
+    
+    ## Finding the closest optimums
+    if(!is(peaks, "list")) {
+        diffs <- sapply(x0, peak.diff, peaks, simplify = FALSE)
+        theta <- unlist(lapply(diffs, closest.peak, peaks))
+    } else {
+        diffs <- mapply(peak.diff, x0, peaks, SIMPLIFY = FALSE)
+        theta <- unlist(mapply(closest.peak, diffs, peaks, SIMPLIFY = FALSE))
+    }
+    
     ## Calculate the means
     means <- theta + (x0 - theta) * exp(-alpha)
     ## Calculate the Sigma
@@ -103,6 +125,7 @@ multi.OU.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), alph
 }
 
 ## A repulsive process
-repulsion.BM.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), ...) {
+repulsion.BM.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), repulsion = 1, ...) {
+    stop("Not implemented yet!")
     return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = Sigma * edge.length, ...)))
 }

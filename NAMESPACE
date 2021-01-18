@@ -18,7 +18,7 @@ export(trait.process)
 export(BM.process)
 export(OU.process)
 export(no.process)
-export(multi.OU.process)
+export(multi.peak.process)
 export(repulsion.BM.process)
 
 ## Modifiers

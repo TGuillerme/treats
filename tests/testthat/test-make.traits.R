@@ -172,8 +172,6 @@ test_that("make.traits(update) works", {
     expect_equal(traits2$A$start, c(1,1))
     expect_equal(traits2$noupdate$start, 0)
 
-
-
 })
 
 
@@ -198,3 +196,34 @@ test_that("make.traits(update) works", {
 #' ## Adding a Ornstein–Uhlenbeck trait to the previous trait object
 #' make.traits(process = step.OU, names = "OU_trait",
 #'             add = my_traits
+#' 
+
+
+test_that("different processes works", {
+
+    ## BM.process
+
+    ## OU.process
+
+    ## no.process
+
+    ## multi.peak.process
+    expect_equal(peak.diff(1, c(1:3)), 0:2)
+    expect_equal(closest.peak(c(1:3), c(1:3)), 1)
+    expect_equal(closest.peak(c(7, 8, 4), c(1:3)), 3)
+    ## Single trait three optimums
+    expect_equal(round(multi.peak.process(x0 = 0, peaks = c(0, 1, 8), alpha = 1000))[1], 0)
+    expect_equal(round(multi.peak.process(x0 = 7, peaks = c(0, 1, 8), alpha = 1000))[1], 8)
+    expect_equal(round(multi.peak.process(x0 = 2/3, peaks = c(0, 1, 8), alpha = 1000))[1], 1)
+    expect_equal(round(multi.peak.process(x0 = 1000, peaks = c(0, 1, 8), alpha = 1000))[1], 8)
+    ## three traits three optimums
+    expect_equal(round(c(multi.peak.process(x0 = c(0, 0, 0), peaks = c(0, 1, 8), alpha = 1000))), c(0, 0, 0))
+    expect_equal(round(c(multi.peak.process(x0 = c(10, 10, 10), peaks = c(0, 1, 8), alpha = 1000))), c(8, 8, 8))
+    expect_equal(round(c(multi.peak.process(x0 = c(7, -2, 3), peaks = c(0, 1, 8), alpha = 1000))), c(8, 0, 1))
+    ## Three traits with two optimums each
+    optimums <- list(c(-1, 1), c(8, 0), c(5.5, 6))
+    results <- c(multi.peak.process(x0 = c(7, -2, 3), peaks = optimums, alpha = 1000))
+    expect_equal(round(results[1:2]), c(1, 0))
+    expect_equal(round(results[3], 1), c(5.5))
+})
+

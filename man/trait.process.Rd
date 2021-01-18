@@ -5,7 +5,7 @@
 \alias{BM.process}
 \alias{OU.process}
 \alias{no.process}
-\alias{multi.OU.process}
+\alias{multi.peak.process}
 \alias{repulsion.BM.process}
 \title{Trait processes}
 \usage{
@@ -35,9 +35,9 @@ The different trait processes implemented in dads are:
      \item{OU.process} A Ornstein-Uhlenbeck process (uni or multidimensional). This function is based on \code{\link[MASS]{mvrnorm}}.
      This process can take following optional arguments:
          \itemize{
-              \item \code{var} the traits variance/covariance (default is \code{diag(length(x0))}).
+              \item \code{Sigma} the traits variance/covariance (default is \code{diag(length(x0))}).
               \item \code{alpha} the alpha parameter (default = is \code{1}).
-              \item \code{theta} the theta parameter (default = is \code{0}).
+              \item \code{optimum} the theta parameter (default = is \code{0}).
               \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
          }
      
@@ -47,6 +47,16 @@ The different trait processes implemented in dads are:
               \item \code{fun} a random number function (default is \code{\link[stats]{rnorm}}).
               \item \code{...} any named additional argument to be passed to \code{fun}.
          }
+
+     \item{multi.peak.process} A Ornstein-Uhlenbeck process (uni or multidimensional) with multiple optimal values. This function is based on \code{\link[MASS]{mvrnorm}}.
+     This process can take following optional arguments:
+         \itemize{
+              \item \code{Sigma} the traits variance/covariance (default is \code{diag(length(x0))}).
+              \item \code{alpha} the alpha parameter (default = is \code{1}).
+              \item \code{peaks} the multiple optimal values to be attracted to (default = is \code{0}). This can be a \code{numeric} vector to be applied to all the values of \code{x0} or a \code{list} of the same length as \code{x0} for different multiple optimums for each \code{x0}.
+              \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
+         }
+
 }
 
 More details about the \code{trait.process} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
