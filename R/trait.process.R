@@ -1,5 +1,5 @@
 #' @name trait.process
-#' @aliases BM.process OU.process
+#' @aliases BM.process OU.process no.process multi.OU.process repulsion.BM.process
 #' @title Trait processes
 #'
 #' @description Different trait processes implemented in dads.
@@ -89,4 +89,20 @@ OU.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), alpha = 1,
 ## no.process
 no.process <- function(x0, edge.length = 1, fun = stats::rnorm, ...) {
     return(fun(n = 1, ...))
+}
+
+## The multiple optimum OU process
+multi.OU.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), alpha = 1, optimums = 0, ...) {
+    stop("Not implemented yet!")
+    ## Calculate the means
+    means <- theta + (x0 - theta) * exp(-alpha)
+    ## Calculate the Sigma
+    Sigma <- Sigma/(2 * alpha) * (1 - exp(-2 * alpha))
+    ## Get the traits
+    return(t(MASS::mvrnorm(n = 1, mu = means, Sigma = Sigma * edge.length, ...)))
+}
+
+## A repulsive process
+repulsion.BM.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), ...) {
+    return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = Sigma * edge.length, ...)))
 }

@@ -4,6 +4,9 @@
 \alias{trait.process}
 \alias{BM.process}
 \alias{OU.process}
+\alias{no.process}
+\alias{multi.OU.process}
+\alias{repulsion.BM.process}
 \title{Trait processes}
 \usage{
 trait.process(x0, edge.length, ...)
