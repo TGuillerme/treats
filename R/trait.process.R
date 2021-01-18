@@ -1,5 +1,5 @@
 #' @name trait.process
-#' @aliases BM.process OU.process no.process multi.peak.process repulsion.BM.process
+#' @aliases BM.process OU.process no.process multi.peak.process repulsion.process
 #' @title Trait processes
 #'
 #' @description Different trait processes implemented in dads.
@@ -44,6 +44,17 @@
 #'               \item \code{alpha} the alpha parameter (default = is \code{1}).
 #'               \item \code{peaks} the multiple optimal values to be attracted to (default = is \code{0}). This can be a \code{numeric} vector to be applied to all the values of \code{x0} or a \code{list} of the same length as \code{x0} for different multiple optimums for each \code{x0}.
 #'               \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
+#'          }
+#' 
+#'      \item{repulsion.process} An unidimensional Brownian Motion process that generates a trait value not overlapping with the other living taxa ancestral values. This function is based on \code{\link[stats]{rnorm}}.
+#'      This process can take following optional arguments:
+#'          \itemize{
+#'               \item \code{sd} the normal distribution standard deviation.
+#'               \item \code{repulsion} the minimal distance requested between trait values.
+#'               \item \code{max.try} the maximum number of values to draw (if the repulsion value is to hard to achieve).
+#'               \item \code{trait.values} LEAVE AS \code{NULL} (it designates the trait value table from the birth death process and is handled internally by \code{\link{dads}}).
+#'               \item \code{lineage} LEAVE AS \code{NULL} (it designates the lineage object from the birth death process and is handled internally by \code{\link{dads}}).
+#'               \item \code{trait} LEAVE AS \code{NULL} (it which trait to use and is analysed an is handled internally by \code{\link{dads}}).
 #'          }
 #' 
 #' }
@@ -125,7 +136,27 @@ multi.peak.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), al
 }
 
 ## A repulsive process
-repulsion.BM.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), repulsion = 1, ...) {
-    stop("Not implemented yet!")
-    return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = Sigma * edge.length, ...)))
+repulsion.process <- function(x0, edge.length = 1, repulsion = 0.5, sd = 1, max.try = 100, trait.values = NULL, lineage = NULL, trait = NULL, ...) {
+    
+    ## Getting the parent traits of the living lineages
+    if(!is.null(lineage)) {
+        livings <- parent.traits(trait.values, lineage, current = FALSE)
+    } else {
+        livings <- x0
+    }
+
+    ## Initialise the distances and the counter
+    distances <- counter <- 0
+    
+    ## Iteratively find a fitting value (or not if past the counter)
+    while(!all(distances > repulsion) && counter < max.try) {
+        ## Draw a value
+        bm_value <- rnorm(1, mean = x0, sd = sd)
+        ## Measure the distances from this point
+        distances <- abs(c(bm_value) - c(livings))
+        ## Increment the counter
+        counter <- counter + 1
+    }
+
+    return(bm_value)
 }

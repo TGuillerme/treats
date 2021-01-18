@@ -6,7 +6,7 @@
 \alias{OU.process}
 \alias{no.process}
 \alias{multi.peak.process}
-\alias{repulsion.BM.process}
+\alias{repulsion.process}
 \title{Trait processes}
 \usage{
 trait.process(x0, edge.length, ...)
@@ -55,6 +55,17 @@ The different trait processes implemented in dads are:
               \item \code{alpha} the alpha parameter (default = is \code{1}).
               \item \code{peaks} the multiple optimal values to be attracted to (default = is \code{0}). This can be a \code{numeric} vector to be applied to all the values of \code{x0} or a \code{list} of the same length as \code{x0} for different multiple optimums for each \code{x0}.
               \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
+         }
+
+     \item{repulsion.process} An unidimensional Brownian Motion process that generates a trait value not overlapping with the other living taxa ancestral values. This function is based on \code{\link[stats]{rnorm}}.
+     This process can take following optional arguments:
+         \itemize{
+              \item \code{sd} the normal distribution standard deviation.
+              \item \code{repulsion} the minimal distance requested between trait values.
+              \item \code{max.try} the maximum number of values to draw (if the repulsion value is to hard to achieve).
+              \item \code{trait.values} LEAVE AS \code{NULL} (it designates the trait value table from the birth death process and is handled internally by \code{\link{dads}}).
+              \item \code{lineage} LEAVE AS \code{NULL} (it designates the lineage object from the birth death process and is handled internally by \code{\link{dads}}).
+              \item \code{trait} LEAVE AS \code{NULL} (it which trait to use and is analysed an is handled internally by \code{\link{dads}}).
          }
 
 }

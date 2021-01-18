@@ -19,7 +19,7 @@ export(BM.process)
 export(OU.process)
 export(no.process)
 export(multi.peak.process)
-export(repulsion.BM.process)
+export(repulsion.process)
 
 ## Modifiers
 export(make.modifiers)
