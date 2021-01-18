@@ -74,6 +74,12 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
         } else {
             process <- list(process)
         }
+
+        ## TODO:
+        ## Add the internal arguments to the process
+
+
+
     }
 
     ## Check the number of traits

@@ -175,7 +175,12 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                                   unlist(lapply(traits,
                                                 sim.element.trait,
                                                 parent.trait = parent.traits(trait_values, lineage),
-                                                edge.length  = edge_lengths[lineage$current]))
+                                                edge.length  = edge_lengths[lineage$current])#,
+                                                #trait.values = trait_values,
+                                                #lineage      = lineage,
+                                                #trait        = trait
+                                                ## Handle these internally and with make.traits
+                                                )
                                  , deparse.level = 0)
             rownames(trait_values)[rownames(trait_values) == ""] <- lineage$current
         }
