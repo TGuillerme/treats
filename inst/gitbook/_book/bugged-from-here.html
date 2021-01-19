@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>dads manual</title>
+  <title>7 BUGGED FROM HERE | dads manual</title>
   <meta name="description" content="dads R package vignette" />
   <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="dads manual" />
+  <meta property="og:title" content="7 BUGGED FROM HERE | dads manual" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="TGuillerme/dads" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="dads manual" />
+  <meta name="twitter:title" content="7 BUGGED FROM HERE | dads manual" />
   
   <meta name="twitter:description" content="dads R package vignette" />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
+<link rel="prev" href="thorough-example.html"/>
 
-<link rel="next" href="getting-started.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -218,57 +218,64 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">dads manual</h1>
-<p class="author"><em>Thomas Guillerme (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>), Alex Slavenko (email) and others</em></p>
-<p class="date"><em>2021-01-12</em></p>
-</div>
-<div id="dads-disparity-and-diversity-simulations." class="section level1">
-<h1><span class="header-section-number">1</span> <code>dads</code>: disparity and diversity simulations.</h1>
-<p>Allowing to simulate disparity and diversity at the same time with interaction between both.</p>
-<p>The core of this package is based on the <a href="https://github.com/cran/diversitree/blob/master/R/simulate-bd.R"><code>diversitree</code> birth-death algorithm</a>.</p>
-<div id="what-is-dads" class="section level2">
-<h2><span class="header-section-number">1.1</span> What is <code>dads</code>?</h2>
-<p>There are some very good packages out there to simulate birth death trees (like <a href="https://github.com/tanja819/TreeSim">TreeSim</a>) or even packages simulating traits (disparity) and diversity jointly (like <a href="https://github.com/cran/RPANDA">RPANDA</a> or <a href="https://github.com/PuttickMacroevolution/PETER">PETER</a>).
-We strongly advice you have a look at these packages first as they might be more appropriate for your tasks.</p>
-<p><code>dads</code> aims to be a highly modular and friendly version of all these packages: it allows to simulate disparity and diversity jointly with a vast array of options that can be easily modified by users.
-For example, you can easily generate any type of process to generate a trait (BM, OU, something else, etc…) in multiple dependent or independent dimensions through <code>&quot;traits&quot;</code> objects.
-You can then specify how the traits should affect disparity through <code>&quot;modifiers&quot;</code> objects. And finally you can create events (like mass extinctions) through <code>&quot;events&quot;</code> objects.
-These objects and how to modify them will be detailed throughout this manual.
-Finally we are putting an emphasise in the development of this package on the speed and reliability of the functions.</p>
-<div id="modular" class="section level3">
-<h3><span class="header-section-number">1.1.1</span> Modular?</h3>
-<p>Because their is an infinite way you might want to generate disparity and diversity (different traits, different modifiers and different events), the <code>dads</code> package is designed to make all these parts easy to code separately and integrate them easily in the <code>dads</code> core functions.
-This allows you to simulate finely tuned multidimensional data for your specific project!</p>
-</div>
-</div>
-<div id="installing-and-running-the-package" class="section level2">
-<h2><span class="header-section-number">1.2</span> Installing and running the package</h2>
-<p>You can install this package easily, directly from the github:
-<!-- TG: I do intend to release it on CRAN later on --></p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co">## Checking if devtools is already installed</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(devtools)) <span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co">## Installing the latest version directly from GitHub</span></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5">devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;TGuillerme/dads&quot;</span>)</a></code></pre></div>
-</div>
-<div id="help" class="section level2">
-<h2><span class="header-section-number">1.3</span> Help</h2>
-<p>If you need help with the package, hopefully the following manual will be useful.
-However, parts of this package are still in development and some other parts are probably not covered.
-Thus if you have suggestions or comments on on what has already been developed or will be developed, please send me an email (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>) or if you are a GitHub user, directly create an issue on the <a href="https://github.com/TGuillerme/dads">GitHub page</a>.
-Doing so will not only hopefully help you but also other users since it will help improve this manual!</p>
-</div>
-<div id="how-does-dads-work" class="section level2">
-<h2><span class="header-section-number">1.4</span> How does <code>dads</code> work?</h2>
-<p>Basically, the <code>dads</code> function intakes your personalised <code>traits</code>, <code>modifiers</code> and <code>events</code> to generate your disparity and diversity.
-You will find more details about how these objects (<code>traits</code>, <code>modifiers</code> and <code>events</code>) work in the rest of the tutorial but here is a graphical representation of how <code>dads</code> work:</p>
-<div class="figure">
-<embed src="dads_structure.pdf" />
-<p class="caption">Schematised summary of the <code>dads</code> package architecture</p>
-</div>
+<div id="bugged-from-here" class="section level1">
+<h1><span class="header-section-number">7</span> BUGGED FROM HERE</h1>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb116-1" data-line-number="1"><span class="co">## Adding the selective event</span></a>
+<a class="sourceLine" id="cb116-2" data-line-number="2">events_list &lt;-<span class="st"> </span><span class="kw">make.events</span>(<span class="dt">event.name   =</span> <span class="st">&quot;Selection&quot;</span>,</a>
+<a class="sourceLine" id="cb116-3" data-line-number="3">                           <span class="dt">add          =</span> events_list,</a>
+<a class="sourceLine" id="cb116-4" data-line-number="4">                           <span class="dt">target       =</span> <span class="st">&quot;taxa&quot;</span>,</a>
+<a class="sourceLine" id="cb116-5" data-line-number="5">                           <span class="dt">condition    =</span> <span class="kw">time.condition</span>(<span class="dv">4</span>),</a>
+<a class="sourceLine" id="cb116-6" data-line-number="6">                           <span class="dt">modification =</span> <span class="kw">trait.extinction</span>(<span class="dt">x =</span> <span class="dv">0</span>, <span class="dt">condition =</span> <span class="st">`</span><span class="dt">&lt;</span><span class="st">`</span>, <span class="dt">trait =</span> <span class="dv">2</span>))</a></code></pre></div>
+<p>Problem with <code>modification</code> argument here</p>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb117-1" data-line-number="1"><span class="co">## Running a birth death tree </span></a>
+<a class="sourceLine" id="cb117-2" data-line-number="2">results &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params  =</span> bd_params,</a>
+<a class="sourceLine" id="cb117-3" data-line-number="3">                <span class="dt">stop.rule  =</span> stop_rule,</a>
+<a class="sourceLine" id="cb117-4" data-line-number="4">                <span class="dt">traits     =</span> two_traits,</a>
+<a class="sourceLine" id="cb117-5" data-line-number="5">                <span class="dt">modifiers  =</span> distance.speciation,</a>
+<a class="sourceLine" id="cb117-6" data-line-number="6">                <span class="dt">events     =</span> events_list)</a>
+<a class="sourceLine" id="cb117-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb117-8" data-line-number="8"><span class="co">## And displaying the results</span></a>
+<a class="sourceLine" id="cb117-9" data-line-number="9"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb117-10" data-line-number="10"><span class="kw">plot</span>(results, <span class="dt">trait =</span> <span class="dv">1</span>, <span class="dt">main =</span> <span class="st">&quot;Trait 1: Distance&quot;</span>)</a>
+<a class="sourceLine" id="cb117-11" data-line-number="11"><span class="kw">plot</span>(results, <span class="dt">trait =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>), <span class="dt">main =</span> <span class="st">&quot;Variables correlation&quot;</span>)</a></code></pre></div>
+<div id="step-4-and-5" class="section level2">
+<h2><span class="header-section-number">7.1</span> Step 4 and 5:</h2>
+<ol start="4" style="list-style-type: decimal">
+<li>“Founding event”: after reaching a value for the “Distance” trait, a founding event happens with a new birth-death process with no extinction and where the “Variable” is now a 2D correlated Brownian Motion.</li>
+<li>“Mass extinction event”: after reaching a certain number of taxa in the “Founding event”, 80% of taxa go extinct randomly.</li>
+</ol>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb118-1" data-line-number="1"><span class="co">## The new trait for the founding event</span></a>
+<a class="sourceLine" id="cb118-2" data-line-number="2">new_traits &lt;-<span class="st"> </span><span class="kw">make.traits</span>(<span class="dt">process =</span> <span class="kw">c</span>(BM.process, BM.process), <span class="dt">n =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb118-3" data-line-number="3">                          <span class="dt">trait.names =</span> <span class="kw">c</span>(<span class="st">&quot;Distance&quot;</span>, <span class="st">&quot;Variables&quot;</span>))</a>
+<a class="sourceLine" id="cb118-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb118-5" data-line-number="5"><span class="co">## The mass extinction event after reaching 50 taxa</span></a>
+<a class="sourceLine" id="cb118-6" data-line-number="6">mass_extinction &lt;-<span class="st"> </span><span class="kw">make.events</span>(<span class="dt">target       =</span> <span class="st">&quot;taxa&quot;</span>,</a>
+<a class="sourceLine" id="cb118-7" data-line-number="7">                               <span class="dt">condition    =</span> <span class="kw">taxa.condition</span>(<span class="dv">50</span>),</a>
+<a class="sourceLine" id="cb118-8" data-line-number="8">                               <span class="dt">modification =</span> <span class="kw">random.extinction</span>(<span class="fl">0.8</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb119-1" data-line-number="1"><span class="co">## The selective event</span></a>
+<a class="sourceLine" id="cb119-2" data-line-number="2">events_list &lt;-<span class="st"> </span><span class="kw">make.events</span>(<span class="dt">event.name   =</span> <span class="st">&quot;Founding&quot;</span>, </a>
+<a class="sourceLine" id="cb119-3" data-line-number="3">                           <span class="dt">add          =</span> events_list,</a>
+<a class="sourceLine" id="cb119-4" data-line-number="4">                           <span class="dt">target       =</span> <span class="st">&quot;founding&quot;</span>,</a>
+<a class="sourceLine" id="cb119-5" data-line-number="5">                           <span class="dt">condition    =</span> <span class="kw">trait.condition</span>(<span class="dv">3</span>),</a>
+<a class="sourceLine" id="cb119-6" data-line-number="6">                           <span class="dt">modification =</span> <span class="kw">founding.event</span>(<span class="dt">traits    =</span> new_traits,</a>
+<a class="sourceLine" id="cb119-7" data-line-number="7">                                                         <span class="dt">events    =</span> mass_extinction,</a>
+<a class="sourceLine" id="cb119-8" data-line-number="8">                                                         <span class="dt">bd.params =</span> <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb119-9" data-line-number="9">                                                            <span class="dt">speciation =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb119-10" data-line-number="10">                                                            <span class="dt">extinction =</span> <span class="dv">0</span>)),</a>
+<a class="sourceLine" id="cb119-11" data-line-number="11">                           <span class="dt">additional.args =</span> <span class="kw">list</span>(<span class="dt">prefix =</span> <span class="st">&quot;found_&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb120-1" data-line-number="1"><span class="co">## Running a birth death tree </span></a>
+<a class="sourceLine" id="cb120-2" data-line-number="2">results &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">bd.params  =</span> bd_params,</a>
+<a class="sourceLine" id="cb120-3" data-line-number="3">                <span class="dt">stop.rule  =</span> stop_rule,</a>
+<a class="sourceLine" id="cb120-4" data-line-number="4">                <span class="dt">traits     =</span> two_traits,</a>
+<a class="sourceLine" id="cb120-5" data-line-number="5">                <span class="dt">modifiers  =</span> distance.speciation,</a>
+<a class="sourceLine" id="cb120-6" data-line-number="6">                <span class="dt">events     =</span> events_list,</a>
+<a class="sourceLine" id="cb120-7" data-line-number="7">                <span class="dt">null.error =</span> <span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb120-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb120-9" data-line-number="9"><span class="co">## And displaying the results</span></a>
+<a class="sourceLine" id="cb120-10" data-line-number="10"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb120-11" data-line-number="11"><span class="kw">plot</span>(results, <span class="dt">trait =</span> <span class="dv">1</span>, <span class="dt">main =</span> <span class="st">&quot;Trait 1: Distance&quot;</span>)</a>
+<a class="sourceLine" id="cb120-12" data-line-number="12"><span class="kw">plot</span>(results, <span class="dt">trait =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>), <span class="dt">main =</span> <span class="st">&quot;Variables correlation&quot;</span>)</a></code></pre></div>
 
-<pre><code>## Loading required package: dispRity</code></pre>
 </div>
 </div>
             </section>
@@ -276,8 +283,8 @@ You will find more details about how these objects (<code>traits</code>, <code>m
           </div>
         </div>
       </div>
+<a href="thorough-example.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
-<a href="getting-started.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -308,7 +315,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/TGuillerme/dads/inst/gitbook/edit/master/index.Rmd",
+"link": "https://github.com/TGuillerme/dads/inst/gitbook/edit/master/05_thorough_example.Rmd",
 "text": "Edit"
 },
 "history": {

@@ -1,6 +1,6 @@
 --- 
 title: "dads manual"
-author: "Thomas Guillerme (guillert@tcd.ie) and others"
+author: "Thomas Guillerme (guillert@tcd.ie), Alex Slavenko (email) and others"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
