@@ -8,6 +8,10 @@ output:
   pdf_document: default
 ---
 
+```{r, echo = FALSE}
+library(rgl)
+knitr::knit_hooks$set(webgl = hook_webgl)
+```
 # Thorough example
 
 Here we are going to look at an example on how to simulate complex evolutionary histories with `dads`.
@@ -21,7 +25,7 @@ Let say we want to simulate the following story:
 
 Three events then happen during the evolutionary history of this lineage: 
 
- 2. "Correlation event": after reaching a certain number of taxa an event happens making the "Variables" trait dimensions become correlated.
+ 2. "Correlation event": after reaching time 2 an event happens making the "Variables" trait dimensions become correlated.
  3. "Selective extinction event": after reaching a certain point in time, lineages with their "Variables" values that are negative go extinct
  4. "Founding event": after reaching a value for the "Distance" trait, a founding event happens with a new birth-death process with no extinction and where the "Variable" is now a 2D correlated Brownian Motion.
  5. "Mass extinction event": after reaching a certain number of taxa in the "Founding event", 80% of taxa go extinct randomly.
@@ -36,7 +40,7 @@ First let's set the overall birth death parameters (a speciation of 1.2 and an e
 
 ```{r}
 ## The birth death parameters
-bd_params <- list(speciation = 1.2, extinction = 0.3)
+bd_params <- list(speciation = 1.5, extinction = 0.3)
 ## The stopping rule
 stop_rule <- list(max.time = 4)
 ```
@@ -70,7 +74,7 @@ two_traits <- make.traits(process = c(BM.process, OU.process), n = c(1, 2),
 plot(two_traits, trait = 1)
 ```
 
-```{r}
+```{r, webgl=TRUE}
 ## Visualise the 2D trait (uncorrelated OU.process)
 plot(two_traits, trait = 2, use.3D = TRUE)
 ```
@@ -92,13 +96,12 @@ plot(results, trait = 1, main = "Trait 1: Distance")
 plot(results, trait = c(2,3), main = "Variables correlation")
 ```
 
-```{r}
+```{r, webgl=TRUE}
 ## Visualising the tree in 3D
 plot(results, trait = c(2,3), use.3D = TRUE)
 ```
 
 ### The modifiers
-
 
 ```{r}
 ## Speciation event is more likely if lineage's ancestor is further away from the mean trait value
@@ -110,7 +113,7 @@ distance.speciation <- make.modifiers(speciation = speciation,
 ```
 
 ```{r}
-set.seed(42)
+set.seed(13)
 ## Running a birth death tree 
 results <- dads(bd.params  = bd_params,
                 stop.rule  = stop_rule,
@@ -123,21 +126,30 @@ plot(results, trait = 1, main = "Trait 1: Distance")
 plot(results, trait = c(2,3), main = "Variables correlation")
 ```
 
+```{r, webgl=TRUE}
+## Visualising the tree in 3D
+plot(results, trait = c(2,3), use.3D = TRUE)
+```
+
+
 ## Step 2:
- 2. "Correlation event": after reaching a certain number of taxa an event happens making the "Variable" trait dimensions become correlated.
+ 2. "Correlation event": after reaching time 2 an event happens making the "Variable" trait dimensions become correlated.
 
 ```{r}
 ## The correlation change event
+update.correlation <- update.traits(process.args =list(Sigma = matrix(c(10,3,3,2),2,2)))
+
 events_list <- make.events(event.name   = "Correlation",
                            target       = "traits",
-                           condition    = taxa.condition(30),
+                           condition    = time.condition(2),
                            modification = update.traits(
-                    process.args = list(Sigma = matrix(c(0.7, 0, 0, 0.7), 2, 2)),
+                    process.args =list(Sigma = matrix(c(10,3,3,2),2,2)),
                     trait.names  = "Variables"))
 ```
 
 ```{r}
-set.seed(8)
+results <- NULL
+set.seed(1)
 ## Running a birth death tree 
 results <- dads(bd.params  = bd_params,
                 stop.rule  = stop_rule,
@@ -151,17 +163,37 @@ plot(results, trait = 1, main = "Trait 1: Distance")
 plot(results, trait = c(2,3), main = "Variables correlation")
 ```
 
-```{r, eval = FALSE}
+```{r, webgl=TRUE}
 ## Visualising the tree in 3D
 plot(results, trait = c(2,3), use.3D = TRUE)
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## Step 3:
  3. "Selective extinction event": after reaching a certain point in time, lineages with their "Variables" values that are negative go extinct
 
 
-# BUGGED FROM HERE
+> BUGGED FROM HERE!
 
 
 ```{r, eval = FALSE}
