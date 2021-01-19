@@ -350,18 +350,19 @@ test_that("events work", {
     ## A 2D correlated BM
     traits <- make.traits(n = 2, process.args = list(Sigma = matrix(1, 2, 2)))
 
-    events <- make.events(
+    change_correlation <- make.events(
         condition    = trait.condition(3, absolute = TRUE),
         target       = "traits",
         modification = update.traits(process.args = list(Sigma = matrix(c(10,3,3,2),2,2))))
 
+    stop.rule$max.living <- Inf
     stop.rule$max.time <- Inf
     stop.rule$max.taxa <- 100
 
     set.seed(8)
     test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = NULL, events = NULL)
     set.seed(8)
-    test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = NULL, events = events)
+    test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = NULL, events = change_correlation)
     ## Visual testing
     # par(mfrow = c(2,1))
     # class(test) <- "dads" ; plot(test, trait = 2)

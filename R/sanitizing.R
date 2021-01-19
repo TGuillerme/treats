@@ -131,7 +131,6 @@ check.list <- function(list, check.fun, condition, ...) {
     }
 }
 
-
 ## Checking dads specific class
 check.args <- function(fun, fun_name, required_args) {
 

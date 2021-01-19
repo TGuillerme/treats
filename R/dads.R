@@ -155,7 +155,6 @@ dads <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events =
     output <- NULL
 
     while(is.null(output) || counter < max.counter) {
-
         ## Simulating the traits and tree
         output <- birth.death.tree.traits(bd.params, stop.rule, traits = traits, modifiers = modifiers, events = events, null.error = null.error)
 
