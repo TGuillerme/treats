@@ -14,8 +14,8 @@
  - [x] add and test `print.traits`
  - [x] add and test `update` argument
  - [ ] test list of traits
- - [ ] add `multi.OU.process`
- - [ ] add `repulsion.BM.process`
+ - [x] add + test `multi.OU.process`
+ - [ ] add + test `repulsion.BM.process`
 
 ## TODO modifiers
 
@@ -37,7 +37,7 @@
  - [ ] test list of separate: conditions and modifications
 
 ### Make the following events work:
-Test the following events types
+
  - [x] taxa event: mass extinction based on % at time t
  - [x] taxa event: mass extinction based on traits at time t
  - [x] bd.params events: adding extinction parameter after reaching n taxa
