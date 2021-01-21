@@ -35,6 +35,8 @@
  - [x] test `make.events`
  - [x] add and test `print.events`
  - [ ] test list of separate: conditions and modifications
+ - [ ] allow events per clade (see TreeSim)
+ - [ ] add abiotic events (see RPANDA)
 
 ### Make the following events work:
 
@@ -70,3 +72,8 @@
  - [x] distinguish tips from nodes with a circle option around the tips (in 2D)
  - [x] change colour to default for edges
  - [ ] adding legend options
+
+
+## TODO: Manual
+
+ - [ ] Bug in 4.3 The speciation function (speciation)
