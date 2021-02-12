@@ -1,3 +1,4 @@
+
 ## Simulating traits for one element
 sim.element.trait <- function(one.trait, parent.trait, edge.length) {
     ## Set the simulation arguments
@@ -37,69 +38,36 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ############
 
     ## Set up the traits, modifiers and events simulation
-    do_traits    <- ifelse(is.null(traits), FALSE, TRUE)
-    do_events    <- ifelse(is.null(events), FALSE, TRUE)
+    do_traits    <- is.null(traits)
+    do_events    <- is.null(events)
 
-    ## Make the initial modifier (no modifier)
-    initial.modifiers <- list("waiting"    = list(fun = branch.length.fast,
-                                                  internal = NULL),
-                              "selecting"  = list(fun = selection.fast,
-                                                  internal = NULL),
-                              "speciating" = list(fun = speciation.fast,
-                                                  internal = NULL))
-    ## Set the modifiers if null (no modifier)
-    if(is.null(modifiers)) {
-        modifiers <- initial.modifiers
-    }
-
-    ## Initialising the values
-    time <- edge_lengths <- 0
-    was_alive <- 0L # recording which lineage go extinct (when extinction happens). 0L is no extinction.
-    founding_tree <- NULL
-
-    ## Initialise the lineage tracker
-    lineage <- list("parents" = 0L,   # The list of parent lineages
-                    "livings" = 1L,   # The list of lineages still not extinct
-                    "drawn"   = 1L,   # The lineage ID drawn (selected)
-                    "current" = 1L,   # The current focal lineage
-                    "n"       = 1L,   # The number of non extinct lineages
-                    "split"   = FALSE)# The topology tracker (sum(!lineage$split) is total number of tips)
-
-    ############
-    ## First node (root)
-    ############
-
-    ## Get the waiting time
-    first_waiting_time <- initial.modifiers$waiting$fun(bd.params      = bd.params,
-                                                  lineage        = lineage,
-                                                  trait.values   = NULL,
-                                                  modify.fun     = NULL)
+                                        ## Initialise the tree
+                                        tree <- build.tree$new()
+                                        ## First waiting time
+                                        tree$first.wait(bd.params)
 
     ## Update the global time (for the first waiting time)
-    if(stop.rule$max.time != Inf && time == 0) {
-        stop.rule$max.time <- stop.rule$max.time + first_waiting_time
+    if(stop.rule$max.time != Inf && tree$time == 0) {
+        stop.rule$max.time <- stop.rule$max.time + tree$first_waiting_time
     }
-    ## Update the global time
-    time <- time + first_waiting_time
-    ## Updating branch length
-    edge_lengths[lineage$living] <- edge_lengths[lineage$living] + first_waiting_time
 
     ## Start the trait    
     if(do_traits) {
-        trait_values <- rbind(NULL, c(unlist(lapply(traits, function(x) return(x$start)))))
-        rownames(trait_values) <- 1
-    } else {
-        trait_table <- NULL
+        build.tree$first.trait()
+        # trait_values <- rbind(NULL, c(unlist(lapply(traits, function(x) return(x$start)))))
+        # rownames(trait_values) <- 1
     }
 
     ## Randomly triggering an event
-    if(initial.modifiers$speciating$fun(bd.params    = bd.params,
-                                        lineage      = NULL,
-                                        trait.values = NULL,
-                                        modify.fun   = NULL))
-    {
+
+    if(tree$modifiers[[1]]$speciating$fun(
+        bd.params    = bd.params,
+        lineage      = NULL,
+        trait.values = NULL,
+        modify.fun   = NULL)) {
+        
         ## Speciating:
-        if(lineage$n == stop.rule$max.living) {
+        if(tree$lineage$n == stop.rule$max.living) {
             ## Don't add this one
             if(!null.error) {
                 stop("No tree generated with these parameters.")
@@ -108,15 +76,9 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
             }
         }
 
-        ## Creating the new lineages
-        new_lineage <- length(lineage$split) + 1:2
-        lineage$split[lineage$current] <- TRUE
-        lineage$split[new_lineage] <- FALSE
-        lineage$parents[new_lineage] <- lineage$current
-        edge_lengths[new_lineage] <- 0
-        lineage$n <- lineage$n + 1L
-        lineage$livings <- c(lineage$livings[-lineage$drawn], new_lineage)
-        was_alive <- 0L
+                                        ## Add a new lineage
+                                        tree$new.lineage()
+
     } else {
         ## Cannot go further
         if(!null.error) {
@@ -134,84 +96,70 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     # warning("DEBUG birth.death_fun.R") ; record <- c("start recording events:\n")
 
     ## Build the rest of the tree
-    while(lineage$n > 0 && lineage$n <= stop.rule$max.living && sum(!lineage$split) <= stop.rule$max.taxa) {
+    while(tree$lineage$n > 0 &&
+          tree$lineage$n <= stop.rule$max.living &&
+          sum(!tree$lineage$split) <= stop.rule$max.taxa) {
         
         # warning("DEBUG birth.death_fun.R") ; counter <- counter+1
         # warning("DEBUG birth.death_fun.R") ; print(counter)
         # warning("DEBUG birth.death_fun.R") ; if(counter == 123) break 
 
-        ## Pick a lineage for the event to happen to:
-        lineage$drawn <- modifiers$selecting$fun(bd.params    = bd.params,
-                                                 lineage      = lineage,
-                                                 trait.values = trait_values,
-                                                 modify.fun   = modifiers$selecting$internal)
-        
-        lineage$current <- lineage$livings[lineage$drawn]
+                                ## Pick a lineage for the event to happen to:
+                                tree$draw.lineage(bd.params)
+                                ## Get the waiting time
+                                tree$add.wait.time(bd.params)
 
-        ## Get the waiting time
-        waiting_time <- modifiers$waiting$fun(bd.params    = bd.params,
-                                              lineage      = lineage,
-                                              trait.values = trait_values,
-                                              modify.fun   = modifiers$waiting$internal)
-
-        ## Update the global time
-        time <- time + waiting_time
 
         ## Arrived at the max time (cut the branch lengths)
-        if(time > stop.rule$max.time) {
-            waiting_time <- waiting_time - (time - stop.rule$max.time)
-            edge_lengths[lineage$livings] <- edge_lengths[lineage$livings] + waiting_time
-            time <- stop.rule$max.time
+        if(tree$time > stop.rule$max.time) {
+            tree$waiting_time <- tree$waiting_time - (tree$time - stop.rule$max.time)
+            tree$edge_lengths[tree$lineage$livings] <- tree$edge_lengths[tree$lineage$livings] + tree$waiting_time
+            tree$time <- stop.rule$max.time
             break
         }
 
-        ## Updating branch length
-        edge_lengths[lineage$livings] <- edge_lengths[lineage$livings] + waiting_time
+                                ## Updating branch length
+                                tree$update.branch.length()
+
 
         ## Adding a new row to the trait_values matrix
         if(do_traits) {
-            trait_values <- rbind(trait_values,
-                                  ## Add the updated trait from the parent lineage
-                                  unlist(lapply(traits,
-                                                sim.element.trait,
-                                                parent.trait = parent.traits(trait_values, lineage),
-                                                edge.length  = edge_lengths[lineage$current])#,
-                                                #trait.values = trait_values,
-                                                #lineage      = lineage,
-                                                #trait        = trait
-                                                ## Handle these internally and with make.traits
-                                                )
-                                 , deparse.level = 0)
-            rownames(trait_values)[rownames(trait_values) == ""] <- lineage$current
+            tree$update.trait()
+            # trait_values <- rbind(trait_values,
+            #                       ## Add the updated trait from the parent lineage
+            #                       unlist(lapply(traits,
+            #                                     sim.element.trait,
+            #                                     parent.trait = parent.traits(trait_values, lineage),
+            #                                     edge.length  = edge_lengths[lineage$current])#,
+            #                                     #trait.values = trait_values,
+            #                                     #lineage      = lineage,
+            #                                     #trait        = trait
+            #                                     ## Handle these internally and with make.traits
+            #                                     )
+            #                      , deparse.level = 0)
+            # rownames(trait_values)[rownames(trait_values) == ""] <- lineage$current
         }
 
         ## Randomly triggering an event
-        if(modifiers$speciating$fun(bd.params    = bd.params,
-                                    lineage      = lineage,
-                                    trait.values = trait_values,
-                                    modify.fun   = modifiers$speciating$internal))
-        {
+        if(tree$modifiers[[1]]$speciating$fun(
+            bd.params    = bd.params,
+            lineage      = tree$lineage,
+            trait.values = tree$trait_values,
+            modify.fun   = tree$modifiers[[1]]$speciating$internal)) {
             
             ## Speciating:
-            if(lineage$n == stop.rule$max.living) {
+            if(tree$lineage$n == stop.rule$max.living) {
                 ## Don't add this one
                 break
             }
 
-            ## Creating the new lineages
-            new_lineage <- length(lineage$split) + 1:2
-            lineage$split[lineage$current] <- TRUE
-            lineage$split[new_lineage] <- FALSE
-            lineage$parents[new_lineage] <- lineage$current
-            edge_lengths[new_lineage] <- 0
-            lineage$n <- lineage$n + 1L
-            lineage$livings <- c(lineage$livings[-lineage$drawn], new_lineage)
-            was_alive <- 0L
+                                        ## Add a new lineage
+                                        tree$new.lineage()
         } else {
-            ## Go extinct
-            was_alive <- lineage$livings[lineage$drawn]
-            lineage$livings <- lineage$livings[-lineage$drawn]
-            lineage$n <- lineage$n - 1L   
+
+                                        ## Go extinct
+                                        tree$go.extinct()
+
         }
 
         # warning("DEBUG"); reached_event <- TRUE
@@ -313,10 +261,10 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ############
 
     ## Summarise into a table (minus the initiation)
-    table <- data.frame(parent       = lineage$parents, # These are nodes
-                        element      = seq_along(lineage$split), # These are tips or nodes
-                        edge_lengths = edge_lengths,
-                        is_split     = lineage$split)[-1, ]
+    table <- data.frame(parent       = tree$lineage$parents, # These are nodes
+                        element      = seq_along(tree$lineage$split), # These are tips or nodes
+                        edge_lengths = tree$edge_lengths,
+                        is_split     = tree$lineage$split)[-1, ]
 
     ## Error
     if(nrow(table) == 0) {

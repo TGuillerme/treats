@@ -3,7 +3,7 @@
  - [x] INIT
  - [x] Simple BD process
  - [x] BD process with traits
- - [ ] Add instant traits mechanism
+ - [ ] Add instant traits mechanism: this creates nodes as singletons. If the time sampling is set to constant you can get the same results as RPANDA.
  - [ ] Add lineage tracking mechanism
  - [ ] Convert core structure of birth-death to R6!
 
