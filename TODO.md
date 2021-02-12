@@ -5,6 +5,7 @@
  - [x] BD process with traits
  - [ ] Add instant traits mechanism
  - [ ] Add lineage tracking mechanism
+ - [ ] Convert core structure of birth-death to R6!
 
 ## TODO traits
 

@@ -561,4 +561,3 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ## Output
     return(list(tree = tree, data = trait_table))
 }
-
