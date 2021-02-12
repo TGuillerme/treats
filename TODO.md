@@ -3,6 +3,8 @@
  - [x] INIT
  - [x] Simple BD process
  - [x] BD process with traits
+ - [ ] Add instant traits mechanism
+ - [ ] Add lineage tracking mechanism
 
 ## TODO traits
 
