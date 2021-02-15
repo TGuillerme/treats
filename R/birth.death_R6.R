@@ -4,9 +4,9 @@
 build.tree <- R6Class("build.tree",
     ## Bare R6 object (increase performances?)
     #TODO: toggle to bare (all FALSE) after debuging
-    portable  = TRUE,
-    class     = TRUE,
-    cloneable = TRUE,
+    # portable  = TRUE,
+    # class     = TRUE,
+    # cloneable = TRUE,
     ## Data
     public = list(
         ## Components (objects)

@@ -25,6 +25,22 @@ test_that("simulating trees works", {
     ## All tips are living
     expect_equal(length(which(tree.age(test)$age == 0)), 11)
 
+    ## Performance test
+    # birth.death.tree.traits -> birth.death.tree.traits.R6
+    # birth.death.tree.traits -> birth.death.tree.traits.R6.bare
+    # birth.death.tree.traits -> birth.death.tree.traits.base
+    # bd.base <- birth.death.tree.traits.base
+    # bd.R6.bare <- birth.death.tree.traits.R6.bare
+    # bd.R6 <- birth.death.tree.traits.R6
+
+    # library(microbenchmark)
+    # test<- microbenchmark(bd.base(bd.params, stop.rule),
+    #                       bd.R6.bare(bd.params, stop.rule),
+    #                       bd.R6(bd.params, stop.rule), times = 1000)
+    # plot(test)
+
+    ## BUGGED FROM HERE
+
     set.seed(1)
     stop.rule$max.living = Inf
     stop.rule$max.taxa   = Inf

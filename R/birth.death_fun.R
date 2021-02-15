@@ -524,5 +524,5 @@ modifier_base <- list("waiting"    = list(fun = branch.length.fast,
     }
 
     ## Output
-    return(list(tree = tree, data = trait_table))
+    return(list(tree = tree, data = tree_build$trait_table))
 }
