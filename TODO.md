@@ -3,9 +3,10 @@
  - [x] INIT
  - [x] Simple BD process
  - [x] BD process with traits
- - [ ] Add instant traits mechanism
- - [ ] Add lineage tracking mechanism
- - [ ] Convert core structure of birth-death to R6!
+ - [ ] Add instant traits mechanism (i.e. allow saving and calculating trait values after any waiting time (needs to create internal nodes))
+ - [ ] Add lineage tracking mechanism (i.e. allow `traits`, `modifiers` or `events` to be applied to specific lineages)
+ - [ ] Add sampling mechanism (i.e. instead of having fixed values, allow using distributions)
+
 
 ## TODO traits
 
