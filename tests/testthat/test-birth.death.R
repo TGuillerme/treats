@@ -446,7 +446,7 @@ test_that("events work", {
 
     ## founding events
 
-    ## Stop rules to test
+    ## Stop rules to test
     stop.rule.time <- list(max.taxa = Inf, max.living = Inf, max.time = 4)
     stop.rule.taxa <- list(max.taxa = 50, max.living = Inf, max.time = Inf)
     stop.rule.living <- list(max.taxa = Inf, max.living = 50, max.time = Inf)
@@ -514,7 +514,7 @@ test_that("events work", {
 
 
     ## Founding events with traits
-    ## Stop rules to test
+    ## Stop rules to test
     stop.rule.time <- list(max.taxa = Inf, max.living = Inf, max.time = 4)
     stop.rule.taxa <- list(max.taxa = 50, max.living = Inf, max.time = Inf)
     stop.rule.living <- list(max.taxa = Inf, max.living = 50, max.time = Inf)

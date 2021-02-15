@@ -2,7 +2,7 @@
 
 ## The building tree object
 build.tree <- R6Class("build.tree",
-    ## Bare R6 object (increase performances?)
+    ## Bare R6 object (increase performances?)
     #TODO: toggle to bare (all FALSE) after debuging
     portable  = TRUE,
     class     = TRUE,
@@ -10,8 +10,8 @@ build.tree <- R6Class("build.tree",
     ## Data
     public = list(
         ## Components (objects)
-        lineage   = NULL, # The lineage tracker
-        time      = NULL, # The time tracker
+        lineage   = NULL, # The lineage tracker
+        time      = NULL, # The time tracker
         edge_lengths = NULL, # The edge lengths vector
         was_alive = NULL, # Recording which lineage go extinct
         founding_tree = NULL, #TODO: might need to remove this one
@@ -20,13 +20,7 @@ build.tree <- R6Class("build.tree",
         traits    = NULL,
         events    = NULL,
         trait_table = NULL,
-        modifiers = list(list("waiting"    = list(fun = branch.length.fast,
-                                                  internal = NULL),
-                              "selecting"  = list(fun = selection.fast,
-                                                  internal = NULL),
-                              "speciating" = list(fun = speciation.fast,
-                                                  internal = NULL))
-                        ), # A list of modifiers functions (these could be accessed using do.modifiers(pointer) {list[[pointer]]fun()})
+        modifiers = NULL,
 
         ## Functions for initialising the tree
         initialize = function() {
@@ -42,7 +36,7 @@ build.tree <- R6Class("build.tree",
             self$was_alive    <- 0L
         },
         set.modifiers = function(fun) {
-            self$modifiers[[length(self$modifiers)]] <- fun
+            self$modifiers[[length(self$modifiers)+1]] <- fun
         },
         set.traits = function(fun) {
             if(!is.null(self$traits)) {
@@ -61,20 +55,20 @@ build.tree <- R6Class("build.tree",
 
         ## Initial pass (first) wait + split
         first.wait = function(bd.params) {
-            ## Get the waiting time
+            ## Get the waiting time
             self$first_waiting_time <- self$modifiers[[1]]$waiting$fun(
                 bd.params      = bd.params,
                 lineage        = self$lineage,
                 trait.values   = NULL,
                 modify.fun     = NULL)
-            ## Update time
+            ## Update time
             self$time <- self$time + self$first_waiting_time
             ## Update branch length
             self$edge_lengths[self$lineage$living] <- self$edge_lengths[self$lineage$living] + self$first_waiting_time
             invisible(self)
         },
 
-        ## Create a new lineage
+        ## Create a new lineage
         new.lineage = function() {
             ## Creating the new lineages
             new_lineage <- length(self$lineage$split) + 1:2
@@ -87,7 +81,7 @@ build.tree <- R6Class("build.tree",
             self$was_alive <- 0L
             invisible(self)
         },
-        ## Get waiting time
+        ## Get waiting time
         add.wait.time = function(bd.params) {
             ## Select the waiting time
             self$waiting_time <- self$modifiers[[1]]$waiting$fun(

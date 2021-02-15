@@ -5,6 +5,7 @@ import(dispRity)
 
 importFrom("graphics","plot", "points", "lines")
 importFrom("MASS","mvrnorm")
+importFrom("R6", "R6Class")
 importFrom("rgl","plot3d","segments3d","spheres3d","points3d")
 
 ##Functions
