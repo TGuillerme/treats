@@ -45,6 +45,7 @@ export(update.modifiers)
 export(founding.event)
 
 ## Utilities
+export(sample.fun)
 export(drop.fossil.dads)
 export(parent.traits)
 

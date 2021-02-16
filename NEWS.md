@@ -1,3 +1,10 @@
+dads v0.1.4 (2021-02-16) 
+=========================
+
+### NEW FEATURES
+ 
+ * Added a `sample.fun` utility function for sampling from distributions (jointly or not).
+ 
 dads v0.1.3 (2021-01-12) 
 =========================
 

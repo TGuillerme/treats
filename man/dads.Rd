@@ -34,8 +34,15 @@ Simulating diversity and trait disparity
 
 \code{bd.params}: The birth death parameters are the parameters used to simulate the birth death process. The allowed parameters are:
 \itemize{
-  \item \code{speciation} The constant speciation rate (sometimes called lambda or birth parameter).
-  \item \code{extinction} The constant extinction rate (sometimes called mu, death or background extinction parameter).
+     \item \code{speciation} The constant speciation rate (sometimes called lambda or birth parameter).
+     \item \code{extinction} The constant extinction rate (sometimes called mu, death or background extinction parameter).
+}
+The input for these parameters can be either:
+\itemize{
+     \item Two named single values (e.g. \code{bd.params = c(speciation = 1, exctinction = 0)}:
+     \item Two named sampling function (e.g. \code{bd.params = c(speciation = sample.fun(rnorm), exctinction = sample.fun(runif, max = 0.1)))
+}
+     \item Or a single joint sampling function (e.g. \code{bd.params = sample.fun(rlnorm, joint = TRUE)})
 }
 
 \code{stop.rule}: The rule(s) for when to stop the simulation. When multiple rules are given, the simulation stops when any rule is broken. The allowed rules are:
