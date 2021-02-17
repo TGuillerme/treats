@@ -5,7 +5,7 @@ sample.from.bd.params <- function(bd_params) {
     correct <- ifelse(bd_params$absolute, abs, c)
 
     if(!bd_params$joint) {
-        return(c("speciation" = correct(bd_params$speciation()), "extinction" = correct(bd_params$extinction())))
+        return(list("speciation" = correct(bd_params$speciation()), "extinction" = correct(bd_params$extinction())))
     } else {
         ## Sampling joint values
         first <- correct(bd_params$speciation())
@@ -20,6 +20,6 @@ sample.from.bd.params <- function(bd_params) {
         if(counter == 100) {
             stop("Impossible to sample a joint value with the speciation > extinction.", call. = FALSE)
         }
-        return(c("speciation" = first, "extinction" = second))
+        return(list("speciation" = first, "extinction" = second))
     }
 }
