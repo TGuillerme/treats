@@ -8,7 +8,7 @@ check.events <- function(events) {
     }
 
     ## Dummy values
-    bd.params    <- list(speciation = 1, extinction = 0)
+    bd.params    <- make.bd.params(speciation = 1, extinction = 0)
     trait_values <- rbind(NULL, "1" = c(1))
     lineage <- list("parents" = 1L,     ## The list of parent lineages
                     "livings" = 1L,     ## The list of lineages still not extinct
@@ -28,7 +28,7 @@ check.events <- function(events) {
     }
 
     ## Check if the condition works
-    test_condition <- try(events$condition(bd.params = bd.params,
+    test_condition <- try(events$condition(bd.params = sample.from(bd.params),
                                          lineage = lineage,
                                          trait.values = trait_values,
                                          time = time - first_waiting_time)
@@ -52,7 +52,7 @@ check.events <- function(events) {
     switch(events$target,
         taxa      = {
             test_modification <- try(events$modification(
-                            bd.params    = bd.params,
+                            bd.params    = sample.from(bd.params),
                             lineage      = lineage,
                             trait.values = trait_values)
             , silent = TRUE)},
@@ -65,14 +65,14 @@ check.events <- function(events) {
         traits    = {
             test_modification <- try(events$modification(
                             traits       = traits,
-                            bd.params    = bd.params,
+                            bd.params    = sample.from(bd.params),
                             lineage      = lineage,
                             trait.values = trait_values)
             , silent = TRUE)},
         modifiers = {
             test_modification <- try(events$modification(
                             modifiers    = modifiers,
-                            bd.params    = bd.params,
+                            bd.params    = sample.from(bd.params),
                             lineage      = lineage,
                             trait.values = trait_values)
             , silent = TRUE)},
@@ -110,7 +110,7 @@ check.events <- function(events) {
 
             bd.params = {
                 bd.params_names <- names(bd.params)
-                if(!is(test_modification, "list")) {
+                if(!is(test_modification, "dads") && !is(test_modification, "bd.params")) {
                     stop(paste0("The modification function targeting \"bd.params\" must output a list of integers. Currently the modification function output is a ", paste(class(test_modification), collapse = ", "), " object."), call. = FALSE)
                 } 
                 if(!all(bd.params_names %in% names(test_modification))) {
