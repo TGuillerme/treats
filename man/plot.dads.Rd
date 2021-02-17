@@ -30,7 +30,7 @@
 
 \item{use.3D}{logical, whether to use a 3D plot or not (default is \code{FALSE}; see details).}
 
-\item{simulations}{if the input is a \code{dads} \code{traits} object, how many replicates to run (default is \code{50}).}
+\item{simulations}{if the input is a \code{dads} \code{traits} or \code{bd.params} object, how many replicates to run (default is \code{50}).}
 }
 \description{
 Plotting dads objects (either a simulated tree and trait(s) or a process for traits objects)

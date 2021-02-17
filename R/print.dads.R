@@ -39,6 +39,10 @@ print.dads <- function(x, all = FALSE, ...) {
                 modifiers = {
                     cat(" ---- dads modifiers object ---- \n")
                     print.modifiers.info(x)
+                },
+                bd.params = {
+                    cat(" ---- dads birth-death parameters object ---- \n")
+                    print.bd.params.info(x)
                 }
                 )
             return(invisible())
@@ -53,6 +57,9 @@ print.dads <- function(x, all = FALSE, ...) {
                 ifelse(!is.null(x$modifiers), " modifiers", ""), 
                 ifelse(!is.null(x$events), paste0(ifelse(!is.null(x$modifiers), " and", ""), " events"), ""), 
                 ":\n"))
+            if(!is.null(x$bd.params)) {
+                print.bd.params.info(x$bd.params)
+            } 
             if(!is.null(x$modifiers)) {
                 print.modifiers.info(x$modifiers)
             } 

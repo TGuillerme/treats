@@ -113,3 +113,55 @@ print.events.info <- function(x) {
     cat(paste0("The modification function is: ", modification_fun, "\n"))
     cat("\n")
 }
+
+## Function for printing bd.params info
+print.bd.params.info <- function(x) {
+    if(x$joint) {
+        cat("joint sampling for:\n")
+    }
+    cat("speciation: ")
+    if(x$call$speciation == "numeric") {
+        if(is.null(x$call$all_call$speciation)) {
+            ## Default
+            cat("1")
+        } else {
+            ## Numeric input
+            if(length(x$call$all_call$speciation) == 1) {
+                cat(paste0(paste(x$call$all_call$speciation, collapse = ", ")))
+            } else {
+                cat(paste0(paste(x$call$all_call$speciation[-1], collapse = ", ")))
+            }
+        }
+    } else {
+        ## Function
+        cat(x$call$all_call$speciation)
+        if(!is.null(x$call$all_call$speciation.args)) {
+            cat(" (with optional arguments)")
+        }
+    }
+    cat(".\n")
+
+    cat("extinction: ")
+    if(x$call$extinction == "numeric") {
+        if(is.null(x$call$all_call$extinction)) {
+            ## Default
+            cat("0")
+        } else {
+            ## Numeric
+            if(length(x$call$all_call$extinction) == 1) {
+                cat(paste0(paste(x$call$all_call$extinction, collapse = ", ")))
+            } else {
+                cat(paste0(paste(x$call$all_call$extinction[-1], collapse = ", ")))
+            }        }
+    } else {
+        ## Function
+        cat(x$call$all_call$extinction)
+        if(!is.null(x$call$all_call$extinction.args)) {
+            cat(" (with optional arguments)")
+        }
+    }
+    cat(".\n")
+    if(x$absolute) {
+        cat("(using absolute values)\n")
+    }
+}

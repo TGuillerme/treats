@@ -4,6 +4,7 @@ import(stats)
 import(dispRity)
 
 importFrom("graphics","plot", "points", "lines")
+importFrom("grDevices","rgb")
 importFrom("MASS","mvrnorm")
 importFrom("rgl","plot3d","segments3d","spheres3d","points3d")
 
@@ -45,7 +46,7 @@ export(update.modifiers)
 export(founding.event)
 
 ## Utilities
-export(sample.fun)
+export(make.bd.params)
 export(drop.fossil.dads)
 export(parent.traits)
 

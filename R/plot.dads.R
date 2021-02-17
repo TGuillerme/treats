@@ -9,7 +9,7 @@
 #' @param edges either a colour name to attribute to the edges or \code{NULL} to not display the edges (default is \code{"grey"}).
 #' @param tips.nodes optional, a colour to circle tips and nodes (only used if \code{use.3D = FALSE}). By default \code{tips.nodes = NULL}.
 #' @param use.3D logical, whether to use a 3D plot or not (default is \code{FALSE}; see details).
-#' @param simulations if the input is a \code{dads} \code{traits} object, how many replicates to run (default is \code{50}).
+#' @param simulations if the input is a \code{dads} \code{traits} or \code{bd.params} object, how many replicates to run (default is \code{50}).
 #' 
 #' @details
 #' The \code{col} option can be either:
@@ -106,6 +106,57 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
                                              sim.motion(one_trait, steps = 100),
                                              simplify = FALSE),
                             col = col, use.3D = use.3D, trait = trait_ids, ...)
+        }
+
+        if(second_class == "bd.params") {
+
+            ## Sampling the two parameters
+            simulated <- t(replicate(simulations, sample.from.bd.params(data)))
+
+            ## Get the minimum values to be point estimates
+            uniques <- ceiling(simulations/4)
+
+            ## Plot the background
+            hist_params <- list(...)
+            hist_params$plot <- TRUE
+            hist_params$x <- simulated
+            hist_params$col <- grDevices::rgb(0,0,0, alpha = 0)
+            hist_params$border <- grDevices::rgb(0,0,0, alpha = 0)
+            if(is.null(hist_params$xlab)) {
+                hist_params$xlab <- "parameter values"
+            }
+            if(is.null(hist_params$main)) {
+                hist_params$main <- "parameters sampled"
+            }
+            if(is.null(hist_params$breaks)) {
+                hist_params$breaks <- uniques
+            }
+            plot_params <- do.call(hist, hist_params)
+            ## Get the colours
+            if(missing(col)) {
+                col <- c(grDevices::rgb(0, 0, 255, max = 255, alpha = 150), grDevices::rgb(255, 165, 0, max = 255, alpha = 150))
+            } else {
+                if(length(col) < 2) {
+                    col <- rep(col, 2)
+                } else {
+                    col <- col[1:2]
+                }
+            }
+            ## Add the histograms
+            if(length(unique(simulated[,1])) < uniques) {
+                breaks <- seq(from = min(plot_params$breaks), to = max(plot_params$breaks), length.out = simulations)
+            } else {
+                breaks <- plot_params$breaks
+            }
+            hist(simulated[,1], col = col[1], add = TRUE, breaks = breaks)
+            if(length(unique(simulated[,2])) < uniques) {
+                breaks <- seq(from = min(plot_params$breaks), to = max(plot_params$breaks), length.out = simulations)
+            } else {
+                breaks <- plot_params$breaks
+            }
+            hist(simulated[,2], col = col[2], add = TRUE, breaks = plot_params$breaks)
+            ## Add the legends
+            legend("topright", col = col, legend = colnames(simulated), pch = 15, bg = "white")
         }
 
         return(invisible())
