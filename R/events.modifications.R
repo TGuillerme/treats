@@ -143,15 +143,21 @@ trait.extinction <- function(x, condition = `<`, trait = 1) {
 }
 
 ## Updating the bd.params
-update.bd.params <- function(x, parameter) {
-    change.bd.param <- function(bd.params, lineage, trait.values) {
-        ## Change a parameter
-        bd.params[parameter] <- x
-        return(bd.params)
+update.bd.params <- function(x, speciation = NULL, extinction = NULL, joint = NULL, absolute = NULL, speciation.args = NULL, extinction.args = NULL) {
+
+    change.bd.params <- function(traits, bd.params, lineage, trait.values) {
+        ## Changing the traits
+        return(make.bd.params(update          = bd.params,
+                              speciation      = speciation,
+                              extinction      = extinction,
+                              joint           = joint,
+                              absolute        = absolute,
+                              speciation.args = speciation.args,
+                              extinction.args = extinction.args))
     }
 
     ## Editing the update bd.params function
-    return(change.bd.param)
+    return(change.bd.params)
 }
 
 ## Updating a traits object

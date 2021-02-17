@@ -14,6 +14,8 @@
 #' @param modify.fun     A list of internals functions that can modified by \code{events} (see details).
 #' 
 #' @details
+#' \code{bd.params} can be either a named list of parameter values (e.g. \code{list("extinction" = 0, "speciation" = 1)}) but it is typically handled internally from a \code{"dads"} \code{"bd.params"} object.
+#' 
 #' \code{modifiers} are functions passed to the birth death process in \code{\link{dads}} to either generate the branch length (named \code{branch.length} and similar) or to decide whether to speciate or go extinct (named \code{speciation} and similar).
 #'
 #' For user defined functions, the \code{modifiers} \emph{must} have at least the arguments described above. For safety, we suggest setting these arguments to \code{NULL}.
