@@ -129,7 +129,8 @@ print.bd.params.info <- function(x) {
             cat(paste0(paste(x$call$speciation[-1], collapse = ", ")))
         } else {
             cat(paste0(paste(x$call$speciation, collapse = ", ")))
-        }    }
+        } 
+    }
     if(!is.null(x$call$speciation.args)) {
         cat(" (with optional arguments)")
     }    

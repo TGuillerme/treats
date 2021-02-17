@@ -111,7 +111,7 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
         if(second_class == "bd.params") {
 
             ## Sampling the two parameters
-            simulated <- t(replicate(simulations, sample.from(data)))
+            simulated <- matrix(unlist(replicate(simulations, sample.from(data), simplify = FALSE)), ncol = 2, byrow = TRUE)
 
             ## Get the minimum values to be point estimates
             uniques <- ceiling(simulations/4)
@@ -149,14 +149,15 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
                 breaks <- plot_params$breaks
             }
             hist(simulated[,1], col = col[1], add = TRUE, breaks = breaks)
+            
             if(length(unique(simulated[,2])) < uniques) {
                 breaks <- seq(from = min(plot_params$breaks), to = max(plot_params$breaks), length.out = simulations)
             } else {
                 breaks <- plot_params$breaks
             }
-            hist(simulated[,2], col = col[2], add = TRUE, breaks = plot_params$breaks)
+            hist(simulated[,2], col = col[2], add = TRUE, breaks = breaks)
             ## Add the legends
-            legend("topright", col = col, legend = colnames(simulated), pch = 15, bg = "white")
+            legend("topright", col = col, legend = c("speciation", "extinction"), pch = 15, bg = "white")
         }
 
         return(invisible())
