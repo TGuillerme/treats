@@ -6,7 +6,9 @@
  - [ ] Add instant traits mechanism (i.e. allow saving and calculating trait values after any waiting time (needs to create internal nodes))
  - [ ] Add lineage tracking mechanism (i.e. allow `traits`, `modifiers` or `events` to be applied to specific lineages)
  - [ ] Add sampling mechanism (i.e. instead of having fixed values, allow using distributions)
-    - [x] `sample.fun`
+    - [x] `make.bd.params`
+    - [x] `plot.make.bd.params`
+    - [ ] `print.make.bd.params` (still some bugs)
     - [ ] implement it in `dads` and `birth.death`
 
 

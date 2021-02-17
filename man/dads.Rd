@@ -5,8 +5,8 @@
 \title{Diversity and disparity simulator}
 \usage{
 dads(
-  bd.params,
   stop.rule,
+  bd.params,
   traits = NULL,
   modifiers = NULL,
   events = NULL,
@@ -14,15 +14,15 @@ dads(
 )
 }
 \arguments{
-\item{bd.params}{A list of named parameters for the birth death process (see details).}
-
 \item{stop.rule}{The rules on when to stop the simulation (see details).}
 
-\item{traits}{The dads traits object (see \code{\link{make.traits}}).}
+\item{bd.params}{A \code{"dads"} \code{"bd.params"} object or a named list of parameters for the birth death process (see details).}
 
-\item{modifiers}{The dads modifiers object (see \code{\link{make.modifiers}}).}
+\item{traits}{A \code{"dads"} \code{"traits"} object (see \code{\link{make.traits}}).}
 
-\item{events}{The dads events object (see \code{\link{make.events}}).}
+\item{modifiers}{A \code{"dads"} \code{"modifiers"} object (see \code{\link{make.modifiers}}).}
+
+\item{events}{A \code{"dads"} \code{"events"} object (see \code{\link{make.events}}).}
 
 \item{null.error}{Logical, whether to return an error when the birth death parameters fails to build a tree (\code{FALSE}; default and highly recommended) or whether to return \code{NULL} (\code{TRUE}). Can also be set to a integer value for the numbers of trials (see details).}
 }
@@ -30,27 +30,19 @@ dads(
 Simulating diversity and trait disparity
 }
 \details{
-\code{bd.params} and \code{stop.rule} should me named lists to parametrise the birth-death tree. The names of the current handled parameters for each argument are:
-
-\code{bd.params}: The birth death parameters are the parameters used to simulate the birth death process. The allowed parameters are:
-\itemize{
-     \item \code{speciation} The constant speciation rate (sometimes called lambda or birth parameter).
-     \item \code{extinction} The constant extinction rate (sometimes called mu, death or background extinction parameter).
-}
-The input for these parameters can be either:
-\itemize{
-     \item Two named single values (e.g. \code{bd.params = c(speciation = 1, exctinction = 0)}:
-     \item Two named sampling function (e.g. \code{bd.params = c(speciation = sample.fun(rnorm), exctinction = sample.fun(runif, max = 0.1)))
-}
-     \item Or a single joint sampling function (e.g. \code{bd.params = sample.fun(rlnorm, joint = TRUE)})
-}
-
 \code{stop.rule}: The rule(s) for when to stop the simulation. When multiple rules are given, the simulation stops when any rule is broken. The allowed rules are:
 \itemize{
   \item \code{max.taxa}   The maximum number of taxa to reach (including extinct ones).
   \item \code{max.living} The maximum number of living (i.e. non extinct) to reach.
   \item \code{max.time}   The maximum amount of phylogenetic time to reach.
 }
+
+\code{bd.params}: This can be either a \code{"dads"} \code{"bd.params"} object (see \code{\link{make.bd.params}}) or a list of named parameters. The allowed parameters are:
+\itemize{
+  \item \code{speciation} The speciation parameter value.
+  \item \code{extinction} The extinction parameter value.
+}
+By default, this parameter is set to \code{bd.params = list(speciation = 1)}
 
 If \code{null.error} is set to a numeric value, the function will run multiple times until a correct tree is generated. Using this option can greatly increase computational time!
 }

@@ -4,8 +4,7 @@ library(dispRity)
 test_that("simulating trees works", {
 
     ## Pure birth trees
-    bd.params <- list(speciation = 1,
-                      extinction = 0)
+    bd.params <- make.bd.params()
     stop.rule <- list(max.living = 10,
                       max.taxa   = Inf,
                       max.time   = Inf)
@@ -18,7 +17,7 @@ test_that("simulating trees works", {
 
     stop.rule$max.living = Inf
     stop.rule$max.taxa   = 11
-    test <- birth.death.tree.traits(bd.params, stop.rule)$tree
+    test <- birth.death.tree.traits(stop.rule, bd.params)$tree
     expect_is(test, "phylo")
     expect_equal(Ntip(test), 11)
     expect_equal(Nnode(test), 10)
@@ -29,7 +28,7 @@ test_that("simulating trees works", {
     stop.rule$max.living = Inf
     stop.rule$max.taxa   = Inf
     stop.rule$max.time   = 4
-    test <- birth.death.tree.traits(bd.params, stop.rule)$tree
+    test <- birth.death.tree.traits(stop.rule, bd.params)$tree
     expect_is(test, "phylo")
     ## All tips are living
     expect_equal(length(which(tree.age(test)$age == 0)), Ntip(test))
@@ -38,13 +37,12 @@ test_that("simulating trees works", {
     expect_equal(max(tree.age(test)$age), 4)
 
     ## Birth death trees
-    bd.params <- list(speciation = 1,
-                      extinction = 0.2)
+    bd.params <- make.bd.params(speciation = 1, extinction = 0.2)
     stop.rule$max.living = 10
     stop.rule$max.taxa   = Inf
     stop.rule$max.time   = Inf
     set.seed(3)
-    test <- birth.death.tree.traits(bd.params, stop.rule)$tree
+    test <- birth.death.tree.traits(stop.rule, bd.params)$tree
     expect_is(test, "phylo")
     expect_equal(Ntip(test), 14)
     expect_equal(Nnode(test), 13)
@@ -55,7 +53,7 @@ test_that("simulating trees works", {
     stop.rule$max.living = Inf
     stop.rule$max.taxa   = 10
     stop.rule$max.time   = Inf
-    test <- birth.death.tree.traits(bd.params, stop.rule)$tree
+    test <- birth.death.tree.traits(stop.rule, bd.params)$tree
     expect_is(test, "phylo")
     expect_equal(Ntip(test), 10)
     expect_equal(Nnode(test), 9)
@@ -66,7 +64,7 @@ test_that("simulating trees works", {
     stop.rule$max.living = Inf
     stop.rule$max.taxa   = Inf
     stop.rule$max.time   = 6
-    test <- birth.death.tree.traits(bd.params, stop.rule)$tree
+    test <- birth.death.tree.traits(stop.rule, bd.params)$tree
     expect_is(test, "phylo")
     expect_equal(Ntip(test), 137)
     expect_equal(Nnode(test), 136)
@@ -114,12 +112,12 @@ test_that("simulating trees + traits works", {
 
     element_rank_10 <- list(trait_id = 1, process = element.rank, start = 10)
     traits_list <- list("A" = element_rank_10)
-    bd.params <- list(speciation = 1, extinction = 0.5)
+    bd.params <- make.bd.params(speciation = 1, extinction = 0.5)
     stop.rule <- list(max.living = Inf,
                       max.taxa   = 10,
                       max.time   = Inf)
     set.seed(1)
-    test <- birth.death.tree.traits(bd.params, traits = traits_list, stop.rule = stop.rule)
+    test <- birth.death.tree.traits(bd.params = bd.params, traits = traits_list, stop.rule = stop.rule)
     expect_is(test, "list")
     expect_equal(names(test), c("tree", "data"))
     expect_is(test[[1]], "phylo")
@@ -133,7 +131,7 @@ test_that("simulating trees + traits works", {
                       max.time   = Inf)
     set.seed(1)
     traits_list$A$start <- 10
-    test <- birth.death.tree.traits(bd.params, traits = traits_list, stop.rule)
+    test <- birth.death.tree.traits(bd.params = bd.params, traits = traits_list, stop.rule)
     ## Right dimensions
     expect_equal(dim(test$data), c(Ntip(test$tree) + Nnode(test$tree), 1))
     expect_equal(length(which(test$data == max(test$data))), 2)
@@ -151,7 +149,7 @@ test_that("simulating trees + traits works", {
     traits_list$A$process <- branch.length
     traits_list$B <- traits_list$A
     traits_list$C <- traits_list$A
-    test <- birth.death.tree.traits(bd.params, traits = traits_list, stop.rule)
+    test <- birth.death.tree.traits(bd.params = bd.params, traits = traits_list, stop.rule)
 
     ## The three traits are equal
     expect_equal(test$data[,1], test$data[,2])
@@ -183,7 +181,7 @@ test_that("simulating trees + traits works", {
                            start    = 0)
                 )
     set.seed(1)
-    test <- birth.death.tree.traits(bd.params, traits = complex_traits, stop.rule)
+    test <- birth.death.tree.traits(bd.params = bd.params, traits = complex_traits, stop.rule)
 
     expect_equal(test$data[,1], test$data[,2] - 10)
     expect_equal(test$data[,1], test$data[,3] - 20)
@@ -200,7 +198,7 @@ test_that("simulating trees + traits works", {
                            start    = 0)
                 )
     set.seed(1)
-    test <- birth.death.tree.traits(bd.params, traits = complex_traits, stop.rule)
+    test <- birth.death.tree.traits(bd.params = bd.params, traits = complex_traits, stop.rule)
     expect_equal(dim(test$data), c(19, 4))
     expect_equal(unname(test$data[,4]), c(0, test$tree$edge.length))
 })
@@ -231,7 +229,7 @@ test_that("events work", {
     stop.rule <- list(max.time = 5, max.taxa = Inf, max.living = Inf)
     traits <- NULL
     modifiers <- NULL
-    bd.params <- list(extinction = 0, speciation = 1)
+    bd.params <- make.bd.params(extinction = 0, speciation = 1)
 
     ###################
     ## Taxa events
@@ -278,14 +276,14 @@ test_that("events work", {
     ###################
 
     ## Adding extinction after reaching n taxa
-    bd.params <- list(extinction = 0, speciation = 1)
+    bd.params <- make.bd.params(extinction = 0, speciation = 1)
     stop.rule <- list(max.living = 50, max.time = Inf, max.taxa = Inf)   
  
     ## Make a dummy events object
     events <- make.events(
         condition    = taxa.condition(30),
         target       = "bd.params",
-        modification = update.bd.params(1/3, "extinction"))
+        modification = update.bd.params(extinction = 1/3))
     ## Testing the results
     set.seed(2)
     test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = NULL, modifiers = NULL, events = events)

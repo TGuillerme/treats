@@ -1,9 +1,10 @@
-dads v0.1.4 (2021-02-16) 
+dads v0.1.4 (2021-02-17) 
 =========================
 
 ### NEW FEATURES
  
  * Added a `make.bd.parms` utility function for sampling from distributions (jointly or not).
+ * Trees can now be generated with birth-death parameters sampled from functions.
  
 dads v0.1.3 (2021-01-12) 
 =========================

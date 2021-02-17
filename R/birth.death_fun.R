@@ -30,7 +30,7 @@ trigger.events <- function(one_event, bd.params, lineage, trait.values, time) {
 }
 
 ## Run a birth death process to generate both tree and traits
-birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE) {
+birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE) {
   
     ############
     ## Initialising
@@ -70,10 +70,11 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     ############
 
     ## Get the waiting time
-    first_waiting_time <- initial.modifiers$waiting$fun(bd.params      = bd.params,
-                                                  lineage        = lineage,
-                                                  trait.values   = NULL,
-                                                  modify.fun     = NULL)
+    first_waiting_time <- initial.modifiers$waiting$fun(
+                            bd.params    = sample.from(bd.params),
+                            lineage      = lineage,
+                            trait.values = NULL,
+                            modify.fun   = NULL)
 
     ## Update the global time (for the first waiting time)
     if(stop.rule$max.time != Inf && time == 0) {
@@ -93,7 +94,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
     }
 
     ## Randomly triggering an event
-    if(initial.modifiers$speciating$fun(bd.params    = bd.params,
+    if(initial.modifiers$speciating$fun(bd.params    = sample.from(bd.params),
                                         lineage      = NULL,
                                         trait.values = NULL,
                                         modify.fun   = NULL))
@@ -141,18 +142,20 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         # warning("DEBUG birth.death_fun.R") ; if(counter == 123) break 
 
         ## Pick a lineage for the event to happen to:
-        lineage$drawn <- modifiers$selecting$fun(bd.params    = bd.params,
-                                                 lineage      = lineage,
-                                                 trait.values = trait_values,
-                                                 modify.fun   = modifiers$selecting$internal)
+        lineage$drawn <- modifiers$selecting$fun(
+                            bd.params    = sample.from(bd.params),
+                            lineage      = lineage,
+                            trait.values = trait_values,
+                            modify.fun   = modifiers$selecting$internal)
         
         lineage$current <- lineage$livings[lineage$drawn]
 
         ## Get the waiting time
-        waiting_time <- modifiers$waiting$fun(bd.params    = bd.params,
-                                              lineage      = lineage,
-                                              trait.values = trait_values,
-                                              modify.fun   = modifiers$waiting$internal)
+        waiting_time <- modifiers$waiting$fun(
+                            bd.params    = sample.from(bd.params),
+                            lineage      = lineage,
+                            trait.values = trait_values,
+                            modify.fun   = modifiers$waiting$internal)
 
         ## Update the global time
         time <- time + waiting_time
@@ -186,7 +189,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         }
 
         ## Randomly triggering an event
-        if(modifiers$speciating$fun(bd.params    = bd.params,
+        if(modifiers$speciating$fun(bd.params    = sample.from(bd.params),
                                     lineage      = lineage,
                                     trait.values = trait_values,
                                     modify.fun   = modifiers$speciating$internal))
@@ -220,10 +223,10 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
         if(do_events) {
             ## Check all the events that can be triggered
             triggers <- unlist(lapply(events, trigger.events,
-                                            bd.params = bd.params,
-                                            lineage = lineage,
-                                            trait.values = trait_values,
-                                            time = time - first_waiting_time))
+                                    bd.params    = sample.from(bd.params),
+                                    lineage      = lineage,
+                                    trait.values = trait_values,
+                                    time         = time - first_waiting_time))
 
             if(any(triggers)) {
                 
@@ -235,14 +238,14 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                        taxa      = {
                             ## Modify the lineage object
                             lineage   <- events[[selected_event]]$modification(
-                                bd.params    = bd.params,
+                                bd.params    = sample.from(bd.params),
                                 lineage      = lineage,
                                 trait.values = trait_values)
                        },
                        bd.params = {
                             ## Modify the birth death parameters
                             bd.params <- events[[selected_event]]$modification(
-                                bd.params    = bd.params,
+                                bd.params    = sample.from(bd.params),
                                 lineage      = lineage,
                                 trait.values = trait_values)
                        },
@@ -250,7 +253,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                             ## Modify the traits
                             traits    <- events[[selected_event]]$modification(
                                 traits       = traits,
-                                bd.params    = bd.params,
+                                bd.params    = sample.from(bd.params),
                                 lineage      = lineage,
                                 trait.values = trait_values)
                        },
@@ -258,7 +261,7 @@ birth.death.tree.traits <- function(bd.params, stop.rule, traits = NULL, modifie
                             ## Modify the modifiers
                             modifiers <- events[[selected_event]]$modification(
                                 modifiers    = modifiers,
-                                bd.params    = bd.params,
+                                bd.params    = sample.from(bd.params),
                                 lineage      = lineage,
                                 trait.values = trait_values)
                        },
