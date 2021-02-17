@@ -5,13 +5,14 @@
 \title{Make birth death parameters}
 \usage{
 make.bd.params(
-  speciation = 1,
-  extinction = 0,
-  joint = FALSE,
-  absolute = FALSE,
+  speciation = NULL,
+  extinction = NULL,
+  joint = NULL,
+  absolute = NULL,
   speciation.args = NULL,
   extinction.args = NULL,
-  test = TRUE
+  test = TRUE,
+  update = NULL
 )
 }
 \arguments{
@@ -28,9 +29,14 @@ make.bd.params(
 \item{extinction.args}{If \code{speciation} is a function, any additional arguments to passed to the \code{speciation} function.}
 
 \item{test}{Logical whether to test if the bd.params object will work (default is \code{TRUE}).}
+
+\item{update}{Optional, another previous \code{"dads"} \code{"bd.params"} object to update (see details).}
 }
 \description{
 Making bd.params objects for dads.
+}
+\details{
+When using \code{update}, the provided arguments (to \code{make.bd.params}) will be the ones updated in the \code{"bd.params"} object.
 }
 \examples{
 ## A default set of birth death parameters

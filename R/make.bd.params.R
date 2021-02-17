@@ -9,6 +9,12 @@
 #' @param speciation.args If \code{speciation} is a function, any additional arguments to passed to the \code{speciation} function.
 #' @param extinction.args If \code{speciation} is a function, any additional arguments to passed to the \code{speciation} function.
 #' @param test Logical whether to test if the bd.params object will work (default is \code{TRUE}).
+#' @param update Optional, another previous \code{"dads"} \code{"bd.params"} object to update (see details).
+
+#' @details
+#' When using \code{update}, the provided arguments (to \code{make.bd.params}) will be the ones updated in the \code{"bd.params"} object.
+
+
 #' 
 #' @examples
 #' ## A default set of birth death parameters
@@ -37,51 +43,113 @@
 #' @author Thomas Guillerme
 #' @export
 
-make.bd.params <- function(speciation = 1, extinction = 0, joint = FALSE, absolute = FALSE, speciation.args = NULL, extinction.args = NULL, test = TRUE) {
+make.bd.params <- function(speciation = NULL, extinction = NULL, joint = NULL, absolute = NULL, speciation.args = NULL, extinction.args = NULL, test = TRUE, update = NULL) {
 
     match_call <- match.call()
 
-    ## Get the input classes
-    spec_class <- check.class(speciation, c("integer", "numeric", "function"))
-    exti_class <- check.class(extinction, c("integer", "numeric", "function"))
+    ## Update
+    if(is.null(update)) {
+        do_update <- FALSE
+    } else {
+        if(!is(update, "dads") || !is(update, "bd.params")) {
+            stop(paste0("This function can only update \"dads\", \"bd.params\" objects. The current object to update is of class: ", paste(class(update), collapse = ", "), "."), call. = FALSE)
+        } else {
+            do_update <- TRUE
+        }
+    }
 
+    ## Default parameters
+    if(!do_update) {
+        if(is.null(speciation)) {
+            speciation <- 1
+        }
+        if(is.null(extinction)) {
+            extinction <- 0
+        }
+        if(is.null(joint)) {
+            joint <- FALSE
+        }
+        if(is.null(absolute)) {
+            absolute <- FALSE
+        }
+        do_joint <- do_absolute <- do_extinction <- do_speciation <- TRUE
+    } else {
+        do_joint <- do_absolute <- do_extinction <- do_speciation <- FALSE
+        if(!is.null(speciation)) {
+            do_speciation <- TRUE
+        }
+        if(!is.null(extinction)) {
+            do_extinction <- TRUE
+        }
+        if(!is.null(joint)) {
+            do_joint <- TRUE
+        }
+        if(is.null(absolute)) {
+            do_absolute <- TRUE
+        }
+    }
+
+    ## Get the input classes
+    if(do_speciation) {
+        spec_class <- check.class(speciation, c("integer", "numeric", "function"))
+    } 
+    if(do_extinction) {
+        exti_class <- check.class(extinction, c("integer", "numeric", "function"))
+    }
+
+    
     ## Toggle the joint argument
-    bd_params <- list(joint = joint, absolute = absolute)
+    if(!do_update) {
+        bd_params <- list(joint = joint, absolute = absolute)
+    } else {
+        ## Update the joints or absolute
+        bd_params <- update
+        if(!is.null(joint)) {
+            bd_params$joint <- joint
+        }
+        if(!is.null(absolute)) {
+            bd_params$absolute <- absolute
+        }
+    }
 
     ## Default function args
     args_base <- list(n = 1)
 
     ## Get the speciation argument
-    if(spec_class == "function") {
-        speciation_args <- c(args_base, speciation.args)
-        bd_params$speciation <- function() {
-            do.call(speciation, speciation_args)
-        }
-    } else {
-        if(length(speciation) == 1) {
+    if(do_speciation) {
+        if(spec_class == "function") {
+            speciation_args <- c(args_base, speciation.args)
             bd_params$speciation <- function() {
-                return(speciation)
-            }            
+                do.call(speciation, speciation_args)
+            }
         } else {
-            bd_params$speciation <- function() {
-                return(sample(x = speciation, size = 1))
+            if(length(speciation) == 1) {
+                bd_params$speciation <- function() {
+                    return(speciation)
+                }            
+            } else {
+                bd_params$speciation <- function() {
+                    return(sample(x = speciation, size = 1))
+                }
             }
         }
     }
     ## Get the extinction argument
-    if(exti_class == "function") {
-        extinction_args <- c(args_base, extinction.args)
-        bd_params$extinction <- function() {
-            do.call(extinction, extinction_args)
-        }
-    } else {
-        if(length(extinction) == 1) {
+    if(do_extinction) {
+        if(exti_class == "function") {
+            extinction_args <- c(args_base, extinction.args)
             bd_params$extinction <- function() {
-                return(extinction)
-            }            
+                do.call(extinction, extinction_args)
+            }
         } else {
-            bd_params$extinction <- function() {
-                return(sample(x = extinction, size = 1))
+            if(length(extinction) == 1) {
+                bd_params$extinction <- function() {
+                    return(extinction)
+                }            
+            } else {
+                bd_params$extinction <- function() {
+                    return(sample(x = extinction, size = 1))
+                }
             }
         }
     }
@@ -96,7 +164,23 @@ make.bd.params <- function(speciation = 1, extinction = 0, joint = FALSE, absolu
     }
 
     ## Save the call
-    bd_params$call <- list("speciation" = spec_class, "extinction" = exti_class, "all_call" = match_call)
+    if(!do_update) {
+        bd_params$call <- list("speciation" = match_call$speciation, "extinction" = match_call$extinction, "speciation.args" = match_call$speciation.args, "extinction.args" = match_call$extinction.args)
+    } else {
+        ## Only update the relevant call bits
+        if(do_speciation) {
+            bd_params$call$speciation <- match_call$speciation
+            if(!is.null(speciation.args)) {
+                bd_params$call$speciation.args <- match_call$speciation.args
+            }
+        }
+        if(do_extinction) {
+            bd_params$call$extinction <- match_call$extinction
+            if(!is.null(extinction.args)) {
+                bd_params$call$extinction.args <- match_call$extinction.args
+            }
+        }
+    }
 
     ## Add the classes
     class(bd_params) <- c("dads", "bd.params")

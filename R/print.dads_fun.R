@@ -120,46 +120,36 @@ print.bd.params.info <- function(x) {
         cat("joint sampling for:\n")
     }
     cat("speciation: ")
-    if(x$call$speciation == "numeric") {
-        if(is.null(x$call$all_call$speciation)) {
-            ## Default
-            cat("1")
-        } else {
-            ## Numeric input
-            if(length(x$call$all_call$speciation) == 1) {
-                cat(paste0(paste(x$call$all_call$speciation, collapse = ", ")))
-            } else {
-                cat(paste0(paste(x$call$all_call$speciation[-1], collapse = ", ")))
-            }
-        }
+    if(is.null(x$call$speciation)) {
+        ## Default
+        cat("1")
     } else {
-        ## Function
-        cat(x$call$all_call$speciation)
-        if(!is.null(x$call$all_call$speciation.args)) {
-            cat(" (with optional arguments)")
-        }
-    }
+        if(length(did_grep <- grep("c", x$call$speciation)) > 0 &&  did_grep == 1) {
+            ## Remove the "c(" from the expression
+            cat(paste0(paste(x$call$speciation[-1], collapse = ", ")))
+        } else {
+            cat(paste0(paste(x$call$speciation, collapse = ", ")))
+        }    }
+    if(!is.null(x$call$speciation.args)) {
+        cat(" (with optional arguments)")
+    }    
     cat(".\n")
 
     cat("extinction: ")
-    if(x$call$extinction == "numeric") {
-        if(is.null(x$call$all_call$extinction)) {
-            ## Default
-            cat("0")
-        } else {
-            ## Numeric
-            if(length(x$call$all_call$extinction) == 1) {
-                cat(paste0(paste(x$call$all_call$extinction, collapse = ", ")))
-            } else {
-                cat(paste0(paste(x$call$all_call$extinction[-1], collapse = ", ")))
-            }        }
+    if(is.null(x$call$extinction)) {
+        ## Default
+        cat("0")
     } else {
-        ## Function
-        cat(x$call$all_call$extinction)
-        if(!is.null(x$call$all_call$extinction.args)) {
-            cat(" (with optional arguments)")
+        if(length(did_grep <- grep("c", x$call$extinction)) > 0 &&  did_grep == 1) {
+            ## Remove the "c(" from the expression
+            cat(paste0(paste(x$call$extinction[-1], collapse = ", ")))
+        } else {
+            cat(paste0(paste(x$call$extinction, collapse = ", ")))
         }
     }
+    if(!is.null(x$call$extinction.args)) {
+        cat(" (with optional arguments)")
+    } 
     cat(".\n")
     if(x$absolute) {
         cat("(using absolute values)\n")
