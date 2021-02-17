@@ -111,7 +111,7 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
         if(second_class == "bd.params") {
 
             ## Sampling the two parameters
-            simulated <- t(replicate(simulations, sample.from.bd.params(data)))
+            simulated <- t(replicate(simulations, sample.from(data)))
 
             ## Get the minimum values to be point estimates
             uniques <- ceiling(simulations/4)

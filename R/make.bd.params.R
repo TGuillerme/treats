@@ -89,7 +89,7 @@ make.bd.params <- function(speciation = 1, extinction = 0, joint = FALSE, absolu
     ## Testing
     if(test) {
         ## Testing if it works
-        test <- sample.from.bd.params(bd_params)
+        test <- sample.from(bd_params)
         if(length(test) != 2 || !is(test, "list")) {
             stop("Impossible to sample correct parameters from the bd.params object.", call. = FALSE)
         }

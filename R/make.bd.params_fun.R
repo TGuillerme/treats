@@ -1,5 +1,5 @@
 ## Sampling from a bd.params object
-sample.from.bd.params <- function(bd_params) {
+sample.from <- function(bd_params) {
 
     ## Get the absolute values (or not)
     correct <- ifelse(bd_params$absolute, abs, c)
