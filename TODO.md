@@ -8,7 +8,6 @@
  - [ ] Add sampling mechanism (i.e. instead of having fixed values, allow using distributions)
     - [x] `make.bd.params`
     - [x] `plot.make.bd.params`
-    - [ ] `print.make.bd.params` (still some bugs)
     - [ ] implement it in `dads` and `birth.death`
 
 

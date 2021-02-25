@@ -82,16 +82,16 @@ dads <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events =
     if(missing(bd.params)) {
         ## Default pure birth tree
         bd.params <- make.bd.params()
-    
     } else {
-        error_msg <- "bd.params must be a named list of arguments or a \"dads\" \"bd.params\" object. You can use make.bd.params() to format the object correctly."
 
-        if(!(is(traits, "dads") && is(traits, "bd.params"))) {
+        error_msg <- "must be a named list of arguments or a \"dads\" \"bd.params\" object. You can use make.bd.params() to format the object correctly."
+
+        if(!(is(bd.params, "dads") && is(bd.params, "bd.params"))) {
 
             ## Must be a named list
-            check.class(bd.params, "list")
+            check.class(bd.params, "list", msg = paste0(" ", error_msg))
             if(is.null(names(bd.params))) {
-                stop(error_msg, call. = FALSE)
+                stop(paste0("bd.params ", error_msg), call. = FALSE)
             }
 
             ## Set the speciation

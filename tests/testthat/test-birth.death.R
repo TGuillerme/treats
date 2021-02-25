@@ -293,14 +293,14 @@ test_that("events work", {
     ## 50 living (12 fossils)
     expect_equal(sum(tree.age(test$tree)$age[1:62] == 0),50)
     ## But bd.params$extinction still 0
-    expect_equal(bd.params$extinction, 0)
+    expect_equal(sample.from(bd.params)$extinction, 0)
 
 
     ## Reducing speciation after reaching time t
     events <- make.events(
         condition    = time.condition(2),
         target       = "bd.params",
-        modification = update.bd.params(1/3, "speciation"))
+        modification = update.bd.params(speciation = 1/3))
     
     ## Updating the stop.rule
     stop.rule$max.living <- Inf
@@ -376,7 +376,7 @@ test_that("events work", {
     ## modifiers events
     ## Adding a speciation condition after reaching time t
     stop.rule <- list(max.time = 4, max.taxa = Inf, max.living = Inf)
-    bd.params <- list(extinction = 0, speciation = 1)
+    bd.params <- make.bd.params(extinction = 0, speciation = 1)
     
     ## A default modifier
     modifiers <- make.modifiers()
@@ -417,7 +417,7 @@ test_that("events work", {
         modification = update.modifiers(branch.length = branch.length, modify = new.modify))
 
     stop.rule <- list(max.time = Inf, max.taxa = 100, max.living = Inf)
-    bd.params <- list(extinction = 0, speciation = 1)
+    bd.params <- make.bd.params(extinction = 0, speciation = 1)
     modifiers <- make.modifiers()
     traits <- make.traits()
 
@@ -450,12 +450,12 @@ test_that("events work", {
     stop.rule.living <- list(max.taxa = Inf, max.living = 50, max.time = Inf)
 
     ## Normal bd params
-    bd.params <- list(speciation = 1, extinction = 0.3)
+    bd.params <- make.bd.params(speciation = 1, extinction = 0.3)
 
     ## Events that generate a new process (founding effects)
     events <- make.events(condition    = taxa.condition(10),
                           target       = "founding",
-                          modification = founding.event(bd.params = list(speciation = 2,
+                          modification = founding.event(bd.params = make.bd.params(speciation = 2,
                                                                          extinction = 0)),
                           additional.args = list(prefix = "founding_"))
     
@@ -518,14 +518,14 @@ test_that("events work", {
     stop.rule.living <- list(max.taxa = Inf, max.living = 50, max.time = Inf)
 
     ## Normal bd params
-    bd.params <- list(speciation = 1, extinction = 0.3)
+    bd.params <- make.bd.params(speciation = 1, extinction = 0.3)
     traits <- make.traits()
 
     ## Events that generate a new process (founding effects)
     events <- make.events(condition    = taxa.condition(10),
                           target       = "founding",
                           modification = founding.event(
-                            bd.params = list(speciation = 2, extinction = 0),
+                            bd.params = make.bd.params(speciation = 2, extinction = 0),
                                              traits = make.traits(process = OU.process)),
                           additional.args = list(prefix = "founding_"))
     

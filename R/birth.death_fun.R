@@ -229,7 +229,6 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                                     time         = time - first_waiting_time))
 
             if(any(triggers)) {
-                
                 ## Selecting the first triggerable event
                 selected_event <- which(triggers)[1]
 
@@ -245,7 +244,8 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                        bd.params = {
                             ## Modify the birth death parameters
                             bd.params <- events[[selected_event]]$modification(
-                                bd.params    = sample.from(bd.params),
+                                traits       = traits,
+                                bd.params    = bd.params,
                                 lineage      = lineage,
                                 trait.values = trait_values)
                        },
