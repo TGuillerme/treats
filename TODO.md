@@ -1,15 +1,24 @@
+# TODO bug fixes:
+
+in BM description in gitbook + manual + function, change 
+`rnorm(n = 1, mean = x0, sd = sd * edge.length)`
+to
+`rnorm(n = 1, mean = x0, sd = sqrt(sd^2 * edge.length))`
+(Thanks to Rachel Warnock for spotting that one)
+
 # TODO list
 
  - [x] INIT
  - [x] Simple BD process
  - [x] BD process with traits
  - [ ] Add instant traits mechanism (i.e. allow saving and calculating trait values after any waiting time (needs to create internal nodes))
- - [ ] Add lineage tracking mechanism (i.e. allow `traits`, `modifiers` or `events` to be applied to specific lineages)
+ - [ ] Add lineage tracking mechanism (i.e. allow `traits`, `modifiers` or `events` to be applied to specific lineages); also allow giving prefixes to the names of tips and nodes in the lineage.
  - [ ] Add sampling mechanism (i.e. instead of having fixed values, allow using distributions)
     - [x] `make.bd.params`
     - [x] `plot.make.bd.params`
+    - [ ] `print.make.bd.params` (still some bugs with printing updated parameter values)
     - [ ] implement it in `dads` and `birth.death`
-
+ - [ ] Add a `make.dads` function that intakes data and tree (and allows using `plot.dads` etc...)
 
 ## TODO traits
 
