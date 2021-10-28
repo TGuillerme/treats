@@ -18,5 +18,5 @@ License: GPL-3 | file LICENSE
 Suggests:
     testthat,
     knitr
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.2
 URL: https://github.com/TGuillerme/dads

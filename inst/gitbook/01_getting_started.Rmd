@@ -61,7 +61,7 @@ However, you can easily change that by specifying your new birth death parameter
 my_params <- list(speciation = 1,
                   extinction = 1/3)
 ```
-> Note that here it is not necessary to specify `extinction = 1` since this is the default option, you can always just change the parameter of interest (e.g. changing `extinciton = 0` to `extinction = 1/3`). However, we think it's good practice to attribute both parameters specifically to avoid any confusion.
+> Note that here it is not necessary to specify `speciation = 1` since this is the default option, you can always just change the parameter of interest (e.g. changing `extinction = 0` to `extinction = 1/3`). However, we think it's good practice to attribute both parameters specifically to avoid any confusion.
 
 You can then run the same birth death tree with extinction:
 
@@ -173,7 +173,7 @@ default_data <- dads(bd.params = extinction_02,
 default_data
 ```
 
-Note however that the printing information is now updated to state that you've add a modifier (even though it's a default one).
+Note however that the printing information is now updated to state that you've added a modifier (even though it's a default one).
 
 For more interesting simulations however, you can provide modifiers that actually modify the birth death process.
 We can create one for example that makes species go extinct if their ancestor have a negative trait value.
