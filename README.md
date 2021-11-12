@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/TGuillerme/dads.svg?branch=master)](https://travis-ci.org/TGuillerme/dads)
+[![R-CMD-check](https://github.com/TGuillerme/dads/workflows/R-CMD-check/badge.svg)](https://github.com/TGuillerme/dads/actions)
 [![codecov](https://codecov.io/gh/TGuillerme/dads/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dads)
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 [![develVersion](https://img.shields.io/badge/devel%20version-0.1.3-green.svg?style=flat)](https://github.com/TGuillerme/dads/tree/master)
