@@ -271,7 +271,7 @@ my.OU.process <- function(x0, edge.length = 1, var = 1, alpha = 1, ...) {
     ## Draw a random number from a normal distribution
     ## using this mean and standard deviation
     ## and depending on branch (edge) length
-    result <- rnorm(n = 1, mean = mean, sd = sd * branch.length)
+    result <- rnorm(n = 1, mean = mean, sd = sd * edge.length)
 
     ## Return the number
     return(result)
