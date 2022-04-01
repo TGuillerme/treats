@@ -75,6 +75,7 @@ to
 ## TODO dads
 
  - [x] remove upper boundary on `bd.params`
+ - [ ] add a verbose option when using `null.errors` (something like "building tree:... Done.") 
 
 ## TODO package
 
