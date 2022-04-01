@@ -1,3 +1,10 @@
+dads v0.1.5 (2022-04-01) 
+=========================
+
+### BUG FIXES
+
+ * Corrected the `BM.process` to now be to `rnorm(n = 1, mean = x0, sd = sqrt(sd^2 * edge.length))` (thanks to Rachel Warnock for spotting that one).
+
 dads v0.1.4 (2021-02-17) 
 =========================
 

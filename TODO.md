@@ -1,10 +1,5 @@
 # TODO bug fixes:
 
-in BM description in gitbook + manual + function, change 
-`rnorm(n = 1, mean = x0, sd = sd * edge.length)`
-to
-`rnorm(n = 1, mean = x0, sd = sqrt(sd^2 * edge.length))`
-(Thanks to Rachel Warnock for spotting that one)
 
 # TODO list
 

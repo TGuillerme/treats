@@ -284,7 +284,6 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
         }
     }
         
-
     ## check
     if(test) {
         success <- check.traits(traits, events = FALSE)

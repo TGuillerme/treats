@@ -259,16 +259,16 @@ test_that("events work", {
     class(test) <- c("dads")
     # plot(test)
     ## 244 taxa generated
-    expect_equal(Ntip(test$tree), 244)
+    expect_equal(Ntip(test$tree), 233) #244
     ## 57 extinct
-    expect_equal(sum(dispRity::tree.age(test$tree)$age[1:244] > 0), 89)
+    expect_equal(sum(dispRity::tree.age(test$tree)$age[1:244] > 0), 104) #89
     ## Only two ages for tips
-    expect_equal(unique(dispRity::tree.age(test$tree)$age[1:244]), c(0.974, 0))
+    expect_equal(unique(dispRity::tree.age(test$tree)$age[1:Ntip(test$tree)]), c(0.974, 0))
     ## Trait values for living and extinct is different
     living <- test$data[test$tree$tip.label[dispRity::tree.age(test$tree)$age[1:244] == 0], ]
     extinct <- test$data[test$tree$tip.label[dispRity::tree.age(test$tree)$age[1:244] == 0.974], ]
-    expect_equal(round(mean(living), 6), 1.929087)
-    expect_equal(round(mean(extinct), 7), -0.5327465)
+    expect_equal(round(mean(living), 6), 2.075307)
+    expect_equal(round(mean(extinct), 7), -0.949235)
 
 
     ###################

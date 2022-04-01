@@ -94,7 +94,7 @@ trait.process <- function(x0, edge.length = 1, ...) {
 
 ## The Brownian motion
 BM.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), ...) {
-    return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = Sigma * edge.length, ...)))
+    return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = sqrt(Sigma^2 * edge.length), ...)))
 }
 
 ## The OU process
