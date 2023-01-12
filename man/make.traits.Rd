@@ -64,9 +64,6 @@ make.traits(process = OU.process, trait.names = "OU_trait",
             add = my_traits)
 
 }
-\seealso{
-
-}
 \author{
 Thomas Guillerme
 }

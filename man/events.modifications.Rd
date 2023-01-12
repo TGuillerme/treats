@@ -57,9 +57,6 @@ The following functions allow to design specific modifications for events:
 
 More details about the \code{events} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
 }
-\examples{
-
-}
 \seealso{
 \code{make.events}
 }

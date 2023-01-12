@@ -72,12 +72,6 @@ If the \code{"modifiers"} object contains multiple modifiers (\code{branch.lengt
 
 More details about the \code{modifiers} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
 }
-\examples{
-
-}
-\seealso{
-
-}
 \author{
 Thomas Guillerme
 }

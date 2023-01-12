@@ -16,12 +16,6 @@
 \description{
 Summarises the content of a \code{dads} object.
 }
-\examples{
-
-}
-\seealso{
-
-}
 \author{
 Thomas Guillerme
 }

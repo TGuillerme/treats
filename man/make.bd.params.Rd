@@ -61,9 +61,6 @@ plot(my_bd_params)
 
 
 }
-\seealso{
-
-}
 \author{
 Thomas Guillerme
 }

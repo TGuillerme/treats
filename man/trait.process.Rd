@@ -92,9 +92,6 @@ no.process()
 plot(make.traits(process = no.process))
 
 }
-\seealso{
-
-}
 \author{
 Thomas Guillerme
 }

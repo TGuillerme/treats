@@ -14,12 +14,6 @@ drop.fossil.dads(phy, tol = 1e-08)
 \description{
 Remove fossils from \code{dads} objects or \code{phylo} objects (using \code{\link[ape]{drop.fossil}}).
 }
-\examples{
-
-}
-\seealso{
-
-}
 \author{
 Thomas Guillerme
 }

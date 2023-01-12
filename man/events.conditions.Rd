@@ -42,9 +42,6 @@ The following functions allow to design specific conditions for events:
 
 More details about the \code{events} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
 }
-\examples{
-
-}
 \seealso{
 \code{make.events}
 }

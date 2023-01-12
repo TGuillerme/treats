@@ -73,9 +73,6 @@ dads(bd.params = my_bd_params,
 
 
 }
-\seealso{
-
-}
 \author{
 Thomas Guillerme
 }
