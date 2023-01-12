@@ -126,7 +126,9 @@ make.bd.params <- function(speciation = NULL, extinction = NULL, joint = NULL, a
             if(length(speciation) == 1) {
                 bd_params$speciation <- function() {
                     return(speciation)
-                }            
+                }
+                ## Update the call to speciation value
+                match_call$speciation <- speciation
             } else {
                 bd_params$speciation <- function() {
                     return(sample(x = speciation, size = 1))
@@ -145,7 +147,9 @@ make.bd.params <- function(speciation = NULL, extinction = NULL, joint = NULL, a
             if(length(extinction) == 1) {
                 bd_params$extinction <- function() {
                     return(extinction)
-                }            
+                }
+                ## Update the call to extinction value
+                match_call$extinction <- extinction
             } else {
                 bd_params$extinction <- function() {
                     return(sample(x = extinction, size = 1))

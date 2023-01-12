@@ -83,7 +83,6 @@ dads <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events =
         ## Default pure birth tree
         bd.params <- make.bd.params()
     } else {
-
         error_msg <- "must be a named list of arguments or a \"dads\" \"bd.params\" object. You can use make.bd.params() to format the object correctly."
 
         if(!(is(bd.params, "dads") && is(bd.params, "bd.params"))) {
@@ -94,21 +93,9 @@ dads <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events =
                 stop(paste0("bd.params ", error_msg), call. = FALSE)
             }
 
-            ## Set the speciation
-            if(is.null(bd.params$speciation)) {
-                make_spec <- 1
-            } else {
-                make_spec <- bd.params$speciation
-            }
-            ## Set the extinction
-            if(is.null(bd.params$extinction)) {
-                make_exti <- 0
-            } else {
-                make_exti <- bd.params$extinction
-            }
-
             ## Create the bd.params object
-            bd.params <- make.bd.params(speciation = make_spec, extinction = make_exti)
+            bd.params <- make.bd.params(speciation = ifelse(is.null(bd.params$speciation), 1, bd.params$speciation),
+                                        extinction = ifelse(is.null(bd.params$extinction), 0, bd.params$extinction))
         }
     }
 
