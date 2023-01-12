@@ -22,33 +22,39 @@ This process can depend on the previous state in the tree (i.e. the trait of the
 One classic example is the [Brownian motion process (or Weiner process)](https://en.wikipedia.org/wiki/Brownian_motion).
 Note that it _can_ depend on both the ancestor and the branch length but does _not necessary needs_ (i.e. the process can be only based on the previous state or only on branch length or on neither).
 
+### The syntax (how to code a process?)
+
 Trait processes in `dads` are functions that must always intake the following arguments by default.
 
  * `x0`: the previous trait value(s)
  * `edge.length`: the branch length value
  * `...`: a placeholder for any extra arguments
 
-For example, the following function would be a valid process (though not dependent on either the previous state nor the branch length):
+For example, the following function would be a valid process that always generate the _true_ trait value: 42!.
+In this example, the process is not dependent on neither the previous state (`x0`) and the branch length (`edge.length`).
 
 ```{r}
-## A valid (but useless) process
-valid.process <- function(x0, egde.length = 1, ...) {
+## A valid (but useless?) process
+valid.process <- function(x0 = 0, edge.length = 1, ...) {
     return(42)
 }
 ```
 
-> Note that the argument `edge.length` is set to `1` by default. In general we highly recommend to set all arguments but `x0` to a default value (this really helps the speeding up the `dads` function).
+> Note that in this function definition the arguments `x0` and `edge.length` have a default value set to `0` and `1` respectively. In practice, these arguments are effectively set to the correct values in the `dads` internal function (i.e. whatever `x0` and `edge.length` are at that specific time of the process) but providing a default can help speed up the algorithms (specifically all the internal checks).
 
 On the other hand, the following process (a unidimensional Brownian motion) is incorrect (it's missing `edge.length` and `...`):
 
 ```{r}
 ## A wrongly formated process
-invalid.process <- function(x0) {
+invalid.process <- function(x0 = 0) {
     return(rnorm(1, mean = x0))
 }
 ```
 
-The `dads` package proposes inbuilt processes, namely a multidimensional Brownian motion (`BM.process`) or a a multidimensional Ornstein-Uhlenbeck process (`OU.process`).
+### Using a `"process"` in `dads`
+
+You can design your own process as a function (as long as it has a valid syntax).
+Alternatively, the `dads` package proposes inbuilt processes, namely a multidimensional Brownian motion (`BM.process`) or a a multidimensional Ornstein-Uhlenbeck process (`OU.process`).
 You can find the list of implemented process by looking at the `?trait.process` manual page in `R`.
 
 Once a process is chosen, you can feed it to the `make.traits` function:
@@ -69,7 +75,7 @@ my_trait_object
 plot(my_trait_object)
 ```
 
-Note that you can see the multiple options for plotting the trait process by looking at `?plot.dads` manual. Furthermore, you can look at what's actually in the object using:
+Note that you can see the multiple options for plotting the trait process by looking at `?plot.dads` manual. Furthermore, you can look at what's actually in the object using this specific syntax (this applies to every object handled by the `dads` package):
 
 
 ```{r}
@@ -142,6 +148,24 @@ make.traits(c(BM.process, OU.process), n = 3, start = 1:6)
 ## two 3D processes (BM and OU) with the two first ones starting
 ## with 1 and the 4 other ones with the default (0)
 make.traits(c(BM.process, OU.process), n = 3, start = c(1,1))
+```
+
+### What even is a trait?
+
+The definition of what a trait is can vary quiet a lot depending on the context of an analysis and the field.
+<!--TODO: add REF e.g.  https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.8321 -->
+Because it would be impossible to accommodate all definitions in `dads` we had to go with an arbitrary one: a trait is whatever you define as a trait!
+A trait can be uni-dimensional as the measurement of a feature of an organism (e.g. leaf surface, femur length, etc...) but can also be multi-dimensional description of a feature, for example in 3D geometric morphometric, a trait could be defined as "position of landmark X" (which will be a trait with three dimensions, _x_, _y_ and _z_) or in ecology, the location of a plant can be a single 2D trait (expressed as latitude and longitude).
+In `dads`, the **process** corresponds to this trait definition (e.g. a process can be of n-dimensions and represents one organisms feature) and the **traits** represents the number of dimensions in total. 
+So in the examples above, this is how the following traits are interpreted by `dads`:
+
+```{r, eval = FALSE}
+## Three traits with one process:
+make.traits(BM.process, n = 3, start = c(1,2,3))
+## Six traits with two processes:
+make.traits(c(BM.process, OU.process), n = 3)
+## Five traits with two processes
+make.traits(c(BM.process, OU.process), n = c(1, 4))
 ```
 
 ## Extra argument for the processes with `process.args`
@@ -228,27 +252,26 @@ one_process
 two_processes
 ```
 
-
 ## Testing the traits with `test`
 
-This bit is more for development.
+**This bit is more for development.**
 We highly suggest leaving `test = TRUE` so that `make.traits` returns an error if a process or its additional arguments (`process.args`) are not formatted correctly.
-`make.traits` will error if the trait cannot be directly passed to `dads`.
+`make.traits` will send an error if the trait cannot be directly passed to `dads`.
 However, in some specific cases (again, probably mainly for development and debugging) it could be useful to skip the tests using `test = FALSE`.
-
 
 ## Templates for making your very own process
 
 As detailed above, any process of your own design will work as long as it is a function that takes at least the arguments `x0` and `edge.length`.
 You can be imaginative and creative when designing your own process but here are two detailed example functions for a unidimensional Brownian Motion and Ornstein-Uhlenbeck process that you can use for a start (or not).
-Remember it is good practice for `dads` processes to set all the arguments but `x0` with default values (just in case).
-Also, note that the functions below are not equal to the already implemented `BM.process` and `OU.process` but are rather generalised/simplified version that you can use as a template
+Remember it is good practice for `dads` processes to set all the arguments with default values (just in case).
+
+> Note that the functions below are not equal to the already implemented `BM.process` and `OU.process` but an easier to edit version that you can use as a template:
 
 ### A simple Brownian Motion process template
 
 ```{r}
 ## A simple Brownian motion process
-my.BM.process <- function(x0, edge.length = 1, sd = 1, ...) {
+my.BM.process <- function(x0 = 0, edge.length = 1, sd = 1, ...) {
     ## Drawing a random number from a normal distribution
     ## with x0 as the and a given standard deviation
     ## and depending on branch (edge) length
@@ -263,7 +286,7 @@ my.BM.process <- function(x0, edge.length = 1, sd = 1, ...) {
 
 ```{r}
 ## A simple Ornstein-Uhlenbeck motion process
-my.OU.process <- function(x0, edge.length = 1, var = 1, alpha = 1, ...) {
+my.OU.process <- function(x0 = 0, edge.length = 1, var = 1, alpha = 1, ...) {
     ## Calculate the mean based on alpha
     mean <- x0 * exp(-alpha)
     ## Calculate the standard deviation based on alpha and the variance
