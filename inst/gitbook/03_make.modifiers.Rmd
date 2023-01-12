@@ -26,6 +26,43 @@ Similarly to `"traits"` objects, `"modifiers"` are also printed by default using
 You can see details about what's actually in the object using `print.dads(my_default_modifiers, all = TRUE)`.
 However, contrary to `"traits"`, you cannot plot `"modifiers"`.
 
+
+## The default modifier (how the process is working)
+
+The modifiers modify the core of the birth death process as implemented in `dads`.
+
+<!-- TODO: make that into a shiny app animation (or just in html?) -->
+
+By default, the birth-death process in `dads` uses this modifier:
+
+```{r}
+## What is actually in the default modifier?
+print(make.modifiers(), all = TRUE)
+```
+
+This contains a lot of information, much of it is actually not useful for using the modular aspects of `dads` at a high user level. I.e. unless you want to code very specific things, you won't need most of the information. The essential are these three functions in the elements named `"waiting$fun"`, `"selecting$fun"` and `"speciating$fun"`: 
+
+ 1. `"waiting$fun"` is the branch length function (defined in details below) which returns a randomly drawn number from an exponential distribution with the rate of the number of taxa multiplied by the speciation and extinction rate: $n \times (\lambda + \mu)$ (here is uses the extra function `sum` for internal modularity reasons). **This function is responsible for the growth of the length/age of the tree**
+
+```{r, eval = FALSE}
+rexp(1, sum(lineage$n * (bd.params$speciation + bd.params$extinction)))
+```
+ With `lineage$n` being the number of lineages and `bd.params$speciation` and `bd.params$extinction` the speciation and extinction parameters (these specific terms are defined in details below).
+
+ 2. `"selecting$fun"` is the selection function (defined in details below) which, after the waiting time defined above returns a randomly selected lineage (a tip) among the existing ones. **This function is responsible for the branch selection**.
+
+```{r, eval = FALSE}
+sample(lineage$n, 1)
+```
+
+ 3. `"speciating$fun"` is the speciation function (defined in details below) which randomly draws a number (`runif(1)`) and depending on the speciation and extinction parameters makes the selected lineage (from 2.) speciate (`TRUE`) or go extinct (`FALSE`). **This function is responsible for the speciation or extinction of species**.
+
+```{r, eval = FALSE}
+runif(1) < (bd.params$speciation/(bd.params$speciation + bd.params$extinction)))
+```
+
+We will have a look at all these aspects below in more details which should make things clearer (but you can always refer to the default here for information).
+
 ## The branch length function (`branch.length`)
 
 The first argument in `"modifiers"` is the branch length function (`branch.length`) this is the function that will be executed in `dads` to generate branch length.
@@ -33,7 +70,7 @@ Note that in the `dads` algorithm, branch length is not generated _directly_ but
 In other words, the `branch.length` function just affects waiting time for all taxa present at any time in the simulation.
 These taxa can then either go extinct (stopping the "growth" of it's branch length) or survive (continuing the "growth").
 
-By default, branch length (or waiting or growth) is a randomly drawn number from an exponential distribution with the rate of the number of taxa multiplied by the speciation and extinction rate: $n \times (\lambda + \mu)$ (where $n$ is the number of taxa currently present in the simulation, $\lambda$ and $\mu$ are respectively the speciation and extinction rates).
+By default, branch length (or waiting/growth) is a randomly drawn number from an exponential distribution with the rate of the number of taxa multiplied by the speciation and extinction rate: $n \times (\lambda + \mu)$ (where $n$ is the number of taxa currently present in the simulation, $\lambda$ and $\mu$ are respectively the speciation and extinction rates).
 This default function is simply called `branch.length` in `dads` and can be used as a modifier as follows:
 
 ```{r}
@@ -80,11 +117,10 @@ plot(default_tree,  main = "Default modifier")
 plot(modified_tree, main = "Constant branch length\nmodifier")
 ```
 
-It is of course to use more complex branch length modifiers that intakes different conditions and specific modification rather than simply always output a value of one.
+It is of course possible to use more complex branch length modifiers that intakes different conditions and specific modification rather than simply always output a value of one.
 
 ### The allowed arguments {#allowarguments}
 
-It is of course possible to design some more advanced function to interact with the birth death process.
 You can create a function for `branch.length`, `selection` and `speciation` that involve any of the following arguments:
 
   * `bd.params`: a named list containing `"numeric"` values that contains the birth death parameters (at least `"speciation"` and `"extinction"`);
@@ -102,9 +138,9 @@ The `lineage` list contains the following elements (missing elements are allowed
  * `lineage$split`: a `"logical"` vector: the list of splits for each lineage (`TRUE`), the number of total tips is equal to `sum(!lineage$split)`.
 
 In general, unless you know what you're doing, you can ignore most arguments for specific modifiers since they are handled automatically within the `dads` function.
-Therefore any argument can be left undeclared or missing and is always handled internally. For example, if you did not declare `n.taxa` as a function argument but are using `n.taxa` in the function, `n.taxa` will be detected and treated as a current argument automatically as set accordingly within the birth death process (e.g. `n.taxa` will be set to the current number of taxa every iteration of the process).
+Therefore any argument can be left undeclared or missing and is always handled internally. For example, if you did not declare `lineage$n` as a function argument but are using `lineage$n` in the function, `lineage$n` will be detected and treated as a current argument automatically as set accordingly within the birth death process (e.g. `lineage$n` will be set to the current number of taxa every iteration of the process).
 
-For example, we can create a function that increases branch length proportional to the number of species "alive" at each time of the simulation in a discrete way. I.e. for discrete numbers of taxa, the branch length increases by jumps (ten fold):
+For example, we can create a function that increases branch length proportional to the number of species "alive" at each time of the simulation in a discrete way. I.e. for discrete numbers of taxa, the branch length increases by jumps (ten fold) every 5 taxa:
 
 ```{r}
 ## A more complex binned.branch.length function
@@ -157,7 +193,7 @@ plot(increasing_tree, main = "Increasing branch length\nmodifier (binned)")
 ## The selection function (`selection`)
 
 The `selection` function is used in the birth death process to know which lineage to select when running a speciation (or extinction!) event.
-By default, this function randomly selects one taxon that is currently not extinct (using: `sample(1:n.taxa, 1))`.
+By default, this function randomly selects one taxon that is currently not extinct (using: `sample(1:lineage$n, 1))`.
 Similarly as `branch.length` it is possible to modify this part of the birth death process.
 For example, we could simply select always the last created lineage (to create a "ladder" or most asymmetric tree):
 
@@ -169,7 +205,7 @@ select.last <- function(lineage) {
 }
 ```
 
-> Note that here the function can only intake the [allowed arguments as described above](#allowarguments) (here `n.taxa`: the number of current living taxa).
+> Note that here the function can only intake the [allowed arguments as described above](#allowarguments) (here `lineage$n`: the number of current living taxa).
 
 We can then create a `"modifiers"` object the same way as before using this time the `selection` argument:
 
@@ -188,17 +224,21 @@ plot(ladderised_tree, main = "Ladderising modifier")
 ```
 
 Again, it is of course possible to make the modifier more complex and in combination with other elements of the tree.
-For example, we can create a `"dads"` object that also creates a trait a add to it a `selection` modifier that only selects for tips with positive trait values.
+For example, we can create a `"dads"` object that also generates a BM trait and add to it this object a `selection` modifier that only selects tips with positive trait values (only species with positive trait values will speciate).
 
 ```{r}
 ## Our function that only select taxa with positive trait values
 select.positive <- function(trait.values, lineage) {
-    ## Selecting the taxa with positive traits only
+
+    ## Selecting the taxa names with positive values for the first trait
     positives <- as.integer(rownames(trait.values)[which(trait.values[, 1] >= 0)])
 
+    ## Combine the descendants of the current lineages (lineage$parents)
+    ## with the species that have speciated (seq_along(lineages$split))
+    ## to have a table of pairs of parents/splits
+    parents_split_table <- cbind(lineage$parents, seq_along(lineage$split))
     ## Select the current taxa that descend from a node with a positive value
-    positive_living <- cbind(lineage$parents, seq_along(lineage$split)
-                             )[which(lineage$parents %in% positives), 2]
+    positive_living <- parents_split_table[which(lineage$parents %in% positives), 2]
 
     ## Select one tip randomly in the ones with descendants with positive values
     return(sample(which(lineage$livings %in% positive_living), 1))
@@ -259,7 +299,7 @@ random.extinct  <- function() {
 random_extinction <- make.modifiers(speciation = random.extinct)
 
 ## Generating a new tree with this modifier
-set.seed(0)
+set.seed(2)
 modified_tree <- dads(bd.params = bd_params,
                       stop.rule = stop_rule,
                       modifiers = random_extinction)
@@ -269,7 +309,8 @@ plot(default_tree,  main = "Default modifier")
 plot(modified_tree, main = "Random extinction\nmodifier")
 ```
 
-Note how every lineage end up going extinct!
+> Note how loads of lineages end up going extinct even if the extinction parameter is set to 0!
+
 And again, we can make some more advanced modifiers: for example, one where a tip always goes extinct if their ancestor has a negative trait value (here we will also introduce the utility function `parent.trait` that automatically selects the trait values of the parent of the current lineage.
 
 ```{r}
