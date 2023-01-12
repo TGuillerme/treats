@@ -1,5 +1,8 @@
 # TODO bug fixes:
 
+ - [x] error in `print.dads` in the manual example (`01_getting_started.Rmd`: l.173: default_data).
+ - [x] change syntax standards for `going.extinct` bit in the getting started example. (standardise to survivability: 0 (FALSE) = dead, 1 (TRUE) = alive?)
+ - [x] fix default for `x0 = 0` in traits (i.e. give a default to `x0`).
 
 # TODO list
 
@@ -7,12 +10,14 @@
  - [x] Simple BD process
  - [x] BD process with traits
  - [ ] Add instant traits mechanism (i.e. allow saving and calculating trait values after any waiting time (needs to create internal nodes))
+ - [ ] Also add a "snapshot" mechanism, compared to the "instant trait" one above, this one only has a look at what's happening everywhere in the tree at specific requested time (e.g. with conditions) and not at specific regular given time point (e.g. every 0.1 time unit).
  - [ ] Add lineage tracking mechanism (i.e. allow `traits`, `modifiers` or `events` to be applied to specific lineages); also allow giving prefixes to the names of tips and nodes in the lineage.
  - [ ] Add sampling mechanism (i.e. instead of having fixed values, allow using distributions)
     - [x] `make.bd.params`
     - [x] `plot.make.bd.params`
-    - [ ] `print.make.bd.params` (still some bugs with printing updated parameter values)
+    - [x] `print.make.bd.params` (still some bugs with printing updated parameter values)
     - [ ] implement it in `dads` and `birth.death`
+    - [ ] add it to manual
  - [ ] Add a `make.dads` function that intakes data and tree (and allows using `plot.dads` etc...)
 
 ## TODO traits
@@ -89,3 +94,4 @@
 ## TODO: Manual
 
  - [ ] Bug in 4.3 The speciation function (speciation)
+ - [ ] Add a shiny app illustrating the process from `process.pdf`

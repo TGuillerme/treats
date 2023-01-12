@@ -61,6 +61,7 @@ However, you can easily change that by specifying your new birth death parameter
 my_params <- list(speciation = 1,
                   extinction = 1/3)
 ```
+
 > Note that here it is not necessary to specify `speciation = 1` since this is the default option, you can always just change the parameter of interest (e.g. changing `extinction = 0` to `extinction = 1/3`). However, we think it's good practice to attribute both parameters specifically to avoid any confusion.
 
 You can then run the same birth death tree with extinction:
@@ -164,6 +165,7 @@ This will not do much to our simulations compared to the previous trait and tree
 extinction_02 <- list(extinction = 0.2)
 living_20     <- list(max.living = 20)
 BM_trait      <- make.traits()
+
 set.seed(1)
 ## Simulate disparity and diversity
 default_data <- dads(bd.params = extinction_02,
@@ -178,19 +180,15 @@ Note however that the printing information is now updated to state that you've a
 For more interesting simulations however, you can provide modifiers that actually modify the birth death process.
 We can create one for example that makes species go extinct if their ancestor have a negative trait value.
 For that we need to create a modifiers object that modifies the `speciation` process with a specific condition and a specific modification when that condition is met.
-First we are going to create the modification function.
-This function must intake the argument `x` and, in our case, return a logical value: `TRUE` is for speciate and `FALSE` is for go extinct.
-We want this `modify` function to always return `FALSE` (go extinct) since it will be triggered by `condition` (we will see that in a minute).
+For a speciation to occur (and a species to not go extinct), the algorithm draws a random value _x_ between 0 and 1 and if the value is smaller than the speciation parameter divided by the speciation + extinction parameter, the lineage speciates ($x < (\lambda \ (\lambda + \mu))$), else it goes extinct.
 
-```{r}
-## Going extinct
-staying.alive <- function(x) return(TRUE)
-```
+Here we can create a modifier forcing the lineage to go extinct every time a specific condition is met (say the lineage trait value is negative).
+In other words, if the lineages trait value is negative, make sure that _x_ is equal to 1 (so that the speciation condition $x < (\lambda \ (\lambda + \mu))$ is never met).
 
-Now we want this function to only trigger when an ancestor has a negative trait value.
+First we need to create a condition function to trigger this (non) speciation event.
 We can do that by specifying our `condition` function (when the ancestor is trait is negative) apply our modification (here the `staying.alive` function).
 For that we can use the `parent.traits` utility function that is optimised for accessing traits in the birth death process (but you can of course write your own).
-This function intakes the `trait.values` and `parent.lineage` arguments, two arguments that you can leave named as they are to facilitate `dads`s understanding of what you which to asses:
+This function intakes the `trait.values` and `parent.lineage` arguments, two arguments that you can leave named as they are to facilitate `dads`' understanding of what you want to assess:
 
 ```{r}
 ## Triggering a modification only if the ancestor trait is negative
@@ -199,7 +197,16 @@ negative.ancestor <- function(trait.values, lineage) {
 }
 ```
 
-Note that we use the function `all` here to evaluate all traits (if the data is multidimensional). 
+> Note that we use the function `all` here to evaluate all traits: i.e. if the data has more than one trait we trigger the modification only if all the trait values are negative. 
+
+The we are going to create the modification function.
+This function must intake the argument `x` and, in our case, returns the same value no matter what: `1` so that speciation never happens when the `negative.ancestor` function is triggered.
+
+```{r}
+## Always go extinct
+going.extinct <- function(x) return(1)
+```
+
 We can then provide these two functions (the condition `negative.ancestor` and how to modify the speciation event when this condition is met `staying.alive`).
 If you are an advances `dads` user, you can design your own `speciation` function but if you just want to use a normal `speciation` function, you can use the default one from `dads` called... `speciation`.
 
@@ -207,12 +214,13 @@ If you are an advances `dads` user, you can design your own `speciation` functio
 ## Making a modifier for species to go extinct if
 ## their ancestor's trait value is (or are) negative
 negatives_extinct <- make.modifiers(
-                        ## The speciation function (default)
-                        speciation = speciation,
-                        ## What to modify
-                        modify     = staying.alive,
-                        ## When to modify it
-                        condition  = negative.ancestor)
+            ## If the following condition is met...
+            condition = negative.ancestor, # Does the lineage has a negative ancestor?
+            ## Then apply the following modifier...
+            modify = going.extinct, # The species goes extinct
+            ## To the the speciation process.
+            speciation = speciation) # Here the speciation() process is default
+
 ## What's in it?
 negatives_extinct
 ```
@@ -231,8 +239,7 @@ biased_data
 ```
 
 We can now compare the two trees and their trait values.
-Note that we've used the same starting seed for both trees so the only thing differing between them is the modifier!
-Also, although species
+Note that we've used the same starting seed for both trees so the only thing differing between them is the `"modifier"` object which leads to very different trees!
 
 ```{r, fig.height = 6, fig.width = 12}
 par(mfrow = c(1,2))
