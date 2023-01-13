@@ -579,3 +579,15 @@ test_that("events work", {
     expect_is(test2$data, c("matrix", "array"))
     expect_equal(dim(test2$data), c(52+51, 1))
 })
+
+test_that("internal save works", {
+
+    bd.params <- list(speciation = 1, extinction = 0)
+    stop.rule <- list(max.living = 20, max.time = Inf, max.taxa = Inf)
+    traits <- make.traits()
+
+    set.seed(1)
+    test <- birth.death.tree.traits(bd.params = bd.params, traits = traits, stop.rule = stop.rule, save.steps = 0.1)
+
+
+})

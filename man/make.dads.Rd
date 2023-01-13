@@ -9,7 +9,7 @@ make.dads(tree, data)
 \arguments{
 \item{tree}{a phylogenetic tree.}
 
-\item{data}{a dataset of traits, either a \code{"matrix"} with column names or a named \code{"vector"}.}
+\item{data}{a dataset of traits, either a \code{matrix} with column names or a named \code{vector}.}
 }
 \description{
 Combines a tree and some associated data into a dads object (e.g. for plotting)

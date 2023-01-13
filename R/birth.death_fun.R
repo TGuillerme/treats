@@ -11,6 +11,9 @@ sim.element.trait <- function(one.trait, parent.trait, edge.length) {
     trait_args$edge.length <- edge.length
     return(do.call(one.trait$process, trait_args))
 }
+multi.sim.element.trait <- function(one.trait, parent.traits, edge.lengths) {
+    return(do.call(rbind, lapply(as.list(1:dim(parent.traits)[1]), function(X, parent.traits, edge.lengths, one.trait) sim.element.trait(one.trait, parent.traits[X, , drop = FALSE], edge.lengths[X]), parent.traits, edge.lengths, one.trait)))
+}
 
 ## Simulates one set of traits for the living species
 sim.living.tips <- function(living, trait_table, traits) {
@@ -29,12 +32,53 @@ trigger.events <- function(one_event, bd.params, lineage, trait.values, time) {
     return(one_event$condition(bd.params = bd.params, lineage = lineage, trait.values = trait.values, time = time) && one_event$trigger < 1L)
 }
 
+## Creates a snapshot (creates a snapshot of the data (lineage or/and traits) at a specific time): singleton updates
+update.singleton.nodes <- function(lineage) {
+    new_lineage <- lineage
+    new_lineage$parents <- c(lineage$parents, lineage$livings)
+    new_lineage$livings <- (max(lineage$livings)+1):(max(lineage$livings)+lineage$n)
+    new_lineage$current <- new_lineage$livings[lineage$drawn]
+    new_lineage$split   <- c(lineage$split, rep(FALSE, length(lineage$livings)))
+    return(new_lineage)
+}
+update.singleton.edges <- function(time, time.cut, lineage, edge_lengths) {
+    ## Calculate the difference at the split time
+    diff <- time - time.cut
+    edge_lengths_out <- edge_lengths
+    edge_lengths_out[lineage$parents[lineage$livings]] <- edge_lengths_out[lineage$parents[lineage$livings]] - diff
+    edge_lengths_out[lineage$livings] <- edge_lengths_out[lineage$parents[lineage$livings]] + diff
+    return(edge_lengths_out)
+}
+update.singleton.traits <- function(trait_values, traits, lineage, edge_lengths) {
+    ## Simulate the traits for all the singletons
+    snap_traits <- do.call(cbind,
+                        lapply(traits,
+                            multi.sim.element.trait,
+                            parent.traits = trait_values[match(lineage$parents[lineage$parents[lineage$livings]], rownames(trait_values)), , drop = FALSE],
+                            edge.lengths  = edge_lengths[lineage$parents[lineage$livings]])
+                    )
+    ## Adding the node names
+    rownames(snap_traits) <- lineage$parents[lineage$livings]
+    ## Combine with the trait values
+    return(rbind(trait_values, snap_traits))
+}
+
 ## Run a birth death process to generate both tree and traits
-birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE) {
+birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE, save.steps = NULL) {
   
     ############
     ## Initialising
     ############
+    # warning("DEBUG in birth.death_fun.R::birth.death.tree.traits: snapshot")
+    # set.seed(1)
+    # bd.params <- make.bd.params(speciation = 1, extinction = 0)
+    # stop.rule <- list(max.living = 20, max.time = Inf, max.taxa = Inf)
+    # traits <- make.traits()
+    # modifiers <- NULL
+    # events <- NULL
+    # null.error <- FALSE
+    # check.results <- TRUE
+    # save.steps = 0.1
 
     ## Set up the traits, modifiers and events simulation
     do_traits    <- ifelse(is.null(traits), FALSE, TRUE)
@@ -80,6 +124,11 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     if(stop.rule$max.time != Inf && time == 0) {
         stop.rule$max.time <- stop.rule$max.time + first_waiting_time
     }
+
+    ## PLACEHOLDER FOR STEP SAVING:IN
+    # TRIGGER IF CONDITION IS SAVE STEPS EVERY x TIME
+    ## PLACEHOLDER FOR STEP SAVING:OUT
+
     ## Update the global time
     time <- time + first_waiting_time
     ## Updating branch length
@@ -171,6 +220,23 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
         ## Updating branch length
         edge_lengths[lineage$livings] <- edge_lengths[lineage$livings] + waiting_time
 
+        ## PLACEHOLDER FOR STEP SAVING:IN
+        ## SOME CONDITION TO TRIGGER THE SNAPSHOT: either because of a modifier OR constantly (for saving all steps)
+        # if(time > 0.5 && time < 0.57) {
+        #     cat("CREATED A SNAPSHOT AT TIME 0.5")
+        #     # break
+        #     time.cut <- 0.5
+
+        #     ## Include singletons in the tree (i.e. save a step)
+        #     lineage      <- update.singleton.nodes(lineage)
+        #     edge_lengths <- update.singleton.edges(time, time.cut, lineage, edge_lengths)
+        #     if(do_traits) {
+        #         trait_values <- update.singleton.traits(trait_values, traits, lineage, edge_lengths)
+        #     }
+        ## TG: TODO: PROBLEM WITH CREATING EMPTY SINGLETON NODES. JUST MAKE SURE IT WORKS ON SIMPLE EXAMPLES
+        # }
+        ## PLACEHOLDER FOR STEP SAVING:OUT
+
         ## Adding a new row to the trait_values matrix
         if(do_traits) {
             trait_values <- rbind(trait_values,
@@ -178,11 +244,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                                   unlist(lapply(traits,
                                                 sim.element.trait,
                                                 parent.trait = parent.traits(trait_values, lineage),
-                                                edge.length  = edge_lengths[lineage$current])#,
-                                                #trait.values = trait_values,
-                                                #lineage      = lineage,
-                                                #trait        = trait
-                                                ## Handle these internally and with make.traits
+                                                edge.length  = edge_lengths[lineage$current])
                                                 )
                                  , deparse.level = 0)
             rownames(trait_values)[rownames(trait_values) == ""] <- lineage$current

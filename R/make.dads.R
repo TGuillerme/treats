@@ -3,8 +3,8 @@
 #' @description Combines a tree and some associated data into a dads object (e.g. for plotting)
 #'
 #' @param tree a phylogenetic tree.
-#' @param data a dataset of traits, either a \code{"matrix"} with column names or a named \code{"vector"}.
-# @param ... additional \code{"dads"} objects to add (e.g. \code{"traits"}).
+#' @param data a dataset of traits, either a \code{matrix} with column names or a named \code{vector}.
+# @param ... additional \code{dads} objects to add (e.g. \code{traits}).
 #'
 #' @examples
 #' ## Creating a random tree
