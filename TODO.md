@@ -18,7 +18,8 @@
     - [x] `print.make.bd.params` (still some bugs with printing updated parameter values)
     - [ ] implement it in `dads` and `birth.death`
     - [ ] add it to manual
- - [ ] Add a `make.dads` function that intakes data and tree (and allows using `plot.dads` etc...)
+ - [x] Add a `make.dads` function that intakes data and tree (and allows using `plot.dads` etc...)
+   - [x] Add test for `make.dads`
 
 ## TODO traits
 

@@ -14,6 +14,7 @@ dads v0.1.6 (2023-01-12)
  * `events` are now fully handled and modular.
  * `make.events` function for helping to make events.
  * `make.modifiers` now has a `select.taxa` argument.
+ * `make.dads` to create `"dads"` objects from a tree and a dataset (e.g. matrix). This can be useful for using the the `plot.dads` function on non `"dads"` objects. 
  * `"events"` class objects are now implemented and fully functional with the `make.events` function and the pre-made `mass.extinction` and `founding.event` events.
 
 ### MINOR IMPROVEMENTS

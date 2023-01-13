@@ -49,6 +49,7 @@ export(founding.event)
 export(make.bd.params)
 export(drop.fossil.dads)
 export(parent.traits)
+export(make.dads)
 
 ##S3 
 S3method(plot, dads) #incl traits
