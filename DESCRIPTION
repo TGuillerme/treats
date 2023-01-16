@@ -2,8 +2,8 @@ Package: dads
 Title: Disparity And Diversity Simulations
 Author: Thomas Guillerme [aut, cre, cph]
 Maintainer: Thomas Guillerme <guillert@tcd.ie>
-Version: 0.1.7
-Date: 2023-01-13
+Version: 0.1.8
+Date: 2023-01-16
 Description: Simulating data for null disparity expectations
 Depends:
     R (>= 4.0.0),

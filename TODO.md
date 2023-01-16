@@ -91,6 +91,7 @@
  - [x] distinguish tips from nodes with a circle option around the tips (in 2D)
  - [x] change colour to default for edges
  - [ ] adding legend options
+ - [ ] add option to switch the tree age (time to present to time since past).
 
 
 ## TODO: Manual
