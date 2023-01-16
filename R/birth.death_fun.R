@@ -38,15 +38,19 @@ update.singleton.nodes <- function(lineage) {
     new_lineage$parents <- c(lineage$parents, lineage$livings)
     new_lineage$livings <- (max(lineage$livings)+1):(max(lineage$livings)+lineage$n)
     new_lineage$current <- new_lineage$livings[lineage$drawn]
-    new_lineage$split   <- c(lineage$split, rep(FALSE, length(lineage$livings)))
+    ## This is not really a split but definitely a node
+    new_lineage$split   <- c(lineage$split, rep(TRUE, length(lineage$livings)))
     return(new_lineage)
 }
-update.singleton.edges <- function(time, time.cut, lineage, edge_lengths) {
+update.singleton.edges <- function(time, time.slice, lineage, edge_lengths) {
     ## Calculate the difference at the split time
-    diff <- time - time.cut
+    diff <- time - time.slice
+    ## Updating the edge lengths
     edge_lengths_out <- edge_lengths
+    ## Removing the time diff to the living lineages
     edge_lengths_out[lineage$parents[lineage$livings]] <- edge_lengths_out[lineage$parents[lineage$livings]] - diff
-    edge_lengths_out[lineage$livings] <- edge_lengths_out[lineage$parents[lineage$livings]] + diff
+    ## Adding the time diff to the new branches
+    edge_lengths_out[lineage$livings] <- diff
     return(edge_lengths_out)
 }
 update.singleton.traits <- function(trait_values, traits, lineage, edge_lengths) {
@@ -72,14 +76,22 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     # warning("DEBUG in birth.death_fun.R::birth.death.tree.traits: snapshot")
     # set.seed(1)
     # bd.params <- make.bd.params(speciation = 1, extinction = 0)
-    # stop.rule <- list(max.living = 20, max.time = Inf, max.taxa = Inf)
+    # stop.rule <- list(max.living = 5, max.time = 3, max.taxa = Inf)
     # traits <- make.traits()
-    # modifiers <- NULL
+    # constant.brlen <- function() {
+    #     return(as.numeric(1))
+    # }
+    # ## Creating the modifiers object
+    # select.last <- function(lineage) {
+    #     return(as.integer(lineage$n))
+    # }
+    # constant_modifier <- make.modifiers(branch.length = constant.brlen, selection = select.last)
+    # modifiers <- constant_modifier
     # events <- NULL
     # null.error <- FALSE
     # check.results <- TRUE
-    # save.steps = 0.1
-
+    # save.steps = 1.75
+ 
     ## Set up the traits, modifiers and events simulation
     do_traits    <- ifelse(is.null(traits), FALSE, TRUE)
     do_events    <- ifelse(is.null(events), FALSE, TRUE)
@@ -119,6 +131,9 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                             lineage      = lineage,
                             trait.values = NULL,
                             modify.fun   = NULL)
+
+    # warning("DEBUG birth.death_fun.R")
+    # first_waiting_time <- 0
 
     ## Update the global time (for the first waiting time)
     if(stop.rule$max.time != Inf && time == 0) {
@@ -176,6 +191,10 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
         }
     }
 
+    # warning("DEBUG birth.death_fun.R")
+    # lineage$current <- 3
+    # lineage$drawn   <- 2
+
     ############
     ## Rest of the tree
     ############
@@ -222,18 +241,17 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
 
         ## PLACEHOLDER FOR STEP SAVING:IN
         ## SOME CONDITION TO TRIGGER THE SNAPSHOT: either because of a modifier OR constantly (for saving all steps)
-        # if(time > 0.5 && time < 0.57) {
-        #     cat("CREATED A SNAPSHOT AT TIME 0.5")
+        # if(time == 2) {
+        #     cat("CREATED A SNAPSHOT AT TIME 1.75")
         #     # break
-        #     time.cut <- 0.5
+        #     time.slice <- save.steps+first_waiting_time
 
         #     ## Include singletons in the tree (i.e. save a step)
         #     lineage      <- update.singleton.nodes(lineage)
-        #     edge_lengths <- update.singleton.edges(time, time.cut, lineage, edge_lengths)
+        #     edge_lengths <- update.singleton.edges(time, time.slice, lineage, edge_lengths)
         #     if(do_traits) {
         #         trait_values <- update.singleton.traits(trait_values, traits, lineage, edge_lengths)
         #     }
-        ## TG: TODO: PROBLEM WITH CREATING EMPTY SINGLETON NODES. JUST MAKE SURE IT WORKS ON SIMPLE EXAMPLES
         # }
         ## PLACEHOLDER FOR STEP SAVING:OUT
 
@@ -381,8 +399,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     table <- data.frame(parent       = lineage$parents, # These are nodes
                         element      = seq_along(lineage$split), # These are tips or nodes
                         edge_lengths = edge_lengths,
-                        is_split     = lineage$split)[-1, ]
-
+                        is_node      = lineage$split)[-1, ]
     ## Error
     if(nrow(table) == 0) {
         if(!null.error) {
@@ -393,13 +410,13 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     }
 
     ## Remove 0 edge split from max.taxa rule
-    if(sum(!table$is_split) > stop.rule$max.taxa) {
+    if(sum(!table$is_node) > stop.rule$max.taxa) {
         ## Remove the 0 edge split
         last_parent <- table$parent[nrow(table)]
         ## Remove the two last edges
         table <- table[-c(nrow(table), nrow(table)-1),]
         ## Change the node into a tip
-        table$is_split[table$element == last_parent] <- FALSE
+        table$is_node[table$element == last_parent] <- FALSE
     } 
 
     ############
@@ -407,13 +424,13 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     ############
 
     ## Number of rows and tips
-    n_nodes <- sum(!table$is_split) - 1
-    n_tips  <- sum(!table$is_split)
+    n_nodes <- sum(table$is_node)+1 #TG: TODO: make sure this takes into account the singleton nodes!!!!!!!!!!
+    n_tips  <- sum(!table$is_node)
 
     ## Getting the edge table node/tips IDs
     table$element2 <- NA
-    table$element2[!table$is_split] <- 1:n_tips
-    table$element2[ table$is_split] <- order(table$element[table$is_split]) + n_tips + 1
+    table$element2[!table$is_node] <- 1:n_tips
+    table$element2[ table$is_node] <- order(table$element[table$is_node]) + n_tips + 1
 
     ## Getting the edge table nodes (left column)
     left_edges <- match(table$parent, table$element)
