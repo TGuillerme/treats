@@ -580,14 +580,49 @@ test_that("events work", {
     expect_equal(dim(test2$data), c(52+51, 1))
 })
 
-test_that("internal save works", {
 
-    bd.params <- list(speciation = 1, extinction = 0)
-    stop.rule <- list(max.living = 20, max.time = Inf, max.taxa = Inf)
-    traits <- make.traits()
+test_that("singleton logic works", {
 
-    set.seed(1)
-    test <- birth.death.tree.traits(bd.params = bd.params, traits = traits, stop.rule = stop.rule, save.steps = 0.1)
+    ## Creating an example lineage and edge_lengths (three tips, branching right, constant brlen)
+    lineage_pre <- list(parents = c(0, 1, 1, 3, 3),
+                        livings  = c(2, 4, 5),
+                        drawn   = c(3),
+                        current = c(5),
+                        n       = c(3),
+                        split   = c(TRUE, FALSE, TRUE, FALSE, FALSE))
+    edge_lengths <- c(0, 2, 1, 1, 1)
+    time <- 2
+
+    ## Testing singleton.nodes
+    test <- update.singleton.nodes(lineage_pre)
+    expect_is(test, "list")
+    expect_equal(names(test), names(lineage_pre))
+    expect_equal(test$parents, c(0, 1, 1, 3, 3, 2, 4, 5))
+    expect_equal(test$livings, c(6, 7, 8))
+    expect_equal(test$drawn, 3)
+    expect_equal(test$current, 8)
+    expect_equal(test$n, 3)
+    expect_equal(test$split, c(T, F, T, F, F, T, T, T))
+
+    ## Testing singleton.edges
+    lineage_after <- update.singleton.nodes(lineage_pre)
+    test <- update.singleton.edges(time = time, time.slice = 1.75, lineage = lineage_after, edge_lengths = edge_lengths) 
+    expect_equal(length(test), 8)
+    expect_equal(test, c(0, 1.75, 1, 0.75, 0.75, 0.25, 0.25, 0.25))
+
+    ## Testing singleton.traits
+    warning("TODO: test singleton.traits")
+})
+
+
+test_that("snapshots/internal save works", {
+
+    # bd.params <- list(speciation = 1, extinction = 0)
+    # stop.rule <- list(max.living = 20, max.time = Inf, max.taxa = Inf)
+    # traits <- make.traits()
+
+    # set.seed(1)
+    # test <- birth.death.tree.traits(bd.params = bd.params, traits = traits, stop.rule = stop.rule, save.steps = 0.1)
 
 
 })
