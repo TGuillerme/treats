@@ -38,8 +38,12 @@ update.singleton.nodes <- function(lineage) {
     new_lineage$parents <- c(lineage$parents, lineage$livings)
     new_lineage$livings <- (max(lineage$livings)+1):(max(lineage$livings)+lineage$n)
     new_lineage$current <- new_lineage$livings[lineage$drawn]
-    ## This is not really a split but definitely a node
-    new_lineage$split   <- c(lineage$split, rep(TRUE, length(lineage$livings)))
+
+    ## The new nodes lead to non-splitting branches
+    new_lineage$split   <- c(lineage$split, rep(FALSE, length(lineage$livings)))
+    ## The old ones are now splitting (but not in two)
+    new_lineage$split[lineage$livings] <- TRUE
+
     return(new_lineage)
 }
 update.singleton.edges <- function(time, time.slice, lineage, edge_lengths) {
@@ -72,7 +76,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
   
     ############
     ## Initialising
-    ############
+    # ############
     # warning("DEBUG in birth.death_fun.R::birth.death.tree.traits: snapshot")
     # set.seed(1)
     # bd.params <- make.bd.params(speciation = 1, extinction = 0)

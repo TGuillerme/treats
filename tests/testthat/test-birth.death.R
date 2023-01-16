@@ -593,6 +593,9 @@ test_that("singleton logic works", {
     edge_lengths <- c(0, 2, 1, 1, 1)
     time <- 2
 
+# data.frame(lineage$parents, seq_along(lineage$split), lineage$split)
+
+
     ## Testing singleton.nodes
     test <- update.singleton.nodes(lineage_pre)
     expect_is(test, "list")
@@ -602,7 +605,7 @@ test_that("singleton logic works", {
     expect_equal(test$drawn, 3)
     expect_equal(test$current, 8)
     expect_equal(test$n, 3)
-    expect_equal(test$split, c(T, F, T, F, F, T, T, T))
+    expect_equal(test$split, c(T, T, T, T, T, F, F, F))
 
     ## Testing singleton.edges
     lineage_after <- update.singleton.nodes(lineage_pre)
