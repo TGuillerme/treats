@@ -9,7 +9,7 @@
  - [x] INIT
  - [x] Simple BD process
  - [x] BD process with traits
- - [ ] Add instant traits mechanism (i.e. allow saving and calculating trait values after any waiting time (needs to create internal nodes))
+ - [x] Add instant traits mechanism (i.e. allow saving and calculating trait values after any waiting time (needs to create internal nodes))
  - [ ] Also add a "snapshot" mechanism, compared to the "instant trait" one above, this one only has a look at what's happening everywhere in the tree at specific requested time (e.g. with conditions) and not at specific regular given time point (e.g. every 0.1 time unit).
  - [ ] Add lineage tracking mechanism (i.e. allow `traits`, `modifiers` or `events` to be applied to specific lineages); also allow giving prefixes to the names of tips and nodes in the lineage.
  - [ ] Add sampling mechanism (i.e. instead of having fixed values, allow using distributions)
@@ -98,3 +98,7 @@
 
  - [ ] Bug in 4.3 The speciation function (speciation)
  - [ ] Add a shiny app illustrating the process from `process.pdf`
+
+
+
+Selling point: dads is so modular that you can simulate a dads object that simulates a dads object.

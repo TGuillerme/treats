@@ -7,6 +7,7 @@
 #' @param traits     A \code{"dads"} \code{"traits"} object (see \code{\link{make.traits}}).
 #' @param modifiers  A \code{"dads"} \code{"modifiers"} object (see \code{\link{make.modifiers}}).
 #' @param events     A \code{"dads"} \code{"events"} object (see \code{\link{make.events}}).
+#' @param save.steps Optional, \code{"numeric"} value to save the simulations at specific internal points (this can slow down the algorithm significantly for large trees). 
 #' @param null.error Logical, whether to return an error when the birth death parameters fails to build a tree (\code{FALSE}; default and highly recommended) or whether to return \code{NULL} (\code{TRUE}). Can also be set to a integer value for the numbers of trials (see details).
 #' 
 #' @details
@@ -58,7 +59,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-dads <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events = NULL, null.error = FALSE) {
+dads <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events = NULL, save.steps = NULL, null.error = FALSE) {
 
     ## Sanitizing
     ## stop.rule
@@ -126,6 +127,7 @@ dads <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events =
         }
     }
 
+    ## Check null error
     error_class <- check.class(null.error, c("logical", "integer", "numeric"))
     if(error_class == "logical") {
         max.counter <- 1
@@ -137,9 +139,14 @@ dads <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events =
     counter <- 0
     output <- NULL
 
+    ## Check save steps
+    if(!is.null(save.steps)) {
+        check.class(save.steps, "numeric")    
+    }
+
     while(is.null(output) || counter < max.counter) {
         ## Simulating the traits and tree
-        output <- birth.death.tree.traits(stop.rule, bd.params = bd.params, traits = traits, modifiers = modifiers, events = events, null.error = null.error)
+        output <- birth.death.tree.traits(stop.rule, bd.params = bd.params, traits = traits, modifiers = modifiers, events = events, save.steps = save.steps, null.error = null.error)
 
         ## Update the counter
         counter <- counter + 1

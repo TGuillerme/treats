@@ -10,6 +10,7 @@ dads(
   traits = NULL,
   modifiers = NULL,
   events = NULL,
+  save.steps = NULL,
   null.error = FALSE
 )
 }
@@ -23,6 +24,8 @@ dads(
 \item{modifiers}{A \code{"dads"} \code{"modifiers"} object (see \code{\link{make.modifiers}}).}
 
 \item{events}{A \code{"dads"} \code{"events"} object (see \code{\link{make.events}}).}
+
+\item{save.steps}{Optional, \code{"numeric"} value to save the simulations at specific internal points (this can slow down the algorithm significantly for large trees).}
 
 \item{null.error}{Logical, whether to return an error when the birth death parameters fails to build a tree (\code{FALSE}; default and highly recommended) or whether to return \code{NULL} (\code{TRUE}). Can also be set to a integer value for the numbers of trials (see details).}
 }

@@ -613,19 +613,62 @@ test_that("singleton logic works", {
     expect_equal(length(test), 8)
     expect_equal(test, c(0, 1.75, 1, 0.75, 0.75, 0.25, 0.25, 0.25))
 
-    ## Testing singleton.traits
-    warning("TODO: test singleton.traits")
+    # ## Testing singleton.traits
+    # warning("TODO: test singleton.traits")
 })
 
 
 test_that("snapshots/internal save works", {
 
-    # bd.params <- list(speciation = 1, extinction = 0)
-    # stop.rule <- list(max.living = 20, max.time = Inf, max.taxa = Inf)
-    # traits <- make.traits()
+    bd.params <- make.bd.params(speciation = 1, extinction = 0.2)
+    stop.rule <- list(max.living = Inf, max.time = 5, max.taxa = Inf)
+    traits <- make.traits()
 
-    # set.seed(1)
-    # test <- birth.death.tree.traits(bd.params = bd.params, traits = traits, stop.rule = stop.rule, save.steps = 0.1)
+    ## Working for regular steps
+    set.seed(1)
+    test <- birth.death.tree.traits(bd.params = bd.params, traits = traits, stop.rule = stop.rule, save.steps = 0.5)
+    expect_is(test, "list")
+    class(test) <- "dads"
+    expect_equal(names(test), c("tree", "data"))
+    expect_equal(Ntip(test$tree), 142)
+    expect_equal(Nnode(test$tree), 383)
+    expect_null(plot(test))
+    # abline(v = rev(seq(from = 0, to = 5, by = 0.5)), col = "grey")
 
+
+    ## Working for set steps
+    set.seed(1)
+    test <- birth.death.tree.traits(bd.params = bd.params, traits = traits, stop.rule = stop.rule, save.steps = c(0.5, 1, 2.5))
+    expect_is(test, "list")
+    class(test) <- "dads"
+    expect_equal(names(test), c("tree", "data"))
+    expect_equal(Ntip(test$tree), 108)
+    expect_equal(Nnode(test$tree), 123)
+    expect_null(plot(test))
+    # abline(v = rev(5-c(0.5, 1, 2.5)), col = "grey")
+
+    ## Works also with no traits!
+    set.seed(1)
+    test <- birth.death.tree.traits(bd.params = bd.params, traits = NULL, stop.rule = stop.rule, save.steps = 0.5)
+    expect_is(test, "list")
+    expect_equal(names(test), c("tree", "data"))
+    expect_equal(Ntip(test$tree), 92)
+    expect_equal(Nnode(test$tree), 248)
+    expect_null(plot(test$tree))
+    # nodelabels()
+
+    ## works with dads (and multiple traits)
+    set.seed(123)
+    test <- dads(bd.params = list(speciation = 1), stop.rule = list(max.time = 3), save.steps = 0.3, traits = make.traits(n = 4))
+    expect_is(test, "dads")
+    expect_equal(Ntip(test$tree), 49)
+    expect_equal(Nnode(test$tree), 175)
+    expect_null(plot(test, trait = c(2,3)))
+    # abline(v = rev(seq(from = 0, to = 3, by = 0.3)), col = "grey")
+    expect_equal(dim(test$data), c(224, 4))
+
+    ## TO TEST: single slice with 
+        # Condition: trait value generated for species X is always two times the average of all species traits present at time t
+        # Condition: speciation happens if species X has trait that is one sd away from other species.
 
 })

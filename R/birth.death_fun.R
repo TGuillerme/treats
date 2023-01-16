@@ -76,11 +76,11 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
   
     ############
     ## Initialising
-    # ############
+    #############
     # warning("DEBUG in birth.death_fun.R::birth.death.tree.traits: snapshot")
     # set.seed(1)
     # bd.params <- make.bd.params(speciation = 1, extinction = 0)
-    # stop.rule <- list(max.living = 5, max.time = 3, max.taxa = Inf)
+    # stop.rule <- list(max.living = Inf, max.time = 5, max.taxa = Inf)
     # traits <- make.traits()
     # constant.brlen <- function() {
     #     return(as.numeric(1))
@@ -90,11 +90,11 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     #     return(as.integer(lineage$n))
     # }
     # constant_modifier <- make.modifiers(branch.length = constant.brlen, selection = select.last)
-    # modifiers <- constant_modifier
+    # modifiers <- make.modifiers()
     # events <- NULL
     # null.error <- FALSE
     # check.results <- TRUE
-    # save.steps = 1.75
+    # save.steps = 0.5
  
     ## Set up the traits, modifiers and events simulation
     do_traits    <- ifelse(is.null(traits), FALSE, TRUE)
@@ -116,6 +116,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     time <- edge_lengths <- 0
     was_alive <- 0L # recording which lineage go extinct (when extinction happens). 0L is no extinction.
     founding_tree <- NULL
+    current.save.steps <- save.steps
 
     ## Initialise the lineage tracker
     lineage <- list("parents" = 0L,   # The list of parent lineages
@@ -136,6 +137,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                             trait.values = NULL,
                             modify.fun   = NULL)
 
+    ### DEBUG: set starting time to 0
     # warning("DEBUG birth.death_fun.R")
     # first_waiting_time <- 0
 
@@ -143,10 +145,6 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     if(stop.rule$max.time != Inf && time == 0) {
         stop.rule$max.time <- stop.rule$max.time + first_waiting_time
     }
-
-    ## PLACEHOLDER FOR STEP SAVING:IN
-    # TRIGGER IF CONDITION IS SAVE STEPS EVERY x TIME
-    ## PLACEHOLDER FOR STEP SAVING:OUT
 
     ## Update the global time
     time <- time + first_waiting_time
@@ -195,6 +193,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
         }
     }
 
+    # ##DEBUG: creating right handed trees
     # warning("DEBUG birth.death_fun.R")
     # lineage$current <- 3
     # lineage$drawn   <- 2
@@ -243,21 +242,29 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
         ## Updating branch length
         edge_lengths[lineage$livings] <- edge_lengths[lineage$livings] + waiting_time
 
-        ## PLACEHOLDER FOR STEP SAVING:IN
-        ## SOME CONDITION TO TRIGGER THE SNAPSHOT: either because of a modifier OR constantly (for saving all steps)
-        # if(time == 2) {
-        #     cat("CREATED A SNAPSHOT AT TIME 1.75")
-        #     # break
-        #     time.slice <- save.steps+first_waiting_time
+        ## Saving steps during the tree growing
+        if(!is.null(save.steps)) {
 
-        #     ## Include singletons in the tree (i.e. save a step)
-        #     lineage      <- update.singleton.nodes(lineage)
-        #     edge_lengths <- update.singleton.edges(time, time.slice, lineage, edge_lengths)
-        #     if(do_traits) {
-        #         trait_values <- update.singleton.traits(trait_values, traits, lineage, edge_lengths)
-        #     }
-        # }
-        ## PLACEHOLDER FOR STEP SAVING:OUT
+            ## Something like:
+            while(!is.na(current.save.steps[1]) && first_waiting_time + current.save.steps[1] <= time) {
+                ## Creating a time slice
+                time.slice <- first_waiting_time + current.save.steps[1]
+                
+                ## Save a step by creating singletons
+                lineage      <- update.singleton.nodes(lineage)
+                edge_lengths <- update.singleton.edges(time, time.slice, lineage, edge_lengths)
+                if(do_traits) {
+                    trait_values <- update.singleton.traits(trait_values, traits, lineage, edge_lengths)
+                }
+
+                ## Updating the saving.steps
+                if(length(save.steps) == 1) {
+                    current.save.steps <- current.save.steps + save.steps
+                } else {
+                    current.save.steps <- current.save.steps[-1]
+                }
+            }
+        }
 
         ## Adding a new row to the trait_values matrix
         if(do_traits) {
