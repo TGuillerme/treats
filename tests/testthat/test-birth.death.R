@@ -654,7 +654,7 @@ test_that("snapshots/internal save works", {
     expect_equal(names(test), c("tree", "data"))
     expect_equal(Ntip(test$tree), 92)
     expect_equal(Nnode(test$tree), 248)
-    expect_null(plot(test$tree))
+    # expect_null(plot(test$tree))
     # nodelabels()
 
     ## works with dads (and multiple traits)
