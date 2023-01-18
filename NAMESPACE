@@ -50,7 +50,7 @@ export(make.bd.params)
 export(drop.things)
 export(drop.fossils)
 export(drop.livings)
-export(drop.singletons)
+export(drop.singles)
 export(parent.traits)
 export(make.dads)
 

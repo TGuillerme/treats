@@ -72,7 +72,7 @@
  - [x] add utilities
  - [ ] add manual for utilities
  - [ ] add test for `parent.traits`
- - [ ] update the drop function to `drop.things` with a option `"what"` being `"fossils"`, `"livings"`, `"singletons"`. Aliasing into `drop.fossils.dads`, `drop.livings.dads`, `drop.singletons.dads`
+ - [x] update the drop function to `drop.things` with a option `"what"` being `"fossils"`, `"livings"`, `"singles"`. Aliasing into `drop.fossils`, `drop.livings`, `drop.singles`
 
 ## TODO dads
 
