@@ -1,0 +1,17 @@
+---
+title: "`plot.dads`"
+author: "Thomas Guillerme (guillert@tcd.ie)"
+date: "`r Sys.Date()`"
+bibliography: [../References.bib, ../packages.bib]
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r, echo = FALSE}
+library(rgl)
+knitr::knit_hooks$set(webgl = hook_webgl)
+```
+
+`"dads"` objects can be directly plotted in dads using many different options.
+
