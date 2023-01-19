@@ -1,0 +1,237 @@
+---
+title: "`dads`: a modular `R` package for simulating diversity and traits data."
+author: "homas Guillerme, Natalie Cooper, Andrew P. Beckerman, and Gavin H. Thomas"
+bibliography: references.bib
+csl: mee.csl
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    fig_width: 8
+    fig_height: 8
+    keep_tex: true
+  self_contained: true
+---
+
+<!-- Keywords: diversity, disparity, simulations, birth-death, null-models, ecology, evolution -->
+
+<!-- SET URL FOR [manual](dads_manual) -->
+
+# Abstract
+
+1. Simulating biological realistic data can be an important step to understand and investigate biological mechanisms.
+Like null models, base line models or something else models, they allow us to generate a pattern that arises from controlled processes and thought through mechanisms.
+
+2. In evolutionary biology, these simulations often involve the need of an evolutionary process where descent with modification is at the core of how the simulated data is generated.
+This can be made much more complicated with loads of different stuff needing to be taken into account to affect the simulations (e.g. traits, mechanisms such as competition or events such as mass extinctions).
+
+3. Here I present the `dads` package, a modular `R` package for diversity and trait disparity simulations.
+This package is based on a standard birth death algorithm that can be easily tuned to the user specific needs by designing their specific trait process, birth-death modifiers and events.
+It also provides a tidy interface through the `dads` object, allowing users to easily run reproducible simulations.
+
+4. The `dads` package also comes with an extend manual regularly updated following users' questions or suggestions.
+
+# Introduction
+
+<!-- % Simulations in biology -->
+Comparing biological patterns is one of the key ways (and arguably the only) to understand mechanisms in evolutionary biology.
+This lead to the development of phylogenetic comparative methods as key sub-field in ecology and evolution @CITE-some-PCMreview.
+As indicated in the name, phylogenetic comparative methods rely on comparing patterns in a phylogenetical concepts to understand biological mechanisms or concepts.
+These comparisons can be done between observed patterns under different conditions suggesting different processes or mechanisms (e.g. trait patterns for species on an island vs. on the mainland @CITE-some-islandPCM-paper) or by comparing some observed pattern to one simulated under null or base conditions @CITE-paper-with-null-comparisons (but see @CITE-null-phylo-paper for distinctions or common misconceptions).
+In theory, workers can follow the research pipeline of thinking of a specific mechanism (e.g. mass extinction allowing the surviving species to acquire new morphologies), collect some data to test this mechanism (e.g. some traits of species across and extinction event) and then compare these patterns to one simulated under no specific conditions (e.g. a null model where the traits evolve randomly regardless of an extinction event). @CITE-mark-extinction
+
+<!-- % What already exists -->
+In practice, these evolutionary simulations can be done relatively easily multiple times on computers using a birth-death process @CITE-something-describing-BD.
+A birth-death process is @yadiyada and has been routinely implemented in `R` (e.g. @CITE-ape, @CITE-diversitree).
+Traits can be simulating using the following processes @OU, @BM, @yadidada.
+The diversity of these traits through time can be called disparity in palaeontology @CITE-disparity-review or functional diversity in ecology (for functional traits; @CITE-setafanospaper).
+In `R`, this can be done with several already well used and well documented packages.
+For example if you want to simulate diversity through time, you can use `TreeSim` to simulate diversity under a set of specific parameters (e.g. speciation and extinction) with some events disrupting the simulations (e.g. mass extinctions) @CITE-TreeSim.
+One can even improve on generating these patterns using `FossilSim` to generate a pattern that will take into account fossilization processes @CITE-FossilSim.
+On the other hand, if you need to simulate both diversity and traits through time, this can be done with specific parameters in `RPANDA` @CITE-RPANDA or in `PETER` @CITE-PETER where the traits are generated stochasticaly through time (given some process) during the birth-death process.
+
+<!-- % The problems with the absence of modularity -->
+Although the packages mentioned above (and more that we forgot to mention/don't know off) and are excellent (i.e. fast, reliable and documented) at the specific tasks they are designed for, they unfortunately don't allow much modifications beyond the parameters implemented for each specific function.
+This can be problematic for generating specific simulations to be used as a specific null model for some specific questions.
+For example, `TreeSim` can simulate a birth-death tree with some extinction event but is not designed to simulated one with an extinction event that leads to the birth-death process to be not diversity dependent anymore (e.g. simulating a release in selection pressure after the extinction process that leads to a different process dominating speciation).
+Or `PETER` is not designed to simulate a complex set of traits (say three correlated BM traits and two independent OU ones).
+Although we don't think this was the aim of these specific packages authors (not to create a strawman argument) we think this hampers the use of specific null model (or baseline model) to test specific dynamic mechanisms or to compare to specific datasets. 
+<!-- % The solution with dads -->
+Therefore, we propose `dads` a modular `R` package to simulate both diversity and disparity through time.
+
+# Description
+<!-- % Very briefly how does it work -->
+`dads` is based on a core birth-death process implemented in the function `dads` that simulates diversity through time using the following steps:
+
+1. **Branch length**: Generating some waiting time corresponding to the growth in length of the tree (e.g. the duration of a lineage through time);
+2. **Selection**: Choosing a lineage _alive_ at the time of the simulation;
+3. **Speciation**: Choosing whether this species will go extinct or speciate leading to two new lineages.
+
+These three steps are repeated until the tree reaches the desired age or the desired number of species.
+If traits are simulated during the process, a fourth step is added:
+
+4. Trait: Generate some trait(s) value(s) based for the extinct species or the node leading to the two new lineages.
+This/these value(s) are generated taking into account the trait value of the extinct species/new node's ancestor and the time elapsed (generated in step 1).
+
+In `dads`, these three or four steps are implemented as modular functions that the user can easily change using an internal class of objects called `"modifiers"` or `"traits"` (Fig.  \ref{Fig_workflow}).
+The simulation then outputs a tree (of class `"phylo"` and a associated table of traits - `"matrix"`) that can be visualised using the `plot.dads` function.
+
+![Figure 1:](gitbook/dads_structure.pdf)
+
+\label{Fig_workflow}`dads` package workflow @@@. `"events"` are an additional category of modular objects discussed later.
+
+## Simulating diversity
+
+To simulate a birth-death tree, two arguments are essentially needed: the birth-death parameters (`bd.params`) the rate of speciation (birth or $\lambda$), the rate of extinction (death or $\mu$ - this parameter can be equal to 0) and `stop.rule`, a rule for when to stop the growth of the tree (e.g. when reaching 20 species).
+
+```{r, eval = FALSE, echo = TRUE}
+## Running a simulation with a speciation rate of 1, an extinction rate of 0.1
+## and stopping when it reaches 20 taxa
+my_simulation <- dads(bd.params = list(speciation = 1, extinction = 0.1),
+                      stop.rule = list(max.taxa = 20))
+```
+
+By default, the three first steps are included in a default modifier that reproduces a simple birth-death process given the input birth and death parameters.
+
+1. **Branch length**: drawing a random number from an exponential distribution with a species dependent rate of $n \times (\lambda + \mu)$, where $n$ is the number of species currently alive in the process.
+2. **Selection**: randomly choosing on of the $n$ taxa currently alive in the process;
+3. **Speciation**: drawing a random number between 0 and 1; if that number is smaller than the speciation relative to the turnover ($\lambda / \lambda+\mu$), the lineage goes extinct <!-- %TODO: check!!! -->; else, the lineage speciates.
+
+These are included by default in a `dads` process.
+The modularity of the packages works with the ability to code the modifiers manually rather than using default ones.
+Using a reserved syntax in this case the arguments `lineage` and `bd.params` (much more details about the syntax is available in the [manual](dads_manual)). <!-- TODO: make link -->
+For example, to simulate the same process but hard coding the modifiers we can use the following functions for each process:
+
+```{r, eval = FALSE, echo = TRUE}
+## Step 1: Drawing from a diversity dependent exponential distribution
+step1.branch.length <- function(lineage, bd.params) {
+  rexp(1, rate = lineage$n * (bd.params$speciation + bd.params$extinction))
+}
+
+## Step 2: Selecting one of the available lineages
+step2.selection <- function(lineage) {
+  sample(1:lineage$n, 1)
+}
+
+## Step 3: Randomly speciating depending on the birth-death rates
+step3.speciation <- function(bd.params) {
+  runif(1) < (bd.params$speciation/(bd.params$speciation + bd.params$extinction))
+}
+
+## Specifying our modifiers (here they are doing the same as the default ones)
+my_modifiers <- make.modifiers(branch.length = step1.branch.length,
+                               selection     = step2.selection,
+                               speciation    = step3.speciation)
+
+## Running a simulation with a speciation rate of 1, an extinction rate of 0.1
+## and stopping when it reaches 20 taxa with the default birth-death modifiers specified
+my_simulation <- dads(bd.params = list(speciation = 1, extinction = 0.1),
+                      stop.rule = list(max.taxa = 20),
+                      modifiers = my_modifiers)
+```
+
+Of course these function can be greatly modified and depend on other parameters of the the simulation.
+For example if traits are also simulated (see below) we can bias the branch length to be also dependent on the trait distribution, the selection to be biased towards species at the extremes of the distribution and the speciation modifier to only allow speciation when the lineage's parent trait value is positive.
+More example of biased or special `"modifiers"` are available in the [manual](dads_manual).
+
+## Simulating traits (disparity)
+
+Another major feature of `dads` is to allow to specify the trait simulation process manually as a `"traits"` object.
+This can be done in the same way as for the `"modifiers"` but with the `make.traits` function.
+Here the Brownian motion syntax is also specific (especially `x0` and `edge.length`), more details are available in the [manual](dads_manual). 
+
+```{r, eval = FALSE, echo = TRUE}
+## A simple Brownian motion process
+my.BM.process <- function(x0, edge.length = 1, sd = 1, ...) {
+  rnorm(n = 1, mean = x0, sd = sd * edge.length)
+}
+
+## Specifying our trait object
+my_trait <- make.traits(process = my.BM.process)
+
+## Running a simulation with a speciation rate of 1, an extinction rate of 0.1
+## and stopping when it reaches 20 taxa with the default birth-death modifiers specified
+## and a Brownian Motion trait process simulated
+my_simulation <- dads(bd.params = list(speciation = 1, extinction = 0.1),
+                      stop.rule = list(max.taxa = 20),
+                      modifiers = my_modifiers,
+                      trait     = my_trait)
+```
+
+It is of course possible to simulate multiple traits at the same time using multiple processes, whether the traits are correlated to each other, independent or even dependent on other elements of the simulations (e.g. time spent, number of currently living species, etc...).
+
+## Plotting results
+
+```{r, eval = TRUE, echo = FALSE}
+## Simulating the tree above with a nice looking random seed
+## (all the options described above, modifiers and traits are default)
+## so it's pretty easy (we don't need to specify the trait process and the modifiers)
+set.seed(2)
+my_simulation <- dads(bd.params = list(speciation = 1, extinction = 0.1),
+                      stop.rule = list(max.taxa = 20),
+                      trait     = make.traits())
+# plot(my_simulation)
+```
+
+The resulting object is a `"dads"` object containing a `$tree` element (a `"phylo"`) object and a `$data` object containing a `"matrix"` object:
+
+```{r, eval = TRUE, echo = TRUE, fig.height = 4, fig.width = 4}
+## Printing the dads object
+my_simulation
+
+## The generated data
+head(my_simulation$data)
+
+## The generated tree
+my_simulation$tree
+plot(my_simulation$tree)
+```
+
+The package also comes with it's own plotting function allowing to directly display `dads` generated tree and data in the same plot:
+
+```{r, eval = TRUE, echo = TRUE, fig.height = 4, fig.width = 4}
+## A default dads plot
+plot(my_simulation, main = "Default plot")
+```
+
+Note that here too many options are available for plotting such objects. More information is again available in the [manual](dads_manual).
+
+## Using modular and dynamic modifiers
+
+<!-- Dynamic ones will be for bd.params = list(speciation = runif) -->
+<!-- timed or conditional events in the simulations -->
+
+# Discussion
+
+## Modularity
+
+## `dads` compared to other packages
+
+## Further directions
+
+
+# Conclusion
+The `dads` is modular and nice to use.
+
+# Package location
+The `dads` package is available on the CRAN at \url{https://cran.r-project.org/web/packages/dads/index.html} or on GitHub at \url{https://github.com/TGuillerme/dads} with more associated information.
+All the versions of the package are archived on ZENODO with associated DOI \url{https://zenodo.org/@@@}.
+
+# Acknowledgments
+Thanks to Mark Puttick and Alex Slavenko for comments on the early stage of the development of this package. Thanks to @@@. This work was funded by UKRI-NERC Grant NE/T000139/1 and a Royal Society University Research Fellowship (URF R 180006 to GHT).
+
+# Authors contributions
+
+TG designed the software.
+
+# Data Availability, repeatability and reproducibility
+
+The raw empirical data is available from the original papers [@beck2014; @jones2015, @marcy2016; @hopkins2016; @wright2017; @healy2019].
+The subsets of the empirical data used in this analysis are available on figshare 
+[DOI: 10.6084/m9.figshare.9943181.v1](https://doi.org/10.6084/m9.figshare.9943181.v1).
+The modified empirical data are available in the package accompanying this manuscript (`data(moms::demo_data)`).
+This manuscript (including the figures, tables and supplementary material) is repeatable and reproducible by compiling the vignette of the [GitHub `moms R` package](https://github/TGuillerme/moms).
+
+# Conflict of interest
+None declared.
+
+# References
