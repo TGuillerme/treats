@@ -4,3 +4,14 @@
 *.rda
 *.RData
 *.Rapp.history
+
+## LaTeX ignore
+*.fls
+*.log
+*.synctex.gz
+*.fdb_latexmk
+*.bbl
+*.blg
+*.aux
+*.out
+*.pdf
