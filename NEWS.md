@@ -1,4 +1,4 @@
-dads v0.1.6 (2023-01-12) 
+dads v0.1.9 (2023-01-19) 
 =========================
 
 ### BUG FIXES
@@ -8,6 +8,7 @@ dads v0.1.6 (2023-01-12)
 
 ### NEW FEATURES
  
+ * `dads` has now a `save.steps` option to create internal nodes at regular intervals or specified ones.
  * Added a `make.bd.parms` utility function for sampling from distributions (jointly or not).
  * Trees can now be generated with birth-death parameters sampled from functions.
  * added a list of pre-made `modification` and `condition` for events.
@@ -17,6 +18,7 @@ dads v0.1.6 (2023-01-12)
  * `make.dads` to create `"dads"` objects from a tree and a dataset (e.g. matrix). This can be useful for using the the `plot.dads` function on non `"dads"` objects. 
  * `"events"` class objects are now implemented and fully functional with the `make.events` function and the pre-made `mass.extinction` and `founding.event` events.
  * `drop.things` to drop fossils or livings species or internal nodes from `"dads"` objects.
+ * Added a `snapshot` utility function to be used in designing events, traits or modifiers.
 
 ### MINOR IMPROVEMENTS
 

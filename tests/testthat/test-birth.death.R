@@ -667,6 +667,14 @@ test_that("snapshots/internal save works", {
     # abline(v = rev(seq(from = 0, to = 3, by = 0.3)), col = "grey")
     expect_equal(dim(test$data), c(224, 4))
 
+
+
+    # bd.params <- make.bd.params(speciation = 1, extinction = 0.2)
+    # stop.rule <- list(max.living = Inf, max.time = 2, max.taxa = Inf)
+    # traits <- make.traits()
+
+    # random.double.process <- function(x0 = 0, edge_length = 1, trait.values, lineage, edge_lengths)
+
     ## TO TEST: single slice with 
         # Condition: trait value generated for species X is always two times the average of all species traits present at time t
         # Condition: speciation happens if species X has trait that is one sd away from other species.

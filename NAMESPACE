@@ -8,7 +8,7 @@ importFrom("grDevices","rgb")
 importFrom("MASS","mvrnorm")
 importFrom("rgl","plot3d","segments3d","spheres3d","points3d")
 
-##Functions
+## Main functions
 export(dads)
 export(print.dads)
 export(plot.dads)
@@ -47,12 +47,13 @@ export(founding.event)
 
 ## Utilities
 export(make.bd.params)
+export(make.dads)
 export(drop.things)
 export(drop.fossils)
 export(drop.livings)
 export(drop.singles)
 export(parent.traits)
-export(make.dads)
+export(snapshot)
 
 ##S3 
 S3method(plot, dads) #incl traits

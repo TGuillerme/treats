@@ -11,13 +11,7 @@
 #' @details
 #' This function is designed to be used internally in \code{dads} to help \code{modifiers}, \code{traits} or \code{events} objects to access the parent traits of the lineages simulated through the internal birth death algorithm. 
 #' 
-# @examples
-# ## You can use this function in a modifiers object condition:
-# 
-# ## 1. designing the condition function:
-# ## Return FALSE if the trait value is less than the average trait value
-# my_condition <- function(trait.values, lineage) {
-# }
+#' @examples
 #'
 #' @seealso
 #' 
@@ -34,4 +28,40 @@ parent.traits <- function(trait.values, lineage, current = TRUE) {
     }
 
     return(trait.values[as.numeric(rownames(trait.values)) %in% find, , drop = FALSE])
+}
+
+#' @title Get a snapshot of the tree
+#'
+#' @description Creates (and saves) a snapshot of the tree at a particular time point
+#'
+#' @param time          The time of the snapshot
+#' @param lineage       The internal lineage data list
+#' @param edge.lengths  The internal edge.lengths tracker
+#' @param trait.values  Optional, the internal trait values table
+#' @param traits        Optional, the mechanism to generate traits
+#' 
+#' @details
+#' This function is designed to be used internally in \code{dads} to help \code{modifiers}, \code{traits} or \code{events} objects to get a snapshot of the state of the tree at a required time point. 
+#' 
+#' @examples
+#'
+#' @seealso
+#' 
+#' @author Thomas Guillerme
+#' @export
+
+
+snapshot <- function(time, lineage, edge.lengths, trait.values, traits) {
+
+    ## First waiting_tim should be implied in the arguments
+    time.slice <- first_waiting_time + time
+    ## In this specific snapshot case time = time.slice
+
+    ## Save a step by creating singles
+    lineage      <- update.single.nodes(lineage)
+    edge_lengths <- update.single.edges(time, time.slice, lineage, edge.lengths)
+    if(!missing(trait.values)) {
+        trait_values <- update.single.traits(trait.values, traits, lineage, edge.lengths)
+    }
+    return(list(lineage = lineage, edge_lengths = edge_lengths, trait_values = trait_values))
 }

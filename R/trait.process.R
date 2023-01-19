@@ -85,7 +85,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-trait.process <- function(x0, edge.length = 1, ...) {
+trait.process <- function(x0 = 0, edge.length = 1, ...) {
     cat("Trait processes implemented in dads:\n")
     cat("?BM.process\n")
     cat("?OU.process\n")
@@ -93,12 +93,12 @@ trait.process <- function(x0, edge.length = 1, ...) {
 }
 
 ## The Brownian motion
-BM.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), ...) {
+BM.process <- function(x0 = 0, edge.length = 1, Sigma = diag(length(x0)), ...) {
     return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = sqrt(Sigma^2 * edge.length), ...)))
 }
 
 ## The OU process
-OU.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), alpha = 1, optimum = 0, ...) {
+OU.process <- function(x0 = 0, edge.length = 1, Sigma = diag(length(x0)), alpha = 1, optimum = 0, ...) {
     ## Calculate the means
     means <- optimum + (x0 - optimum) * exp(-alpha)
     ## Calculate the Sigma
@@ -108,7 +108,7 @@ OU.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), alpha = 1,
 }
 
 ## no.process
-no.process <- function(x0, edge.length = 1, fun = stats::rnorm, ...) {
+no.process <- function(x0 = 0, edge.length = 1, fun = stats::rnorm, ...) {
     return(fun(n = 1, ...))
 }
 
@@ -116,7 +116,7 @@ no.process <- function(x0, edge.length = 1, fun = stats::rnorm, ...) {
 peak.diff <- function(x, peaks) return(abs(x - peaks))
 closest.peak <- function(diff, peaks) return(peaks[which(diff == min(diff)[1])])
 ## The multiple optimum OU process
-multi.peak.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), alpha = 1, peaks = 0, ...) {
+multi.peak.process <- function(x0 = 0, edge.length = 1, Sigma = diag(length(x0)), alpha = 1, peaks = 0, ...) {
     
     ## Finding the closest optimums
     if(!is(peaks, "list")) {
@@ -136,7 +136,7 @@ multi.peak.process <- function(x0, edge.length = 1, Sigma = diag(length(x0)), al
 }
 
 ## A repulsive process
-repulsion.process <- function(x0, edge.length = 1, repulsion = 0.5, sd = 1, max.try = 100, trait.values = NULL, lineage = NULL, trait = NULL, ...) {
+repulsion.process <- function(x0 = 0, edge.length = 1, repulsion = 0.5, sd = 1, max.try = 100, trait.values = NULL, lineage = NULL, trait = NULL, ...) {
     
     ## Getting the parent traits of the living lineages
     if(!is.null(lineage)) {
