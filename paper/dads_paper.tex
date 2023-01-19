@@ -1,0 +1,182 @@
+% 2961w - 30p
+
+\documentclass[12pt,letterpaper]{article}
+\usepackage{natbib}
+\usepackage{pdflscape}
+\usepackage{fullpage}
+\usepackage{url}
+\usepackage{epsfig}
+\usepackage{caption}
+\usepackage{hyperref}
+\usepackage{enumerate}
+\usepackage{dcolumn}
+\usepackage{lineno}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{float}
+\usepackage[osf]{mathpazo}
+\restylefloat{table}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+
+\pagenumbering{arabic}
+
+
+%Pagination style and stuff
+\linespread{2}
+\raggedright
+\setlength{\parindent}{0.5in}
+\setcounter{secnumdepth}{0} 
+\renewcommand{\section}[1]{%
+\bigskip
+\begin{center}
+\begin{Large}
+\normalfont\scshape #1
+\medskip
+\end{Large}
+\end{center}}
+\renewcommand{\subsection}[1]{%
+\bigskip
+\begin{center}
+\begin{large}
+\normalfont\itshape #1
+\end{large}
+\end{center}}
+\renewcommand{\subsubsection}[1]{%
+\vspace{2ex}
+\noindent
+\textit{#1.}---}
+\renewcommand{\tableofcontents}{}
+%\bibpunct{(}{)}{;}{a}{}{,}
+
+%---------------------------------------------
+%
+%       START
+%
+%---------------------------------------------
+
+\newcommand{\dads}{\texttt{dads} }
+
+\begin{document}
+
+%Running head
+\begin{flushright}
+Version dated: \today
+\end{flushright}
+\bigskip
+\noindent RH: \dads package.
+
+\bigskip
+\medskip
+\begin{center}
+
+\noindent{\Large \bf \dads: a modular \texttt{R} package for simulating diversity and traits data.} 
+\bigskip
+
+\noindent {\normalsize \sc Thomas Guillerme$^{1,*}$, Natalie Cooper$^{2}$, Andrew P. Beckerman$^{1}$, and Gavin H. Thomas$^{1,3}$}\\
+\noindent {\small \it 
+$^1$School of Biosciences, University of Sheffield, Sheffield, S10 2TN, United Kingdom.\\
+$^2$Natural History Museum, Cromwell Road, London, SW7 5BD, United Kingdom.\\
+$^3$Bird Group, Department of Life Sciences, the Natural History Museum at Tring, Tring, United Kingdom.\\}
+
+\end{center}
+\medskip
+\noindent{*\bf Corresponding author.} \textit{guillert@tcd.ie}\\  
+\vspace{1in}
+
+%Line numbering
+\modulolinenumbers[1]
+\linenumbers
+
+%---------------------------------------------
+%
+%       ABSTRACT
+%
+%---------------------------------------------
+
+\newpage
+\begin{abstract} 
+
+    \begin{enumerate}
+        \item Simulating biological realistic data can be an important step to understand and investigate biological mechanisms.
+        Like null models, base line models or something else models, they allow us to generate a pattern that arises from controlled processes and thought through mechanisms.
+
+        \item In evolutionary biology, these simulations often involve the need of an evolutionary process where descent with modification is at the core of how the simulated data is generated.
+        This can be made much more complicated with loads of different stuff needing to be taken into account to affect the simulations (e.g. traits, mechanisms such as competition or events such as mass extinctions).
+
+        \item Here I present the \dads package, a modular \texttt{R} package for diversity and trait disparity simulations.
+        This package is based on a standard birth death algorithm that can be easily tuned to the user specific needs by designing their specific trait process, birth-death modifiers and events.
+        It also provides a tidy interface through the \dads object, allowing users to easily run reproducible simulations.
+
+        \item The \dads package also comes with an extend manual regularly updated following users' questions or suggestions.
+
+    \end{enumerate}
+
+\end{abstract}
+
+\noindent (Keywords: diversity, disparity, simulations, birth-death, null-models, ecology, evolution)\\
+
+\vspace{1.5in}
+
+\newpage 
+
+%---------------------------------------------
+%
+%       INTRODUCTION
+%
+%---------------------------------------------
+
+\section{Introduction}
+
+% Simulations in statistics applied to biology
+
+% What already exists
+
+% The problems with the absence of modularity
+
+% The solution with dads
+
+\section{Description}
+% Very briefly how does it work
+
+\begin{figure}[!htbp]
+\centering
+   \includegraphics[width=1\textwidth]{workflowsvg.eps} 
+\caption{\dads package workflow: @@@.}
+\label{Fig:workflow}
+\end{figure}
+
+\subsection{Simulating diversity}
+
+
+\subsection{Simulating traits (disparity)}
+
+
+\subsection{Using modular and dynamic modifiers}
+
+
+\subsection{Introducing timed or conditional events in the simulations}
+
+
+\section{Discussion}
+
+\subsection{Modularity}
+
+\subsection{\dads compared to other packages}
+
+\subsection{Further directions}
+
+
+\section{Conclusion}
+The \dads is modular and nice to use.
+
+\section{Package location}
+The \dads package is available on the CRAN at \url{https://cran.r-project.org/web/packages/dads/index.html} or on GitHub at \url{https://github.com/TGuillerme/dads} with more associated information.
+All the versions of the package are archived on ZENODO with associated DOI \url{https://zenodo.org/@@@}.
+
+\section{Acknowledgments}
+Thanks to Alex Slavenko for comments on the early stage of the development of this package. Thanks to @@@. This work was funded by UKRI-NERC Grant NE/T000139/1 and a Royal Society University Research Fellowship (URF R 180006 to GHT).
+
+\bibliographystyle{sysbio}
+\bibliography{References}
+
+\end{document}
