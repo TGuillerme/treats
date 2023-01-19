@@ -223,13 +223,9 @@ Thanks to Mark Puttick and Alex Slavenko for comments on the early stage of the 
 
 TG designed the software.
 
-# Data Availability, repeatability and reproducibility
+# Repeatability and reproducibility
 
-The raw empirical data is available from the original papers [@beck2014; @jones2015, @marcy2016; @hopkins2016; @wright2017; @healy2019].
-The subsets of the empirical data used in this analysis are available on figshare 
-[DOI: 10.6084/m9.figshare.9943181.v1](https://doi.org/10.6084/m9.figshare.9943181.v1).
-The modified empirical data are available in the package accompanying this manuscript (`data(moms::demo_data)`).
-This manuscript (including the figures, tables and supplementary material) is repeatable and reproducible by compiling the vignette of the [GitHub `moms R` package](https://github/TGuillerme/moms).
+No data was used for this paper. However the entire paper (plots and results) is reproducible by compiling the paper in `Rmarkdown` from [github](link_to_the_paper). <!-- TODO: link to the Rmd file -->
 
 # Conflict of interest
 None declared.
