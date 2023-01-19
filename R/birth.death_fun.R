@@ -14,7 +14,6 @@ sim.element.trait <- function(one.trait, parent.trait, edge.length) {
 multi.sim.element.trait <- function(one.trait, parent.traits, edge.lengths) {
     return(do.call(rbind, lapply(as.list(1:dim(parent.traits)[1]), function(X, parent.traits, edge.lengths, one.trait) sim.element.trait(one.trait, parent.traits[X, , drop = FALSE], edge.lengths[X]), parent.traits, edge.lengths, one.trait)))
 }
-
 ## Simulates one set of traits for the living species
 sim.living.tips <- function(living, trait_table, traits) {
     return(unlist(
@@ -26,14 +25,12 @@ sim.living.tips <- function(living, trait_table, traits) {
           )
     )
 }
-
 ## Check the events triggering (the first one gets triggered)
 trigger.events <- function(one_event, bd.params, lineage, trait.values, time) {
     return(one_event$condition(bd.params = bd.params, lineage = lineage, trait.values = trait.values, time = time) && one_event$trigger < 1L)
 }
-
-## Creates a snapshot (creates a snapshot of the data (lineage or/and traits) at a specific time): singleton updates
-update.singleton.nodes <- function(lineage) {
+## Creates a snapshot (creates a snapshot of the data (lineage or/and traits) at a specific time): single updates
+update.single.nodes <- function(lineage) {
     new_lineage <- lineage
     new_lineage$parents <- c(lineage$parents, lineage$livings)
     new_lineage$livings <- (max(lineage$livings)+1):(max(lineage$livings)+lineage$n)
@@ -46,7 +43,7 @@ update.singleton.nodes <- function(lineage) {
 
     return(new_lineage)
 }
-update.singleton.edges <- function(time, time.slice, lineage, edge_lengths) {
+update.single.edges <- function(time, time.slice, lineage, edge_lengths) {
     ## Calculate the difference at the split time
     diff <- time - time.slice
     ## Updating the edge lengths
@@ -57,8 +54,8 @@ update.singleton.edges <- function(time, time.slice, lineage, edge_lengths) {
     edge_lengths_out[lineage$livings] <- diff
     return(edge_lengths_out)
 }
-update.singleton.traits <- function(trait_values, traits, lineage, edge_lengths) {
-    ## Simulate the traits for all the singletons
+update.single.traits <- function(trait_values, traits, lineage, edge_lengths) {
+    ## Simulate the traits for all the singles
     snap_traits <- do.call(cbind,
                         lapply(traits,
                             multi.sim.element.trait,
@@ -70,7 +67,6 @@ update.singleton.traits <- function(trait_values, traits, lineage, edge_lengths)
     ## Combine with the trait values
     return(rbind(trait_values, snap_traits))
 }
-
 ## Run a birth death process to generate both tree and traits
 birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE, save.steps = NULL) {
   
@@ -250,11 +246,11 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                 ## Creating a time slice
                 time.slice <- first_waiting_time + current.save.steps[1]
                 
-                ## Save a step by creating singletons
-                lineage      <- update.singleton.nodes(lineage)
-                edge_lengths <- update.singleton.edges(time, time.slice, lineage, edge_lengths)
+                ## Save a step by creating singles
+                lineage      <- update.single.nodes(lineage)
+                edge_lengths <- update.single.edges(time, time.slice, lineage, edge_lengths)
                 if(do_traits) {
-                    trait_values <- update.singleton.traits(trait_values, traits, lineage, edge_lengths)
+                    trait_values <- update.single.traits(trait_values, traits, lineage, edge_lengths)
                 }
 
                 ## Updating the saving.steps
@@ -435,7 +431,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     ############
 
     ## Number of rows and tips
-    n_nodes <- sum(table$is_node)+1 #TG: TODO: make sure this takes into account the singleton nodes!!!!!!!!!!
+    n_nodes <- sum(table$is_node)+1 #TG: TODO: make sure this takes into account the single nodes!!!!!!!!!!
     n_tips  <- sum(!table$is_node)
 
     ## Getting the edge table node/tips IDs

@@ -581,7 +581,7 @@ test_that("events work", {
 })
 
 
-test_that("singleton logic works", {
+test_that("single logic works", {
 
     ## Creating an example lineage and edge_lengths (three tips, branching right, constant brlen)
     lineage_pre <- list(parents = c(0, 1, 1, 3, 3),
@@ -596,8 +596,8 @@ test_that("singleton logic works", {
 # data.frame(lineage$parents, seq_along(lineage$split), lineage$split)
 
 
-    ## Testing singleton.nodes
-    test <- update.singleton.nodes(lineage_pre)
+    ## Testing single.nodes
+    test <- update.single.nodes(lineage_pre)
     expect_is(test, "list")
     expect_equal(names(test), names(lineage_pre))
     expect_equal(test$parents, c(0, 1, 1, 3, 3, 2, 4, 5))
@@ -607,14 +607,14 @@ test_that("singleton logic works", {
     expect_equal(test$n, 3)
     expect_equal(test$split, c(T, T, T, T, T, F, F, F))
 
-    ## Testing singleton.edges
-    lineage_after <- update.singleton.nodes(lineage_pre)
-    test <- update.singleton.edges(time = time, time.slice = 1.75, lineage = lineage_after, edge_lengths = edge_lengths) 
+    ## Testing single.edges
+    lineage_after <- update.single.nodes(lineage_pre)
+    test <- update.single.edges(time = time, time.slice = 1.75, lineage = lineage_after, edge_lengths = edge_lengths) 
     expect_equal(length(test), 8)
     expect_equal(test, c(0, 1.75, 1, 0.75, 0.75, 0.25, 0.25, 0.25))
 
-    # ## Testing singleton.traits
-    # warning("TODO: test singleton.traits")
+    # ## Testing single.traits
+    # warning("TODO: test single.traits")
 })
 
 
