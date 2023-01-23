@@ -264,6 +264,15 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
 
         ## Adding a new row to the trait_values matrix
         if(do_traits) {
+
+            # if(instant.trait) {
+            #     instant_snap <- snapshot(current.time = time, first.time = first_waiting_time, lineage = linage, edge.lengths = edge_lengths, trait.values = trait_values, traits = traits)
+            #     lineage      <- instant_snap$lineage
+            #     edge_lengths <- instant_snap$edge_lengths
+            #     trait_values <- instant_snap$trait_values
+            #     rm(instant_snap)
+            # }
+
             trait_values <- rbind(trait_values,
                                   ## Add the updated trait from the parent lineage
                                   unlist(lapply(traits,

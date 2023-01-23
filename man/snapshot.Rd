@@ -4,11 +4,16 @@
 \alias{snapshot}
 \title{Get a snapshot of the tree}
 \usage{
-snapshot(time, lineage, edge.lengths, trait.values, traits)
+snapshot(
+  current.time,
+  first.time = 0,
+  lineage,
+  edge.lengths,
+  trait.values,
+  traits
+)
 }
 \arguments{
-\item{time}{The time of the snapshot}
-
 \item{lineage}{The internal lineage data list}
 
 \item{edge.lengths}{The internal edge.lengths tracker}
@@ -16,6 +21,8 @@ snapshot(time, lineage, edge.lengths, trait.values, traits)
 \item{trait.values}{Optional, the internal trait values table}
 
 \item{traits}{Optional, the mechanism to generate traits}
+
+\item{time}{The time of the snapshot}
 }
 \description{
 Creates (and saves) a snapshot of the tree at a particular time point

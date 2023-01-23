@@ -51,17 +51,18 @@ parent.traits <- function(trait.values, lineage, current = TRUE) {
 #' @export
 
 
-snapshot <- function(time, lineage, edge.lengths, trait.values, traits) {
-
+snapshot <- function(current.time, first.time = 0, lineage, edge.lengths, trait.values, traits) {
     ## First waiting_tim should be implied in the arguments
-    time.slice <- first_waiting_time + time
+    time.slice <- first.time + current.time
     ## In this specific snapshot case time = time.slice
 
     ## Save a step by creating singles
     lineage      <- update.single.nodes(lineage)
-    edge_lengths <- update.single.edges(time, time.slice, lineage, edge.lengths)
+    edge_lengths <- update.single.edges(current.time, time.slice, lineage, edge.lengths)
     if(!missing(trait.values)) {
         trait_values <- update.single.traits(trait.values, traits, lineage, edge.lengths)
+    } else {
+        trait_values <- NULL
     }
     return(list(lineage = lineage, edge_lengths = edge_lengths, trait_values = trait_values))
 }
