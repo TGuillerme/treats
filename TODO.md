@@ -17,7 +17,7 @@
     - [x] `plot.make.bd.params`
     - [x] `print.make.bd.params` (still some bugs with printing updated parameter values)
     - [x] implement it in `dads` and `birth.death`
-    - [x] add it to manual
+    - [ ] add it to manual
  - [x] Add a `make.dads` function that intakes data and tree (and allows using `plot.dads` etc...)
    - [x] Add test for `make.dads`
 
