@@ -266,6 +266,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
         if(do_traits) {
 
             # if(instant.trait) {
+            ## ## BASICALLY RUN TRAITS IN BACKGROUND FOR THIS BIT AND GO BACK TO NORMAL TRAIT PROCESS AFTER
             #     instant_snap <- snapshot(current.time = time, first.time = first_waiting_time, lineage = linage, edge.lengths = edge_lengths, trait.values = trait_values, traits = traits)
             #     lineage      <- instant_snap$lineage
             #     edge_lengths <- instant_snap$edge_lengths

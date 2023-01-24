@@ -45,6 +45,10 @@
 #' @author Thomas Guillerme
 #' @export
 
+
+#param background   Optional, another \code{"dads"} \code{"traits"} object to simulate background trait evolution (see details).
+# If a \code{background} \code{"traits"} object is given, this object is then applied to all living edges at the same in the background while the main \code{"traits"} is computed. 
+
 make.traits <- function(process = BM.process, n = NULL, start = NULL, process.args = NULL, trait.names = NULL, add = NULL, update = NULL, test = TRUE) {
 
     match_call <- match.call()
