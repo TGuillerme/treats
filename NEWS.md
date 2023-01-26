@@ -1,4 +1,4 @@
-dads v0.1.9 (2023-01-19) 
+dads v0.1.10 (2023-01-26) 
 =========================
 
 ### BUG FIXES
@@ -12,6 +12,7 @@ dads v0.1.9 (2023-01-19)
  * Added a `make.bd.parms` utility function for sampling from distributions (jointly or not).
  * Trees can now be generated with birth-death parameters sampled from functions.
  * added a list of pre-made `modification` and `condition` for events.
+ * `traits` can now have a background component that triggers trait generation in the background each time traits are generated.
  * `events` are now fully handled and modular.
  * `make.events` function for helping to make events.
  * `make.modifiers` now has a `select.taxa` argument.
