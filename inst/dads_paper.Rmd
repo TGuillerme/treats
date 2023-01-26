@@ -204,6 +204,9 @@ Note that here too many options are available for plotting such objects. More in
 
 ## Modularity
 
+Every bit can be coded as a function.
+Many already implemented functions (e.g. in events.modifications) but many more possibilities to modify the current ones or design completely new ones.
+
 ## `dads` compared to other packages
 
 ## Further directions
