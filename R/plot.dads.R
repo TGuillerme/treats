@@ -87,7 +87,7 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
 
         if(second_class == "traits") {
             ## Selecting the trait
-            one_trait <- data[[trait]]
+            one_trait <- data$main[[trait]]
 
             ## Selecting the trait ids
             if(use.3D) {

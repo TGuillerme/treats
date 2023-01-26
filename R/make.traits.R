@@ -66,7 +66,7 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
     ## Set the process to default if update and process is null
     if(do_update && is.null(process)) {
         ## Set the process to the previous one(s)
-        process <- lapply(update, `[[`, "process")
+        process <- lapply(update$main, `[[`, "process")
         n_processes <- length(process)
     } else {
         ## Check the process(es)

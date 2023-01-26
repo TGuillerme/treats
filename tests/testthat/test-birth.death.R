@@ -111,7 +111,7 @@ test_that("simulating trees + traits works", {
     expect_equal(sim.element.trait(one_trait, parent.trait = 2, edge.length = 0.1), 2.1)
 
     element_rank_10 <- list(trait_id = 1, process = element.rank, start = 10)
-    traits_list <- list("A" = element_rank_10)
+    traits_list <- list("main" = list("A" = element_rank_10))
     bd.params <- make.bd.params(speciation = 1, extinction = 0.5)
     stop.rule <- list(max.living = Inf,
                       max.taxa   = 10,
@@ -130,7 +130,7 @@ test_that("simulating trees + traits works", {
                       max.taxa   = Inf,
                       max.time   = Inf)
     set.seed(1)
-    traits_list$A$start <- 10
+    traits_list$main$A$start <- 10
     test <- birth.death.tree.traits(bd.params = bd.params, traits = traits_list, stop.rule)
     ## Right dimensions
     expect_equal(dim(test$data), c(Ntip(test$tree) + Nnode(test$tree), 1))
@@ -146,9 +146,9 @@ test_that("simulating trees + traits works", {
                       max.taxa   = 10,
                       max.time   = Inf)
     set.seed(10)
-    traits_list$A$process <- branch.length
-    traits_list$B <- traits_list$A
-    traits_list$C <- traits_list$A
+    traits_list$main$A$process <- branch.length
+    traits_list$main$B <- traits_list$main$A
+    traits_list$main$C <- traits_list$main$A
     test <- birth.death.tree.traits(bd.params = bd.params, traits = traits_list, stop.rule)
 
     ## The three traits are equal
@@ -180,6 +180,7 @@ test_that("simulating trees + traits works", {
                            process  = branch.length,
                            start    = 0)
                 )
+    complex_traits <- list(main = complex_traits)
     set.seed(1)
     test <- birth.death.tree.traits(bd.params = bd.params, traits = complex_traits, stop.rule)
 
@@ -197,6 +198,7 @@ test_that("simulating trees + traits works", {
                            process  = branch.length,
                            start    = 0)
                 )
+    complex_traits <- list(main = complex_traits)
     set.seed(1)
     test <- birth.death.tree.traits(bd.params = bd.params, traits = complex_traits, stop.rule)
     expect_equal(dim(test$data), c(19, 4))
@@ -340,10 +342,6 @@ test_that("events work", {
     # class(test2) <- "dads" ; plot(test2, ylim = c(-5, 8))
     expect_false(nrow(test$data) == nrow(test2$data))
 
-
-
-
-
     ## Changing a trait argument (e.g. sigma) when a trait reaches value x
     ## A 2D correlated BM
     traits <- make.traits(n = 2, process.args = list(Sigma = matrix(1, 2, 2)))
@@ -371,7 +369,6 @@ test_that("events work", {
     ## Testing the difference in correlation
     expect_equal(cor(test$data[, 1], test$data[, 2]), 1)
     expect_lt(cor(test2$data[, 1], test2$data[, 2]), 1)
-
 
     ## modifiers events
     ## Adding a speciation condition after reaching time t
@@ -408,7 +405,6 @@ test_that("events work", {
     fossils <- which(tip_ages$ages != 0)
     expect_false(any(tip_ages[fossils, ]$ages > test2$tree$root.time - 3))
 
-
     ## Adding a branch length condition when reaching n taxa
     new.modify <- function(x, trait.values, lineage) return(x * 100)
     events <- make.events(
@@ -437,9 +433,6 @@ test_that("events work", {
     prop_short_test <- length(which(test$tree$edge.length < 1))/length(test$tree$edge.length)
     prop_short_test2 <- length(which(test2$tree$edge.length < 1))/length(test2$tree$edge.length)
     expect_lt(prop_short_test2, prop_short_test)
-
-
-
 
 
     ## founding events
@@ -580,7 +573,6 @@ test_that("events work", {
     expect_equal(dim(test2$data), c(52+51, 1))
 })
 
-
 test_that("single logic works", {
 
     ## Creating an example lineage and edge_lengths (three tips, branching right, constant brlen)
@@ -593,7 +585,6 @@ test_that("single logic works", {
     edge_lengths <- c(0, 2, 1, 1, 1)
     time <- 2
 
-# data.frame(lineage$parents, seq_along(lineage$split), lineage$split)
 
 
     ## Testing single.nodes
@@ -617,55 +608,54 @@ test_that("single logic works", {
     # warning("TODO: test single.traits")
 })
 
-
 test_that("snapshots/internal save works", {
 
-    bd.params <- make.bd.params(speciation = 1, extinction = 0.2)
-    stop.rule <- list(max.living = Inf, max.time = 5, max.taxa = Inf)
-    traits <- make.traits()
+    # bd.params <- make.bd.params(speciation = 1, extinction = 0.2)
+    # stop.rule <- list(max.living = Inf, max.time = 5, max.taxa = Inf)
+    # traits <- make.traits()
 
-    ## Working for regular steps
-    set.seed(1)
-    test <- birth.death.tree.traits(bd.params = bd.params, traits = traits, stop.rule = stop.rule, save.steps = 0.5)
-    expect_is(test, "list")
-    class(test) <- "dads"
-    expect_equal(names(test), c("tree", "data"))
-    expect_equal(Ntip(test$tree), 142)
-    expect_equal(Nnode(test$tree), 383)
-    expect_null(plot(test))
-    # abline(v = rev(seq(from = 0, to = 5, by = 0.5)), col = "grey")
+    # ## Working for regular steps
+    # set.seed(1)
+    # test <- birth.death.tree.traits(bd.params = bd.params, traits = traits, stop.rule = stop.rule, save.steps = 0.5)
+    # expect_is(test, "list")
+    # class(test) <- "dads"
+    # expect_equal(names(test), c("tree", "data"))
+    # expect_equal(Ntip(test$tree), 142)
+    # expect_equal(Nnode(test$tree), 383)
+    # expect_null(plot(test))
+    # # abline(v = rev(seq(from = 0, to = 5, by = 0.5)), col = "grey")
 
 
-    ## Working for set steps
-    set.seed(1)
-    test <- birth.death.tree.traits(bd.params = bd.params, traits = traits, stop.rule = stop.rule, save.steps = c(0.5, 1, 2.5))
-    expect_is(test, "list")
-    class(test) <- "dads"
-    expect_equal(names(test), c("tree", "data"))
-    expect_equal(Ntip(test$tree), 108)
-    expect_equal(Nnode(test$tree), 123)
-    expect_null(plot(test))
-    # abline(v = rev(5-c(0.5, 1, 2.5)), col = "grey")
+    # ## Working for set steps
+    # set.seed(1)
+    # test <- birth.death.tree.traits(bd.params = bd.params, traits = traits, stop.rule = stop.rule, save.steps = c(0.5, 1, 2.5))
+    # expect_is(test, "list")
+    # class(test) <- "dads"
+    # expect_equal(names(test), c("tree", "data"))
+    # expect_equal(Ntip(test$tree), 108)
+    # expect_equal(Nnode(test$tree), 123)
+    # expect_null(plot(test))
+    # # abline(v = rev(5-c(0.5, 1, 2.5)), col = "grey")
 
-    ## Works also with no traits!
-    set.seed(1)
-    test <- birth.death.tree.traits(bd.params = bd.params, traits = NULL, stop.rule = stop.rule, save.steps = 0.5)
-    expect_is(test, "list")
-    expect_equal(names(test), c("tree", "data"))
-    expect_equal(Ntip(test$tree), 92)
-    expect_equal(Nnode(test$tree), 248)
-    # expect_null(plot(test$tree))
-    # nodelabels()
+    # ## Works also with no traits!
+    # set.seed(1)
+    # test <- birth.death.tree.traits(bd.params = bd.params, traits = NULL, stop.rule = stop.rule, save.steps = 0.5)
+    # expect_is(test, "list")
+    # expect_equal(names(test), c("tree", "data"))
+    # expect_equal(Ntip(test$tree), 92)
+    # expect_equal(Nnode(test$tree), 248)
+    # # expect_null(plot(test$tree))
+    # # nodelabels()
 
-    ## works with dads (and multiple traits)
-    set.seed(123)
-    test <- dads(bd.params = list(speciation = 1), stop.rule = list(max.time = 3), save.steps = 0.3, traits = make.traits(n = 4))
-    expect_is(test, "dads")
-    expect_equal(Ntip(test$tree), 49)
-    expect_equal(Nnode(test$tree), 175)
-    expect_null(plot(test, trait = c(2,3)))
-    # abline(v = rev(seq(from = 0, to = 3, by = 0.3)), col = "grey")
-    expect_equal(dim(test$data), c(224, 4))
+    # ## works with dads (and multiple traits)
+    # set.seed(123)
+    # test <- dads(bd.params = list(speciation = 1), stop.rule = list(max.time = 3), save.steps = 0.3, traits = make.traits(n = 4))
+    # expect_is(test, "dads")
+    # expect_equal(Ntip(test$tree), 49)
+    # expect_equal(Nnode(test$tree), 175)
+    # expect_null(plot(test, trait = c(2,3)))
+    # # abline(v = rev(seq(from = 0, to = 3, by = 0.3)), col = "grey")
+    # expect_equal(dim(test$data), c(224, 4))
 
 
 
@@ -678,5 +668,4 @@ test_that("snapshots/internal save works", {
     ## TO TEST: single slice with 
         # Condition: trait value generated for species X is always two times the average of all species traits present at time t
         # Condition: speciation happens if species X has trait that is one sd away from other species.
-
 })

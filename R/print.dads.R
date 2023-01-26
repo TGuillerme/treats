@@ -30,7 +30,10 @@ print.dads <- function(x, all = FALSE, ...) {
             switch(class(x)[[2]],
                 traits = {
                     cat(" ---- dads traits object ---- \n")
-                    print.traits.info(x)
+                    print.traits.info(x$main)
+                    if(!is.null(x$background)) {
+                        cat("And a background trait (see x$background for info).")
+                    }
                 },
                 events = {
                     cat(" ---- dads events object ---- \n")
