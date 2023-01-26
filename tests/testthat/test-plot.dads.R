@@ -33,7 +33,6 @@ test_that("plot.dads works for dads", {
     expect_null(plot.dads(list_of_traits, trait = 3))
 })
 
-
 test_that("example works", {
     ## Specifying a trait process
     my_trait <- make.traits()
