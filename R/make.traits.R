@@ -9,6 +9,7 @@
 #' @param trait.names  Optional, the name(s) of the process(s).
 #' @param add          Optional, another previous \code{"dads"} traits object to which to add the trait.
 #' @param update       Optional, another previous \code{"dads"} traits object to update (see details).
+#' @param some_arg_name   Optional, another \code{"dads"} \code{"traits"} object to simulate background trait evolution (see details).
 #' @param test         Logical, whether to test if the traits object will work with \code{\link{dads}} (\code{TRUE} - default).
 #' 
 #' 
@@ -16,6 +17,8 @@
 #' When using \code{update}, the provided arguments (to \code{make.traits}) will be the ones updated in the \code{"traits"} object.
 #' If the \code{"traits"} object contains multiple processes, you can specify which ones should be affected with the \code{trait.names} argument.
 #' Note that you cannot update the \code{traits.names} or the number of traits per processes (\code{n}) not use the \code{add} argument when updating a \code{"traits"} object.
+#'
+#' If a \code{some_arg_name} \code{"traits"} object is given, this object is then applied to all living edges at the same in the background while the main \code{"traits"} is computed. 
 #' 
 #' More details about the \code{"dads"} \code{"traits"} objects is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
 #' 
@@ -45,11 +48,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-
-#param background   Optional, another \code{"dads"} \code{"traits"} object to simulate background trait evolution (see details).
-# If a \code{background} \code{"traits"} object is given, this object is then applied to all living edges at the same in the background while the main \code{"traits"} is computed. 
-
-make.traits <- function(process = BM.process, n = NULL, start = NULL, process.args = NULL, trait.names = NULL, add = NULL, update = NULL, test = TRUE) {
+make.traits <- function(process = BM.process, n = NULL, start = NULL, process.args = NULL, trait.names = NULL, add = NULL, update = NULL, test = TRUE, some_arg_name) {
 
     match_call <- match.call()
 
@@ -291,6 +290,16 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
     ## check
     if(test) {
         success <- check.traits(traits, events = FALSE)
+    }
+
+
+
+    ## Add the background trait
+    if(!missing(some_arg_name)) {
+        # Check background
+        check.class(some_arg_name, c("dads", "traits"))
+        # Add it to the traits
+        traits$some_arg_name <- some_arg_name
     }
 
     class(traits) <- c("dads", "traits")
