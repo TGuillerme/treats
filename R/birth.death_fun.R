@@ -149,7 +149,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
 
     ## Start the trait    
     if(do_traits) {
-        trait_values <- rbind(NULL, c(unlist(lapply(traits, function(x) return(x$start)))))
+        trait_values <- rbind(NULL, c(unlist(lapply(traits$main, function(x) return(x$start)))))
         rownames(trait_values) <- 1
     } else {
         trait_table <- NULL
@@ -250,7 +250,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                 lineage      <- update.single.nodes(lineage)
                 edge_lengths <- update.single.edges(time, time.slice, lineage, edge_lengths)
                 if(do_traits) {
-                    trait_values <- update.single.traits(trait_values, traits, lineage, edge_lengths)
+                    trait_values <- update.single.traits(trait_values, traits$main, lineage, edge_lengths)
                 }
 
                 ## Updating the saving.steps
@@ -265,18 +265,18 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
         ## Adding a new row to the trait_values matrix
         if(do_traits) {
 
-            # if(instant.trait) {
-            ## ## BASICALLY RUN TRAITS IN BACKGROUND FOR THIS BIT AND GO BACK TO NORMAL TRAIT PROCESS AFTER
-            #     instant_snap <- snapshot(current.time = time, first.time = first_waiting_time, lineage = linage, edge.lengths = edge_lengths, trait.values = trait_values, traits = traits)
-            #     lineage      <- instant_snap$lineage
-            #     edge_lengths <- instant_snap$edge_lengths
-            #     trait_values <- instant_snap$trait_values
-            #     rm(instant_snap)
-            # }
+            if(!is.null(traits$background)) {
+            ## Run the instant trait process with the background
+                instant_snap <- snapshot(current.time = time, first.time = first_waiting_time, lineage = linage, edge.lengths = edge_lengths, trait.values = trait_values, traits = traits$background)
+                lineage      <- instant_snap$lineage
+                edge_lengths <- instant_snap$edge_lengths
+                trait_values <- instant_snap$trait_values
+                rm(instant_snap)
+            }
 
             trait_values <- rbind(trait_values,
                                   ## Add the updated trait from the parent lineage
-                                  unlist(lapply(traits,
+                                  unlist(lapply(traits$main,
                                                 sim.element.trait,
                                                 parent.trait = parent.traits(trait_values, lineage),
                                                 edge.length  = edge_lengths[lineage$current])
@@ -326,6 +326,9 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                                     time         = time - first_waiting_time))
 
             if(any(triggers)) {
+
+                # warning("DEBUG birth.death_fun: event triggered"); break
+
                 ## Selecting the first triggerable event
                 selected_event <- which(triggers)[1]
 
@@ -341,7 +344,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                        bd.params = {
                             ## Modify the birth death parameters
                             bd.params <- events[[selected_event]]$modification(
-                                traits       = traits,
+                                traits       = traits$main,
                                 bd.params    = bd.params,
                                 lineage      = lineage,
                                 trait.values = trait_values)
@@ -634,7 +637,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
         living_tips <- which(is.na(rownames(trait_table)))
         ## Simulate the traits for the living tips and add them to the trait table
         if(length(living_tips) > 0) {
-            trait_table[living_tips, -c(1:3)] <- t(sapply(living_tips, sim.living.tips, trait_table, traits, simplify = TRUE))
+            trait_table[living_tips, -c(1:3)] <- t(sapply(living_tips, sim.living.tips, trait_table, traits$main, simplify = TRUE))
         }
 
         ## Renaming the trait_values
@@ -643,7 +646,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
 
         ## Add the column names (if missing)
         if(length(missing_names <- which(colnames(trait_table) == "")) > 0) {
-            colnames(trait_table)[missing_names] <- names(traits)
+            colnames(trait_table)[missing_names] <- names(traits$main)
         }
 
         ## Adding the founding data to the trait_table

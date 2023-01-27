@@ -72,7 +72,6 @@ print.dads <- function(x, all = FALSE, ...) {
             cat("\n")
         }
 
-
         ## Print the tree
         cat("Simulated diversity data (x$tree):\n")
         cat(print(x$tree))
@@ -81,10 +80,11 @@ print.dads <- function(x, all = FALSE, ...) {
         ## Print the traits
         if(!is.null(x$traits)) {
             cat("Simulated disparity data (x$data):\n")
-            print.traits.info(x$traits)
+            print.traits.info(x$traits$main)
+            if(!is.null(x$traits$background)) {
+                cat("And a background trait (see x$background for info).")
+            }
         }
-
-
     }
     return(invisible())
 }

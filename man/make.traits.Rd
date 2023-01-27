@@ -12,7 +12,8 @@ make.traits(
   trait.names = NULL,
   add = NULL,
   update = NULL,
-  test = TRUE
+  test = TRUE,
+  background
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ make.traits(
 \item{update}{Optional, another previous \code{"dads"} traits object to update (see details).}
 
 \item{test}{Logical, whether to test if the traits object will work with \code{\link{dads}} (\code{TRUE} - default).}
+
+\item{background}{Optional, another \code{"dads"} \code{"traits"} object to simulate background trait evolution (see details).}
 }
 \description{
 Making traits objects for dads
@@ -39,6 +42,8 @@ Making traits objects for dads
 When using \code{update}, the provided arguments (to \code{make.traits}) will be the ones updated in the \code{"traits"} object.
 If the \code{"traits"} object contains multiple processes, you can specify which ones should be affected with the \code{trait.names} argument.
 Note that you cannot update the \code{traits.names} or the number of traits per processes (\code{n}) not use the \code{add} argument when updating a \code{"traits"} object.
+
+If a \code{background} \code{"traits"} object is given, this object is then applied to all living edges at the same in the background while the main \code{"traits"} is computed. 
 
 More details about the \code{"dads"} \code{"traits"} objects is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
 }

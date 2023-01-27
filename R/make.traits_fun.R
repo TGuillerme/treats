@@ -1,6 +1,11 @@
 ## Check if traits work
 check.traits <- function(traits, events = FALSE) {
 
+    ## Get the main trait
+    if(!is.null(traits$main)) {
+        traits <- traits$main
+    }
+
     if(events) {
         events_msg <- "The dads traits object returned by the modification function does not work: "
     } else {
