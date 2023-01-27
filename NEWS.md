@@ -19,13 +19,12 @@ dads v0.1.10 (2023-01-26)
  * `make.dads` to create `"dads"` objects from a tree and a dataset (e.g. matrix). This can be useful for using the the `plot.dads` function on non `"dads"` objects. 
  * `"events"` class objects are now implemented and fully functional with the `make.events` function and the pre-made `mass.extinction` and `founding.event` events.
  * `drop.things` to drop fossils or livings species or internal nodes from `"dads"` objects.
- * Added a `snapshot` utility function to be used in designing events, traits or modifiers.
 
 ### MINOR IMPROVEMENTS
 
  * Many clarifications and rewording to the manual.
 
-dads v0.1.0 (2020-11-13) 
+dads v0.1.0 (2020-11-13) *first release*
 =========================
 
 ### NEW FEATURES
