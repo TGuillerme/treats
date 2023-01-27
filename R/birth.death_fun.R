@@ -35,12 +35,10 @@ update.single.nodes <- function(lineage) {
     new_lineage$parents <- c(lineage$parents, lineage$livings)
     new_lineage$livings <- (max(lineage$livings)+1):(max(lineage$livings)+lineage$n)
     new_lineage$current <- new_lineage$livings[lineage$drawn]
-
     ## The new nodes lead to non-splitting branches
     new_lineage$split   <- c(lineage$split, rep(FALSE, length(lineage$livings)))
     ## The old ones are now splitting (but not in two)
     new_lineage$split[lineage$livings] <- TRUE
-
     return(new_lineage)
 }
 update.single.edges <- function(time, time.slice, lineage, edge_lengths) {
@@ -67,17 +65,33 @@ update.single.traits <- function(trait_values, traits, lineage, edge_lengths) {
     ## Combine with the trait values
     return(rbind(trait_values, snap_traits))
 }
+# remove.current <- function(what, current_was, from) {
+#     switch(from,
+#            "lineage" =      {
+#                 what$livings <- c(what$parents[current_was$id], (what$livings - 1)[-1])
+#                 what$current <- what$parents[current_was$id]
+#                 what$split   <- what$split[-what$parents[current_was$id]]
+#                 what$parents <- what$parents[-current_was$id]
+#            },
+#            "edge_lengths" = {
+#                 what <- what[-current_was$id]
+#            },
+#            "trait_values" = {
+#                 what <- what[-which(rownames(what) == current_was$name), , drop = FALSE]
+#            })
+#     return(what)
+# }
 ## Run a birth death process to generate both tree and traits
 birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE, save.steps = NULL) {
   
     ############
     ## Initialising
-    #############
+    # #############
     # warning("DEBUG in birth.death_fun.R::birth.death.tree.traits: snapshot")
     # set.seed(1)
-    # bd.params <- make.bd.params(speciation = 1, extinction = 0)
-    # stop.rule <- list(max.living = Inf, max.time = 5, max.taxa = Inf)
-    # traits <- make.traits()
+    # bd.params <- make.bd.params(speciation = 1, extinction = 0.2)
+    # stop.rule <- list(max.living = Inf, max.time = 1, max.taxa = Inf)
+    # traits <- make.traits(process = function(x0, edge.length) {return(1)}, background = make.traits())
     # constant.brlen <- function() {
     #     return(as.numeric(1))
     # }
@@ -86,11 +100,12 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     #     return(as.integer(lineage$n))
     # }
     # constant_modifier <- make.modifiers(branch.length = constant.brlen, selection = select.last)
-    # modifiers <- make.modifiers()
+    # modifiers <- NULL
     # events <- NULL
     # null.error <- FALSE
     # check.results <- TRUE
-    # save.steps = 0.5
+    # save.steps = NULL
+    # set.seed(1)
  
     ## Set up the traits, modifiers and events simulation
     do_traits    <- ifelse(is.null(traits), FALSE, TRUE)
@@ -134,8 +149,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                             modify.fun   = NULL)
 
     ### DEBUG: set starting time to 0
-    # warning("DEBUG birth.death_fun.R")
-    # first_waiting_time <- 0
+    # warning("DEBUG birth.death_fun.R") ; first_waiting_time <- 0
 
     ## Update the global time (for the first waiting time)
     if(stop.rule$max.time != Inf && time == 0) {
@@ -190,9 +204,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     }
 
     # ##DEBUG: creating right handed trees
-    # warning("DEBUG birth.death_fun.R")
-    # lineage$current <- 3
-    # lineage$drawn   <- 2
+    # warning("DEBUG birth.death_fun.R") ; lineage$current <- 3 ; lineage$drawn   <- 2
 
     ############
     ## Rest of the tree
@@ -266,23 +278,36 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
         if(do_traits) {
 
             if(!is.null(traits$background)) {
-            ## Run the instant trait process with the background
-                instant_snap <- snapshot(current.time = time, first.time = first_waiting_time, lineage = linage, edge.lengths = edge_lengths, trait.values = trait_values, traits = traits$background)
-                lineage      <- instant_snap$lineage
-                edge_lengths <- instant_snap$edge_lengths
-                trait_values <- instant_snap$trait_values
-                rm(instant_snap)
-            }
+                # time.slice <- first_waiting_time + time
+                ## Update the lineage and create generate background traits
+                lineage      <- update.single.nodes(lineage)
+                edge_lengths <- update.single.edges(time, time.slice = time, lineage, edge_lengths)
+                trait_values <- update.single.traits(trait_values, traits$background$main, lineage, edge_lengths)
 
-            trait_values <- rbind(trait_values,
-                                  ## Add the updated trait from the parent lineage
-                                  unlist(lapply(traits$main,
-                                                sim.element.trait,
-                                                parent.trait = parent.traits(trait_values, lineage),
-                                                edge.length  = edge_lengths[lineage$current])
-                                                )
-                                 , deparse.level = 0)
-            rownames(trait_values)[rownames(trait_values) == ""] <- lineage$current
+                ## Redo the current node
+                trait_values <- rbind(trait_values,
+                                      ## Add the updated trait from the parent lineage
+                                      unlist(lapply(traits$main,
+                                                    sim.element.trait,
+                                                    parent.trait = parent.traits(trait_values, lineage),
+                                                    edge.length  = edge_lengths[lineage$current])
+                                                    )
+                                     , deparse.level = 0)
+                rownames(trait_values)[rownames(trait_values) == ""] <- lineage$current
+                ## Duplicate the trait value for the ancestor of the current node?
+                trait_values[lineage$parent[lineage$livings[lineage$drawn]], ] <- trait_values[nrow(trait_values),]
+            } else {
+                ## Simulate trait values for current node only
+                trait_values <- rbind(trait_values,
+                                      ## Add the updated trait from the parent lineage
+                                      unlist(lapply(traits$main,
+                                                    sim.element.trait,
+                                                    parent.trait = parent.traits(trait_values, lineage),
+                                                    edge.length  = edge_lengths[lineage$current])
+                                                    )
+                                     , deparse.level = 0)
+                rownames(trait_values)[rownames(trait_values) == ""] <- lineage$current
+            }
         }
 
         ## Randomly triggering an event

@@ -19,6 +19,7 @@ test_that("dads works for simple birth-deaths", {
     expect_equal(error[[1]], "You must provide at least one stopping rule. For example:\nstop.rule <- list(max.taxa   = 10,\n                  max.living = 10,\n                  max.time   = 10)")
 
     ## Default birth.death
+    set.seed(22)
     test <- dads(stop.rule = list("max.living" = 10))
     expect_is(test, "phylo")
     expect_equal(Ntip(test), 10)

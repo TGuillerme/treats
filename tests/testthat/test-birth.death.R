@@ -585,8 +585,6 @@ test_that("single logic works", {
     edge_lengths <- c(0, 2, 1, 1, 1)
     time <- 2
 
-
-
     ## Testing single.nodes
     test <- update.single.nodes(lineage_pre)
     expect_is(test, "list")
@@ -610,62 +608,35 @@ test_that("single logic works", {
 
 test_that("snapshots/internal save works", {
 
-    # bd.params <- make.bd.params(speciation = 1, extinction = 0.2)
-    # stop.rule <- list(max.living = Inf, max.time = 5, max.taxa = Inf)
-    # traits <- make.traits()
+    # bd.params <- make.bd.params(speciation = 1, extinction = 0.1)
+    # stop.rule <- list(max.living = Inf, max.time = 2, max.taxa = Inf)
+    # traits <- make.traits(process = function(x0, edge.length) {return(1)}, background = make.traits())
 
-    # ## Working for regular steps
-    # set.seed(1)
-    # test <- birth.death.tree.traits(bd.params = bd.params, traits = traits, stop.rule = stop.rule, save.steps = 0.5)
+    # ## Working for regular background
+    # set.seed(2)
+    # test <- birth.death.tree.traits(bd.params = bd.params, traits = traits, stop.rule = stop.rule)
+    # class(test) <- c("dads")
+    # plot(test)
+
+    ## PROBLEM HERE! TODO:
+        #- Make sure the trait values for the current node overrides the one for the current node from the background.
+        #- Add some function at the end of the tree growing to remove these nodes with the same values.
+        #- Alternatively: tweak the whole trait generation to recognise who is the current node (main) and who are the background ones (background).
+
+
     # expect_is(test, "list")
     # class(test) <- "dads"
     # expect_equal(names(test), c("tree", "data"))
     # expect_equal(Ntip(test$tree), 142)
     # expect_equal(Nnode(test$tree), 383)
     # expect_null(plot(test))
-    # # abline(v = rev(seq(from = 0, to = 5, by = 0.5)), col = "grey")
+    # abline(v = rev(seq(from = 0, to = 5, by = 0.5)), col = "grey")
+
+    ## Working for complex background
+
+    ## Working for background + save steps
+
+    ## Working for background + modifiers + events 
 
 
-    # ## Working for set steps
-    # set.seed(1)
-    # test <- birth.death.tree.traits(bd.params = bd.params, traits = traits, stop.rule = stop.rule, save.steps = c(0.5, 1, 2.5))
-    # expect_is(test, "list")
-    # class(test) <- "dads"
-    # expect_equal(names(test), c("tree", "data"))
-    # expect_equal(Ntip(test$tree), 108)
-    # expect_equal(Nnode(test$tree), 123)
-    # expect_null(plot(test))
-    # # abline(v = rev(5-c(0.5, 1, 2.5)), col = "grey")
-
-    # ## Works also with no traits!
-    # set.seed(1)
-    # test <- birth.death.tree.traits(bd.params = bd.params, traits = NULL, stop.rule = stop.rule, save.steps = 0.5)
-    # expect_is(test, "list")
-    # expect_equal(names(test), c("tree", "data"))
-    # expect_equal(Ntip(test$tree), 92)
-    # expect_equal(Nnode(test$tree), 248)
-    # # expect_null(plot(test$tree))
-    # # nodelabels()
-
-    # ## works with dads (and multiple traits)
-    # set.seed(123)
-    # test <- dads(bd.params = list(speciation = 1), stop.rule = list(max.time = 3), save.steps = 0.3, traits = make.traits(n = 4))
-    # expect_is(test, "dads")
-    # expect_equal(Ntip(test$tree), 49)
-    # expect_equal(Nnode(test$tree), 175)
-    # expect_null(plot(test, trait = c(2,3)))
-    # # abline(v = rev(seq(from = 0, to = 3, by = 0.3)), col = "grey")
-    # expect_equal(dim(test$data), c(224, 4))
-
-
-
-    # bd.params <- make.bd.params(speciation = 1, extinction = 0.2)
-    # stop.rule <- list(max.living = Inf, max.time = 2, max.taxa = Inf)
-    # traits <- make.traits()
-
-    # random.double.process <- function(x0 = 0, edge_length = 1, trait.values, lineage, edge_lengths)
-
-    ## TO TEST: single slice with 
-        # Condition: trait value generated for species X is always two times the average of all species traits present at time t
-        # Condition: speciation happens if species X has trait that is one sd away from other species.
 })
