@@ -11,7 +11,9 @@
  - [x] BD process with traits
  - [x] Add instant traits mechanism (i.e. allow saving and calculating trait values after any waiting time (needs to create internal nodes))
  - [ ] Also add a "snapshot" mechanism, compared to the "instant trait" one above, this one only has a look at what's happening everywhere in the tree at specific requested time (e.g. with conditions) and not at specific regular given time point (e.g. every 0.1 time unit).
-     - [ ] This can be done by having an `independent` variable (`"logical"`) for `traits`, `modifiers` or `events`. If independent, it does the same as before. If dependent it does actually do something for all nodes alive.
+    - [ ] test for `background` in `make.traits`
+    - [ ] test for `background` in `birth.death_fun`
+    - [ ] add manual for `background`
  - [x] Add sampling mechanism (i.e. instead of having fixed values, allow using distributions)
     - [x] `make.bd.params`
     - [x] `plot.make.bd.params`
