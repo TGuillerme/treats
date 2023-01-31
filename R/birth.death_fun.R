@@ -14,6 +14,7 @@ sim.element.trait <- function(one.trait, parent.trait, edge.length) {
 multi.sim.element.trait <- function(one.trait, parent.traits, edge.lengths) {
     return(do.call(rbind, lapply(as.list(1:dim(parent.traits)[1]), function(X, parent.traits, edge.lengths, one.trait) sim.element.trait(one.trait, parent.traits[X, , drop = FALSE], edge.lengths[X]), parent.traits, edge.lengths, one.trait)))
 }
+
 ## Simulates one set of traits for the living species
 sim.living.tips <- function(living, trait_table, traits) {
     return(unlist(
@@ -88,10 +89,9 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     ## Initialising
     #############
     # warning("DEBUG in birth.death_fun.R::birth.death.tree.traits: snapshot")
-    # set.seed(42)
     # bd.params <- make.bd.params(speciation = 1, extinction = 0.1)
     # stop.rule <- list(max.living = Inf, max.time = 1, max.taxa = Inf)
-    # traits <- make.traits(process = function(x0, edge.length) {return(1)}, background = make.traits())
+    # traits <- make.traits(process = BM.process, n = 3, background = make.traits(process = c(no.process, no.process, no.process), n = 1))
     # constant.brlen <- function() {
     #     return(as.numeric(1))
     # }
@@ -105,8 +105,8 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     # null.error <- FALSE
     # check.results <- TRUE
     # save.steps = NULL
-    # # set.seed(1)
- 
+    # set.seed(2)
+
     ## Set up the traits, modifiers and events simulation
     do_traits    <- ifelse(is.null(traits), FALSE, TRUE)
     do_events    <- ifelse(is.null(events), FALSE, TRUE)
@@ -477,13 +477,14 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
 
     ## Remove the 0 edges split from background
     if(!is.null(traits$background)) {
-        removed_nodes <- integer()
+        # removed_nodes <- integer()
+        # warning("DEBUG") ; print(table)
         while(any(empty_edges <- table$edge_lengths == 0)) {
             ## Finding the edge to remove and to edit
             edge_to_remove <- which(empty_edges)[1]
             edge_to_edit   <- which(table[, "element"] == table[edge_to_remove, "parent"])
             ## Tracking the node being removed
-            removed_nodes <- c(removed_nodes, table[edge_to_remove, "parent"])
+            # removed_nodes <- c(removed_nodes, table[edge_to_remove, "parent"])
             ## Editing the node to keep
             table[edge_to_edit, "element"] <- table[edge_to_remove, "element"]
             table[edge_to_edit, "is_node"] <- table[edge_to_remove, "is_node"]

@@ -608,35 +608,47 @@ test_that("single logic works", {
 
 test_that("snapshots/internal save works", {
 
-    # bd.params <- make.bd.params(speciation = 1, extinction = 0.1)
-    # stop.rule <- list(max.living = Inf, max.time = 2, max.taxa = Inf)
-    # traits <- make.traits(process = function(x0, edge.length) {return(1)}, background = make.traits())
+    bd.params <- make.bd.params(speciation = 1, extinction = 0.1)
+    stop.rule <- list(max.living = Inf, max.time = 2, max.taxa = Inf)
+    traits <- make.traits(process = function(x0, edge.length) {return(1)}, background = make.traits())
 
-    # ## Working for regular background
-    # set.seed(2)
-    # test <- birth.death.tree.traits(bd.params = bd.params, traits = traits, stop.rule = stop.rule)
-    # class(test) <- c("dads")
-    # plot(test)
+    ## Working for regular background
+    set.seed(3)
+    test <- birth.death.tree.traits(bd.params = bd.params, traits = traits, stop.rule = stop.rule)
+    expect_equal(names(test), c("tree", "data"))
+    expect_equal(Ntip(test$tree), 6)
+    expect_equal(Nnode(test$tree), 15)
+    plot(test$tree) ; nodelabels(paste(Ntip(test$tree)+1:Nnode(test$tree)+Ntip(test$tree), test$tree$node.label, sep = ":"), cex = 0.75)
+    ## The true nodes (past the first one)
+    expect_equal(rownames(test$data)[which(test$data == 1)], c("n4", "n6", "n11", "n15"))
+    ## Branch nodes and tips
+    expect_equal(rownames(test$data)[which(test$data != 1)], c("n1", "n2", "n3", "n7", "n5", "n8", "n9", "n12", "n13", "n10", "n14", test$tree$tip.label))
+ 
+    ## One with fossils
+    set.seed(2)
+    test <- birth.death.tree.traits(bd.params = bd.params, traits = traits, stop.rule = stop.rule)
+    expect_equal(Ntip(test$tree), 8)
+    expect_equal(Nnode(test$tree), 29)
+    expect_equal(nrow(test$data), 8 + 29)
 
-    ## PROBLEM HERE! TODO:
-        #- Make sure the trait values for the current node overrides the one for the current node from the background.
-        #- Add some function at the end of the tree growing to remove these nodes with the same values.
-        #- Alternatively: tweak the whole trait generation to recognise who is the current node (main) and who are the background ones (background).
+    ## 2 fossils
+    expect_equal(nrow(drop.fossils(test)$data), 31) 
+    expect_equal(Ntip(drop.fossils(test)$tree), 6) 
+    expect_equal(Nnode(drop.fossils(test)$tree), 25) 
+    ## 6 livings
+    expect_equal(nrow(drop.livings(test)$data), 10) 
+    expect_equal(Ntip(drop.livings(test)$tree), 2) 
+    expect_equal(Nnode(drop.livings(test)$tree), 8) 
+    ## 22 internals
+    expect_equal(nrow(drop.singles(test)$data), 15) 
+    expect_equal(Ntip(drop.singles(test)$tree), 8) 
+    expect_equal(Nnode(drop.singles(test)$tree), 7)
 
-
-    # expect_is(test, "list")
-    # class(test) <- "dads"
-    # expect_equal(names(test), c("tree", "data"))
-    # expect_equal(Ntip(test$tree), 142)
-    # expect_equal(Nnode(test$tree), 383)
-    # expect_null(plot(test))
-    # abline(v = rev(seq(from = 0, to = 5, by = 0.5)), col = "grey")
-
-    ## Working for complex background
-
-    ## Working for background + save steps
-
-    ## Working for background + modifiers + events 
-
-
+    ## Working with some multidimensional stuff
+    traits <- make.traits(process = BM.process, n = 3, background = make.traits(process = c(no.process, no.process, no.process), n = 1))
+    set.seed(3)
+    test <- birth.death.tree.traits(bd.params = bd.params, traits = traits, stop.rule = stop.rule)
+    expect_equal(dim(test$data), c(182, 3))
+    class(test) <- "dads"
+    expect_null(plot(test))
 })
