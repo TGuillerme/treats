@@ -86,10 +86,10 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
   
     ############
     ## Initialising
-    # #############
+    #############
     # warning("DEBUG in birth.death_fun.R::birth.death.tree.traits: snapshot")
-    # set.seed(1)
-    # bd.params <- make.bd.params(speciation = 1, extinction = 0.2)
+    # set.seed(42)
+    # bd.params <- make.bd.params(speciation = 1, extinction = 0.1)
     # stop.rule <- list(max.living = Inf, max.time = 1, max.taxa = Inf)
     # traits <- make.traits(process = function(x0, edge.length) {return(1)}, background = make.traits())
     # constant.brlen <- function() {
@@ -105,7 +105,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     # null.error <- FALSE
     # check.results <- TRUE
     # save.steps = NULL
-    # set.seed(1)
+    # # set.seed(1)
  
     ## Set up the traits, modifiers and events simulation
     do_traits    <- ifelse(is.null(traits), FALSE, TRUE)
@@ -212,6 +212,10 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     # warning("DEBUG birth.death_fun.R") ; counter <- 0
     # warning("DEBUG birth.death_fun.R") ; set.seed(8)
     # warning("DEBUG birth.death_fun.R") ; record <- c("start recording events:\n")
+    # warning("DEBUG birth.death_fun.R")
+    # step_counter <- 0
+    # record_everything <- list()
+    # step_counter <- step_counter + 1; record_everything[[step_counter]] <- list(lineage = lineage, edge_lengths = edge_lengths, trait_values = trait_values)
 
     ## Build the rest of the tree
     while(lineage$n > 0 && lineage$n <= stop.rule$max.living && sum(!lineage$split) <= stop.rule$max.taxa) {
@@ -277,6 +281,9 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
         ## Adding a new row to the trait_values matrix
         if(do_traits) {
 
+        # warning("DEBUG birth.death_fun.R") ; step_counter <- step_counter + 1; record_everything[[step_counter]] <- list(lineage = lineage, edge_lengths = edge_lengths, trait_values = trait_values)
+
+
             if(!is.null(traits$background)) {
                 # time.slice <- first_waiting_time + time
                 ## Update the lineage and create generate background traits
@@ -296,6 +303,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                 rownames(trait_values)[rownames(trait_values) == ""] <- lineage$current
                 ## Duplicate the trait value for the ancestor of the current node?
                 trait_values[lineage$parent[lineage$livings[lineage$drawn]], ] <- trait_values[nrow(trait_values),]
+
             } else {
                 ## Simulate trait values for current node only
                 trait_values <- rbind(trait_values,
@@ -309,6 +317,9 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                 rownames(trait_values)[rownames(trait_values) == ""] <- lineage$current
             }
         }
+
+        # warning("DEBUG birth.death_fun.R") ; step_counter <- step_counter + 1; record_everything[[step_counter]] <- list(lineage = lineage, edge_lengths = edge_lengths, trait_values = trait_values)
+
 
         ## Randomly triggering an event
         if(modifiers$speciating$fun(bd.params    = sample.from(bd.params),
@@ -462,14 +473,31 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
         table <- table[-c(nrow(table), nrow(table)-1),]
         ## Change the node into a tip
         table$is_node[table$element == last_parent] <- FALSE
-    } 
+    }
+
+    ## Remove the 0 edges split from background
+    if(!is.null(traits$background)) {
+        removed_nodes <- integer()
+        while(any(empty_edges <- table$edge_lengths == 0)) {
+            ## Finding the edge to remove and to edit
+            edge_to_remove <- which(empty_edges)[1]
+            edge_to_edit   <- which(table[, "element"] == table[edge_to_remove, "parent"])
+            ## Tracking the node being removed
+            removed_nodes <- c(removed_nodes, table[edge_to_remove, "parent"])
+            ## Editing the node to keep
+            table[edge_to_edit, "element"] <- table[edge_to_remove, "element"]
+            table[edge_to_edit, "is_node"] <- table[edge_to_remove, "is_node"]
+            ## Removing the extra node
+            table <- table[-edge_to_remove, ]
+        }
+    }
 
     ############
     ## Creating the tree object
     ############
 
     ## Number of rows and tips
-    n_nodes <- sum(table$is_node)+1 #TG: TODO: make sure this takes into account the single nodes!!!!!!!!!!
+    n_nodes <- sum(table$is_node)+1
     n_tips  <- sum(!table$is_node)
 
     ## Getting the edge table node/tips IDs
@@ -480,6 +508,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     ## Getting the edge table nodes (left column)
     left_edges <- match(table$parent, table$element)
     table$parent2 <- table$element2[left_edges]
+    ## Add the root (is NA)
     table$parent2[is.na(table$parent2)] <- n_tips + 1
 
     ## Getting the tips and nodes labels
@@ -491,6 +520,8 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                  node.label  = tree_node_labels,
                  edge.length = table$edge_lengths)
     class(tree) <- "phylo"
+
+    # warning("DEBUG birth.death_fun.R") ; plot(tree) ; nodelabels(paste(Ntip(tree)+1:Nnode(tree)+Ntip(tree), tree$node.label, sep = ":"), cex = 0.75)
 
     if(!is.null(founding_tree)) {
 
@@ -662,7 +693,11 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
         living_tips <- which(is.na(rownames(trait_table)))
         ## Simulate the traits for the living tips and add them to the trait table
         if(length(living_tips) > 0) {
-            trait_table[living_tips, -c(1:3)] <- t(sapply(living_tips, sim.living.tips, trait_table, traits$main, simplify = TRUE))
+            if(is.null(traits$background)) {
+                trait_table[living_tips, -c(1:3)] <- t(sapply(living_tips, sim.living.tips, trait_table, traits$main, simplify = TRUE))
+            } else {
+                trait_table[living_tips, -c(1:3)] <- t(sapply(living_tips, sim.living.tips, trait_table, traits$background$main, simplify = TRUE))
+            }
         }
 
         ## Renaming the trait_values
@@ -676,7 +711,6 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
 
         ## Adding the founding data to the trait_table
         if(!is.null(founding_tree)) {
-
             ## Combining the trait tables
             trait_table <- rbind(trait_table, founding_tree$data)
 
