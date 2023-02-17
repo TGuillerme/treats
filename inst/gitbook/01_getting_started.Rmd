@@ -63,6 +63,7 @@ my_params <- list(speciation = 1,
 ```
 
 > Note that here it is not necessary to specify `speciation = 1` since this is the default option, you can always just change the parameter of interest (e.g. changing `extinction = 0` to `extinction = 1/3`). However, we think it's good practice to attribute both parameters specifically to avoid any confusion.
+You can find more information about setting up more complex birth death parameters [in this section](#makebdparams).
 
 You can then run the same birth death tree with extinction:
 
@@ -131,7 +132,6 @@ class(the_generated_data)
 ```
 
 You can find much more on how to design trait objects in the [`make.traits` section](#maketraits).
-
 
 ## Slightly more more complex: simulating linked disparity and diversity 
 
