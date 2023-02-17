@@ -1,0 +1,104 @@
+---
+title: "`make.events`"
+author: "Thomas Guillerme (guillert@tcd.ie)"
+date: "`r Sys.Date()`"
+bibliography: [../References.bib, ../packages.bib]
+output:
+  html_document: default
+  pdf_document: default
+---
+
+
+```{r, echo = FALSE}
+library(rgl)
+knitr::knit_hooks$set(webgl = hook_webgl)
+```
+
+# Other functionalities {#others}
+
+## `make.bd.params` {#makebdparams}
+
+In most examples above, birth-death parameters where set as fixed values, i.e. a speciation rate of $\lambda$ and an extinction rate of $\mu$ throughout the simulations (with maybe some events modifying these rates).
+However, it is of course possible to set these rates as specific or changing distributions! 
+You can do this using the `make.bd.params` function a provide either a `vector` of values: 
+
+```{r}
+## An example where the speciation is randomly sampled among three values
+my_bd_params <- make.bd.params(speciation = c(1/3,42))
+
+## Building a tree using this set of parameters
+set.seed(123)
+plot(dads(stop.rule = list(max.taxa = 50), bd.params = my_bd_params))
+## Note the regions in the tree with short branches
+## (that's the speciation being 1/3 while the others are speciation = 42) 
+```
+
+Or directly a function from which to sample:
+
+```{r}
+## Another example where speciation is drawn from the interval (0, 1)
+make.bd.params(speciation = runif)
+```
+
+In this example, the `"bd.params"` object passed to the `dads` function will allow the birth-death process to sample the speciation parameter each time it is called (e.g. during the speciation/extinction step, the branch length step, etc.).
+If using a function, you can fine tune the arguments to be passed to that function using the `speciation.args` or the `extinction.args` arguments (as a named list matching the function's arguments):
+
+```{r}
+## Speciation is drawn from the interval (0.5, 1.5)
+make.bd.params(speciation = runif,
+               speciation.args = list(min = 0.5, max = 1.5))
+```
+
+When using distributions for both the speciation and extinction parameters, you can run into the undesired problem of having an extinction rate that is higher than your speciation rate (and thus your tree dying out - unless this is the desired behaviour).
+You can avoid this problem by using the `joint` distribution argument this will ensure that the sampling of the extinction rate is always lower or equal to the speciation rate.
+
+```{r}
+## Joint speciation and extinction sampled from uniform distribution 
+## with speciation always >= to extinction
+make.bd.params(speciation = runif, extinction = runif, joint = TRUE)
+```
+
+Finally to avoid negative sampling values, you can use the argument `absolute` that will make all the sampled values positive.
+This argument is set to `TRUE` by default so you shouldn't have to worry about it most of the time unless you specifically need negative sampled values for your parameters.
+
+```{r}
+## Making the speciation sampling always positive
+make.bd.params(speciation = rnorm, absolute = TRUE)
+## This is effectively making the speciation distribution equal to
+make.bd.params(speciation = function(x) abs(rnorm(x)))
+```
+
+The two other possible arguments for this function are `test` and `update` that work the same as for [`make.traits`](#maketraits) or [`make.modifiers`](#makemodifiers)
+
+## `drop.things`
+
+You can use the function `drop.things` to drop specific elements of the tree and data at the same time by providing the argument `what` to be `"fossils"` for tips that went extinct, `"livings"` tips that where alive at the end of the simulation or `"singles"` for internal nodes.
+Alternatively you can use the function aliases `drop.fossils`, `drop.livings` or `drop.singles` for the exact same results:
+
+```{r}
+## A random tree with fossils and traits and internal nodes every 0.5 times
+set.seed(3)
+my_data <- dads(stop.rule = list(max.taxa = 20),
+                bd.params = list(speciation = 1, extinction = 1/3),
+                traits    = make.traits(), save.steps = 0.5)
+
+## A tree with 20 tips and 54 nodes
+my_data$tree
+## And a dataset with 74 rows
+dim(my_data$data)
+
+## Removing the fossil species
+drop.things(my_data, what = "fossils")$tree
+dim(drop.fossils(my_data)$data)
+
+## Removing the living species
+drop.things(my_data, what = "livings")$tree
+dim(drop.livings(my_data)$data)
+
+## Removing the internal nodes
+drop.things(my_data, what = "singles")$tree
+dim(drop.singles(my_data)$data)
+
+## Removing the internal nodes AND the fossils
+drop.singles(drop.fossils(my_data))
+```
