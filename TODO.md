@@ -1,105 +1,65 @@
-# TODO bug fixes:
+# TODO list: finish package!
 
- - [x] error in `print.dads` in the manual example (`01_getting_started.Rmd`: l.173: default_data).
- - [x] change syntax standards for `going.extinct` bit in the getting started example. (standardise to survivability: 0 (FALSE) = dead, 1 (TRUE) = alive?)
- - [x] fix default for `x0 = 0` in traits (i.e. give a default to `x0`).
+## bd.params
 
-# TODO list
+ - [ ] Add plotting to manual for `make.bd.params` (in chapter 05)
 
- - [x] INIT
- - [x] Simple BD process
- - [x] BD process with traits
- - [x] Add instant traits mechanism (i.e. allow saving and calculating trait values after any waiting time (needs to create internal nodes))
- - [x] Also add a "snapshot" mechanism, compared to the "instant trait" one above, this one only has a look at what's happening everywhere in the tree at specific requested time (e.g. with conditions) and not at specific regular given time point (e.g. every 0.1 time unit).
-    - [ ] test for `background` in `make.traits`
-    - [x] test for `background` in `birth.death_fun`
-    - [ ] add manual for `background`
- - [x] Add sampling mechanism (i.e. instead of having fixed values, allow using distributions)
-    - [x] `make.bd.params`
-    - [x] `plot.make.bd.params`
-    - [x] `print.make.bd.params` (still some bugs with printing updated parameter values)
-    - [x] implement it in `dads` and `birth.death`
-    - [ ] add it to manual
- - [x] Add a `make.dads` function that intakes data and tree (and allows using `plot.dads` etc...)
-   - [x] Add test for `make.dads`
+## traits
 
-## TODO traits
-
- - [x] make list of traits
- - [x] `make.traits`
- - [x] document list of traits (Rd)
- - [x] document list of traits (gitbook)
- - [x] test `make.traits`
- - [x] add and test `print.traits`
- - [x] add and test `update` argument
  - [ ] test list of traits
- - [x] add + test `multi.OU.process`
  - [ ] add + test `repulsion.BM.process`
 
-## TODO modifiers
+## modifiers
 
- - [x] make list of modifiers
- - [x] `make.modifiers`
- - [x] document list of modifiers (Rd)
- - [x] test `make.modifiers`
- - [x] add and test `print.modifiers`
- - [x] add and test `update` argument
+ - [ ] example for: `make.modifiers`: Write examples (write manual at the same time)
+ - [ ] example for: `modifiers`: Write examples (write manual at the same time)
 
-## TODO events
+## events
 
  - [ ] make list of events
- - [x] `make.events`
  - [ ] document list of events (Rd)
  - [ ] document list of events (gitbook)
- - [x] test `make.events`
- - [x] add and test `print.events`
  - [ ] test list of separate: conditions and modifications
  - [ ] allow events per clade (see TreeSim)
  - [ ] add abiotic events (see RPANDA)
+ - [ ] make manual for events
+ - [ ] example for: `events.conditions`: Write examples (write manual at the same time)
+ - [ ] example for: `events.modifications`: Write examples (write manual at the same time)
+ - [ ] example for: `make.events`: Write examples (write manual at the same time)
 
-### Make the following events work:
+## dads
 
- - [x] taxa event: mass extinction based on % at time t
- - [x] taxa event: mass extinction based on traits at time t
- - [x] bd.params events: adding extinction parameter after reaching n taxa
- - [x] bd.params events: reducing speciation after reaching time t
- - [x] traits events: changing trait process at time t
- - [x] traits events: changing traits correlation when reaching trait value x for trait 1
- - [x] modifiers events: adding a speciation condition after reaching time t
- - [x] modifiers events: adding a branch length condition when reaching n taxa
- - [x] founding events: generate a new birth-death process for the first node to reach trait value x
-
-## TODO utilities
- 
- - [x] add utilities
- - [ ] add manual for utilities
- - [ ] add test for `parent.traits`
- - [x] update the drop function to `drop.things` with a option `"what"` being `"fossils"`, `"livings"`, `"singles"`. Aliasing into `drop.fossils`, `drop.livings`, `drop.singles`
-
-## TODO dads
-
- - [x] remove upper boundary on `bd.params`
+ - [x] Also add a "snapshot" mechanism, compared to the "instant trait" one above, this one only has a look at what's happening everywhere in the tree at specific requested time (e.g. with conditions) and not at specific regular given time point (e.g. every 0.1 time unit).
+    - [ ] test for `background` in `make.traits`
+    - [ ] add manual for `background`
  - [ ] add a verbose option when using `null.errors` (something like "building tree:... Done.") 
+ - [ ] example for: `dads`: Run a birth-death tree with a modifier
+ - [ ] example for: `dads`: Run a birth-death tree with a modifier + event
 
-## TODO package
+## print
 
- - [ ] add examples in functions
+ - [ ] example for: `print.dads`: add example for each category:
+   - [ ] `dads`
+   - [ ] `bd.params`
+   - [ ] `traits`
+   - [ ] `modifiers`
+   - [ ] `events`
 
-## TODO plot
+## plot
 
- - [x] add a 2/3D plot option for traits (points coloured as a function of time) + optional links
- - [x] add a 3D plot version of plot dads with X Y being traits and Z being time
- - [x] add a time gradient option for col.
- - [x] distinguish tips from nodes with a circle option around the tips (in 2D)
- - [x] change colour to default for edges
  - [ ] adding legend options
  - [ ] add option to switch the tree age (time to present to time since past).
+ - [ ] do the manual section
+
+## utilities
+
+ - [ ] add manual for utilities
+ - [ ] add test for `parent.traits`
+ - [ ] example for: `utilities::parent.traits`: Write examples (write manual at the same time)
 
 
-## TODO: Manual
 
- - [ ] Bug in 4.3 The speciation function (speciation)
- - [ ] Add a shiny app illustrating the process from `process.pdf`
+
 
 
 
