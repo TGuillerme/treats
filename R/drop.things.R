@@ -93,15 +93,12 @@ drop.livings <- function(dads) {
     return(drop.tips(dads, living = TRUE))
 }
 drop.things <- function(dads, what) {
-
     check.class(dads, c("phylo", "dads"))
     check.class(what, "character")
     check.method(what, c("fossils", "livings", "singles"))
-
     switch(what,
         "fossils" = return(drop.fossils(dads)),
         "livings" = return(drop.livings(dads)),
         "singles" = return(drop.singles(dads))
-
     )
 }
