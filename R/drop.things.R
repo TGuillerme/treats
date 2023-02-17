@@ -1,6 +1,11 @@
-#' @title Drop things from a tree
+#' @title Drop things from a dads object
 #' @name drop.things
 #' @aliases drop.fossils drop.livings drop.singles
+#'
+#' @usage drop.things(dads, what)
+#' @usage drop.fossils(dads)
+#' @usage drop.livings(dads)
+#' @usage drop.singles(dads)
 #'
 #' @description Remove fossils or living species or non-bifurcating nodes (singles) from \code{dads} objects or \code{phylo} objects.  
 #'
@@ -10,7 +15,31 @@
 #' @details \emph{NOTE} that dropping living or fossils species DOES NOT drop associated internal nodes and edge lengths. To drop both fossil/living taxa AND internal nodes, you can use for example: \code{drop.things(drop.things(my_data, what = "fossils"), what = "singles")}.
 #'
 #' @examples
+#' ## A random tree with fossils and traits and internal nodes every 0.5 times
+#' set.seed(3)
+#' my_data <- dads(stop.rule = list(max.taxa = 20),
+#'                 bd.params = list(speciation = 1, extinction = 1/3),
+#'                 traits    = make.traits(), save.steps = 0.5)
 #'
+#' ## A tree with 20 tips and 54 nodes
+#' my_data$tree
+#' ## And a dataset with 74 rows
+#' dim(my_data$data)
+#' 
+#' ## Removing the fossil species
+#' drop.things(my_data, what = "fossils")$tree
+#' dim(drop.fossils(my_data)$data)
+#'
+#' ## Removing the living species
+#' drop.things(my_data, what = "livings")$tree
+#' dim(drop.livings(my_data)$data)
+#'
+#' ## Removing the internal nodes
+#' drop.things(my_data, what = "singles")$tree
+#' dim(drop.singles(my_data)$data)
+#'
+#' ## Removing the internal nodes AND the fossils
+#' drop.singles(drop.fossils(my_data))
 #' @seealso
 #' 
 #' @author Thomas Guillerme
@@ -70,9 +99,9 @@ drop.things <- function(dads, what) {
     check.method(what, c("fossils", "livings", "singles"))
 
     switch(what,
-        "fossils"    = return(drop.fossils(dads)),
-        "livings"    = return(drop.livings(dads)),
-        "singles"  = return(drop.singles(dads))
+        "fossils" = return(drop.fossils(dads)),
+        "livings" = return(drop.livings(dads)),
+        "singles" = return(drop.singles(dads))
 
     )
 }
