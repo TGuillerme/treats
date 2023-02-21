@@ -2,7 +2,7 @@
 
 ## bd.params
 
- - [ ] Add plotting to manual for `make.bd.params` (in chapter 05)
+ - [x] Add plotting to manual for `make.bd.params` (in chapter 05)
 
 ## traits
 

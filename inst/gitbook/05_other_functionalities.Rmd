@@ -70,6 +70,25 @@ make.bd.params(speciation = function(x) abs(rnorm(x)))
 
 The two other possible arguments for this function are `test` and `update` that work the same as for [`make.traits`](#maketraits) or [`make.modifiers`](#makemodifiers)
 
+If you are a visual person and your `bd.params` objects are getting a bit too complicated to remember, you can always quickly plot them (the function will sample from the `bd.params` object and show the results):
+
+```{r}
+par(mfrow = c(2,2))
+plot(make.bd.params(), main = "Default birth-death parameters")
+plot(make.bd.params(speciation = runif,
+               speciation.args = list(min = 0.5, max = 1.5)),
+     main = "Uniform speciation between 0.5 and 1.5\n(no extinction)")
+plot(make.bd.params(speciation = runif,
+                    speciation.args = list(min = 0.5, max = 1.5)),
+     main = "Uniform speciation between 0.5 and 1.5\n(no extinction)")
+plot(make.bd.params(speciation = runif, extinction = runif, joint = TRUE),
+     main = "Joint uniform speciation and extinction")
+plot(make.bd.params(speciation = rnorm, extinction = runif,
+                    joint = FALSE, abs = FALSE),
+     main = "Disjoint normal speciation and uniform extinction")
+```
+
+
 ## `drop.things`
 
 You can use the function `drop.things` to drop specific elements of the tree and data at the same time by providing the argument `what` to be `"fossils"` for tips that went extinct, `"livings"` tips that where alive at the end of the simulation or `"singles"` for internal nodes.
