@@ -79,6 +79,11 @@
 #' ## No process
 #' no.process()
 #' plot(make.traits(process = no.process))
+#'
+#' ## Multi peaks
+#'
+#' ## Repulsion process
+#'
 #' 
 #' @seealso
 #' 
@@ -90,6 +95,8 @@ trait.process <- function(x0 = 0, edge.length = 1, ...) {
     cat("?BM.process\n")
     cat("?OU.process\n")
     cat("?no.process\n")
+    cat("?multi.peak.process\n")
+    cat("?repulsion.process\n")
 }
 
 ## The Brownian motion

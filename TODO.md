@@ -6,8 +6,8 @@
 
 ## traits
 
- - [ ] test list of traits
- - [ ] add + test `repulsion.BM.process`
+ - [x] test list of traits
+ - [x] add + test `repulsion.process`
 
 ## modifiers
 

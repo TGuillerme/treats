@@ -252,12 +252,49 @@ one_process
 two_processes
 ```
 
+
+## Traits implemented in `dads`
+
+If you don't want to design your own trait process, you can use one of the following trait processes that are currently implemented in `dads`. You can find more information about their many options using their specific manuals in R or the generic `?trait.process`:
+
+ * `BM.process`: this is the well famous [Brownian motion process](https://en.wikipedia.org/wiki/Brownian_motion).
+
+```{r, echo = FALSE}
+plot(make.traits(process = BM.process), main = "The Brownian motion")
+```
+
+ * `OU.process`: this is the equally famous [Ornstein–Uhlenbeck process](https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process).
+
+```{r, echo = FALSE}
+plot(make.traits(process = OU.process), main = "The Ornstein–Uhlenbeck process")
+```
+
+ * `no.process`: this process has... no process. In other words, this is a non time dependent process (the simulated value does not depends on the ancestors' value nor the branch length). It's basically a place holder for a random sampling function like `rnorm` (default), `runif`, `rlnorm`, etc...
+
+
+```{r, echo = FALSE}
+plot(make.traits(process = no.process, process.args = list(fun = runif)), main = "No process using runif\n(yes, it \"looks\" like an OU!)")
+```
+
+ * `multi.peak.process`: this process is a modified version of the `OU.process` that can take multiple local optima. The default OU process has one optimum towards which the values are drawn with the alpha parameter (the elastic band) which is usually 0. However, with this `multi.peak.process` we can set multiple values towards which values can be attracted with the same alpha parameter.
+
+```{r, echo = FALSE}
+plot(make.traits(multi.peak.process, process.args = list(peaks = c(1, 5, 10))), main = "A multi-peak (OU) process\nwith peaks (optima) at 1, 5 and 10")
+```
+
+ * `repulsion.process`: this is a modified version of the `BM.process` where instead of accumulating normally through time, new trait values are more likely to be different than their ancestor following a `repulsion` parameter.
+
+```{r, echo = FALSE}
+plot(make.traits(repulsion.process, process.args = list(repulsion = 5)), main = "A repulsion process\nwith a repulsion parameter of 5")
+```
+
 ## Testing the traits with `test`
 
 **This bit is more for development.**
 We highly suggest leaving `test = TRUE` so that `make.traits` returns an error if a process or its additional arguments (`process.args`) are not formatted correctly.
 `make.traits` will send an error if the trait cannot be directly passed to `dads`.
 However, in some specific cases (again, probably mainly for development and debugging) it could be useful to skip the tests using `test = FALSE`.
+
 
 ## Templates for making your very own process
 

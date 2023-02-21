@@ -91,6 +91,11 @@ plot(make.traits(process = BM.process))
 no.process()
 plot(make.traits(process = no.process))
 
+## Multi peaks
+
+## Repulsion process
+
+
 }
 \author{
 Thomas Guillerme
