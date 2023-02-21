@@ -174,10 +174,9 @@ test_that("make.modifiers works", {
     expect_equal(test2[[3]]$internal$modify(42), 42)
 
     ## Print modifiers works correctly
-
 })
 
-
+## Updating
 test_that("make.modifiers(update) works", {
 
     ## Sanitizing
@@ -207,5 +206,38 @@ test_that("make.modifiers(update) works", {
     expect_true(capture_output(print(test1$waiting$internal)) != capture_output(print(test2$waiting$internal)))
     ## But the same functions
     expect_true(capture_output(print(test1$waiting$fun)) == capture_output(print(test2$waiting$fun)))
-
 })
+
+## Modifiers
+# test_that("modifiers works", {
+
+#     ## branch.length
+#     bd.params <- list(speciation = 1, extinction = 0.1)
+#     lineage <- list(n = 10)
+#     branch.length(bd.params = list(speciation = 1, extinction = 0.1))
+
+
+
+
+
+#     ## branch.length.trait
+#     ## selection
+#     ## speciation
+#     ## speciation.trait
+
+#     test2 <- NULL
+#     expect_message(test2 <- make.modifiers(branch.length = branch.length, modify = always.one, add = test))
+#     expect_is(test2, c("dads", "modifiers"))
+#     expect_equal(names(test2), c("waiting", "selecting", "speciating", "call"))
+#     expect_equal(names(test2[[1]]), c("fun", "internal"))
+#     expect_equal(names(test2[[2]]), c("fun", "internal"))
+#     expect_equal(names(test2[[3]]), c("fun", "internal"))
+#     expect_true(test2[[1]]$internal$condition())
+#     expect_equal(test2[[1]]$internal$modify(42), 1)
+#     expect_null(test[[2]]$internal$condition)
+#     expect_null(test[[2]]$internal$modify)
+#     expect_false(test2[[3]]$internal$condition())
+#     expect_equal(test2[[3]]$internal$modify(42), 42)
+
+#     ## Print modifiers works correctly
+# })

@@ -353,13 +353,21 @@ modifier name   | accepted input (arguments) | required output (class) |
 
 In the examples above, we have seen how to specify modifications to the birth death process (via `branch.length`, `selection` and `speciation`), however, one might note that these modifications are not dynamic.
 In other words, throughout the process, the modifications remain constant (even if they are conditional).
-It is however possible to code the `"modifiers"` so that they can be affected by `"events"` objects (see next chapter).
+It is however possible to code the `"modifiers"` so that they can be affected by `"events"` objects (see next chapter [on `events`](#makeevents)).
 
 To do so, you can formally declare conditions (`condition`) and modifications (`modify`) as internal functions that can then be modified my an `"events"` object.
 `condition` and `modify` are hard coded in the `branch.length` function that they concern, i.e. they are variables (functions) within the function.
 
 
+```{r}
+    always.false <- function() return(FALSE)
+    always.one <- function(x = NULL) return(1)
 
+    test <- make.modifiers(branch.length = branch.length.trait,
+                           speciation    = speciation.trait,
+                           condition     = always.false, 
+                           modify        = always.one)
+```
 
 
 
@@ -374,10 +382,3 @@ To do so, you can formally declare conditions (`condition`) and modifications (`
 
 
 
-
-
-## Demo runnable
-
-```{r, fig.height = 16, fig.width = 8, eval = FALSE}
-
-```

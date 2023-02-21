@@ -50,8 +50,21 @@
 #' More details about the \code{modifiers} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
 #' 
 #' @examples
+#' ## These functions should be fed to the make.modifiers function to create
+#' ## modifiers for dads objects. For example, the following sets specifies that
+#' ## the branch length should be generated using the branch.length.trait function
+#' ## the selection using the selection function and the speciation using the
+#' ## speciation.trait function:
+#' my_modifiers <- make.modifiers(branch.length = branch.length.trait,
+#'                                selection     = selection,
+#'                                speciation    = speciation.trait)
 #'
-#' @seealso
+#' ## Creating a dads simulation using these modifiers
+#' dads(stop.rule = list(max.taxa = 20),
+#'      traits = make.traits(),
+#'      modifiers = my_modifiers)
+#'
+#' @seealso modifiers dads
 #' 
 #' @author Thomas Guillerme
 #' @export

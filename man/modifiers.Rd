@@ -14,6 +14,10 @@ branch.length(bd.params = NULL, lineage = NULL, trait.values = NULL, modify.fun 
 selection(bd.params = NULL, lineage = NULL, trait.values = NULL, modify.fun = NULL)
 
 speciation(bd.params = NULL, lineage = NULL, trait.values = NULL, modify.fun = NULL)
+
+branch.length.trait(bd.params = NULL, lineage = NULL, trait.values = NULL, modify.fun = NULL)
+
+speciation.trait(bd.params = NULL, lineage = NULL, trait.values = NULL, modify.fun = NULL)
 }
 \arguments{
 \item{bd.params}{A named list of birth death parameters (see details).}
@@ -51,4 +55,26 @@ The pre-build \code{modifiers} in the \code{dads} package are (so far):
  }
 
 More details about the \code{modifiers} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
+}
+\examples{
+## These functions should be fed to the make.modifiers function to create
+## modifiers for dads objects. For example, the following sets specifies that
+## the branch length should be generated using the branch.length.trait function
+## the selection using the selection function and the speciation using the
+## speciation.trait function:
+my_modifiers <- make.modifiers(branch.length = branch.length.trait,
+                               selection     = selection,
+                               speciation    = speciation.trait)
+
+## Creating a dads simulation using these modifiers
+dads(stop.rule = list(max.taxa = 20),
+     traits = make.traits(),
+     modifiers = my_modifiers)
+
+}
+\seealso{
+make.modifiers dads
+}
+\author{
+Thomas Guillerme
 }
