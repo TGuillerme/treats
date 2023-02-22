@@ -8,7 +8,7 @@ output:
   pdf_document: default
 ---
 
-# Making modifiers with `make.modifiers()` {#makemodifiers}
+# Modifying the birth-death process {#makemodifiers}
 
 ```{r, echo = FALSE}
 set.seed(123)
@@ -358,27 +358,50 @@ It is however possible to code the `"modifiers"` so that they can be affected by
 To do so, you can formally declare conditions (`condition`) and modifications (`modify`) as internal functions that can then be modified my an `"events"` object.
 `condition` and `modify` are hard coded in the `branch.length` function that they concern, i.e. they are variables (functions) within the function.
 
+For example in the `speciation` part of a modifier, the default is to trigger an event from a uniform distribution and then check if that value is smaller than ($$speciation/(speciation + extinction)$$):
 
 ```{r}
-    always.false <- function() return(FALSE)
-    always.one <- function(x = NULL) return(1)
+## The default speciation algorithm
+speciation <- function(bd.params) {
+    ## Randomly trigger an event
+    trigger_event <- runif(1)
 
-    test <- make.modifiers(branch.length = branch.length.trait,
-                           speciation    = speciation.trait,
-                           condition     = always.false, 
-                           modify        = always.one)
+    ## Speciate?
+    return(trigger_event < (bd.params$speciation/(bd.params$speciation + bd.params$extinction)))
+}
 ```
 
+It is possible with some specific condition to modify this trigger by providing a `condition` and `modify` function to the speciation function.
+That is, if the `condition` is met, apply the `modify` function to the algorithm.
+For example here we can edit the default speciation function to have a modification (`modify = double.the.trigger`: doubling the trigger value) happening half the time (`condition = half.the.time`):
 
+```{r}
+## A conditional function that triggers half the time
+half.the.time <- function() return(sample(c(TRUE, FALSE), 1))
+## A modification that doubles the value to trigger the event
+double.the.trigger <- function(x) return(x*2)
+## A conditional modifier
+make.modifiers(speciation = speciation,
+               condition  = half.the.time, 
+               modify     = double.the.trigger)
+```
+Effectively, this will internally modify the speciation function as follows
 
+```{r, eval = FALSE}
+## The default speciation algorithm
+speciation <- function(bd.params) {
+    ## Randomly trigger an event
+    trigger_event <- runif(1)
 
+    ## Modify the triggering
+    if(half.the.time()) { ## This running the half.the.time function drawing TRUE or FALSE randomly
+        trigger_event <- double.the.trigger(trigger_event) ## This will double the random value trigger_event
+    }
 
+    ## Speciate?
+    return(trigger_event < (bd.params$speciation/(bd.params$speciation + bd.params$extinction)))
+}
+```
 
-
-
-## Combining and editing modifiers (`add`)
-
-## Testing modifiers (`test`)
-
-
-
+These `condition` and `modify` functions can be applied to all the `modifiers` elements (`selection`, `branch.length` and `speciation`).
+However, they are typically used in `events` that will modify... the `modifiers` ([see the `events` section](#makeevents))!

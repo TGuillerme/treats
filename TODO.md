@@ -8,11 +8,12 @@
 
  - [x] test list of traits
  - [x] add + test `repulsion.process`
+ - [x] add bits about save.steps and background in the manual
 
 ## modifiers
 
- - [ ] example for: `make.modifiers`: Write examples (write manual at the same time)
- - [ ] example for: `modifiers`: Write examples (write manual at the same time)
+ - [x] example for: `make.modifiers`: Write examples (write manual at the same time)
+ - [x] example for: `modifiers`: Write examples (write manual at the same time)
 
 ## events
 
