@@ -101,7 +101,7 @@ plot(make.traits(repulsion.process, process.args = list(repulsion = 5)))
 
 }
 \seealso{
-make.traits dads
+\code{\link{dads}} \code{\link{make.traits}}
 }
 \author{
 Thomas Guillerme

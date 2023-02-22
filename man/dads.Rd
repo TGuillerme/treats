@@ -76,6 +76,9 @@ dads(bd.params = my_bd_params,
 
 
 }
+\seealso{
+\code{\link{plot.dads}} \code{\link{make.traits}} \code{\link{make.modifiers}} \code{\link{make.events}}
+}
 \author{
 Thomas Guillerme
 }

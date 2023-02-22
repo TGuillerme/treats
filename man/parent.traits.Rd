@@ -19,6 +19,9 @@ An internal utility function for \code{modifiers}, \code{traits} or \code{events
 \details{
 This function is designed to be used internally in \code{dads} to help \code{modifiers}, \code{traits} or \code{events} objects to access the parent traits of the lineages simulated through the internal birth death algorithm.
 }
+\seealso{
+\code{\link{dads}}
+}
 \author{
 Thomas Guillerme
 }

@@ -57,8 +57,63 @@ The following functions allow to design specific modifications for events:
 
 More details about the \code{events} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
 }
+\examples{
+## Generating a mass extinction
+## 80\% mass extinction at time 4
+mass_extinction <- make.events(
+                      target       = "taxa",
+                      condition    = time.condition(4),
+                      modification = random.extinction(0.8))
+
+## Set the simulation parameters
+stop.rule <- list(max.time = 5)
+bd.params <- list(extinction = 0, speciation = 1)
+
+## Run the simulations
+set.seed(123)
+results <- dads(bd.params = bd.params,
+                stop.rule = stop.rule,
+                events    = mass_extinction)
+## Plot the results
+plot(results, show.tip.label = FALSE)
+axisPhylo()
+
+## Changing the trait process
+## The 95\% upper quantile value of a distribution
+upper.95 <- function(x) {
+    return(quantile(x, prob = 0.95))
+} 
+## Create an event to change the trait process
+change_process <- make.events(
+                  target       = "traits",
+                  ## condition is triggered if(upper.95(x) > 3)
+                  condition    = trait.condition(3, condition = `>`, what = upper.95),
+                  modification = update.traits(process = OU.process))
+
+## Set the simulation parameters
+bd.params <- list(extinction = 0, speciation = 1)
+stop.rule <- list(max.time = 6)
+traits    <- make.traits()
+
+## Run the simulations
+set.seed(1)
+no_change <- dads(bd.params = bd.params,
+                  stop.rule = stop.rule,
+                  traits    = traits)
+set.seed(1)
+process_change <- dads(bd.params = bd.params,
+                       stop.rule = stop.rule,
+                       traits    = traits,
+                       events    = change_process)
+## Plot the results
+par(mfrow = c(1,2))
+plot(no_change, ylim = c(-7, 7))
+plot(process_change, ylim = c(-7, 7))
+
+
+}
 \seealso{
-\code{make.events}
+\code{\link{dads}} \code{\link{make.events}} \code{\link{events.conditions}}
 }
 \author{
 Thomas Guillerme

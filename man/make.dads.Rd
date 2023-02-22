@@ -28,7 +28,7 @@ plot(my_dads)
 
 }
 \seealso{
-plot.dads
+\code{\link{dads}} \code{\link{plot.dads}}
 }
 \author{
 Thomas Guillerme

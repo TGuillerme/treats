@@ -64,7 +64,7 @@
 #'      traits = make.traits(),
 #'      modifiers = my_modifiers)
 #'
-#' @seealso modifiers dads
+#' @seealso \code{\link{dads}} \code{\link{modifiers}}
 #' 
 #' @author Thomas Guillerme
 #' @export

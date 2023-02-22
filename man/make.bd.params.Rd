@@ -61,6 +61,9 @@ plot(my_bd_params)
 
 
 }
+\seealso{
+\code{\link{dads}}
+}
 \author{
 Thomas Guillerme
 }

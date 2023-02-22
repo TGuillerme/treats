@@ -69,6 +69,9 @@ make.traits(process = OU.process, trait.names = "OU_trait",
             add = my_traits)
 
 }
+\seealso{
+\code{\link{dads}} \code{\link{trait.process}}
+}
 \author{
 Thomas Guillerme
 }

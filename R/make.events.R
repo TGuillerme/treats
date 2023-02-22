@@ -13,15 +13,69 @@
 #' 
 #' @details 
 #' 
-#' \code{target} is a \code{character} to designate what will be affected by the event. It can be either \code{"taxa"}, \code{"bd.params"}, \code{"traits"} or \code{"modifiers"}.
+#' \code{target} is a \code{character} to designate what will be affected by the event. It can be either \code{"taxa"}, \code{"bd.params"}, \code{"traits"} or \code{"modifiers"}. This means that the \code{condition} and \code{modification} functions will target this specific part of the algorithm.
 #' 
-#' \code{condition} must be a function that returns a \code{logical} value and intakes any of the following arguments: \code{bd.params}, \code{lineage}, \code{traits} and \code{time}.
+#' \code{condition} must be a function that returns a \code{logical} value and intakes any of the following arguments: \code{bd.params}, \code{lineage}, \code{traits} and \code{time}. See \code{\link{events.conditions}} for examples.
+#'
+#' \code{modification} must be a function that intakes a first argument named \code{"x"} an returns any specific type of class that can be handled internally by dads. For example, if \code{target = "bd.params"} the \code{modification} function should typically return an updated \code{bd.params} object (see \code{\link{make.bd.params}}). See \code{\link{events.modifications}} for examples.
 #' 
 #' 
 #' @examples
-#'
-#' @seealso
+
+#' ## Generating a mass extinction
+#' ## 80% mass extinction at time 4
+#' mass_extinction <- make.events(
+#'                       target       = "taxa",
+#'                       condition    = time.condition(4),
+#'                       modification = random.extinction(0.8))
 #' 
+#' ## Set the simulation parameters
+#' stop.rule <- list(max.time = 5)
+#' bd.params <- list(extinction = 0, speciation = 1)
+#' 
+#' ## Run the simulations
+#' set.seed(123)
+#' results <- dads(bd.params = bd.params,
+#'                 stop.rule = stop.rule,
+#'                 events    = mass_extinction)
+#' ## Plot the results
+#' plot(results, show.tip.label = FALSE)
+#' axisPhylo()
+#' 
+#' ## Changing the trait process
+#' ## The 95% upper quantile value of a distribution
+#' upper.95 <- function(x) {
+#'     return(quantile(x, prob = 0.95))
+#' } 
+#' ## Create an event to change the trait process
+#' change_process <- make.events(
+#'                   target       = "traits",
+#'                   ## condition is triggered if(upper.95(x) > 3)
+#'                   condition    = trait.condition(3, condition = `>`, what = upper.95),
+#'                   modification = update.traits(process = OU.process))
+#' 
+#' ## Set the simulation parameters
+#' bd.params <- list(extinction = 0, speciation = 1)
+#' stop.rule <- list(max.time = 6)
+#' traits    <- make.traits()
+#' 
+#' ## Run the simulations
+#' set.seed(1)
+#' no_change <- dads(bd.params = bd.params,
+#'                   stop.rule = stop.rule,
+#'                   traits    = traits)
+#' set.seed(1)
+#' process_change <- dads(bd.params = bd.params,
+#'                        stop.rule = stop.rule,
+#'                        traits    = traits,
+#'                        events    = change_process)
+#' ## Plot the results
+#' par(mfrow = c(1,2))
+#' plot(no_change, ylim = c(-7, 7))
+#' plot(process_change, ylim = c(-7, 7))
+#' 
+#' 
+#' @seealso \code{\link{dads}} \code{\link{make.bd.params}} \code{\link{make.traits}} \code{\link{make.modifiers}} \code{\link{events.conditions}} \code{\link{events.modifications}}
 #' @author Thomas Guillerme
 #' @export
 

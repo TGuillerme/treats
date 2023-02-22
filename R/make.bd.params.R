@@ -38,7 +38,7 @@
 #' plot(my_bd_params)
 #' 
 #'
-#' @seealso
+#' @seealso \code{\link{dads}}
 #' 
 #' @author Thomas Guillerme
 #' @export

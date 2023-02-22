@@ -73,7 +73,7 @@ dads(stop.rule = list(max.taxa = 20),
 
 }
 \seealso{
-make.modifiers dads
+\code{\link{dads}} \code{\link{make.modifiers}}
 }
 \author{
 Thomas Guillerme

@@ -52,6 +52,10 @@ dim(drop.singles(my_data)$data)
 
 ## Removing the internal nodes AND the fossils
 drop.singles(drop.fossils(my_data))
+
+}
+\seealso{
+\code{\link{dads}} \code{\link{plot.dads}}
 }
 \author{
 Thomas Guillerme

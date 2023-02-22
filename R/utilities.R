@@ -13,7 +13,7 @@
 #' 
 #' @examples
 #'
-#' @seealso
+#' @seealso \code{\link{dads}}
 #' 
 #' @author Thomas Guillerme
 #' @export

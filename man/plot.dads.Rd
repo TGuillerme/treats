@@ -89,6 +89,9 @@ plot(my_data, trait = c(1,3), col = rainbow,
 plot(my_data, trait = c(1:3), col = heat.colors,
      edges = NULL, tips.nodes = "black", use.3D = TRUE)
 }
+\seealso{
+\code{\link{dads}}
+}
 \author{
 Thomas Guillerme
 }

@@ -16,6 +16,9 @@
 \description{
 Summarises the content of a \code{dads} object.
 }
+\seealso{
+\code{\link{dads}}
+}
 \author{
 Thomas Guillerme
 }

@@ -18,7 +18,7 @@
 #' my_dads <- make.dads(tree = my_tree, data = my_data)
 #' plot(my_dads)
 #'
-#' @seealso plot.dads
+#' @seealso \code{\link{dads}} \code{\link{plot.dads}}
 #' 
 #' @author Thomas Guillerme
 #' @export
