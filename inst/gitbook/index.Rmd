@@ -89,3 +89,33 @@ You will find more details about how these objects (`traits`, `modifiers` and `e
 
 ![Schematised summary of the `dads` package architecture](dads_structure.pdf)
 
+
+# The birth-death algorithm {#bdalgorithm} 
+
+> If you want to get your hands dirty, you can go straight to the [getting start section](#gettingstarted), this following section just describes the process in pseudo-code.
+
+The `dads` algorithm is based on a modular version of the birth-death process algorithm.
+The birth-death model is a continuous Markov process (i.e. a continuous random process where the state will change each step are linked through time and change according to some random exponential variables) which is well defined mathematically and [commonly used in biology](https://lukejharmon.github.io/pcm/chapter10_birthdeath/#section-10.2-the-birth-death-model) but also in [many other fields](https://en.wikipedia.org/wiki/Birth%E2%80%93death_process).
+
+The algorithm used in `dads` allows modularity of this process and is based on the following steps (the text in `courier font` is for the name of the process in the algorithm):
+
+ 0. **Starting the process**: this step is actually non modular and creates a random tree with one tip, one node and one branch length connecting both. This step is used to optimise the rest of the algorithm in terms of speed and memory management. The node, tip and branch resulting from this step are discarded at the end of the simulations.
+ 1. **Selecting a lineage** (`selecting`): this step selects a tip that is currently not extinct. In a standard birth-death process this is just done randomly, however in `dads` this can be modified based on the birth-death parameters, the currently available lineages and potential trait values. *For example, it is possible to put a higher probability in selecting a lineage that is next to a lineage that recently went extinct and has a positive trait value.*
+ Then go to step 2.
+ 2. **Growing the tree** (`waiting`): this step grows the tree by a certain amount. It does so by adding the same amount of branch length to all the non-extinct lineages. In an exact birth death process, this is done by drawing a random value from an exponential distribution with a rate of $$\text{number of living lineages} \times (\text{speciation} + \text{extinction parameters})$$. In `dads`, this can be modified based on the birth-death parameters, the currently available lineages and potential trait values. *For example, it is possible to increase branch length by the ratio of living/extinct fossils and a random number drawn from the range of current trait values.*
+ If the total tree length is less than the required tree length, go to step 3. Else go to step 6.
+ 3. **Simulating traits** \[optional\] (`traits`): this step allows to simulate a trait value for the selected lineage from step 1. This is typically not part of a standard birth-death process and is handled via the `traits` option in `dads` (see the [`make.traits`](#maketraits) chapter for more details).
+ Then go to step 4.
+ 4. **Speciating** (`speciating`): in this step, the selected lineage from step 1 has the option of speciating or going extinct. In a standard birth-death process, this happens by randomly drawing a value between 0 and 1 as a way to trigger speciation relatively to the birth-death parameters:
+```
+if
+    randomly drawn number is smaller or equal to speciation/(speciation + extinction)
+then
+    do speciate
+else
+    go extinct
+```
+ Again, in `dads`, this process can be modified based on the birth-death parameters, the currently available lineages and potential trait values. *For example, the lineage can only speciate if it's trait value is positive, regardless of whether speciation or extinction has been triggered*. 
+ Then go to step 5.
+ 5. If the number of lineages is less than required number of lineages, then go to step 1. Else go to step 6.
+ 6. The simulation has stopped because it reached the required amount of lineages or time.
