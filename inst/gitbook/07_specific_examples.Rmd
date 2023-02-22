@@ -1,0 +1,612 @@
+---
+title: "Thorough example"
+author: "Thomas Guillerme (guillert@tcd.ie)"
+date: "`r Sys.Date()`"
+bibliography: [../References.bib, ../packages.bib]
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r, echo = FALSE}
+library(rgl)
+knitr::knit_hooks$set(webgl = hook_webgl)
+```
+# Thorough example
+
+Here we are going to look at an example on how to simulate complex evolutionary histories with `dads`.
+
+Let say we want to simulate the following story:
+
+ 1. A lineage evolves in a normal birth-death fashion (with extinction) from a single origin and with two traits called:
+    - "Distance": the physical distance between species in an arbitrary 1D space (evolving in a Brownian motion).
+    - "Variable": a 2D uncorrelated Ornstein-Uhlenbeck trait that corresponds to some traits the lineages have.
+ During the whole process, lineages that are more further away from the other species in terms of distance have a higher change of speciating (proportional to that distance).
+
+Three events then happen during the evolutionary history of this lineage: 
+
+ 2. "Correlation event": after reaching time 2 an event happens making the "Variables" trait dimensions become correlated.
+ 3. "Selective extinction event": after reaching a certain point in time, lineages with their "Variables" values that are negative go extinct
+ 4. "Founding event": after reaching a value for the "Distance" trait, a founding event happens with a new birth-death process with no extinction and where the "Variable" is now a 2D correlated Brownian Motion.
+ 5. "Mass extinction event": after reaching a certain number of taxa in the "Founding event", 80% of taxa go extinct randomly.
+
+We are going to run each step one by one in a cumulative manner to see how they pile up:
+
+## Step 1:
+
+### The birth death parameters
+
+First let's set the overall birth death parameters (a speciation of 1.2 and an extinction of 0.3):
+
+```{r}
+## The birth death parameters
+bd_params <- list(speciation = 1.5, extinction = 0.3)
+## The stopping rule
+stop_rule <- list(max.time = 4)
+```
+
+And let's quickly test if the simulation works by running a birth death tree without traits and anything:
+
+```{r}
+set.seed(0) # 123 also works
+## Running a birth death tree 
+results <- dads(bd.params = bd_params,
+                stop.rule = stop_rule)
+
+## And displaying the results
+plot(results)
+axisPhylo()
+```
+
+### The traits
+
+Then let's create the traits:
+
+```{r}
+## The trait object
+two_traits <- make.traits(process = c(BM.process, OU.process), n = c(1, 2),
+                          trait.names = c("Distance", "Variables"))
+```
+
+
+```{r}
+## Visualise the 1D trait (BM.process)
+plot(two_traits, trait = 1)
+```
+
+```{r, webgl=TRUE}
+## Visualise the 2D trait (uncorrelated OU.process)
+plot(two_traits, trait = 2, use.3D = TRUE)
+```
+
+Note that specifying the correlation matrix is not necessary here _per se_ (since no correlation is the default) but we will modify it through an event later on so it's good practice to have it properly stated before hand (to avoid any confusion).
+
+We can then run the tree with the traits:
+
+```{r}
+set.seed(0)
+## Running a birth death tree 
+results <- dads(bd.params  = bd_params,
+                stop.rule  = stop_rule,
+                traits     = two_traits)
+
+## And displaying the results
+par(mfrow = c(1,2))
+plot(results, trait = 1, main = "Trait 1: Distance")
+plot(results, trait = c(2,3), main = "Variables correlation")
+```
+
+```{r, webgl=TRUE}
+## Visualising the tree in 3D
+plot(results, trait = c(2,3), use.3D = TRUE)
+```
+
+### The modifiers
+
+```{r}
+## Speciation event is more likely if lineage's ancestor is further away from the mean trait value
+distance.modify <- function(x, trait.values, lineage) return(x + x * abs(parent.traits(trait.values, lineage)[1] - mean(trait.values[,1])))
+
+## Make a distance modifier
+distance.speciation <- make.modifiers(speciation = speciation,
+                                      modify = distance.modify)
+```
+
+```{r}
+set.seed(13)
+## Running a birth death tree 
+results <- dads(bd.params  = bd_params,
+                stop.rule  = stop_rule,
+                traits     = two_traits,
+                modifiers  = distance.speciation)
+
+## And displaying the results
+par(mfrow = c(1,2))
+plot(results, trait = 1, main = "Trait 1: Distance")
+plot(results, trait = c(2,3), main = "Variables correlation")
+```
+
+```{r, webgl=TRUE}
+## Visualising the tree in 3D
+plot(results, trait = c(2,3), use.3D = TRUE)
+```
+
+
+
+
+
+
+
+
+
+> BUGGED FROM HERE!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Step 2:
+ 2. "Correlation event": after reaching time 2 an event happens making the "Variable" trait dimensions become correlated.
+
+```{r}
+## The correlation change event
+update.correlation <- update.traits(process.args =list(Sigma = matrix(c(10,3,3,2),2,2)))
+
+events_list <- make.events(event.name   = "Correlation",
+                           target       = "traits",
+                           condition    = time.condition(2),
+                           modification = update.traits(
+                    process.args =list(Sigma = matrix(c(10,3,3,2),2,2)),
+                    trait.names  = "Variables"))
+```
+
+```{r}
+results <- NULL
+set.seed(1)
+## Running a birth death tree 
+results <- dads(bd.params  = bd_params,
+                stop.rule  = stop_rule,
+                traits     = two_traits,
+                modifiers  = distance.speciation,
+                events     = events_list)
+
+## And displaying the results
+par(mfrow = c(1,2))
+plot(results, trait = 1, main = "Trait 1: Distance")
+plot(results, trait = c(2,3), main = "Variables correlation")
+```
+
+```{r, webgl=TRUE}
+## Visualising the tree in 3D
+plot(results, trait = c(2,3), use.3D = TRUE)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Step 3:
+ 3. "Selective extinction event": after reaching a certain point in time, lineages with their "Variables" values that are negative go extinct
+
+
+```{r, eval = FALSE}
+## Adding the selective event
+events_list <- make.events(event.name   = "Selection",
+                           add          = events_list,
+                           target       = "taxa",
+                           condition    = time.condition(4),
+                           modification = trait.extinction(x = 0, condition = `<`, trait = 2))
+```
+Problem with `modification` argument here
+
+
+```{r, eval = FALSE}
+## Running a birth death tree 
+results <- dads(bd.params  = bd_params,
+                stop.rule  = stop_rule,
+                traits     = two_traits,
+                modifiers  = distance.speciation,
+                events     = events_list)
+
+## And displaying the results
+par(mfrow = c(1,2))
+plot(results, trait = 1, main = "Trait 1: Distance")
+plot(results, trait = c(2,3), main = "Variables correlation")
+```
+
+## Step 4 and 5:
+ 4. "Founding event": after reaching a value for the "Distance" trait, a founding event happens with a new birth-death process with no extinction and where the "Variable" is now a 2D correlated Brownian Motion.
+ 5. "Mass extinction event": after reaching a certain number of taxa in the "Founding event", 80% of taxa go extinct randomly.
+
+```{r, eval = FALSE}
+## The new trait for the founding event
+new_traits <- make.traits(process = c(BM.process, BM.process), n = c(1, 2),
+                          trait.names = c("Distance", "Variables"))
+
+## The mass extinction event after reaching 50 taxa
+mass_extinction <- make.events(target       = "taxa",
+                               condition    = taxa.condition(50),
+                               modification = random.extinction(0.8))
+```
+
+```{r, eval = FALSE}
+## The selective event
+events_list <- make.events(event.name   = "Founding", 
+                           add          = events_list,
+                           target       = "founding",
+                           condition    = trait.condition(3),
+                           modification = founding.event(traits    = new_traits,
+                                                         events    = mass_extinction,
+                                                         bd.params = list(
+                                                            speciation = 2,
+                                                            extinction = 0)),
+                           additional.args = list(prefix = "found_"))
+```
+
+```{r, eval = FALSE}
+## Running a birth death tree 
+results <- dads(bd.params  = bd_params,
+                stop.rule  = stop_rule,
+                traits     = two_traits,
+                modifiers  = distance.speciation,
+                events     = events_list,
+                null.error = 100)
+
+## And displaying the results
+par(mfrow = c(1,2))
+plot(results, trait = 1, main = "Trait 1: Distance")
+plot(results, trait = c(2,3), main = "Variables correlation")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Examples gallery
+
+
+
+
+### Random mass extinction after some time
+
+```{r}
+## Simulation parameters
+stop.rule <- list(max.time = 5)
+bd.params <- list(extinction = 0, speciation = 1)
+
+## 80% mass extinction at time 4
+mass_extinction <- make.events(
+                      target = "taxa",
+                      condition = time.condition(4),
+                      modification = random.extinction(0.8))
+
+## Running the simulations
+set.seed(1)
+results <- dads(bd.params = bd.params,
+                stop.rule = stop.rule,
+                events    = mass_extinction)
+## Plotting the results
+plot(results, show.tip.label = FALSE)
+axisPhylo()
+```
+
+### Extinction based on a trait value after some time
+
+```{r}
+## Simulation parameters
+stop.rule <- list(max.time = 5)
+bd.params <- list(extinction = 0, speciation = 1)
+
+## Extinction of any tips with trait < 1 at time 4
+trait_extinction <- make.events(
+                      target = "taxa",
+                      condition = time.condition(4),
+                      modification = trait.extinction(1))
+
+## Running the simulations
+set.seed(7)
+results <- dads(bd.params = bd.params,
+                stop.rule = stop.rule,
+                traits    = make.traits(),
+                events    = trait_extinction)
+## Plotting the results
+plot(results)
+```
+
+### Adding a background extinction after reaching a number of living taxa
+
+```{r}
+## Simulation parameters
+stop.rule <- list(max.living = 50)
+bd.params <- list(extinction = 0, speciation = 1)
+
+## Adding an extinction parameter after 30 taxa
+background_extinction <- make.events(
+                      condition    = taxa.condition(30),
+                      target       = "bd.params",
+                      modification = update.bd.params(1/3, "extinction"))
+
+## Running the simulations
+set.seed(2)
+results <- dads(bd.params = bd.params,
+                stop.rule = stop.rule,
+                events    = background_extinction)
+## Plotting the results
+plot(results)
+```
+
+### Reducing speciation after some time
+
+```{r}
+## Simulation parameters
+stop.rule <- list(max.time = 4)
+bd.params <- list(extinction = 0, speciation = 1)
+
+## Reducing speciation after reaching time 2
+reduced_speciation <- make.events(
+                      condition    = time.condition(2),
+                      target       = "bd.params",
+                      modification = update.bd.params(1/3, "speciation"))
+
+set.seed(42)
+no_event <- dads(bd.params = bd.params,
+                 stop.rule = stop.rule)
+set.seed(42)
+reduced_speciation_event <- dads(bd.params = bd.params,
+                                 stop.rule = stop.rule,
+                                 events    = reduced_speciation)
+
+## Plot both trees
+par(mfrow = c(1, 2))
+plot(no_event, main = "No event")
+axisPhylo()
+plot(reduced_speciation_event, main = "Reduced speciation after time 2")
+axisPhylo()
+```
+
+### Changing trait process after some time
+
+```{r}
+## Simulation parameters
+bd.params <- list(extinction = 0, speciation = 1)
+stop.rule <- list(max.time = 6)
+traits    <- make.traits()
+
+## Create an event to change the trait process
+change_process <- make.events(
+                  condition    = time.condition(5),
+                  target       = "traits",
+                  modification = update.traits(process = OU.process))
+
+## Run the simulations
+set.seed(1)
+no_change <- dads(bd.params = bd.params,
+                  stop.rule = stop.rule,
+                  traits    = traits)
+set.seed(1)
+process_change <- dads(bd.params = bd.params,
+                       stop.rule = stop.rule,
+                       traits    = traits,
+                       events    = change_process)
+## Plot the results
+par(mfrow = c(1,2))
+plot(no_change, ylim = c(-7, 7))
+plot(process_change, ylim = c(-7, 7))
+```
+
+### Changing trait correlation after reaching a trait value
+
+
+```{r}
+## Set the parameters
+stop.rule <- list(max.taxa = 100)
+bd.params <- list(extinction = 0, speciation = 1)
+
+## A correlated trait
+traits <- make.traits(n = 2, process.args = list(Sigma = matrix(1, 2, 2)))
+
+## Event changing a trait correlation
+cor_change <- make.events(
+    condition    = trait.condition(3, absolute = TRUE),
+    target       = "traits",
+    modification = update.traits(process.args = list(Sigma = matrix(c(10,3,3,2),2,2))))
+
+## Run the simulations
+set.seed(2)
+no_event <- dads(bd.params = bd.params,
+                 stop.rule = stop.rule,
+                 traits    = traits)
+set.seed(2)
+change_correlation <- dads(bd.params = bd.params,
+                           stop.rule = stop.rule,
+                           traits    = traits,
+                           events    = cor_change)
+
+## Visual testing
+par(mfrow = c(1,2))
+plot(no_event, trait = 2)
+plot(change_correlation, trait = 2)
+
+```
+
+```{r, webgl=TRUE}
+## 3D plot
+plot(change_correlation, trait = c(1:2), use.3D = TRUE)
+```
+
+### Event for changing a modifier
+
+```{r}
+## Set the parameters
+stop.rule <- list(max.time = 4)
+bd.params <- list(extinction = 0, speciation = 1)
+
+## Using a default trait and modifier object
+modifiers <- make.modifiers()
+traits <- make.traits()
+
+## New condition and new modifier (increasing speciation if trait is negative)
+new.condition <- function(trait.values, lineage) {
+    return(parent.traits(trait.values, lineage) < 0)
+}
+new.modify    <- function(x, trait.values, lineage) {
+  return(x + 1)
+}
+
+## Update the modifier
+change_speciation <- make.events(
+    condition    = time.condition(3),
+    target       = "modifiers",
+    modification = update.modifiers(speciation = speciation,
+                                    condition  = new.condition,
+                                    modify     = new.modify))
+
+set.seed(4)
+no_event <- dads(bd.params = bd.params,
+                 stop.rule = stop.rule,
+                 traits    = traits,
+                 modifiers = modifiers)
+set.seed(4)
+change_spec <- dads(bd.params = bd.params,
+                    stop.rule = stop.rule,
+                    traits    = traits,
+                    modifiers = modifiers,
+                    events    = change_speciation)
+
+## Visualise the results
+par(mfrow = c(1,2))
+plot(no_event, main = "No event")
+plot(change_spec, main = "Increase extinction for negative\ntraits after time 3")
+```
+
+### Changing branch length when reaching n taxa
+
+```{r}
+## Parameters
+bd.params <- list(extinction = 0, speciation = 1)
+stop.rule <- list(max.taxa = 100)
+modifiers <- make.modifiers()
+traits <- make.traits()
+
+## multiplying branch length 100 folds
+new.modify <- function(x, trait.values, lineage) {
+  return(x * 100)
+}
+
+## Event for increasing branch length after reaching 30 taxa
+increase_brlen <- make.events(
+                  condition    = taxa.condition(30),
+                  target       = "modifiers",
+                  modification = update.modifiers(
+                                    branch.length = branch.length,
+                                    modify = new.modify))
+
+## Run the simulations
+set.seed(5)
+no_event <- dads(bd.params = bd.params,
+                 stop.rule = stop.rule,
+                 traits    = traits,
+                 modifiers = modifiers)
+set.seed(5)
+increased_brlen <- dads(bd.params = bd.params,
+                        stop.rule = stop.rule,
+                        traits    = traits,
+                        modifiers = modifiers,
+                        events    = increase_brlen)
+
+## Visualise the results
+par(mfrow = c(1,2))
+plot(no_event, main = "No event")
+plot(increased_brlen, main = "Increase branch length\nafter 30 taxa")
+```
+
+### Founding event: a subtree with no fossils
+
+```{r}
+## Set up parameters
+stop.rule <- list(max.time = 4)
+bd.params <- list(speciation = 1, extinction = 0.3)
+
+## Events that generate a new process (founding effects)
+founding_event <- make.events(
+                  condition    = taxa.condition(10),
+                  target       = "founding",
+                  modification = founding.event(
+                                    bd.params = list(speciation = 2,
+                                                     extinction = 0)),
+                  additional.args = list(prefix = "founding_"))
+    
+## Simulations
+set.seed(11)
+founding_tree <- dads(bd.params = bd.params,
+                      stop.rule = stop.rule,
+                      events    = founding_event)
+plot(founding_tree, cex = 0.4)
+```
+
+### Founding event with traits
+
+```{r}
+## Set up parameters
+stop.rule <- list(max.time = 4)
+bd.params <- list(speciation = 1, extinction = 0.3)
+traits    <- make.traits()
+
+## Events that generate a new process (founding effects)
+founding_event <- make.events(
+                  condition    = taxa.condition(10),
+                  target       = "founding",
+                  modification = founding.event(
+                                    bd.params = list(speciation = 2,
+                                                     extinction = 0),
+                                    traits = make.traits(process = OU.process)),
+                  additional.args = list(prefix = "founding_"))
+
+## Simulating the tree
+set.seed(19)
+founding_tree <- dads(bd.params = bd.params,
+                      stop.rule = stop.rule,
+                      traits    = make.traits(),
+                      events    = founding_event)
+plot(founding_tree)
+```
