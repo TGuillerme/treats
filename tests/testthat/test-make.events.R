@@ -23,11 +23,3 @@ test_that("make.events works", {
     expect_equal(print, " ---- dads events object ---- \nEvent targeting \"traits\" to be triggered 1 time.\nThe condition function is: condition.test.ok\nThe modification function is: modification.test.ok\n")
 
 })
-
-# test_that("More that one events works", {
-
-#     ## Sanitizing
-#     #expect_error(make.events())
-
-
-# })
