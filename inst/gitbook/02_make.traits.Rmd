@@ -8,11 +8,14 @@ output:
   pdf_document: default
 ---
 
-# Making trait processes with `make.traits()` {#maketraits}
+# Simulating traits {#maketraits}
 
 ```{r, echo = FALSE}
 set.seed(123)
 ```
+
+In `dads`, traits are simulating by providing a `traits` object to the `traits` argument.
+This object is generated using the `make.traits`.
 
 ## The process (`process`)
 
@@ -252,6 +255,52 @@ one_process
 two_processes
 ```
 
+## Using a background trait
+
+`traits` objects also allow a background trait to be used when traits are simulated ([step 3 here](#bdalgorithm)).
+This basically allows traits to be simulating for _all_ tips whenever a trait is generated for one tip.
+This can be useful for keeping track of trait values along the simulation (_cf_ just at bifurcating nodes).
+The `background` argument takes any output from the `make.traits` function in a nested way:
+
+```{r}
+## Generating a default BM trait:
+BM_trait <- make.traits()
+## Generating an OU trait with a background BM trait
+my_trait <- make.traits(process = OU.process, background = BM_trait) 
+```
+
+Note that technically you can nest as many background traits as you want (e.g. `make.traits(background = make.traits(background = make.traits(...)))` is valid).
+However, you should always make sure that the background trait has the same dimensions as the normal (main) trait.
+When using a trait with background, your tree will have internal singleton nodes (i.e. nodes linking to one ancestor and only one descendant).
+You can remove these nodes using the [`drop.things` function](#dropthings).
+
+```{r}
+set.seed(1)
+## Generating a pure birth tree with the background trait
+tree_bkg <- dads(stop.rule = list(max.taxa = 20),
+                 traits    = my_trait)
+## This tree has many internal singleton nodes
+plot(tree_bkg)
+```
+
+## Saving trait values at different time steps
+
+Alternatively to having a background trait, you can also simulate a tree by generating traits at specific time steps with the `save.steps` option in `dads`.
+This will apply the `traits` object to all lineages currently alive at the required time steps.
+These time steps can be either regular by providing a single numeric value; e.g. `save.steps = 0.1` will get a snapshot of the trait values every 0.1 units of time.
+Or specific, by providing a specific set of values; e.g. `save.steps = c(1, 1.2, 3)` will make a snapshot of the trait values at the required time steps.
+
+```{r}
+set.seed(123)
+## Generating a birth-death tree with a BM trait and saving steps at specific times
+tree_steps <- dads(stop.rule  = list(max.time = 3),
+                   bd.params  = list(speciation = 1, extinction = 0.1),
+                   traits     = make.traits(),
+                   save.steps = c(1/3, 1, 2))
+## This also creates internal singleton nodes
+plot(tree_steps)
+abline(v = 3 - c(1/3, 1, 2), lwd = 0.5, col = "grey")
+```
 
 ## Traits implemented in `dads`
 
