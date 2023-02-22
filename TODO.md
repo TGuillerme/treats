@@ -17,16 +17,14 @@
 
 ## events
 
- - [ ] make list of events
- - [ ] document list of events (Rd)
- - [ ] document list of events (gitbook)
- - [ ] test list of separate: conditions and modifications
- - [ ] allow events per clade (see TreeSim)
- - [ ] add abiotic events (see RPANDA)
- - [ ] make manual for events
- - [ ] example for: `events.conditions`: Write examples (write manual at the same time)
- - [ ] example for: `events.modifications`: Write examples (write manual at the same time)
- - [ ] example for: `make.events`: Write examples (write manual at the same time)
+ - [x] make list of events
+ - [x] document list of events (Rd)
+ - [x] document list of events (gitbook)
+ - [x] test list of separate: conditions and modifications
+ - [x] make manual for events
+ - [x] example for: `events.conditions`: Write examples (write manual at the same time)
+ - [x] example for: `events.modifications`: Write examples (write manual at the same time)
+ - [x] example for: `make.events`: Write examples (write manual at the same time)
 
 ## dads
 
@@ -69,3 +67,5 @@ Selling point: dads is so modular that you can simulate a dads object that simul
 
 ## TODO: whishlist
  - [ ] Add lineage tracking mechanism (i.e. allow `traits`, `modifiers` or `events` to be applied to specific lineages); also allow giving prefixes to the names of tips and nodes in the lineage.
+ - [ ] allow events per clade (see TreeSim)
+ - [ ] add abiotic events (see RPANDA)
