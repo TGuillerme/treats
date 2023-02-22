@@ -14,36 +14,107 @@ library(rgl)
 knitr::knit_hooks$set(webgl = hook_webgl)
 ```
 
-# Making events with `make.events()` {#makeevents}
-
 ```{r, echo = FALSE}
 set.seed(123)
 ```
 
+# Adding events to simulations {#makeevents}
+
+One other major feature of the `dads` package is to allow simulations to run with specified events to occur during the simulation.
+These are typically events that can drastically change the course of the simulation.
+For example, you might want simulate some mass extinction at some specific point in time.
+However, these can also be more subtle, like the internal change of parameter values when reaching a specific trait value.
+These are all handled by `dads` with the `events` object that you can create using `make.events` and has the same overall logic as `make.traits` and `make.modifiers`.
+
+`events` require three main arguments:
+ * the `target` which designates what the extinction should affect (e.g. the taxa, the speciation rate, etc...);
+ * the `condition` which designates when to trigger the event;
+ * the `modification` which designates what to exactly modify when the event is triggered.
+
+There are several more arguments that can be passed to `make.events` but they are discussed later on.
+First let's focus on these three main arguments:
+
+## Target
+
+The target of the event is what the event is going to modify in the birth-death algorithm.
+You can only have one target per event (along with one condition and one modification) but you can create events that contain multiple events (i.e. multiple triplets of target/condition/modification).
+The targets that are currently available are:
+ * `"taxa"` to modify anything linked to the [`lineage` list](#allowarguments). E.g. making half of the living taxa go extinct.
+ * `"bd.params"` to modify anything linked to the [`bd.params` object](#makebdparams). For example you might want to change the distribution of one of the parameter after some `conditions`. This is typically done by updating the object using the argument `update` from `make.bd.params`.
+ * `"traits"` to modify anything linked to the [`traits` object](#maketraits). For example you might want to change the trait process after some `conditions`. This is typically done by updating the object using the argument `update` from `make.traits`.
+ * `"modifiers"` to modify anything linked to the [`modifiers` object](#makebdmodifiers). For example you might want to change the speciation rule after some `conditions`. This is typically done by updating the object using the argument `update` from `make.modifiers`.
+ * `"founding"` this target is a bit more special and allows you run a nested `dads` object in the simulation. It is cover in a [specific section below](#founding).
+
+We will see some example of these targets by illustrating the `conditions` and `modifications` below.
+
 ## Conditions
 
+`condition` is a function that returns a logical value. When a specific condition is met, it should return `TRUE` and trigger the event, else it should return `FALSE`.
+
+Currently there are three conditions functions implemented in `dads` but you can easily come up with your own version of them.
+
+All `condition` functions in `dads` take at least to arguments: `x` for the variable of interest (e.g. time, number of taxa, trait value, etc...) and `condition`, the relational operator to evaluate. A relational operator is the proper (fancy) term designating all the comparisons you're regularly using in `R` like `==` (is equal?) `<` (is smaller?) `>=` (is bigger or equal?). You can get the full list in the base manual (using `?Comparison` or any of the relational operator in a function form).
+
+> Note on the function form of a operator in `R`: if you weren't aware, functions in `R` are _usually_ described in the format `function(arguments)`, however many other functions you are commonly using are written as operators, for example (`1 + 1`). These are still functions though! And you can always use them in the classic function format by quoting them in back ticks: the following does the same as `(1+1)`: `` `+`(1, 1) ``. You can use that for parsing your relational operators as functions in `condition`. If you want you condition to be equal, use the syntax ``condition = `==` ``. More details on how functions _really_ work in the [Advanced `R` book](https://adv-r.hadley.nz/functions.html)!
+
+
+ * `time.condition` will trigger the `event` once a certain time is reached in the simulations and is the simplest/more basic condition with no arguments other than the time required. For example ``time.condition(4, condition = `==`)`` will trigger the `event` once the simulations reached 4 units of time. Easy.
+ * `taxa.condition` will trigger the `event` once a certain number of taxa is reached. This can be considered including or excluding fossil species. For example ``taxa.condition(42, condition = `>=`, living = TRUE)`` will trigger the `event` if there is at least 42 living species.
+ * `trait.condition` will trigger the `event` once a certain trait value is reached. This function allows to say which trait(s) to target (by default, the first one using `trait = 1`), what value of the trait to target (by default `what = max`) and whether to use and absolute trait value or not (`absolute = TRUE`). For example ``trait.condition(1/3, condition = `>`, trait = 1, what = sd)`` will trigger the condition after the standard deviation of the first trait reaches 1/3.
 
 ## Modifications
 
+After defining the `event`'s `target` and `condition`, you'll need to also specify what it should modify.
+These are basically functions that should modify a specific aspect of the target
+Depending on the target you can modify the following:
 
-## Some events examples
+ * if the target is `"taxa"` you can modify the internal [`lineage` list](#allowarguments) by removing living species using `random.extinction` or `trait.extinction`.
+ * if the target is `"taxa"` you can modify the lineage tracker by removing living species using `random.extinction` or `trait.extinction`.
+ * if the target is `"bd.params"` you can modify the [`bd.params` object](#makebdparams) using `update.bd.params`.
+ * if the target is `"traits"` you can modify the [`traits` object](#maketraits) using `update.traits`.
+ * if the target is `"modifiers"` you can modify the [`modifiers` object](#makemodifiers) using `update.modifiers`.
+ * (for the `"founding"` target [see below](#founding))
 
-
-### Random mass extinction after some time
+The most straightforward example if for `modifications` on `bd.params`, `traits` or `modifiers` objects since they use the same syntax as for their generic `make.X` function.
+For example, for `make.traits`, you can update a `trait` using the `update` argument as follows:
 
 ```{r}
+## A BM trait in two dimensions
+(BM_2D <- make.traits(n = 2, process = BM.process))
+## Updating the 2D BM into a 2D OU
+(OU_2D <- make.traits(update = BM_2D, process = OU.process))
+```
+
+So basically the functions `update.X` apply the update to the object `X` when the event happens.
+The following `event` updates the `bd.params` object by setting the extinction parameter to 1/3 when reaching a 10 species:
+
+```{r, eval = FALSE}
+make.events(target       = "bd.params",
+            condition    = taxa.condition(10, condition = `>=`),
+            modification = update.bd.params(extinction = 1/3))
+
+```
+
+> Note that by default events are triggered only once in the whole simulation, so although the example above states that the condition is reaching at least 10 taxa, it will not trigger every times it reaches more than 10 taxa. You can change the number of times the events can be triggered using the argument `replications` (by default it's set to `replications = 0` for triggering it only once).
+
+## Examples
+
+Here are some example illustrating how to generate events.
+For a simple example, we can create a extinction event that will remove 80% of species after reaching time 4:
+
+```{r}
+## 80% mass extinction at time 4
+mass_extinction <- make.events(
+                      target       = "taxa",
+                      condition    = time.condition(4),
+                      modification = random.extinction(0.8))
+
 ## Simulation parameters
 stop.rule <- list(max.time = 5)
 bd.params <- list(extinction = 0, speciation = 1)
 
-## 80% mass extinction at time 4
-mass_extinction <- make.events(
-                      target = "taxa",
-                      condition = time.condition(4),
-                      modification = random.extinction(0.8))
-
 ## Running the simulations
-set.seed(1)
+set.seed(123)
 results <- dads(bd.params = bd.params,
                 stop.rule = stop.rule,
                 events    = mass_extinction)
@@ -52,93 +123,24 @@ plot(results, show.tip.label = FALSE)
 axisPhylo()
 ```
 
-### Extinction based on a trait value after some time
+Or for a slightly more complex example, we can can change the trait process from a BM to an OU when the trait values reaches an upper 95% quantile value above 2:
 
 ```{r}
-## Simulation parameters
-stop.rule <- list(max.time = 5)
-bd.params <- list(extinction = 0, speciation = 1)
+## The 95% upper quantile value of a distribution
+upper.95 <- function(x) {
+    return(quantile(x, prob = 0.95))
+} 
+## Create an event to change the trait process
+change_process <- make.events(
+                  target       = "traits",
+                  ## condition is triggered if(upper.95(x) > 3)
+                  condition    = trait.condition(3, condition = `>`, what = upper.95),
+                  modification = update.traits(process = OU.process))
 
-## Extinction of any tips with trait < 1 at time 4
-trait_extinction <- make.events(
-                      target = "taxa",
-                      condition = time.condition(4),
-                      modification = trait.extinction(1))
-
-## Running the simulations
-set.seed(7)
-results <- dads(bd.params = bd.params,
-                stop.rule = stop.rule,
-                traits    = make.traits(),
-                events    = trait_extinction)
-## Plotting the results
-plot(results)
-```
-
-### Adding a background extinction after reaching a number of living taxa
-
-```{r}
-## Simulation parameters
-stop.rule <- list(max.living = 50)
-bd.params <- list(extinction = 0, speciation = 1)
-
-## Adding an extinction parameter after 30 taxa
-background_extinction <- make.events(
-                      condition    = taxa.condition(30),
-                      target       = "bd.params",
-                      modification = update.bd.params(1/3, "extinction"))
-
-## Running the simulations
-set.seed(2)
-results <- dads(bd.params = bd.params,
-                stop.rule = stop.rule,
-                events    = background_extinction)
-## Plotting the results
-plot(results)
-```
-
-### Reducing speciation after some time
-
-```{r}
-## Simulation parameters
-stop.rule <- list(max.time = 4)
-bd.params <- list(extinction = 0, speciation = 1)
-
-## Reducing speciation after reaching time 2
-reduced_speciation <- make.events(
-                      condition    = time.condition(2),
-                      target       = "bd.params",
-                      modification = update.bd.params(1/3, "speciation"))
-
-set.seed(42)
-no_event <- dads(bd.params = bd.params,
-                 stop.rule = stop.rule)
-set.seed(42)
-reduced_speciation_event <- dads(bd.params = bd.params,
-                                 stop.rule = stop.rule,
-                                 events    = reduced_speciation)
-
-## Plot both trees
-par(mfrow = c(1, 2))
-plot(no_event, main = "No event")
-axisPhylo()
-plot(reduced_speciation_event, main = "Reduced speciation after time 2")
-axisPhylo()
-```
-
-### Changing trait process after some time
-
-```{r}
-## Simulation parameters
+## Set the simulation parameters
 bd.params <- list(extinction = 0, speciation = 1)
 stop.rule <- list(max.time = 6)
 traits    <- make.traits()
-
-## Create an event to change the trait process
-change_process <- make.events(
-                  condition    = time.condition(5),
-                  target       = "traits",
-                  modification = update.traits(process = OU.process))
 
 ## Run the simulations
 set.seed(1)
@@ -156,146 +158,31 @@ plot(no_change, ylim = c(-7, 7))
 plot(process_change, ylim = c(-7, 7))
 ```
 
-### Changing trait correlation after reaching a trait value
 
+## Founding events {#founding}
 
-```{r}
-## Set the parameters
-stop.rule <- list(max.taxa = 100)
-bd.params <- list(extinction = 0, speciation = 1)
+Founding events are a specific `target` for `events` that allows you to... simulate a birth-death process within the current one!
+It basically allows you to simulate a specific `dads` process i.e. using the `dads` function with it's own `traits`, `modifiers`, `bd.params` and `events` (and yes, that's including `events` that have their own `founding` event)...
+This is basically the ultimate nested boss of modularity!
 
-## A correlated trait
-traits <- make.traits(n = 2, process.args = list(Sigma = matrix(1, 2, 2)))
-
-## Event changing a trait correlation
-cor_change <- make.events(
-    condition    = trait.condition(3, absolute = TRUE),
-    target       = "traits",
-    modification = update.traits(process.args = list(Sigma = matrix(c(10,3,3,2),2,2))))
-
-## Run the simulations
-set.seed(2)
-no_event <- dads(bd.params = bd.params,
-                 stop.rule = stop.rule,
-                 traits    = traits)
-set.seed(2)
-change_correlation <- dads(bd.params = bd.params,
-                           stop.rule = stop.rule,
-                           traits    = traits,
-                           events    = cor_change)
-
-## Visual testing
-par(mfrow = c(1,2))
-plot(no_event, trait = 2)
-plot(change_correlation, trait = 2)
-
-```
-
-```{r, webgl=TRUE}
-## 3D plot
-plot(change_correlation, trait = c(1:2), use.3D = TRUE)
-```
-
-### Event for changing a modifier
-
-```{r}
-## Set the parameters
-stop.rule <- list(max.time = 4)
-bd.params <- list(extinction = 0, speciation = 1)
-
-## Using a default trait and modifier object
-modifiers <- make.modifiers()
-traits <- make.traits()
-
-## New condition and new modifier (increasing speciation if trait is negative)
-new.condition <- function(trait.values, lineage) {
-    return(parent.traits(trait.values, lineage) < 0)
-}
-new.modify    <- function(x, trait.values, lineage) {
-  return(x + 1)
-}
-
-## Update the modifier
-change_speciation <- make.events(
-    condition    = time.condition(3),
-    target       = "modifiers",
-    modification = update.modifiers(speciation = speciation,
-                                    condition  = new.condition,
-                                    modify     = new.modify))
-
-set.seed(4)
-no_event <- dads(bd.params = bd.params,
-                 stop.rule = stop.rule,
-                 traits    = traits,
-                 modifiers = modifiers)
-set.seed(4)
-change_spec <- dads(bd.params = bd.params,
-                    stop.rule = stop.rule,
-                    traits    = traits,
-                    modifiers = modifiers,
-                    events    = change_speciation)
-
-## Visualise the results
-par(mfrow = c(1,2))
-plot(no_event, main = "No event")
-plot(change_spec, main = "Increase extinction for negative\ntraits after time 3")
-```
-
-### Changing branch length when reaching n taxa
-
-```{r}
-## Parameters
-bd.params <- list(extinction = 0, speciation = 1)
-stop.rule <- list(max.taxa = 100)
-modifiers <- make.modifiers()
-traits <- make.traits()
-
-## multiplying branch length 100 folds
-new.modify <- function(x, trait.values, lineage) {
-  return(x * 100)
-}
-
-## Event for increasing branch length after reaching 30 taxa
-increase_brlen <- make.events(
-                  condition    = taxa.condition(30),
-                  target       = "modifiers",
-                  modification = update.modifiers(
-                                    branch.length = branch.length,
-                                    modify = new.modify))
-
-## Run the simulations
-set.seed(5)
-no_event <- dads(bd.params = bd.params,
-                 stop.rule = stop.rule,
-                 traits    = traits,
-                 modifiers = modifiers)
-set.seed(5)
-increased_brlen <- dads(bd.params = bd.params,
-                        stop.rule = stop.rule,
-                        traits    = traits,
-                        modifiers = modifiers,
-                        events    = increase_brlen)
-
-## Visualise the results
-par(mfrow = c(1,2))
-plot(no_event, main = "No event")
-plot(increased_brlen, main = "Increase branch length\nafter 30 taxa")
-```
-
-### Founding event: a subtree with no fossils
+The founding event will basically run an internal `dads` process (i.e. simulating a tree and, optionally, some data) resulting in a founding sub-tree.
+It will then branch this sub-tree to the rest of the simulation that continued normally in the mean time.
+You can specify the founding event using the inbuilt `founding.event` modification event.
+This function intakes the exact same arguments as `dads` to simulate the sub-tree with its own parameters.
+Additionally, we will use the `additional.args` argument from `make.events` to specify a prefix for the founding tree tips (to make them easier to distinguish).
 
 ```{r}
 ## Set up parameters
 stop.rule <- list(max.time = 4)
-bd.params <- list(speciation = 1, extinction = 0.3)
+bd.params <- make.bd.params(speciation = 1, extinction = 0.3)
 
-## Events that generate a new process (founding effects)
+## Events that generate a new process (founding tree - with no extinction)
 founding_event <- make.events(
-                  condition    = taxa.condition(10),
                   target       = "founding",
+                  condition    = taxa.condition(10),
                   modification = founding.event(
-                                    bd.params = list(speciation = 2,
-                                                     extinction = 0)),
+                                    bd.params = make.bd.params(speciation = 2,
+                                                               extinction = 0)),
                   additional.args = list(prefix = "founding_"))
     
 ## Simulations
@@ -306,29 +193,4 @@ founding_tree <- dads(bd.params = bd.params,
 plot(founding_tree, cex = 0.4)
 ```
 
-### Founding event with traits
-
-```{r}
-## Set up parameters
-stop.rule <- list(max.time = 4)
-bd.params <- list(speciation = 1, extinction = 0.3)
-traits    <- make.traits()
-
-## Events that generate a new process (founding effects)
-founding_event <- make.events(
-                  condition    = taxa.condition(10),
-                  target       = "founding",
-                  modification = founding.event(
-                                    bd.params = list(speciation = 2,
-                                                     extinction = 0),
-                                    traits = make.traits(process = OU.process)),
-                  additional.args = list(prefix = "founding_"))
-
-## Simulating the tree
-set.seed(19)
-founding_tree <- dads(bd.params = bd.params,
-                      stop.rule = stop.rule,
-                      traits    = make.traits(),
-                      events    = founding_event)
-plot(founding_tree)
-```
+Note that the nestedness here is potentially endless, for example, you can parse an `event` argument to the `founding.event` that will generate another founding event, etc...
