@@ -100,6 +100,9 @@ repulsion.process(x0 = 0, repulsion = 1)
 plot(make.traits(repulsion.process, process.args = list(repulsion = 5)))
 
 }
+\seealso{
+make.traits dads
+}
 \author{
 Thomas Guillerme
 }
