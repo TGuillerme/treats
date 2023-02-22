@@ -29,11 +29,11 @@
 ## dads
 
  - [x] Also add a "snapshot" mechanism, compared to the "instant trait" one above, this one only has a look at what's happening everywhere in the tree at specific requested time (e.g. with conditions) and not at specific regular given time point (e.g. every 0.1 time unit).
-    - [ ] test for `background` in `make.traits`
-    - [ ] add manual for `background`
- - [ ] add a verbose option when using `null.errors` (something like "building tree:... Done.") 
- - [ ] example for: `dads`: Run a birth-death tree with a modifier
- - [ ] example for: `dads`: Run a birth-death tree with a modifier + event
+    - [x] test for `background` in `make.traits`
+    - [x] add manual for `background`
+ - [x] add a verbose option when using `null.errors` (something like "building tree:... Done.") 
+ - [x]] example for: `dads`: Run a birth-death tree with a modifier
+ - [x] example for: `dads`: Run a birth-death tree with a modifier + event
 
 ## print
 
@@ -49,13 +49,13 @@
  - [ ] adding legend options
  - [ ] add option to switch the tree age (time to present to time since past).
  - [ ] do the manual section
+ - [ ] example gallery in the manual
 
 ## utilities
 
  - [ ] add manual for utilities
  - [ ] add test for `parent.traits`
  - [ ] example for: `utilities::parent.traits`: Write examples (write manual at the same time)
-
 
 
 

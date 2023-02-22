@@ -51,7 +51,36 @@
 #'      stop.rule = my_stop_rule,
 #'      traits    = my_trait)
 #' 
-#' ## TODO: more examples
+#' ## Simulating a tree using modifiers
+#' ## Making a modifier to make speciation trait dependent
+#' my_modifiers <- make.modifiers(branch.length = branch.length.trait,
+#'                                selection     = selection,
+#'                                speciation    = speciation.trait)
+#'
+#' ## Simulating the tree
+#' dads(stop.rule = list(max.taxa = 20),
+#'      traits = make.traits(),
+#'      modifiers = my_modifiers)
+#'
+#' ## Run a birth death tree with an event
+#' ## 80% mass extinction at time 4
+#' mass_extinction <- make.events(
+#'                       target       = "taxa",
+#'                       condition    = time.condition(4),
+#'                       modification = random.extinction(0.8))
+#' 
+#' ## Set the simulation parameters
+#' stop.rule <- list(max.time = 5)
+#' bd.params <- list(extinction = 0, speciation = 1)
+#' 
+#' ## Run the simulations
+#' set.seed(123)
+#' results <- dads(bd.params = bd.params,
+#'                 stop.rule = stop.rule,
+#'                 events    = mass_extinction)
+#' ## Plot the results
+#' plot(results, show.tip.label = FALSE)
+#' axisPhylo()
 #'
 #'
 #' @seealso \code{\link{plot.dads}} \code{\link{make.traits}} \code{\link{make.modifiers}} \code{\link{make.events}}
@@ -144,13 +173,17 @@ dads <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events =
         check.class(save.steps, "numeric")    
     }
 
-    while(is.null(output) || counter < max.counter) {
+    if(max.counter > 1) message("Building the tree:", appendLF = FALSE)
+    while(is.null(output) && counter < max.counter) {
         ## Simulating the traits and tree
         output <- birth.death.tree.traits(stop.rule, bd.params = bd.params, traits = traits, modifiers = modifiers, events = events, save.steps = save.steps, null.error = null.error)
 
         ## Update the counter
         counter <- counter + 1
+        ## 
+        if(max.counter > 1) message(".", appendLF = FALSE)
     }
+    if(max.counter > 1) message("Done.")
 
     if(is.null(output)) {
         ## Should only fire if null.error = TRUE

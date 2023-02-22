@@ -38,9 +38,10 @@ test_that("dads works for simple birth-deaths", {
     set.seed(2)
     error <- capture_error(dads(bd.params = list(speciation = 1, extinction = 0.5), stop.rule = list("max.living" = 10)))
     expect_equal(error[[1]], "No tree generated with these parameters.")
-    set.seed(2)
-    test <- dads(bd.params = list(speciation = 1, extinction = 0.5), stop.rule = list("max.living" = 10), null.error = 100)
+    set.seed(123)
+    prints <- capture_messages(test <- dads(bd.params = list(speciation = 1, extinction = 0.9), stop.rule = list("max.living" = 10), null.error = 50))
     expect_is(test, "phylo")
+    expect_equal(length(prints), 7)
 })
 
 
