@@ -13,7 +13,7 @@ library(dads)
 set.seed(4242)
 ```
 
-# Getting started
+# Getting started {#gettingstarted}
 
 ## The simplest of all analysis: simulating diversity only
 
@@ -248,3 +248,5 @@ plot(biased_data, main = "results with the modifier")
 ```
 
 You can find much more how to design modifiers in the [`make.modifiers` section](#makemodifiers).
+
+
