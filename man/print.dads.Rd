@@ -16,6 +16,17 @@
 \description{
 Summarises the content of a \code{dads} object.
 }
+\examples{
+## A dads birth-death parameters object
+make.bd.params()
+## A dads traits object
+make.traits()
+## A dads modifiers object
+make.modifiers()
+## A dads object
+dads(stop.rule = list(max.taxa = 10), traits = make.traits())
+
+}
 \seealso{
 \code{\link{dads}}
 }

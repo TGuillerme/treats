@@ -37,12 +37,12 @@
 
 ## print
 
- - [ ] example for: `print.dads`: add example for each category:
-   - [ ] `dads`
-   - [ ] `bd.params`
-   - [ ] `traits`
-   - [ ] `modifiers`
-   - [ ] `events`
+ - [x] example for: `print.dads`: add example for each category:
+   - [x] `dads`
+   - [x] `bd.params`
+   - [x] `traits`
+   - [x] `modifiers`
+   - [x] `events`
 
 ## plot
 
