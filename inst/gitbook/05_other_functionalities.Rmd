@@ -89,7 +89,7 @@ plot(make.bd.params(speciation = rnorm, extinction = runif,
 ```
 
 
-## `drop.things`
+## `drop.things` {#dropthings}
 
 You can use the function `drop.things` to drop specific elements of the tree and data at the same time by providing the argument `what` to be `"fossils"` for tips that went extinct, `"livings"` tips that where alive at the end of the simulation or `"singles"` for internal nodes.
 Alternatively you can use the function aliases `drop.fossils`, `drop.livings` or `drop.singles` for the exact same results:
