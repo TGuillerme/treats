@@ -93,8 +93,11 @@ plot(make.traits(process = no.process))
 
 ## Multi peaks with peaks at the values 1, 5 and 10
 multi.peak.process(peaks = c(1, 5, 10))
-plot(make.traits(multi.peak.process, process.args = list(peaks = c(1, 5, 10)))
+plot(make.traits(multi.peak.process, process.args = list(peaks = c(1, 5, 10))))
 
+## Repulsion process
+repulsion.process(x0 = 0, repulsion = 1)
+plot(make.traits(repulsion.process, process.args = list(repulsion = 5)))
 
 }
 \seealso{
