@@ -46,6 +46,7 @@
 
 ## plot
 
+ - [ ] add trait labels + handeling colours for plotting traits
  - [ ] adding legend options
  - [ ] add option to switch the tree age (time to present to time since past).
  - [ ] do the manual section
