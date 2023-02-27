@@ -21,7 +21,7 @@ knitr::knit_hooks$set(webgl = hook_webgl)
 `"dads"` `"traits"` objects are covered in the [traits section](#maketraits).
 You can use `plot.dads` to plot them by choosing which specific trait to plot using the `trait` argument (default is 1):
 
-```{r}
+```{r, fig.height=8, fig.width=8}
 ## Making a list of three traits
 list_of_traits <- make.traits(process = c(no.process, BM.process, OU.process), trait.names = c("No process (normal)", "Brownian motion", "Ornstein-Uhlenbeck"))
 ## Plotting each trait separately
@@ -30,16 +30,15 @@ plot(list_of_traits, trait = 1)
 ## Using different colours options
 plot(list_of_traits, trait = 2, col = c("red", "purple", "pink"))
 ## Not using the default plot name
-plot(list_of_traits, trait = 3, main = "OU process")
+plot(list_of_traits, trait = 3, main = "OU process",
+     cent.tend = sd, quantiles = c(10, 30))
 ```
-
-<!-- TODO: add trait labels and handling colours! -->
 
 You can also control the number of replicates in the simulation by using the `simulations` option (the default is 50).
 Bigger numbers leads to more time but smoother looking plots while smaller ones are more stochastic:
 
-```{r}
-par(mfrow = c(1,2))
+```{r, fig.width=6, fig.height=12}
+par(mfrow = c(2,1))
 plot(list_of_traits, trait = 2, simulations = 10, main = "10 BM simulations")
 plot(list_of_traits, trait = 2, simulations = 1000, main = "1k BM simulations")
 ```
@@ -73,7 +72,7 @@ For example `cex = 2` will make both the points and lines twice bigger but `cex.
 
 ```{r}
 ## Playing with some more options
-plot(my_tree, main = "A tree and traits", points.cex = 2, pch = 19, col = c("red", "purple", "pink"), lwd = 1/3, lty = 3)
+plot(my_tree, main = "A tree and traits", col = "default", pch = 21, lwd = 2, lty = 3)
 ```
 
 
