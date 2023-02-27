@@ -10,6 +10,8 @@
 #' @param tips.nodes optional, a colour to circle tips and nodes (only used if \code{use.3D = FALSE}). By default \code{tips.nodes = NULL}.
 #' @param use.3D logical, whether to use a 3D plot or not (default is \code{FALSE}; see details).
 #' @param simulations if the input is a \code{dads} \code{traits} or \code{bd.params} object, how many replicates to run (default is \code{50}).
+#' @param cent.tend if the input is a \code{dads} \code{traits}, which central tendency to plot (default is \code{mean}).
+#' @param quantiles if the input is a \code{dads} \code{traits}, which quantiles to plot (default are \code{c(95, 50))}).
 #' 
 #' @details
 #' The \code{col} option can be either:
@@ -49,6 +51,7 @@
 #' 
 #' ## Plotting the second trait and the tree (default)
 #' ## The colours are purple for nodes and blue for tips
+#' ## with a black circle for highlighting the tips
 #' plot(my_data, trait = 2, col = c("purple", "blue"),
 #'      edges = "pink", tips.nodes = "black")
 #' 
@@ -70,7 +73,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL, use.3D = FALSE, simulations = 50) {
+plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL, use.3D = FALSE, simulations = 50, cent.tend = mean, quantiles = c(95, 50)) {
 
     match_call <- match.call()
 
@@ -101,11 +104,19 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
                 col <- "default"
             }
 
+            ## Set the trait name
+            dots <- list(...)
+            if(!is.null(dots$main)) {
+                trait_name <- main
+            } else {
+                trait_name <- names(data$main)[trait]
+            }
+
             ## Plotting the results
             plot.simulation(data = replicate(simulations, 
                                              sim.motion(one_trait, steps = 100),
                                              simplify = FALSE),
-                            col = col, use.3D = use.3D, trait = trait_ids, ...)
+                            col = col, use.3D = use.3D, trait = trait_ids, trait.name = trait_name, quantiles = quantiles, cent.tend = cent.tend, ...)
         }
 
         if(second_class == "bd.params") {
@@ -189,7 +200,7 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
 
     ## Handle the type of plot
     if((n_traits <- length(trait)) > 3) {
-        stop("Impossible to do plots in more than 3D.", call. = FALSE)
+        stop("Breaking physics failed. Impossible to visualise plots in more than 3D in this version.", call. = FALSE)
     } else {
         ## Selecting the plot type (TRUE is tree plots and FALSE is correlation plots)
         tree_plot <- switch(as.character(n_traits),

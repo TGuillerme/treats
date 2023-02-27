@@ -46,7 +46,7 @@
 
 ## plot
 
- - [ ] add trait labels + handeling colours for plotting traits
+ - [x] add trait labels + handeling colours for plotting traits
  - [ ] adding legend options
  - [ ] add option to switch the tree age (time to present to time since past).
  - [ ] do the manual section
@@ -59,7 +59,9 @@
  - [ ] example for: `utilities::parent.traits`: Write examples (write manual at the same time)
 
 
+## Manual
 
+ - [ ] in Index, fix illustration (pdf to eps)
 
 
 
@@ -70,3 +72,4 @@ Selling point: dads is so modular that you can simulate a dads object that simul
  - [ ] Add lineage tracking mechanism (i.e. allow `traits`, `modifiers` or `events` to be applied to specific lineages); also allow giving prefixes to the names of tips and nodes in the lineage.
  - [ ] allow events per clade (see TreeSim)
  - [ ] add abiotic events (see RPANDA)
+ - [ ] add the `dispRity` smart plot option handling

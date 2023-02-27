@@ -28,7 +28,7 @@ sim.motion <- function(one_trait, steps) {
 # ' @param quantiles the quantiles to display (default is \code{c(95, 50)})
 # ' @param ... any additional argument to be passed to \code{\link[graphics]{plot}}.
 
-plot.simulation <- function(data, cent.tend = mean, quantiles = c(95, 50), col, use.3D, trait, ...) {
+plot.simulation <- function(data, cent.tend, quantiles, col, use.3D, trait, trait.name, ...) {
     
     ## Whether to use 3D plots or not
     is_1D <- ncol(data[[1]]) == 1
@@ -39,7 +39,6 @@ plot.simulation <- function(data, cent.tend = mean, quantiles = c(95, 50), col, 
     } else {
         trait <- trait[1]
     }
-
 
     ## Combine the data together per column
     data_cols <- list()
@@ -74,18 +73,20 @@ plot.simulation <- function(data, cent.tend = mean, quantiles = c(95, 50), col, 
         if(is.null(plot_params$ylab)) {
             plot_params$ylab <- c("Simulated traits")
         }
+        if(is.null(plot_params$main)) {
+            plot_params$main <- trait.name
+        }
 
-        ## Handleing colors
-        if(missing(col) || col == "default" || !do_3D) {
+        ## Handling colors
+        if(missing(col)) {
+            col <- "default"
+        }
+        if(col[1] == "default") {
             ## Handle colours if input col is < length(quantiles) + 1
             colfun <- grDevices::colorRampPalette(c("grey", "lightgrey"))
             plot_params$col <- c("black", rev(colfun(length(quantiles))))
         } else {
-            if(col == "default") {
-                plot_params$col <- "grey"
-            } else {
-                plot_params$col <- col
-            }
+            plot_params$col <- col
         }
 
         ## Adding the empty plot:
