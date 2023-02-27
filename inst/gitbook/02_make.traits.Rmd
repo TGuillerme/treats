@@ -2,7 +2,7 @@
 title: "`make.traits`"
 author: "Thomas Guillerme (guillert@tcd.ie)"
 date: "`r Sys.Date()`"
-bibliography: [../References.bib, ../packages.bib]
+bibliography: [../references.bib]
 output:
   html_document: default
   pdf_document: default
@@ -11,6 +11,7 @@ output:
 # Simulating traits {#maketraits}
 
 ```{r, echo = FALSE}
+library(dads)
 set.seed(123)
 ```
 

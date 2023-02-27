@@ -2,7 +2,7 @@
 title: "`make.events`"
 author: "Thomas Guillerme (guillert@tcd.ie)"
 date: "`r Sys.Date()`"
-bibliography: [../References.bib, ../packages.bib]
+bibliography: [../references.bib]
 output:
   html_document: default
   pdf_document: default
@@ -15,6 +15,7 @@ knitr::knit_hooks$set(webgl = hook_webgl)
 ```
 
 ```{r, echo = FALSE}
+library(dads)
 set.seed(123)
 ```
 

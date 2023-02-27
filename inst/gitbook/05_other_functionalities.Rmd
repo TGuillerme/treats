@@ -2,7 +2,7 @@
 title: "`make.events`"
 author: "Thomas Guillerme (guillert@tcd.ie)"
 date: "`r Sys.Date()`"
-bibliography: [../References.bib, ../packages.bib]
+bibliography: [../references.bib]
 output:
   html_document: default
   pdf_document: default
@@ -10,6 +10,7 @@ output:
 
 
 ```{r, echo = FALSE}
+library(dads)
 library(rgl)
 knitr::knit_hooks$set(webgl = hook_webgl)
 ```
@@ -64,8 +65,6 @@ This argument is set to `TRUE` by default so you shouldn't have to worry about i
 ```{r}
 ## Making the speciation sampling always positive
 make.bd.params(speciation = rnorm, absolute = TRUE)
-## This is effectively making the speciation distribution equal to
-make.bd.params(speciation = function(x) abs(rnorm(x)))
 ```
 
 The two other possible arguments for this function are `test` and `update` that work the same as for [`make.traits`](#maketraits) or [`make.modifiers`](#makemodifiers)
