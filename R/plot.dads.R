@@ -63,11 +63,13 @@
 #' ## Plotting the first and third trait correlation in 3D
 #' plot(my_data, trait = c(1,3), col = rainbow,
 #'      edges = "grey", tips.nodes = "black", use.3D = TRUE)
+#' rglwidget() # to display the plot with non-default OpenRGL
 #' 
 #' ## Plotting all traits in 3D (without branch lengths)
 #' plot(my_data, trait = c(1:3), col = heat.colors,
 #'      edges = NULL, tips.nodes = "black", use.3D = TRUE)
-
+#' rglwidget() # to display the plot with non-default OpenRGL
+#'
 #' @seealso \code{\link{dads}}
 #' 
 #' @author Thomas Guillerme
@@ -107,7 +109,7 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
             ## Set the trait name
             dots <- list(...)
             if(!is.null(dots$main)) {
-                trait_name <- main
+                trait_name <- dots$main
             } else {
                 trait_name <- names(data$main)[trait]
             }

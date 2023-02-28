@@ -12,7 +12,9 @@
   edges = "grey",
   tips.nodes = NULL,
   use.3D = FALSE,
-  simulations = 50
+  simulations = 50,
+  cent.tend = mean,
+  quantiles = c(95, 50)
 )
 }
 \arguments{
@@ -31,6 +33,10 @@
 \item{use.3D}{logical, whether to use a 3D plot or not (default is \code{FALSE}; see details).}
 
 \item{simulations}{if the input is a \code{dads} \code{traits} or \code{bd.params} object, how many replicates to run (default is \code{50}).}
+
+\item{cent.tend}{if the input is a \code{dads} \code{traits}, which central tendency to plot (default is \code{mean}).}
+
+\item{quantiles}{if the input is a \code{dads} \code{traits}, which quantiles to plot (default are \code{c(95, 50))}).}
 }
 \description{
 Plotting dads objects (either a simulated tree and trait(s) or a process for traits objects)
@@ -73,6 +79,7 @@ my_data <- dads(bd.params = list(extinction = 0.2),
 
 ## Plotting the second trait and the tree (default)
 ## The colours are purple for nodes and blue for tips
+## with a black circle for highlighting the tips
 plot(my_data, trait = 2, col = c("purple", "blue"),
      edges = "pink", tips.nodes = "black")
 
@@ -84,10 +91,13 @@ plot(my_data, trait = c(1,3), col = terrain.colors,
 ## Plotting the first and third trait correlation in 3D
 plot(my_data, trait = c(1,3), col = rainbow,
      edges = "grey", tips.nodes = "black", use.3D = TRUE)
+rglwidget() # to display the plot with non-default OpenRGL
 
 ## Plotting all traits in 3D (without branch lengths)
 plot(my_data, trait = c(1:3), col = heat.colors,
      edges = NULL, tips.nodes = "black", use.3D = TRUE)
+rglwidget() # to display the plot with non-default OpenRGL
+
 }
 \seealso{
 \code{\link{dads}}
