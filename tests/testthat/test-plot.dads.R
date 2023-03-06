@@ -39,7 +39,7 @@ test_that("example works", {
     ## Specifying a trait process
     my_trait <- make.traits()
     ## Plotting a trait process
-    expect_null(plot(my_trait, main = "A Brownian Motion"))
+    expect_null(plot(my_trait, main = "A Brownian Motion", legend = TRUE))
 
     ## Simulating a tree with ten taxa
     my_tree <- dads(stop.rule = list(max.taxa = 10))
@@ -50,7 +50,7 @@ test_that("example works", {
     my_data <- dads(stop.rule = list(max.taxa = 10),
                     traits    = my_trait)
     ## Plotting the tree and traits
-    expect_null(plot(my_data))
+    expect_null(plot(my_data, legend = TRUE))
 
     ## Specifying a 3D trait process
     my_3D_trait <- make.traits(n = 3)
@@ -62,18 +62,20 @@ test_that("example works", {
     ## Plotting the second trait and the tree (default)
     ## The colours are purple for nodes and blue for tips
     expect_null(plot(my_data, trait = 2, col = c("purple", "blue"),
-         edges = "pink", tips.nodes = "black"))
+         edges = "pink", tips.nodes = "black", legend = TRUE))
 
     ## Plotting the first and third trait correlation
     ## The colours are a heat map based on the elements age
     expect_null(plot(my_data, trait = c(1, 3), col = terrain.colors,
-         edges = "grey", tips.nodes = "black"))
+         edges = "grey", tips.nodes = "black", legend = TRUE))
     
     ## Plotting the first and third trait correlation in 3D
     expect_null(plot(my_data, trait = c(1,3), col = rainbow,
-         edges = "grey", tips.nodes = "black", use.3D = TRUE))
+         edges = "grey", tips.nodes = "black", use.3D = TRUE, legend = TRUE))
+    # rgl::rglwidget()
 
     ## Plotting all traits in 3D (without branch lengths)
     expect_null(plot(my_data, trait = c(1:3), col = heat.colors,
          edges = "grey", tips.nodes = "black", use.3D = TRUE, type = "s", radius = 0.1))
+    # rgl::rglwidget()
 })

@@ -177,8 +177,9 @@ get.quantile.col <- function(cis, n_quantiles) {
         ))
 }
 
-handle.colours <- function(col, points_tree_IDs, points_ages, data) {
+handle.colours <- function(col, points_tree_IDs, points_ages, data, legend) {
 
+    legend_col <- NULL
     col_scheme <- character()
     do_gradient <- FALSE
 
@@ -257,9 +258,12 @@ handle.colours <- function(col, points_tree_IDs, points_ages, data) {
         if(length(fossils <- which(col_val == "")) > 0) {
             col_val[fossils] <- col_scheme["fossils"]
         }
-        
+        ## Set the legend
+        if(legend) {
+            ## Select the available data 
+            legend_col <- col_scheme[col_scheme %in% unique(col_val)]
+        }
     } else {
-
         ## Sort the data by range
         histo <- hist(points_ages[points_tree_IDs, "ages"], plot = FALSE)
         n_col <- length(histo$counts)
@@ -274,10 +278,22 @@ handle.colours <- function(col, points_tree_IDs, points_ages, data) {
         for(colour in rev(1:n_col)) {
             col_val[(points_ages[points_tree_IDs, "ages"] <= histo$breaks[colour])] <- avail_cols[colour]
         }
+
+        ## Get the colour scheme gradient
+        if(legend) {
+            if(length(avail_cols) < 2) {
+                warning("Impossible to plot the legend for the colour scheme (only one gradient colour available).")
+                legend_col <- NULL
+            } else {
+                legend_col <- list()
+                legend_col$raster <- as.raster(matrix(col(n_col), ncol = 1))
+                legend_col$labels <- rev(pretty(range(histo$breaks), n = 2))
+            }
+        }
     }
 
     ## Identify each point
     names(col_val) <- points_ages[points_tree_IDs, "elements"]
 
-    return(col_val)
+    return(list(col = col_val, legend = legend_col))
 }

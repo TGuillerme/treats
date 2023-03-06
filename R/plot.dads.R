@@ -12,6 +12,7 @@
 #' @param simulations if the input is a \code{dads} \code{traits} or \code{bd.params} object, how many replicates to run (default is \code{50}).
 #' @param cent.tend if the input is a \code{dads} \code{traits}, which central tendency to plot (default is \code{mean}).
 #' @param quantiles if the input is a \code{dads} \code{traits}, which quantiles to plot (default are \code{c(95, 50))}).
+#' @param legend logical, whether to display the legend in 2D plots (\code{TRUE}) or not (\code{FALSE}; default)
 #' 
 #' @details
 #' The \code{col} option can be either:
@@ -75,7 +76,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL, use.3D = FALSE, simulations = 50, cent.tend = mean, quantiles = c(95, 50)) {
+plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL, use.3D = FALSE, simulations = 50, cent.tend = mean, quantiles = c(95, 50), legend = FALSE) {
 
     match_call <- match.call()
 
@@ -211,7 +212,6 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
                             "3" = ifelse(use.3D, FALSE, stop("Set use.3D = TRUE to display three traits.", call. = FALSE)))
     }
 
-
     ## Handle plot options
 
     ## Plot the normal data
@@ -332,7 +332,9 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
     }
 
     ## Handle the colours
-    points_params$col <- handle.colours(col, points_tree_IDs, points_ages, data)
+    col_handle <- handle.colours(col, points_tree_IDs, points_ages, data, legend)
+    points_params$col <- col_handle$col
+    legend_col <- col_handle$legend
 
     ## Plotting the frame
     if(!use.3D) {
@@ -391,6 +393,7 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
             "s" = {points_params$type <- NULL ; do.call(rgl::spheres3d, points_params)})
     }
 
+    ## Adding circles around the points
     if(do_circles && !use.3D) {
         ## Preparing the circles options
         circles_params <- points_params
@@ -404,6 +407,37 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
 
         ## Adding the circles
         do.call(points, circles_params)
+    }
+
+    ## Adding the legend
+    if(legend && !use.3D) {
+        ## Get the legend position
+        legend_pos <- ifelse(tree_plot, "topleft", "topright")
+        ## Legend type (just points or a gradient)
+        is_gradient <- is(legend_col, "list")
+
+        ## Plot the legend
+        if(!is_gradient) {
+
+            ## TODO: add tip nodes if needed
+
+            if(!do_circles) {
+                legend(legend_pos, col = legend_col, legend = names(legend_col), pch = points_params$pch)
+            } else {
+                legend(legend_pos, col = c(legend_col, tips.nodes), legend = c(names(legend_col), "tips"), pch = c(rep(points_params$pch, length(legend_col)), 21))
+            }
+        } else {
+            xleft <- max(plot_params$xlim)
+            xright <- xleft - abs(diff(plot_params$xlim))/25
+            ytop <- max(plot_params$ylim)
+            ybottom <- ytop - abs(diff(plot_params$xlim))/2
+            ## Add the gradient
+            graphics::rasterImage(rev(legend_col$raster), xleft, ybottom, xright, ytop)
+            ## Add the text
+            text(labels = legend_col$labels,
+                x = rep(xright-xright*0.02, 3),
+                y = c(ybottom,ybottom + (ytop-ybottom)/2, ytop))
+        }
     }
 
     return(invisible())
