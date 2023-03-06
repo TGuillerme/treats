@@ -64,7 +64,6 @@
  - [ ] in Index, fix illustration (pdf to eps)
 
 
-
 Selling point: dads is so modular that you can simulate a dads object that simulates a dads object.
 
 
