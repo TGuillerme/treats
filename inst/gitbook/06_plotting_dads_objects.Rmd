@@ -67,14 +67,39 @@ plot(my_tree, main = "A tree and traits")
 By default, elements are coloured as follows: nodes and tips are points and coloured in blue if they are tips (light blue if they are fossils) and nodes are in orange.
 Branches linking them are grey lines.
 You can of course change this colour palette to something of you preference by calling the normal arguments that can be passed to `points` or `lines`. For example `pch` for the point type or `lty` for the line type.
-If there is an ambiguity between the argument names (for example, `cex` for both lines and points), you can specify it by prefixing the argument by the function name.
-For example `cex = 2` will make both the points and lines twice bigger but `cex.points = 2` will make _only_ the points twice bigger.
+
 
 ```{r}
 ## Playing with some more options
-plot(my_tree, main = "A tree and traits", col = "default", pch = 21, lwd = 2, lty = 3)
+plot(my_tree, main = "A tree and traits", col = c(tips = "pink", nodes = "purple"), pch = 21, lwd = 2, lty = 3, edges = "yellow")
 ```
 
+> Note that you can modify colours using the `col` argument by providing either a clear indication of what you want to colour (e.g. `c(tip = "blue", `) @@@
+
+
+And you can add a default legend by using `legend = TRUE` (if you don't want to add the default legend you can add it after your plot using `legend(...)`).
+
+```{r}
+## Adding the default legend
+plot(my_tree, legend = TRUE)
+```
+
+
+
+```{r, eval = FALSE}
+plot(my_data, trait = 2, col = c("purple", "blue"))
+
+
+## Specifying a 3D trait process
+my_3D_trait <- make.traits(n = 3)
+## Simulating a birth death tree with that 3D trait
+my_data <- dads(bd.params = list(extinction = 0.2),
+                stop.rule = list(max.living = 50),
+                traits    = my_3D_trait)
+
+## Plotting the 
+plot(my_data, trait = c(1, 3), col =terrain.colors, tips.nodes = "black", legend = TRUE)
+```
 
 
 
