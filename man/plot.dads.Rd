@@ -14,7 +14,8 @@
   use.3D = FALSE,
   simulations = 50,
   cent.tend = mean,
-  quantiles = c(95, 50)
+  quantiles = c(95, 50),
+  legend = FALSE
 )
 }
 \arguments{
@@ -37,6 +38,8 @@
 \item{cent.tend}{if the input is a \code{dads} \code{traits}, which central tendency to plot (default is \code{mean}).}
 
 \item{quantiles}{if the input is a \code{dads} \code{traits}, which quantiles to plot (default are \code{c(95, 50))}).}
+
+\item{legend}{logical, whether to display the legend in 2D plots (\code{TRUE}) or not (\code{FALSE}; default)}
 }
 \description{
 Plotting dads objects (either a simulated tree and trait(s) or a process for traits objects)

@@ -287,7 +287,7 @@ handle.colours <- function(col, points_tree_IDs, points_ages, data, legend) {
             } else {
                 legend_col <- list()
                 legend_col$raster <- as.raster(matrix(col(n_col), ncol = 1))
-                legend_col$labels <- rev(pretty(range(histo$breaks), n = 2))
+                legend_col$labels <- rev(sort(c(range(histo$breaks), max(histo$breaks)/2)))
             }
         }
     }
