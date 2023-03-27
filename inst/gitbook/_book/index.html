@@ -4,27 +4,26 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>dads manual</title>
-  <meta name="description" content="dads R package vignette" />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <title>Specific examples</title>
+  <meta name="description" content="dads R package manual" />
+  <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="dads manual" />
+  <meta property="og:title" content="Specific examples" />
   <meta property="og:type" content="book" />
   
-  
-  <meta property="og:description" content="dads R package vignette" />
+  <meta property="og:description" content="dads R package manual" />
   <meta name="github-repo" content="TGuillerme/dads" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="dads manual" />
+  <meta name="twitter:title" content="Specific examples" />
   
-  <meta name="twitter:description" content="dads R package vignette" />
+  <meta name="twitter:description" content="dads R package manual" />
   
 
-<meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Alex Slavenko (email) and others" />
+<meta name="author" content="Thomas Guillerme (guillert@tcd.ie)" />
 
 
-<meta name="date" content="2021-01-19" />
+<meta name="date" content="2023-03-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,8 +31,9 @@
   
   
 
-<link rel="next" href="getting-started.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link rel="next" href="bdalgorithm.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,29 +49,55 @@
 
 
 
-
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<script src="libs/rglWebGL-binding-1.1.3/rglWebGL.js"></script>
+<link href="libs/rglwidgetClass-1.1.3/rgl.css" rel="stylesheet" />
+<script src="libs/rglwidgetClass-1.1.3/rglClass.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/utils.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/buffer.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/subscenes.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/shaders.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/shadersrc.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/textures.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/projection.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/mouse.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/init.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/pieces.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/draw.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/controls.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/selection.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/rglTimer.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/pretty.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/axes.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/animation.src.js"></script>
+<script src="libs/CanvasMatrix4-1.1.3/CanvasMatrix.src.js"></script>
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -80,9 +106,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -115,6 +141,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
@@ -131,60 +158,96 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="./">dads manual</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> <code>dads</code>: disparity and diversity simulations.</a><ul>
-<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#what-is-dads"><i class="fa fa-check"></i><b>1.1</b> What is <code>dads</code>?</a><ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> <code>dads</code>: disparity and diversity simulations.</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#what-is-dads"><i class="fa fa-check"></i><b>1.1</b> What is <code>dads</code>?</a>
+<ul>
 <li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#modular"><i class="fa fa-check"></i><b>1.1.1</b> Modular?</a></li>
 </ul></li>
-<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#installing-and-running-the-package"><i class="fa fa-check"></i><b>1.2</b> Installing and running the package</a></li>
-<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#help"><i class="fa fa-check"></i><b>1.3</b> Help</a></li>
-<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#how-does-dads-work"><i class="fa fa-check"></i><b>1.4</b> How does <code>dads</code> work?</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#who-is-this-manual-for"><i class="fa fa-check"></i><b>1.2</b> Who is this manual for?</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#installing-and-running-the-package"><i class="fa fa-check"></i><b>1.3</b> Installing and running the package</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#help"><i class="fa fa-check"></i><b>1.4</b> Help</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#how-does-dads-work"><i class="fa fa-check"></i><b>1.5</b> How does <code>dads</code> work?</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="getting-started.html"><a href="getting-started.html"><i class="fa fa-check"></i><b>2</b> Getting started</a><ul>
-<li class="chapter" data-level="2.1" data-path="getting-started.html"><a href="getting-started.html#the-simplest-of-all-analysis-simulating-diversity-only"><i class="fa fa-check"></i><b>2.1</b> The simplest of all analysis: simulating diversity only</a><ul>
-<li class="chapter" data-level="2.1.1" data-path="getting-started.html"><a href="getting-started.html#changing-the-birth-death-parameters"><i class="fa fa-check"></i><b>2.1.1</b> Changing the birth-death parameters</a></li>
+<li class="chapter" data-level="2" data-path="bdalgorithm.html"><a href="bdalgorithm.html"><i class="fa fa-check"></i><b>2</b> The birth-death algorithm</a></li>
+<li class="chapter" data-level="3" data-path="gettingstarted.html"><a href="gettingstarted.html"><i class="fa fa-check"></i><b>3</b> Getting started</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="gettingstarted.html"><a href="gettingstarted.html#the-simplest-of-all-analysis-simulating-diversity-only"><i class="fa fa-check"></i><b>3.1</b> The simplest of all analysis: simulating diversity only</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="gettingstarted.html"><a href="gettingstarted.html#changing-the-birth-death-parameters"><i class="fa fa-check"></i><b>3.1.1</b> Changing the birth-death parameters</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2" data-path="getting-started.html"><a href="getting-started.html#slightly-more-complex-simulating-disparity-and-diversity"><i class="fa fa-check"></i><b>2.2</b> Slightly more complex: simulating disparity and diversity</a></li>
-<li class="chapter" data-level="2.3" data-path="getting-started.html"><a href="getting-started.html#slightly-more-more-complex-simulating-linked-disparity-and-diversity"><i class="fa fa-check"></i><b>2.3</b> Slightly more more complex: simulating linked disparity and diversity</a></li>
+<li class="chapter" data-level="3.2" data-path="gettingstarted.html"><a href="gettingstarted.html#slightly-more-complex-simulating-disparity-and-diversity"><i class="fa fa-check"></i><b>3.2</b> Slightly more complex: simulating disparity and diversity</a></li>
+<li class="chapter" data-level="3.3" data-path="gettingstarted.html"><a href="gettingstarted.html#slightly-more-more-complex-simulating-linked-disparity-and-diversity"><i class="fa fa-check"></i><b>3.3</b> Slightly more more complex: simulating linked disparity and diversity</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="maketraits.html"><a href="maketraits.html"><i class="fa fa-check"></i><b>3</b> Making trait processes with <code>make.traits()</code></a><ul>
-<li class="chapter" data-level="3.1" data-path="maketraits.html"><a href="maketraits.html#the-process-process"><i class="fa fa-check"></i><b>3.1</b> The process (<code>process</code>)</a></li>
-<li class="chapter" data-level="3.2" data-path="maketraits.html"><a href="maketraits.html#the-number-of-traits-n-and-the-starting-values-start"><i class="fa fa-check"></i><b>3.2</b> The number of traits <code>n</code> and the starting values <code>start</code></a></li>
-<li class="chapter" data-level="3.3" data-path="maketraits.html"><a href="maketraits.html#extra-argument-for-the-processes-with-process.args"><i class="fa fa-check"></i><b>3.3</b> Extra argument for the processes with <code>process.args</code></a></li>
-<li class="chapter" data-level="3.4" data-path="maketraits.html"><a href="maketraits.html#naming-the-traits-with-trait.names"><i class="fa fa-check"></i><b>3.4</b> Naming the traits with <code>trait.names</code></a></li>
-<li class="chapter" data-level="3.5" data-path="maketraits.html"><a href="maketraits.html#combining-multiple-traits-with-add"><i class="fa fa-check"></i><b>3.5</b> Combining multiple traits with <code>add</code></a></li>
-<li class="chapter" data-level="3.6" data-path="maketraits.html"><a href="maketraits.html#testing-the-traits-with-test"><i class="fa fa-check"></i><b>3.6</b> Testing the traits with <code>test</code></a></li>
-<li class="chapter" data-level="3.7" data-path="maketraits.html"><a href="maketraits.html#templates-for-making-your-very-own-process"><i class="fa fa-check"></i><b>3.7</b> Templates for making your very own process</a><ul>
-<li class="chapter" data-level="3.7.1" data-path="maketraits.html"><a href="maketraits.html#a-simple-brownian-motion-process-template"><i class="fa fa-check"></i><b>3.7.1</b> A simple Brownian Motion process template</a></li>
-<li class="chapter" data-level="3.7.2" data-path="maketraits.html"><a href="maketraits.html#a-simple-ornstein-uhlenbeck-process-template"><i class="fa fa-check"></i><b>3.7.2</b> A simple Ornstein-Uhlenbeck process template</a></li>
+<li class="chapter" data-level="4" data-path="maketraits.html"><a href="maketraits.html"><i class="fa fa-check"></i><b>4</b> Simulating traits</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="maketraits.html"><a href="maketraits.html#the-process-process"><i class="fa fa-check"></i><b>4.1</b> The process (<code>process</code>)</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="maketraits.html"><a href="maketraits.html#the-syntax-how-to-code-a-process"><i class="fa fa-check"></i><b>4.1.1</b> The syntax (how to code a process?)</a></li>
+<li class="chapter" data-level="4.1.2" data-path="maketraits.html"><a href="maketraits.html#using-a-process-in-dads"><i class="fa fa-check"></i><b>4.1.2</b> Using a <code>"process"</code> in <code>dads</code></a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="maketraits.html"><a href="maketraits.html#the-number-of-traits-n-and-the-starting-values-start"><i class="fa fa-check"></i><b>4.2</b> The number of traits <code>n</code> and the starting values <code>start</code></a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="maketraits.html"><a href="maketraits.html#what-even-is-a-trait"><i class="fa fa-check"></i><b>4.2.1</b> What even is a trait?</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="maketraits.html"><a href="maketraits.html#extra-argument-for-the-processes-with-process.args"><i class="fa fa-check"></i><b>4.3</b> Extra argument for the processes with <code>process.args</code></a></li>
+<li class="chapter" data-level="4.4" data-path="maketraits.html"><a href="maketraits.html#naming-the-traits-with-trait.names"><i class="fa fa-check"></i><b>4.4</b> Naming the traits with <code>trait.names</code></a></li>
+<li class="chapter" data-level="4.5" data-path="maketraits.html"><a href="maketraits.html#combining-multiple-traits-with-add"><i class="fa fa-check"></i><b>4.5</b> Combining multiple traits with <code>add</code></a></li>
+<li class="chapter" data-level="4.6" data-path="maketraits.html"><a href="maketraits.html#using-a-background-trait"><i class="fa fa-check"></i><b>4.6</b> Using a background trait</a></li>
+<li class="chapter" data-level="4.7" data-path="maketraits.html"><a href="maketraits.html#saving-trait-values-at-different-time-steps"><i class="fa fa-check"></i><b>4.7</b> Saving trait values at different time steps</a></li>
+<li class="chapter" data-level="4.8" data-path="maketraits.html"><a href="maketraits.html#traits-implemented-in-dads"><i class="fa fa-check"></i><b>4.8</b> Traits implemented in <code>dads</code></a></li>
+<li class="chapter" data-level="4.9" data-path="maketraits.html"><a href="maketraits.html#testing-the-traits-with-test"><i class="fa fa-check"></i><b>4.9</b> Testing the traits with <code>test</code></a></li>
+<li class="chapter" data-level="4.10" data-path="maketraits.html"><a href="maketraits.html#templates-for-making-your-very-own-process"><i class="fa fa-check"></i><b>4.10</b> Templates for making your very own process</a>
+<ul>
+<li class="chapter" data-level="4.10.1" data-path="maketraits.html"><a href="maketraits.html#a-simple-brownian-motion-process-template"><i class="fa fa-check"></i><b>4.10.1</b> A simple Brownian Motion process template</a></li>
+<li class="chapter" data-level="4.10.2" data-path="maketraits.html"><a href="maketraits.html#a-simple-ornstein-uhlenbeck-process-template"><i class="fa fa-check"></i><b>4.10.2</b> A simple Ornstein-Uhlenbeck process template</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="makemodifiers.html"><a href="makemodifiers.html"><i class="fa fa-check"></i><b>4</b> Making modifiers with <code>make.modifiers()</code></a><ul>
-<li class="chapter" data-level="4.1" data-path="makemodifiers.html"><a href="makemodifiers.html#the-branch-length-function-branch.length"><i class="fa fa-check"></i><b>4.1</b> The branch length function (<code>branch.length</code>)</a><ul>
-<li class="chapter" data-level="4.1.1" data-path="makemodifiers.html"><a href="makemodifiers.html#allowarguments"><i class="fa fa-check"></i><b>4.1.1</b> The allowed arguments</a></li>
+<li class="chapter" data-level="5" data-path="makemodifiers.html"><a href="makemodifiers.html"><i class="fa fa-check"></i><b>5</b> Modifying the birth-death process</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="makemodifiers.html"><a href="makemodifiers.html#the-default-modifier-how-the-process-is-working"><i class="fa fa-check"></i><b>5.1</b> The default modifier (how the process is working)</a></li>
+<li class="chapter" data-level="5.2" data-path="makemodifiers.html"><a href="makemodifiers.html#the-branch-length-function-branch.length"><i class="fa fa-check"></i><b>5.2</b> The branch length function (<code>branch.length</code>)</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="makemodifiers.html"><a href="makemodifiers.html#allowarguments"><i class="fa fa-check"></i><b>5.2.1</b> The allowed arguments</a></li>
 </ul></li>
-<li class="chapter" data-level="4.2" data-path="makemodifiers.html"><a href="makemodifiers.html#the-selection-function-selection"><i class="fa fa-check"></i><b>4.2</b> The selection function (<code>selection</code>)</a></li>
-<li class="chapter" data-level="4.3" data-path="makemodifiers.html"><a href="makemodifiers.html#the-speciation-function-speciation"><i class="fa fa-check"></i><b>4.3</b> The speciation function (<code>speciation</code>)</a></li>
-<li class="chapter" data-level="4.4" data-path="makemodifiers.html"><a href="makemodifiers.html#summarymodifiers"><i class="fa fa-check"></i><b>4.4</b> Summary of the inputs and outputs for the <code>branch.length</code>, <code>selection</code> and <code>speciation</code> modifiers</a></li>
-<li class="chapter" data-level="4.5" data-path="makemodifiers.html"><a href="makemodifiers.html#the-condition-and-modify-functions-condition-and-modify"><i class="fa fa-check"></i><b>4.5</b> The condition and modify functions (<code>condition</code> and <code>modify</code>)</a></li>
-<li class="chapter" data-level="4.6" data-path="makemodifiers.html"><a href="makemodifiers.html#combining-and-editing-modifiers-add"><i class="fa fa-check"></i><b>4.6</b> Combining and editing modifiers (<code>add</code>)</a></li>
-<li class="chapter" data-level="4.7" data-path="makemodifiers.html"><a href="makemodifiers.html#testing-modifiers-test"><i class="fa fa-check"></i><b>4.7</b> Testing modifiers (<code>test</code>)</a></li>
-<li class="chapter" data-level="4.8" data-path="makemodifiers.html"><a href="makemodifiers.html#demo-runnable"><i class="fa fa-check"></i><b>4.8</b> Demo runnable</a></li>
+<li class="chapter" data-level="5.3" data-path="makemodifiers.html"><a href="makemodifiers.html#the-selection-function-selection"><i class="fa fa-check"></i><b>5.3</b> The selection function (<code>selection</code>)</a></li>
+<li class="chapter" data-level="5.4" data-path="makemodifiers.html"><a href="makemodifiers.html#the-speciation-function-speciation"><i class="fa fa-check"></i><b>5.4</b> The speciation function (<code>speciation</code>)</a></li>
+<li class="chapter" data-level="5.5" data-path="makemodifiers.html"><a href="makemodifiers.html#summarymodifiers"><i class="fa fa-check"></i><b>5.5</b> Summary of the inputs and outputs for the <code>branch.length</code>, <code>selection</code> and <code>speciation</code> modifiers</a></li>
+<li class="chapter" data-level="5.6" data-path="makemodifiers.html"><a href="makemodifiers.html#the-condition-and-modify-functions-condition-and-modify"><i class="fa fa-check"></i><b>5.6</b> The condition and modify functions (<code>condition</code> and <code>modify</code>)</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="makeevents.html"><a href="makeevents.html"><i class="fa fa-check"></i><b>5</b> Making events with <code>make.events()</code></a><ul>
-<li class="chapter" data-level="5.1" data-path="makeevents.html"><a href="makeevents.html#conditions"><i class="fa fa-check"></i><b>5.1</b> Conditions</a></li>
-<li class="chapter" data-level="5.2" data-path="makeevents.html"><a href="makeevents.html#modifications"><i class="fa fa-check"></i><b>5.2</b> Modifications</a></li>
-<li class="chapter" data-level="5.3" data-path="makeevents.html"><a href="makeevents.html#some-events-examples"><i class="fa fa-check"></i><b>5.3</b> Some events examples</a><ul>
-<li class="chapter" data-level="5.3.1" data-path="makeevents.html"><a href="makeevents.html#random-mass-extinction-after-some-time"><i class="fa fa-check"></i><b>5.3.1</b> Random mass extinction after some time</a></li>
-<li class="chapter" data-level="5.3.2" data-path="makeevents.html"><a href="makeevents.html#extinction-based-on-a-trait-value-after-some-time"><i class="fa fa-check"></i><b>5.3.2</b> Extinction based on a trait value after some time</a></li>
-<li class="chapter" data-level="5.3.3" data-path="makeevents.html"><a href="makeevents.html#adding-a-background-extinction-after-reaching-a-number-of-living-taxa"><i class="fa fa-check"></i><b>5.3.3</b> Adding a background extinction after reaching a number of living taxa</a></li>
-<li class="chapter" data-level="5.3.4" data-path="makeevents.html"><a href="makeevents.html#reducing-speciation-after-some-time"><i class="fa fa-check"></i><b>5.3.4</b> Reducing speciation after some time</a></li>
-<li class="chapter" data-level="5.3.5" data-path="makeevents.html"><a href="makeevents.html#changing-trait-process-after-some-time"><i class="fa fa-check"></i><b>5.3.5</b> Changing trait process after some time</a></li>
-<li class="chapter" data-level="5.3.6" data-path="makeevents.html"><a href="makeevents.html#changing-trait-correlation-after-reaching-a-trait-value"><i class="fa fa-check"></i><b>5.3.6</b> Changing trait correlation after reaching a trait value</a></li>
-<li class="chapter" data-level="5.3.7" data-path="makeevents.html"><a href="makeevents.html#event-for-changing-a-modifier"><i class="fa fa-check"></i><b>5.3.7</b> Event for changing a modifier</a></li>
-<li class="chapter" data-level="5.3.8" data-path="makeevents.html"><a href="makeevents.html#changing-branch-length-when-reaching-n-taxa"><i class="fa fa-check"></i><b>5.3.8</b> Changing branch length when reaching n taxa</a></li>
-<li class="chapter" data-level="5.3.9" data-path="makeevents.html"><a href="makeevents.html#founding-event-a-subtree-with-no-fossils"><i class="fa fa-check"></i><b>5.3.9</b> Founding event: a subtree with no fossils</a></li>
-<li class="chapter" data-level="5.3.10" data-path="makeevents.html"><a href="makeevents.html#founding-event-with-traits"><i class="fa fa-check"></i><b>5.3.10</b> Founding event with traits</a></li>
+<li class="chapter" data-level="6" data-path="makeevents.html"><a href="makeevents.html"><i class="fa fa-check"></i><b>6</b> Adding events to simulations</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="makeevents.html"><a href="makeevents.html#target"><i class="fa fa-check"></i><b>6.1</b> Target</a></li>
+<li class="chapter" data-level="6.2" data-path="makeevents.html"><a href="makeevents.html#conditions"><i class="fa fa-check"></i><b>6.2</b> Conditions</a></li>
+<li class="chapter" data-level="6.3" data-path="makeevents.html"><a href="makeevents.html#modifications"><i class="fa fa-check"></i><b>6.3</b> Modifications</a></li>
+<li class="chapter" data-level="6.4" data-path="makeevents.html"><a href="makeevents.html#examples"><i class="fa fa-check"></i><b>6.4</b> Examples</a></li>
+<li class="chapter" data-level="6.5" data-path="makeevents.html"><a href="makeevents.html#founding"><i class="fa fa-check"></i><b>6.5</b> Founding events</a></li>
 </ul></li>
+<li class="chapter" data-level="7" data-path="others.html"><a href="others.html"><i class="fa fa-check"></i><b>7</b> Other functionalities</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="others.html"><a href="others.html#makebdparams"><i class="fa fa-check"></i><b>7.1</b> <code>make.bd.params</code></a></li>
+<li class="chapter" data-level="7.2" data-path="others.html"><a href="others.html#dropthings"><i class="fa fa-check"></i><b>7.2</b> <code>drop.things</code></a></li>
+<li class="chapter" data-level="7.3" data-path="others.html"><a href="others.html#dads-internal-utilities"><i class="fa fa-check"></i><b>7.3</b> <code>"dads"</code> internal utilities</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="plotting-traits.html"><a href="plotting-traits.html"><i class="fa fa-check"></i><b>8</b> Plotting traits</a></li>
+<li class="chapter" data-level="9" data-path="plotting-dads-results.html"><a href="plotting-dads-results.html"><i class="fa fa-check"></i><b>9</b> Plotting dads results</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="plotting-dads-results.html"><a href="plotting-dads-results.html#d-version"><i class="fa fa-check"></i><b>9.1</b> 3D version!</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="specific-examples.html"><a href="specific-examples.html"><i class="fa fa-check"></i><b>10</b> Specific examples</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="specific-examples.html"><a href="specific-examples.html#EGrandom_ext"><i class="fa fa-check"></i><b>10.1</b> Random mass extinction after some time</a></li>
+<li class="chapter" data-level="10.2" data-path="specific-examples.html"><a href="specific-examples.html#EGneg_ext"><i class="fa fa-check"></i><b>10.2</b> Species with negative trait values go extinct after some time</a></li>
+<li class="chapter" data-level="10.3" data-path="specific-examples.html"><a href="specific-examples.html#EGbg_ext"><i class="fa fa-check"></i><b>10.3</b> Adding a background extinction after reaching a number of living taxa</a></li>
+<li class="chapter" data-level="10.4" data-path="specific-examples.html"><a href="specific-examples.html#EGred_spec"><i class="fa fa-check"></i><b>10.4</b> Reducing speciation rate after some time</a></li>
+<li class="chapter" data-level="10.5" data-path="specific-examples.html"><a href="specific-examples.html#EG_change_trait"><i class="fa fa-check"></i><b>10.5</b> Changing the trait process after some time</a></li>
+<li class="chapter" data-level="10.6" data-path="specific-examples.html"><a href="specific-examples.html#EG_change_correlation"><i class="fa fa-check"></i><b>10.6</b> Changing trait correlation after reaching a trait value</a></li>
+<li class="chapter" data-level="10.7" data-path="specific-examples.html"><a href="specific-examples.html#EG_change_modif"><i class="fa fa-check"></i><b>10.7</b> Event for changing a modifier: speciation event increase for species with negative values</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="EG_modify_brlen.html"><a href="EG_modify_brlen.html"><i class="fa fa-check"></i><b>11</b> Changing branch length when reaching n taxa</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="EG_modify_brlen.html"><a href="EG_modify_brlen.html#EG_founding_purebirth"><i class="fa fa-check"></i><b>11.1</b> Founding event: a generating a subtree with no fossils</a></li>
+<li class="chapter" data-level="11.2" data-path="EG_modify_brlen.html"><a href="EG_modify_brlen.html#EG_founding_traits"><i class="fa fa-check"></i><b>11.2</b> Founding event: a generating a subtree a different process</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/TGuillerme/dads/" target="blank">Project GitHub page</a></li>
@@ -198,7 +261,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">dads manual</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Specific examples</a>
           </h1>
         </div>
 
@@ -207,56 +270,69 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="header">
-<h1 class="title">dads manual</h1>
-<p class="author"><em>Thomas Guillerme (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>), Alex Slavenko (email) and others</em></p>
-<p class="date"><em>2021-01-19</em></p>
+<h1 class="title">Specific examples</h1>
+<p class="author"><em>Thomas Guillerme (<a href="mailto:guillert@tcd.ie" class="email">guillert@tcd.ie</a>)</em></p>
+<p class="date"><em>2023-03-27</em></p>
 </div>
-<div id="dads-disparity-and-diversity-simulations." class="section level1">
-<h1><span class="header-section-number">1</span> <code>dads</code>: disparity and diversity simulations.</h1>
+<div id="dads-disparity-and-diversity-simulations." class="section level1 hasAnchor" number="1">
+<h1><span class="header-section-number">1</span> <code>dads</code>: disparity and diversity simulations.<a href="index.html#dads-disparity-and-diversity-simulations." class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>Allowing to simulate disparity and diversity at the same time with interaction between both.</p>
 <p>The core of this package is based on the <a href="https://github.com/cran/diversitree/blob/master/R/simulate-bd.R"><code>diversitree</code> birth-death algorithm</a>.</p>
-<div id="what-is-dads" class="section level2">
-<h2><span class="header-section-number">1.1</span> What is <code>dads</code>?</h2>
+<div id="what-is-dads" class="section level2 hasAnchor" number="1.1">
+<h2><span class="header-section-number">1.1</span> What is <code>dads</code>?<a href="index.html#what-is-dads" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>There are some very good packages out there to simulate birth death trees (like <a href="https://github.com/tanja819/TreeSim">TreeSim</a>) or even packages simulating traits (disparity) and diversity jointly (like <a href="https://github.com/cran/RPANDA">RPANDA</a> or <a href="https://github.com/PuttickMacroevolution/PETER">PETER</a>).
 We strongly advice you have a look at these packages first as they might be more appropriate for your tasks.</p>
 <p><code>dads</code> aims to be a highly modular and friendly version of all these packages: it allows to simulate disparity and diversity jointly with a vast array of options that can be easily modified by users.
-For example, you can easily generate any type of process to generate a trait (BM, OU, something else, etc…) in multiple dependent or independent dimensions through <code>&quot;traits&quot;</code> objects.
-You can then specify how the traits should affect disparity through <code>&quot;modifiers&quot;</code> objects. And finally you can create events (like mass extinctions) through <code>&quot;events&quot;</code> objects.
+For example, you can easily generate any type of process to generate a trait (BM, OU, something else, etc…) in multiple dependent or independent dimensions through <code>"traits"</code> objects.
+You can then specify how the traits should affect disparity through <code>"modifiers"</code> objects. And finally you can create events (like mass extinctions) through <code>"events"</code> objects.
 These objects and how to modify them will be detailed throughout this manual.
 Finally we are putting an emphasise in the development of this package on the speed and reliability of the functions.</p>
-<div id="modular" class="section level3">
-<h3><span class="header-section-number">1.1.1</span> Modular?</h3>
+<div id="modular" class="section level3 hasAnchor" number="1.1.1">
+<h3><span class="header-section-number">1.1.1</span> Modular?<a href="index.html#modular" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Because their is an infinite way you might want to generate disparity and diversity (different traits, different modifiers and different events), the <code>dads</code> package is designed to make all these parts easy to code separately and integrate them easily in the <code>dads</code> core functions.
 This allows you to simulate finely tuned multidimensional data for your specific project!</p>
 </div>
 </div>
-<div id="installing-and-running-the-package" class="section level2">
-<h2><span class="header-section-number">1.2</span> Installing and running the package</h2>
+<div id="who-is-this-manual-for" class="section level2 hasAnchor" number="1.2">
+<h2><span class="header-section-number">1.2</span> Who is this manual for?<a href="index.html#who-is-this-manual-for" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This manual explains how <code>dads</code> work in as much details as possible and aims to give you the keys to design your own diversity and disparity simulations.</p>
+<p>The first section <code>Getting started</code> is aimed for people with a <code>R</code> beginner level:
+* you know what a package is - and how to install it;
+* you know what a function is - and what arguments are;
+* you have already (vaguely) heard that they are different types of objects in R - like matrices (<code>"matrix"</code>) or trees (<code>"phylo"</code>);
+* and you have already looked for documentation and bugs online.</p>
+<p>The sections after that are a bit more advanced and requires the following level:
+* you have already created functions before;
+* you know how to subset elements of a list - i.e. you understand the <code>list$element</code> syntax;
+* you are aware that both <code>TRUE == 1</code> and <code>FALSE == 0</code> are <code>TRUE</code>;
+* you have heard that the objects in R have classes and that it sometimes matters - for example you know that R can differentiate between <code>as.numeric(1)</code> and <code>as.integer(1)</code>;
+* you owe part of your life to Stack Overflow.</p>
+</div>
+<div id="installing-and-running-the-package" class="section level2 hasAnchor" number="1.3">
+<h2><span class="header-section-number">1.3</span> Installing and running the package<a href="index.html#installing-and-running-the-package" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>You can install this package easily, directly from the github:
 <!-- TG: I do intend to release it on CRAN later on --></p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co">## Checking if devtools is already installed</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(devtools)) <span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co">## Installing the latest version directly from GitHub</span></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5">devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;TGuillerme/dads&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" aria-hidden="true"></a><span class="co">## Checking if devtools is already installed</span></span>
+<span id="cb1-2"><a href="index.html#cb1-2" aria-hidden="true"></a><span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(devtools)) <span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)</span>
+<span id="cb1-3"><a href="index.html#cb1-3" aria-hidden="true"></a></span>
+<span id="cb1-4"><a href="index.html#cb1-4" aria-hidden="true"></a><span class="co">## Installing the latest version directly from GitHub</span></span>
+<span id="cb1-5"><a href="index.html#cb1-5" aria-hidden="true"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;TGuillerme/dads&quot;</span>)</span></code></pre></div>
 </div>
-<div id="help" class="section level2">
-<h2><span class="header-section-number">1.3</span> Help</h2>
+<div id="help" class="section level2 hasAnchor" number="1.4">
+<h2><span class="header-section-number">1.4</span> Help<a href="index.html#help" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>If you need help with the package, hopefully the following manual will be useful.
 However, parts of this package are still in development and some other parts are probably not covered.
-Thus if you have suggestions or comments on on what has already been developed or will be developed, please send me an email (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>) or if you are a GitHub user, directly create an issue on the <a href="https://github.com/TGuillerme/dads">GitHub page</a>.
+Thus if you have suggestions or comments on on what has already been developed or will be developed, please send me an email (<a href="mailto:guillert@tcd.ie" class="email">guillert@tcd.ie</a>) or if you are a GitHub user, directly create an issue on the <a href="https://github.com/TGuillerme/dads">GitHub page</a>.
 Doing so will not only hopefully help you but also other users since it will help improve this manual!</p>
 </div>
-<div id="how-does-dads-work" class="section level2">
-<h2><span class="header-section-number">1.4</span> How does <code>dads</code> work?</h2>
+<div id="how-does-dads-work" class="section level2 hasAnchor" number="1.5">
+<h2><span class="header-section-number">1.5</span> How does <code>dads</code> work?<a href="index.html#how-does-dads-work" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Basically, the <code>dads</code> function intakes your personalised <code>traits</code>, <code>modifiers</code> and <code>events</code> to generate your disparity and diversity.
 You will find more details about how these objects (<code>traits</code>, <code>modifiers</code> and <code>events</code>) work in the rest of the tutorial but here is a graphical representation of how <code>dads</code> work:</p>
 <div class="figure">
-<embed src="dads_structure.pdf" />
+<img src="dads_structure.png" alt="" />
 <p class="caption">Schematised summary of the <code>dads</code> package architecture</p>
 </div>
-
-<pre><code>## Loading required package: dispRity</code></pre>
 </div>
 </div>
             </section>
@@ -265,11 +341,10 @@ You will find more details about how these objects (<code>traits</code>, <code>m
         </div>
       </div>
 
-<a href="getting-started.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="bdalgorithm.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -288,6 +363,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -308,6 +384,10 @@ gitbook.start({
 "text": null
 },
 "download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }

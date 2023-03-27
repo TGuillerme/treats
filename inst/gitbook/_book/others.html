@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>7 Other functionalities | Specific examples</title>
+  <meta name="description" content="dads R package manual" />
+  <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="7 Other functionalities | Specific examples" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="dads R package manual" />
+  <meta name="github-repo" content="TGuillerme/dads" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="7 Other functionalities | Specific examples" />
+  
+  <meta name="twitter:description" content="dads R package manual" />
+  
+
+<meta name="author" content="Thomas Guillerme (guillert@tcd.ie)" />
+
+
+<meta name="date" content="2023-03-27" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="makeevents.html"/>
+<link rel="next" href="plotting-traits.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<script src="libs/rglWebGL-binding-1.1.3/rglWebGL.js"></script>
+<link href="libs/rglwidgetClass-1.1.3/rgl.css" rel="stylesheet" />
+<script src="libs/rglwidgetClass-1.1.3/rglClass.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/utils.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/buffer.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/subscenes.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/shaders.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/shadersrc.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/textures.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/projection.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/mouse.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/init.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/pieces.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/draw.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/controls.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/selection.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/rglTimer.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/pretty.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/axes.src.js"></script>
+<script src="libs/rglwidgetClass-1.1.3/animation.src.js"></script>
+<script src="libs/CanvasMatrix4-1.1.3/CanvasMatrix.src.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">dads manual</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> <code>dads</code>: disparity and diversity simulations.</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#what-is-dads"><i class="fa fa-check"></i><b>1.1</b> What is <code>dads</code>?</a>
+<ul>
+<li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#modular"><i class="fa fa-check"></i><b>1.1.1</b> Modular?</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#who-is-this-manual-for"><i class="fa fa-check"></i><b>1.2</b> Who is this manual for?</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#installing-and-running-the-package"><i class="fa fa-check"></i><b>1.3</b> Installing and running the package</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#help"><i class="fa fa-check"></i><b>1.4</b> Help</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#how-does-dads-work"><i class="fa fa-check"></i><b>1.5</b> How does <code>dads</code> work?</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="bdalgorithm.html"><a href="bdalgorithm.html"><i class="fa fa-check"></i><b>2</b> The birth-death algorithm</a></li>
+<li class="chapter" data-level="3" data-path="gettingstarted.html"><a href="gettingstarted.html"><i class="fa fa-check"></i><b>3</b> Getting started</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="gettingstarted.html"><a href="gettingstarted.html#the-simplest-of-all-analysis-simulating-diversity-only"><i class="fa fa-check"></i><b>3.1</b> The simplest of all analysis: simulating diversity only</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="gettingstarted.html"><a href="gettingstarted.html#changing-the-birth-death-parameters"><i class="fa fa-check"></i><b>3.1.1</b> Changing the birth-death parameters</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="gettingstarted.html"><a href="gettingstarted.html#slightly-more-complex-simulating-disparity-and-diversity"><i class="fa fa-check"></i><b>3.2</b> Slightly more complex: simulating disparity and diversity</a></li>
+<li class="chapter" data-level="3.3" data-path="gettingstarted.html"><a href="gettingstarted.html#slightly-more-more-complex-simulating-linked-disparity-and-diversity"><i class="fa fa-check"></i><b>3.3</b> Slightly more more complex: simulating linked disparity and diversity</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="maketraits.html"><a href="maketraits.html"><i class="fa fa-check"></i><b>4</b> Simulating traits</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="maketraits.html"><a href="maketraits.html#the-process-process"><i class="fa fa-check"></i><b>4.1</b> The process (<code>process</code>)</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="maketraits.html"><a href="maketraits.html#the-syntax-how-to-code-a-process"><i class="fa fa-check"></i><b>4.1.1</b> The syntax (how to code a process?)</a></li>
+<li class="chapter" data-level="4.1.2" data-path="maketraits.html"><a href="maketraits.html#using-a-process-in-dads"><i class="fa fa-check"></i><b>4.1.2</b> Using a <code>"process"</code> in <code>dads</code></a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="maketraits.html"><a href="maketraits.html#the-number-of-traits-n-and-the-starting-values-start"><i class="fa fa-check"></i><b>4.2</b> The number of traits <code>n</code> and the starting values <code>start</code></a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="maketraits.html"><a href="maketraits.html#what-even-is-a-trait"><i class="fa fa-check"></i><b>4.2.1</b> What even is a trait?</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="maketraits.html"><a href="maketraits.html#extra-argument-for-the-processes-with-process.args"><i class="fa fa-check"></i><b>4.3</b> Extra argument for the processes with <code>process.args</code></a></li>
+<li class="chapter" data-level="4.4" data-path="maketraits.html"><a href="maketraits.html#naming-the-traits-with-trait.names"><i class="fa fa-check"></i><b>4.4</b> Naming the traits with <code>trait.names</code></a></li>
+<li class="chapter" data-level="4.5" data-path="maketraits.html"><a href="maketraits.html#combining-multiple-traits-with-add"><i class="fa fa-check"></i><b>4.5</b> Combining multiple traits with <code>add</code></a></li>
+<li class="chapter" data-level="4.6" data-path="maketraits.html"><a href="maketraits.html#using-a-background-trait"><i class="fa fa-check"></i><b>4.6</b> Using a background trait</a></li>
+<li class="chapter" data-level="4.7" data-path="maketraits.html"><a href="maketraits.html#saving-trait-values-at-different-time-steps"><i class="fa fa-check"></i><b>4.7</b> Saving trait values at different time steps</a></li>
+<li class="chapter" data-level="4.8" data-path="maketraits.html"><a href="maketraits.html#traits-implemented-in-dads"><i class="fa fa-check"></i><b>4.8</b> Traits implemented in <code>dads</code></a></li>
+<li class="chapter" data-level="4.9" data-path="maketraits.html"><a href="maketraits.html#testing-the-traits-with-test"><i class="fa fa-check"></i><b>4.9</b> Testing the traits with <code>test</code></a></li>
+<li class="chapter" data-level="4.10" data-path="maketraits.html"><a href="maketraits.html#templates-for-making-your-very-own-process"><i class="fa fa-check"></i><b>4.10</b> Templates for making your very own process</a>
+<ul>
+<li class="chapter" data-level="4.10.1" data-path="maketraits.html"><a href="maketraits.html#a-simple-brownian-motion-process-template"><i class="fa fa-check"></i><b>4.10.1</b> A simple Brownian Motion process template</a></li>
+<li class="chapter" data-level="4.10.2" data-path="maketraits.html"><a href="maketraits.html#a-simple-ornstein-uhlenbeck-process-template"><i class="fa fa-check"></i><b>4.10.2</b> A simple Ornstein-Uhlenbeck process template</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="makemodifiers.html"><a href="makemodifiers.html"><i class="fa fa-check"></i><b>5</b> Modifying the birth-death process</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="makemodifiers.html"><a href="makemodifiers.html#the-default-modifier-how-the-process-is-working"><i class="fa fa-check"></i><b>5.1</b> The default modifier (how the process is working)</a></li>
+<li class="chapter" data-level="5.2" data-path="makemodifiers.html"><a href="makemodifiers.html#the-branch-length-function-branch.length"><i class="fa fa-check"></i><b>5.2</b> The branch length function (<code>branch.length</code>)</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="makemodifiers.html"><a href="makemodifiers.html#allowarguments"><i class="fa fa-check"></i><b>5.2.1</b> The allowed arguments</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="makemodifiers.html"><a href="makemodifiers.html#the-selection-function-selection"><i class="fa fa-check"></i><b>5.3</b> The selection function (<code>selection</code>)</a></li>
+<li class="chapter" data-level="5.4" data-path="makemodifiers.html"><a href="makemodifiers.html#the-speciation-function-speciation"><i class="fa fa-check"></i><b>5.4</b> The speciation function (<code>speciation</code>)</a></li>
+<li class="chapter" data-level="5.5" data-path="makemodifiers.html"><a href="makemodifiers.html#summarymodifiers"><i class="fa fa-check"></i><b>5.5</b> Summary of the inputs and outputs for the <code>branch.length</code>, <code>selection</code> and <code>speciation</code> modifiers</a></li>
+<li class="chapter" data-level="5.6" data-path="makemodifiers.html"><a href="makemodifiers.html#the-condition-and-modify-functions-condition-and-modify"><i class="fa fa-check"></i><b>5.6</b> The condition and modify functions (<code>condition</code> and <code>modify</code>)</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="makeevents.html"><a href="makeevents.html"><i class="fa fa-check"></i><b>6</b> Adding events to simulations</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="makeevents.html"><a href="makeevents.html#target"><i class="fa fa-check"></i><b>6.1</b> Target</a></li>
+<li class="chapter" data-level="6.2" data-path="makeevents.html"><a href="makeevents.html#conditions"><i class="fa fa-check"></i><b>6.2</b> Conditions</a></li>
+<li class="chapter" data-level="6.3" data-path="makeevents.html"><a href="makeevents.html#modifications"><i class="fa fa-check"></i><b>6.3</b> Modifications</a></li>
+<li class="chapter" data-level="6.4" data-path="makeevents.html"><a href="makeevents.html#examples"><i class="fa fa-check"></i><b>6.4</b> Examples</a></li>
+<li class="chapter" data-level="6.5" data-path="makeevents.html"><a href="makeevents.html#founding"><i class="fa fa-check"></i><b>6.5</b> Founding events</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="others.html"><a href="others.html"><i class="fa fa-check"></i><b>7</b> Other functionalities</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="others.html"><a href="others.html#makebdparams"><i class="fa fa-check"></i><b>7.1</b> <code>make.bd.params</code></a></li>
+<li class="chapter" data-level="7.2" data-path="others.html"><a href="others.html#dropthings"><i class="fa fa-check"></i><b>7.2</b> <code>drop.things</code></a></li>
+<li class="chapter" data-level="7.3" data-path="others.html"><a href="others.html#dads-internal-utilities"><i class="fa fa-check"></i><b>7.3</b> <code>"dads"</code> internal utilities</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="plotting-traits.html"><a href="plotting-traits.html"><i class="fa fa-check"></i><b>8</b> Plotting traits</a></li>
+<li class="chapter" data-level="9" data-path="plotting-dads-results.html"><a href="plotting-dads-results.html"><i class="fa fa-check"></i><b>9</b> Plotting dads results</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="plotting-dads-results.html"><a href="plotting-dads-results.html#d-version"><i class="fa fa-check"></i><b>9.1</b> 3D version!</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="specific-examples.html"><a href="specific-examples.html"><i class="fa fa-check"></i><b>10</b> Specific examples</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="specific-examples.html"><a href="specific-examples.html#EGrandom_ext"><i class="fa fa-check"></i><b>10.1</b> Random mass extinction after some time</a></li>
+<li class="chapter" data-level="10.2" data-path="specific-examples.html"><a href="specific-examples.html#EGneg_ext"><i class="fa fa-check"></i><b>10.2</b> Species with negative trait values go extinct after some time</a></li>
+<li class="chapter" data-level="10.3" data-path="specific-examples.html"><a href="specific-examples.html#EGbg_ext"><i class="fa fa-check"></i><b>10.3</b> Adding a background extinction after reaching a number of living taxa</a></li>
+<li class="chapter" data-level="10.4" data-path="specific-examples.html"><a href="specific-examples.html#EGred_spec"><i class="fa fa-check"></i><b>10.4</b> Reducing speciation rate after some time</a></li>
+<li class="chapter" data-level="10.5" data-path="specific-examples.html"><a href="specific-examples.html#EG_change_trait"><i class="fa fa-check"></i><b>10.5</b> Changing the trait process after some time</a></li>
+<li class="chapter" data-level="10.6" data-path="specific-examples.html"><a href="specific-examples.html#EG_change_correlation"><i class="fa fa-check"></i><b>10.6</b> Changing trait correlation after reaching a trait value</a></li>
+<li class="chapter" data-level="10.7" data-path="specific-examples.html"><a href="specific-examples.html#EG_change_modif"><i class="fa fa-check"></i><b>10.7</b> Event for changing a modifier: speciation event increase for species with negative values</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="EG_modify_brlen.html"><a href="EG_modify_brlen.html"><i class="fa fa-check"></i><b>11</b> Changing branch length when reaching n taxa</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="EG_modify_brlen.html"><a href="EG_modify_brlen.html#EG_founding_purebirth"><i class="fa fa-check"></i><b>11.1</b> Founding event: a generating a subtree with no fossils</a></li>
+<li class="chapter" data-level="11.2" data-path="EG_modify_brlen.html"><a href="EG_modify_brlen.html#EG_founding_traits"><i class="fa fa-check"></i><b>11.2</b> Founding event: a generating a subtree a different process</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/TGuillerme/dads/" target="blank">Project GitHub page</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Specific examples</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="others" class="section level1 hasAnchor" number="7">
+<h1><span class="header-section-number">7</span> Other functionalities<a href="others.html#others" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="makebdparams" class="section level2 hasAnchor" number="7.1">
+<h2><span class="header-section-number">7.1</span> <code>make.bd.params</code><a href="others.html#makebdparams" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In most examples above, birth-death parameters where set as fixed values, i.e. a speciation rate of <span class="math inline">\(\lambda\)</span> and an extinction rate of <span class="math inline">\(\mu\)</span> throughout the simulations (with maybe some events modifying these rates).
+However, it is of course possible to set these rates as specific or changing distributions!
+You can do this using the <code>make.bd.params</code> function a provide either a <code>vector</code> of values:</p>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="others.html#cb116-1" aria-hidden="true"></a><span class="co">## An example where the speciation is randomly sampled among three values</span></span>
+<span id="cb116-2"><a href="others.html#cb116-2" aria-hidden="true"></a>my_bd_params &lt;-<span class="st"> </span><span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> <span class="kw">c</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">3</span>,<span class="dv">42</span>))</span>
+<span id="cb116-3"><a href="others.html#cb116-3" aria-hidden="true"></a></span>
+<span id="cb116-4"><a href="others.html#cb116-4" aria-hidden="true"></a><span class="co">## Building a tree using this set of parameters</span></span>
+<span id="cb116-5"><a href="others.html#cb116-5" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb116-6"><a href="others.html#cb116-6" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">dads</span>(<span class="dt">stop.rule =</span> <span class="kw">list</span>(<span class="dt">max.taxa =</span> <span class="dv">50</span>), <span class="dt">bd.params =</span> my_bd_params))</span></code></pre></div>
+<p><img src="dads_manual_files/figure-html/unnamed-chunk-79-1.png" width="672" /></p>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="others.html#cb117-1" aria-hidden="true"></a><span class="co">## Note the regions in the tree with short branches</span></span>
+<span id="cb117-2"><a href="others.html#cb117-2" aria-hidden="true"></a><span class="co">## (that&#39;s the speciation being 1/3 while the others are speciation = 42) </span></span></code></pre></div>
+<p>Or directly a function from which to sample:</p>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="others.html#cb118-1" aria-hidden="true"></a><span class="co">## Another example where speciation is drawn from the interval (0, 1)</span></span>
+<span id="cb118-2"><a href="others.html#cb118-2" aria-hidden="true"></a><span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> runif)</span></code></pre></div>
+<pre><code>##  ---- dads birth-death parameters object ---- 
+## speciation: runif.
+## extinction: 0.</code></pre>
+<p>In this example, the <code>"bd.params"</code> object passed to the <code>dads</code> function will allow the birth-death process to sample the speciation parameter each time it is called (e.g. during the speciation/extinction step, the branch length step, etc.).
+If using a function, you can fine tune the arguments to be passed to that function using the <code>speciation.args</code> or the <code>extinction.args</code> arguments (as a named list matching the function’s arguments):</p>
+<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="others.html#cb120-1" aria-hidden="true"></a><span class="co">## Speciation is drawn from the interval (0.5, 1.5)</span></span>
+<span id="cb120-2"><a href="others.html#cb120-2" aria-hidden="true"></a><span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> runif,</span>
+<span id="cb120-3"><a href="others.html#cb120-3" aria-hidden="true"></a>               <span class="dt">speciation.args =</span> <span class="kw">list</span>(<span class="dt">min =</span> <span class="fl">0.5</span>, <span class="dt">max =</span> <span class="fl">1.5</span>))</span></code></pre></div>
+<pre><code>##  ---- dads birth-death parameters object ---- 
+## speciation: runif (with optional arguments).
+## extinction: 0.</code></pre>
+<p>When using distributions for both the speciation and extinction parameters, you can run into the undesired problem of having an extinction rate that is higher than your speciation rate (and thus your tree dying out - unless this is the desired behaviour).
+You can avoid this problem by using the <code>joint</code> distribution argument this will ensure that the sampling of the extinction rate is always lower or equal to the speciation rate.</p>
+<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="others.html#cb122-1" aria-hidden="true"></a><span class="co">## Joint speciation and extinction sampled from uniform distribution </span></span>
+<span id="cb122-2"><a href="others.html#cb122-2" aria-hidden="true"></a><span class="co">## with speciation always &gt;= to extinction</span></span>
+<span id="cb122-3"><a href="others.html#cb122-3" aria-hidden="true"></a><span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> runif, <span class="dt">extinction =</span> runif, <span class="dt">joint =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<pre><code>##  ---- dads birth-death parameters object ---- 
+## joint sampling for:
+## speciation: runif.
+## extinction: runif.</code></pre>
+<p>Finally to avoid negative sampling values, you can use the argument <code>absolute</code> that will make all the sampled values positive.
+This argument is set to <code>TRUE</code> by default so you shouldn’t have to worry about it most of the time unless you specifically need negative sampled values for your parameters.</p>
+<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="others.html#cb124-1" aria-hidden="true"></a><span class="co">## Making the speciation sampling always positive</span></span>
+<span id="cb124-2"><a href="others.html#cb124-2" aria-hidden="true"></a><span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> rnorm, <span class="dt">absolute =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<pre><code>##  ---- dads birth-death parameters object ---- 
+## speciation: rnorm.
+## extinction: 0.
+## (using absolute values)</code></pre>
+<p>The two other possible arguments for this function are <code>test</code> and <code>update</code> that work the same as for <a href="maketraits.html#maketraits"><code>make.traits</code></a> or <a href="makemodifiers.html#makemodifiers"><code>make.modifiers</code></a></p>
+<p>If you are a visual person and your <code>bd.params</code> objects are getting a bit too complicated to remember, you can always quickly plot them (the function will sample from the <code>bd.params</code> object and show the results):</p>
+<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="others.html#cb126-1" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb126-2"><a href="others.html#cb126-2" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">make.bd.params</span>(), <span class="dt">main =</span> <span class="st">&quot;Default birth-death parameters&quot;</span>)</span>
+<span id="cb126-3"><a href="others.html#cb126-3" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> runif,</span>
+<span id="cb126-4"><a href="others.html#cb126-4" aria-hidden="true"></a>               <span class="dt">speciation.args =</span> <span class="kw">list</span>(<span class="dt">min =</span> <span class="fl">0.5</span>, <span class="dt">max =</span> <span class="fl">1.5</span>)),</span>
+<span id="cb126-5"><a href="others.html#cb126-5" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;Uniform speciation between 0.5 and 1.5</span><span class="ch">\n</span><span class="st">(no extinction)&quot;</span>)</span>
+<span id="cb126-6"><a href="others.html#cb126-6" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> runif,</span>
+<span id="cb126-7"><a href="others.html#cb126-7" aria-hidden="true"></a>                    <span class="dt">speciation.args =</span> <span class="kw">list</span>(<span class="dt">min =</span> <span class="fl">0.5</span>, <span class="dt">max =</span> <span class="fl">1.5</span>)),</span>
+<span id="cb126-8"><a href="others.html#cb126-8" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;Uniform speciation between 0.5 and 1.5</span><span class="ch">\n</span><span class="st">(no extinction)&quot;</span>)</span>
+<span id="cb126-9"><a href="others.html#cb126-9" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> runif, <span class="dt">extinction =</span> runif, <span class="dt">joint =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb126-10"><a href="others.html#cb126-10" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;Joint uniform speciation and extinction&quot;</span>)</span></code></pre></div>
+<p><img src="dads_manual_files/figure-html/unnamed-chunk-84-1.png" width="672" /></p>
+<div class="sourceCode" id="cb127"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb127-1"><a href="others.html#cb127-1" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> rnorm, <span class="dt">extinction =</span> runif,</span>
+<span id="cb127-2"><a href="others.html#cb127-2" aria-hidden="true"></a>                    <span class="dt">joint =</span> <span class="ot">FALSE</span>, <span class="dt">abs =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb127-3"><a href="others.html#cb127-3" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;Disjoint normal speciation and uniform extinction&quot;</span>)</span></code></pre></div>
+<p><img src="dads_manual_files/figure-html/unnamed-chunk-84-2.png" width="672" /></p>
+</div>
+<div id="dropthings" class="section level2 hasAnchor" number="7.2">
+<h2><span class="header-section-number">7.2</span> <code>drop.things</code><a href="others.html#dropthings" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>You can use the function <code>drop.things</code> to drop specific elements of the tree and data at the same time by providing the argument <code>what</code> to be <code>"fossils"</code> for tips that went extinct, <code>"livings"</code> tips that where alive at the end of the simulation or <code>"singles"</code> for internal nodes.
+Alternatively you can use the function aliases <code>drop.fossils</code>, <code>drop.livings</code> or <code>drop.singles</code> for the exact same results:</p>
+<div class="sourceCode" id="cb128"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb128-1"><a href="others.html#cb128-1" aria-hidden="true"></a><span class="co">## A random tree with fossils and traits and internal nodes every 0.5 times</span></span>
+<span id="cb128-2"><a href="others.html#cb128-2" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">3</span>)</span>
+<span id="cb128-3"><a href="others.html#cb128-3" aria-hidden="true"></a>my_data &lt;-<span class="st"> </span><span class="kw">dads</span>(<span class="dt">stop.rule =</span> <span class="kw">list</span>(<span class="dt">max.taxa =</span> <span class="dv">20</span>),</span>
+<span id="cb128-4"><a href="others.html#cb128-4" aria-hidden="true"></a>                <span class="dt">bd.params =</span> <span class="kw">list</span>(<span class="dt">speciation =</span> <span class="dv">1</span>, <span class="dt">extinction =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">3</span>),</span>
+<span id="cb128-5"><a href="others.html#cb128-5" aria-hidden="true"></a>                <span class="dt">traits    =</span> <span class="kw">make.traits</span>(), <span class="dt">save.steps =</span> <span class="fl">0.5</span>)</span>
+<span id="cb128-6"><a href="others.html#cb128-6" aria-hidden="true"></a></span>
+<span id="cb128-7"><a href="others.html#cb128-7" aria-hidden="true"></a><span class="co">## A tree with 20 tips and 54 nodes</span></span>
+<span id="cb128-8"><a href="others.html#cb128-8" aria-hidden="true"></a>my_data<span class="op">$</span>tree</span></code></pre></div>
+<pre><code>## 
+## Phylogenetic tree with 20 tips and 54 internal nodes.
+## 
+## Tip labels:
+##   t1, t2, t3, t4, t5, t6, ...
+## Node labels:
+##   n1, n2, n3, n4, n5, n6, ...
+## 
+## Rooted; includes branch lengths.</code></pre>
+<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb130-1"><a href="others.html#cb130-1" aria-hidden="true"></a><span class="co">## And a dataset with 74 rows</span></span>
+<span id="cb130-2"><a href="others.html#cb130-2" aria-hidden="true"></a><span class="kw">dim</span>(my_data<span class="op">$</span>data)</span></code></pre></div>
+<pre><code>## [1] 74  1</code></pre>
+<div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb132-1"><a href="others.html#cb132-1" aria-hidden="true"></a><span class="co">## Removing the fossil species</span></span>
+<span id="cb132-2"><a href="others.html#cb132-2" aria-hidden="true"></a><span class="kw">drop.things</span>(my_data, <span class="dt">what =</span> <span class="st">&quot;fossils&quot;</span>)<span class="op">$</span>tree</span></code></pre></div>
+<pre><code>## 
+## Phylogenetic tree with 8 tips and 31 internal nodes.
+## 
+## Tip labels:
+##   t13, t14, t15, t16, t17, t18, ...
+## Node labels:
+##   n1, n2, n7, n10, n11, n13, ...
+## 
+## Rooted; includes branch lengths.</code></pre>
+<div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb134-1"><a href="others.html#cb134-1" aria-hidden="true"></a><span class="kw">dim</span>(<span class="kw">drop.fossils</span>(my_data)<span class="op">$</span>data)</span></code></pre></div>
+<pre><code>## [1] 39  1</code></pre>
+<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb136-1"><a href="others.html#cb136-1" aria-hidden="true"></a><span class="co">## Removing the living species</span></span>
+<span id="cb136-2"><a href="others.html#cb136-2" aria-hidden="true"></a><span class="kw">drop.things</span>(my_data, <span class="dt">what =</span> <span class="st">&quot;livings&quot;</span>)<span class="op">$</span>tree</span></code></pre></div>
+<pre><code>## 
+## Phylogenetic tree with 12 tips and 37 internal nodes.
+## 
+## Tip labels:
+##   t1, t2, t3, t4, t5, t6, ...
+## Node labels:
+##   n1, n2, n3, n4, n5, n6, ...
+## 
+## Rooted; includes branch lengths.</code></pre>
+<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb138-1"><a href="others.html#cb138-1" aria-hidden="true"></a><span class="kw">dim</span>(<span class="kw">drop.livings</span>(my_data)<span class="op">$</span>data)</span></code></pre></div>
+<pre><code>## [1] 49  1</code></pre>
+<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb140-1"><a href="others.html#cb140-1" aria-hidden="true"></a><span class="co">## Removing the internal nodes</span></span>
+<span id="cb140-2"><a href="others.html#cb140-2" aria-hidden="true"></a><span class="kw">drop.things</span>(my_data, <span class="dt">what =</span> <span class="st">&quot;singles&quot;</span>)<span class="op">$</span>tree</span></code></pre></div>
+<pre><code>## 
+## Phylogenetic tree with 20 tips and 19 internal nodes.
+## 
+## Tip labels:
+##   t1, t2, t3, t4, t5, t6, ...
+## Node labels:
+##   n1, n7, n33, n39, n54, n40, ...
+## 
+## Rooted; includes branch lengths.</code></pre>
+<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb142-1"><a href="others.html#cb142-1" aria-hidden="true"></a><span class="kw">dim</span>(<span class="kw">drop.singles</span>(my_data)<span class="op">$</span>data)</span></code></pre></div>
+<pre><code>## [1] 39  1</code></pre>
+<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb144-1"><a href="others.html#cb144-1" aria-hidden="true"></a><span class="co">## Removing the internal nodes AND the fossils</span></span>
+<span id="cb144-2"><a href="others.html#cb144-2" aria-hidden="true"></a><span class="kw">drop.singles</span>(<span class="kw">drop.fossils</span>(my_data))</span></code></pre></div>
+<pre><code>##  ---- dads object ---- 
+## Simulated diversity data (x$tree):
+## 
+## Phylogenetic tree with 8 tips and 7 internal nodes.
+## 
+## Tip labels:
+##   t13, t14, t15, t16, t17, t18, ...
+## Node labels:
+##   n7, n33, n54, n53, n34, n45, ...
+## 
+## Rooted; includes branch lengths.
+## 
+## Simulated disparity data (x$data):
+## 1 trait for 1 process (A) with one starting value (0).</code></pre>
+</div>
+<div id="dads-internal-utilities" class="section level2 hasAnchor" number="7.3">
+<h2><span class="header-section-number">7.3</span> <code>"dads"</code> internal utilities<a href="others.html#dads-internal-utilities" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The package also provides utilities for internal functions, namely for designing <code>modifiers</code> or <code>events</code> more easily.
+These functions don’t do anything useful on their own but are optimised to be used internally in <code>dads</code>.
+For all these functions, you can look at the internal manual for an example (i.e. using <code>?&lt;function_name&gt;</code>)</p>
+<p>So far the package has the following internals:</p>
+<table>
+<colgroup>
+<col width="22%" />
+<col width="31%" />
+<col width="46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>What it does</th>
+<th>Where can it be used</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>parent.traits</code></td>
+<td>selects the trait values of the current lineage’s parents (i.e. direct ancestor)</td>
+<td>in <code>make.modifiers</code></td>
+</tr>
+<tr class="even">
+<td><code>taxa.condition</code></td>
+<td>provides a trigger for an <code>event</code> dependent on the number of taxa</td>
+<td>in <code>make.events</code></td>
+</tr>
+<tr class="odd">
+<td><code>time.condition</code></td>
+<td>provides a trigger for an <code>event</code> dependent on time</td>
+<td>in <code>make.events</code></td>
+</tr>
+<tr class="even">
+<td><code>trait.condition</code></td>
+<td>provides a trigger for an <code>event</code> dependent on trait values</td>
+<td>in <code>make.events</code></td>
+</tr>
+</tbody>
+</table>
+
+<p><code>"dads"</code> objects can be directly plotted in <code>dads</code> using the S3 <code>plot.dads</code> function (or just <code>plot(x)</code> if <code>x</code> is of class <code>"dads"</code>).</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="makeevents.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="plotting-traits.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/TGuillerme/dads/inst/gitbook/edit/master/05_other_functionalities.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
