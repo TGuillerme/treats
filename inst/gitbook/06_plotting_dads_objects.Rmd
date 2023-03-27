@@ -15,11 +15,13 @@ knitr::knit_hooks$set(webgl = hook_webgl)
 options(rgl.useNULL = TRUE) # Suppress the separate window.
 ```
 
+# Plots
+
 
 `"dads"` objects can be directly plotted in `dads` using the S3 `plot.dads` function (or just `plot(x)` if `x` is of class `"dads"`).
 
 
-# Plotting traits
+## Plotting traits
 
 `"dads"` `"traits"` objects are covered in the [traits section](#maketraits).
 You can use `plot.dads` to plot them by choosing which specific trait to plot using the `trait` argument (default is 1):
@@ -47,7 +49,7 @@ plot(list_of_traits, trait = 2, simulations = 1000, main = "1k BM simulations")
 ```
 
 
-# Plotting dads results
+## Plotting dads results
 
 If `dads` is used to plot only a tree (and outputs a `"phylo"` object), you can use the function `plot.phylo` from the `ape` package to plot your tree.
 You'll find all the tree plotting option in the `?plot.phylo` manual page.
@@ -93,7 +95,7 @@ And you can add a default legend by using `legend = TRUE` (if you don't want to 
 plot(my_tree, legend = TRUE)
 ```
 
-## 3D version!
+### 3D version!
 
 Of course, if you're simulating multiple traits, you can always plot different ones.
 
