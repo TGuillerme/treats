@@ -13,11 +13,59 @@
 \title{events.modifications}
 \usage{
 modification(x, ...)
+
+founding.event(x, bd.params = NULL, traits = NULL, modifiers = NULL, events = NULL)
+
+random.extinction(x)
+
+trait.extinction(x, condition = `<`, trait = 1)
+
+update.bd.params(x, speciation = NULL, extinction = NULL, joint = NULL, absolute = NULL, speciation.args = NULL, extinction.args = NULL)
+
+update.modifiers(x, branch.length = NULL, selection = NULL, speciation = NULL, condition = NULL, modify = NULL)
+
+update.traits(x, process = NULL, process.args = NULL, trait.names = NULL)
 }
 \arguments{
 \item{x}{a numerical value to update.}
 
 \item{...}{any specific argument for the modification (see details).}
+
+\item{bd.params}{a \code{"bd.params"} \code{"dads"} object for the founding event (see details for founding.event).}
+
+\item{traits}{a \code{"traits"} \code{"dads"} object for the founding event (see details for founding.event).}
+
+\item{modifiers}{a \code{"modifiers"} \code{"dads"} object for the founding event (see details for founding.event).}
+
+\item{events}{an \code{"events"} \code{"dads"} object for the founding event (see details for founding.event).}
+
+\item{condition}{a condition function for the trait value (see details for trait.extinction and update.modifiers).}
+
+\item{trait}{which trait to use (see details for trait.extinction).}
+
+\item{extinction}{the same argument as in \code{\link{make.bd.params}} (see details for update.bd.params).}
+
+\item{joint}{the same argument as in \code{\link{make.bd.params}} (see details for update.bd.params).}
+
+\item{absolute}{the same argument as in \code{\link{make.bd.params}} (see details for update.bd.params).}
+
+\item{speciation.args}{the same argument as in \code{\link{make.bd.params}} (see details for update.bd.params).}
+
+\item{extinction.args}{the same argument as in \code{\link{make.bd.params}} (see details for update.bd.params).}
+
+\item{branch.length}{the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).}
+
+\item{selection}{the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).}
+
+\item{speciation}{the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).}
+
+\item{modify}{the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).}
+
+\item{process}{the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).}
+
+\item{process.args}{the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).}
+
+\item{trait.names}{the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).}
 }
 \description{
 Inbuilt modifications functions for helping designing events

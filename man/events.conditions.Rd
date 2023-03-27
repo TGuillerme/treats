@@ -10,6 +10,12 @@
 \title{events.conditions}
 \usage{
 condition(x, condition, ...)
+
+taxa.condition(x, condition, ...)
+
+time.condition(x, condition, ...)
+
+trait.condition(x, condition, ...)
 }
 \arguments{
 \item{x}{the variable to reach for satisfying a condition (see details)}

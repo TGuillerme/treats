@@ -5,9 +5,34 @@
 #' @description Inbuilt modifications functions for helping designing events
 #'
 #' @usage modification(x, ...)
-#' 
+#' @usage founding.event(x, bd.params = NULL, traits = NULL, modifiers = NULL, events = NULL)
+#' @usage random.extinction(x)
+#' @usage trait.extinction(x, condition = `<`, trait = 1)
+#' @usage update.bd.params(x, speciation = NULL, extinction = NULL, joint = NULL, absolute = NULL, speciation.args = NULL, extinction.args = NULL)
+#' @usage update.modifiers(x, branch.length = NULL, selection = NULL, speciation = NULL, condition = NULL, modify = NULL)
+#' @usage update.traits(x, process = NULL, process.args = NULL, trait.names = NULL)
+
 #' @param x   a numerical value to update.
 #' @param ... any specific argument for the modification (see details).
+#' @param bd.params a \code{"bd.params"} \code{"dads"} object for the founding event (see details for founding.event).
+#' @param traits a \code{"traits"} \code{"dads"} object for the founding event (see details for founding.event).
+#' @param modifiers a \code{"modifiers"} \code{"dads"} object for the founding event (see details for founding.event).
+#' @param events an \code{"events"} \code{"dads"} object for the founding event (see details for founding.event).
+#' @param condition a condition function for the trait value (see details for trait.extinction and update.modifiers).
+#' @param trait which trait to use (see details for trait.extinction).
+#' @param speciation the same argument as in \code{\link{make.bd.params}} (see details for update.bd.params).
+#' @param extinction the same argument as in \code{\link{make.bd.params}} (see details for update.bd.params).
+#' @param joint the same argument as in \code{\link{make.bd.params}} (see details for update.bd.params).
+#' @param absolute the same argument as in \code{\link{make.bd.params}} (see details for update.bd.params).
+#' @param speciation.args the same argument as in \code{\link{make.bd.params}} (see details for update.bd.params).
+#' @param extinction.args the same argument as in \code{\link{make.bd.params}} (see details for update.bd.params).
+#' @param branch.length the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).
+#' @param selection the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).
+#' @param speciation the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).
+#' @param modify the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).
+#' @param process the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).
+#' @param process.args the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).
+#' @param trait.names the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).
 #' 
 #' @details
 #' The following functions allow to design specific modifications for events:

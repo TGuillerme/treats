@@ -5,7 +5,10 @@
 #' @description Inbuilt conditions functions for helping designing events
 #'
 #' @usage condition(x, condition, ...)
-#' 
+#' @usage taxa.condition(x, condition, ...)
+#' @usage time.condition(x, condition, ...)
+#' @usage trait.condition(x, condition, ...)
+#'
 #' @param x         the variable to reach for satisfying a condition (see details)
 #' @param condition the logical function for triggering the condition (e.g. `<`, `==`, `!>`, etc...).
 #' @param ...       any optional argument specific for that condition (see details)
