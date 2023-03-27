@@ -54,15 +54,14 @@
 
 ## utilities
 
- - [ ] add manual for utilities
+ - [x] add manual for utilities
+ - [x] example for: `utilities::parent.traits`: Write examples (write manual at the same time)
  - [ ] add test for `parent.traits`
- - [ ] example for: `utilities::parent.traits`: Write examples (write manual at the same time)
-
 
 ## Manual
 
  - [ ] in Index, fix illustration (pdf to eps)
-
+ - [ ] do specific examples
 
 Selling point: dads is so modular that you can simulate a dads object that simulates a dads object.
 

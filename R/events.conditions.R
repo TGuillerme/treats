@@ -93,8 +93,8 @@
 ## The list of conditions
 condition <- function(x, condition) {
     cat("List of inbuilt condition functions in dads:\n")
-    cat("   ?time.condition\n")
     cat("   ?taxa.condition\n")
+    cat("   ?time.condition\n")
     cat("   ?trait.condition\n")
     return(invisible())
 } 

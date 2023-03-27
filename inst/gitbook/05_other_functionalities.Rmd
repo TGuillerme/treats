@@ -120,3 +120,18 @@ dim(drop.singles(my_data)$data)
 ## Removing the internal nodes AND the fossils
 drop.singles(drop.fossils(my_data))
 ```
+
+## `"dads"` internal utilities
+
+The package also provides utilities for internal functions, namely for designing `modifiers` or `events` more easily.
+These functions don't do anything useful on their own but are optimised to be used internally in `dads`.
+For all these functions, you can look at the internal manual for an example (i.e. using `?<function_name>`)
+
+So far the package has the following internals:
+
+Function  | What it does | Where can it be used
+----------|--------------|---------------------
+`parent.traits` | selects the trait values of the current lineage's parents (i.e. direct ancestor) | in `make.modifiers`
+`taxa.condition` | provides a trigger for an `event` dependent on the number of taxa | in `make.events`
+`time.condition` | provides a trigger for an `event` dependent on time | in `make.events`
+`trait.condition` | provides a trigger for an `event` dependent on trait values | in `make.events`
