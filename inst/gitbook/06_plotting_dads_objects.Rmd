@@ -67,15 +67,21 @@ plot(my_tree, main = "A tree and traits")
 By default, elements are coloured as follows: nodes and tips are points and coloured in blue if they are tips (light blue if they are fossils) and nodes are in orange.
 Branches linking them are grey lines.
 You can of course change this colour palette to something of you preference by calling the normal arguments that can be passed to `points` or `lines`. For example `pch` for the point type or `lty` for the line type.
+Furthermore, time is plotted conventionally from left to right (left is towards the past, right is towards the present) but you can change that by specifying `xlim`.
 
 
 ```{r}
 ## Playing with some more options
-plot(my_tree, main = "A tree and traits", col = c(tips = "pink", nodes = "purple"), pch = 21, lwd = 2, lty = 3, edges = "yellow")
+plot(my_tree, main = "A tree and traits",
+     ## Changing nodes colours and type
+     col = c(tips = "pink", nodes = "purple"), pch = 21,
+     ## Changing edges colour and type
+     lwd = 2, lty = 3, edges = "yellow",
+     ## Changing the x axis orientation and label
+     xlim = c(0, 2.5), xlab = "Time into the past")
 ```
 
-> Note that you can modify colours using the `col` argument by providing either a clear indication of what you want to colour (e.g. `c(tip = "blue", `) @@@
-
+> Note that you can modify colours using the `col` argument by providing a clear indication of what you want to colour (e.g. `col = c(tips = "blue", fossils = "orange")` will apply the colours to the unambiguously named elements) or by providing a function that will scale the colours with time (e.g. `col = grDevices::heat.colors` will use the specified function to change the elements colours with time).
 
 And you can add a default legend by using `legend = TRUE` (if you don't want to add the default legend you can add it after your plot using `legend(...)`).
 
@@ -83,6 +89,30 @@ And you can add a default legend by using `legend = TRUE` (if you don't want to 
 ## Adding the default legend
 plot(my_tree, legend = TRUE)
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -98,7 +128,7 @@ my_data <- dads(bd.params = list(extinction = 0.2),
                 traits    = my_3D_trait)
 
 ## Plotting the 
-plot(my_data, trait = c(1, 3), col =terrain.colors, tips.nodes = "black", legend = TRUE)
+plot(my_data, trait = c(1, 3), col = terrain.colors, tips.nodes = "black", legend = TRUE)
 ```
 
 

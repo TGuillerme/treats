@@ -235,7 +235,7 @@ handle.colours <- function(col, points_tree_IDs, points_ages, data, legend) {
                             col_scheme["livings"] <- col["livings"]
                         } else {
                             ## Wrong names
-                            stop("col is a named vector. It must contains the names \"nodes\" and \"tips\" or \"nodes\", \"fossils\" and \"livings\".", call. = FALSE)
+                            stop("If col is a named vector, it must contains the names \"nodes\" and \"tips\" or \"nodes\", \"fossils\" and \"livings\".", call. = FALSE)
                         }
                     }                
                 }
