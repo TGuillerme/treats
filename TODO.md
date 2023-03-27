@@ -61,7 +61,7 @@
 ## Manual
 
  - [x] in Index, fix illustration (pdf to eps)
- - [ ] do specific examples
+ - [x] do specific examples
 
 ## Package
 
