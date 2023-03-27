@@ -18,6 +18,13 @@ set.seed(123)
 In `dads`, traits are simulating by providing a `traits` object to the `traits` argument.
 This object is generated using the `make.traits`.
 
+> **What is a trait in biology?** This is one of these epistemological question like what _is_ a species that is not covered by all means in this package.
+For the purpose of _this manual_, **biological trait** can be any coherent process of any number of dimensions which can or cannot be independent.
+Basically anything can be a trait as well as it's defined by the user (e.g. one trait can be a 20 dimensional Brownian process that's correlated to a 1D OU process - which is another trait).
+For the purpose of the syntax in _this package_ though, a **trait in `dads`** is a column in the output trait matrix.
+For example, one might be interested in a biological trait that is "beak shape" which is defined as one complex biological trait that is the Procrustes superimposition of 4 3D landmarks and 300 3D semi-landmarks.
+This single "beak shape" **biological trait** is then composed of 912 **traits in `dads`** (i.e. a matrix of $$(4+300)\times3$$ columns).
+
 ## The process (`process`)
 
 The function `make.traits` allows you to design the process of a trait or a set of traits.
