@@ -14,6 +14,8 @@ Imports:
 	graphics,
 	MASS,
 	rgl,
+    methods,
+    utils,
 License: GPL-3 | file LICENSE
 Suggests:
     testthat,
