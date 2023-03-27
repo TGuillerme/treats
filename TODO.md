@@ -66,12 +66,8 @@
 ## Package
 
  - [ ] compile package with CRAN check
- - [ ] compile manual
- - [ ] update README
-
-Selling point: dads is so modular that you can simulate a dads object that simulates a dads object.
-
-
+ - [x] compile manual
+ - [x] update README
 
 ## TODO: whishlist
  - [ ] Add lineage tracking mechanism (i.e. allow `traits`, `modifiers` or `events` to be applied to specific lineages); also allow giving prefixes to the names of tips and nodes in the lineage.
@@ -79,4 +75,5 @@ Selling point: dads is so modular that you can simulate a dads object that simul
  - [ ] add abiotic events (see RPANDA)
  - [ ] add the `dispRity` smart plot option handling
  - [ ] have a function that tracks lineages through time when using `save.steps`
- - [ ] add option to colour the elements sequentially (e.g. col = rainbow(10))
+ - [ ] `plot`: add option to colour the elements sequentially (e.g. col = rainbow(10))
+ - [ ] add option to simulate multiple trees for one or more traits (gene tree vs species tree)

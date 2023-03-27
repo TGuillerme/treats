@@ -1,4 +1,4 @@
-dads v0.1.10 (2023-01-26) 
+dads v0.1.11 (2023-03-27) 
 =========================
 
 ### BUG FIXES
@@ -8,6 +8,7 @@ dads v0.1.10 (2023-01-26)
 
 ### NEW FEATURES
  
+ * Full polished version of the manual!
  * `dads` has now a `save.steps` option to create internal nodes at regular intervals or specified ones.
  * Added a `make.bd.parms` utility function for sampling from distributions (jointly or not).
  * Trees can now be generated with birth-death parameters sampled from functions.
