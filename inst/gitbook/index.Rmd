@@ -90,7 +90,7 @@ You will find more details about how these objects (`traits`, `modifiers` and `e
 ![Schematised summary of the `dads` package architecture](dads_structure.png)
 
 
-# The birth-death algorithm {#bdalgorithm} 
+## The birth-death algorithm {#bdalgorithm} 
 
 > If you want to get your hands dirty, you can go straight to the [getting start section](#gettingstarted), this following section just describes the process in pseudo-code.
 

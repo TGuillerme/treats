@@ -201,7 +201,7 @@ You will find more details about how these objects (\texttt{traits}, \texttt{mod
 \end{figure}
 
 \hypertarget{bdalgorithm}{%
-\chapter{The birth-death algorithm}\label{bdalgorithm}}
+\section{The birth-death algorithm}\label{bdalgorithm}}
 
 \begin{quote}
 If you want to get your hands dirty, you can go straight to the \protect\hyperlink{gettingstarted}{getting start section}, this following section just describes the process in pseudo-code.
@@ -805,7 +805,7 @@ Note that you can see the multiple options for plotting the trait process by loo
 ##     return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = sqrt(Sigma^2 * 
 ##         edge.length), ...)))
 ## }
-## <bytecode: 0x55a505929ed0>
+## <bytecode: 0x55e278dc9cd8>
 ## <environment: namespace:dads>
 ## 
 ## $main$A$start
@@ -1359,7 +1359,7 @@ By default, the birth-death process in \texttt{dads} uses this modifier:
 ## {
 ##     return(rexp(1, sum(lineage$n * (bd.params$speciation + bd.params$extinction))))
 ## }
-## <bytecode: 0x55a507be7fe8>
+## <bytecode: 0x55e27b08d1b8>
 ## <environment: namespace:dads>
 ## 
 ## $waiting$internal
@@ -1372,7 +1372,7 @@ By default, the birth-death process in \texttt{dads} uses this modifier:
 ## {
 ##     return(sample(lineage$n, 1))
 ## }
-## <bytecode: 0x55a507c69968>
+## <bytecode: 0x55e27b11eb90>
 ## <environment: namespace:dads>
 ## 
 ## $selecting$internal
@@ -1386,7 +1386,7 @@ By default, the birth-death process in \texttt{dads} uses this modifier:
 ##     return(runif(1) < (bd.params$speciation/(bd.params$speciation + 
 ##         bd.params$extinction)))
 ## }
-## <bytecode: 0x55a507c7e050>
+## <bytecode: 0x55e27b127560>
 ## <environment: namespace:dads>
 ## 
 ## $speciating$internal
@@ -2618,7 +2618,7 @@ If two traits are provided, the 3rd dimensions is going to be time by default:
 ## snapshots
 \end{verbatim}
 
-\includegraphics{../../../../../../tmp/Rtmp8BGjPN/file97bd69ab2a6.png}
+\includegraphics{../../../../../../tmp/RtmpmEQua5/file9cb853e0a21f.png}
 
 If three traits are provide, you can set up a fourth coloured dimension as time (similarly to the 2D plots with the colour gradients).
 This uses the \texttt{rgl} functions, namely \texttt{lines3d}, \texttt{points3d} (if \texttt{type\ =\ "p"}; default) or \texttt{sphere3d} (if \texttt{type\ =\ "s"}).
@@ -2644,7 +2644,7 @@ The additional arguments \texttt{...} are directly handled and attributed to the
 ## snapshots
 \end{verbatim}
 
-\includegraphics{../../../../../../tmp/Rtmp8BGjPN/file97bd7e5353fb.png}
+\includegraphics{../../../../../../tmp/RtmpmEQua5/file9cb812c6ed9e.png}
 
 \hypertarget{specific-examples}{%
 \chapter{Specific examples}\label{specific-examples}}
@@ -3107,7 +3107,7 @@ And we can visualise this change through time:
 ## snapshots
 \end{verbatim}
 
-\includegraphics{../../../../../../tmp/Rtmp8BGjPN/file97bd12f0c3a.png}
+\includegraphics{../../../../../../tmp/RtmpmEQua5/file9cb864dc16ed.png}
 
 \hypertarget{EG_change_modif}{%
 \section{Event for changing a modifier: speciation event increase for species with negative values}\label{EG_change_modif}}
@@ -3196,7 +3196,7 @@ We can contrast the results with the scenario without an event (but same random 
 \includegraphics{dads_manual_files/figure-latex/unnamed-chunk-125-1.pdf}
 
 \hypertarget{EG_modify_brlen}{%
-\chapter{Changing branch length when reaching n taxa}\label{EG_modify_brlen}}
+\section{Changing branch length when reaching n taxa}\label{EG_modify_brlen}}
 
 For this scenario, we want to generate a pure birth tree until reaching 100 taxa.
 After reaching 30 taxa we want branch length growth to increase 50 folds.

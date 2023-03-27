@@ -406,7 +406,7 @@ plot(no_event, main = "No event")
 plot(change_spec, main = "Increase extinction for negative\ntraits after time 3")
 ```
 
-# Changing branch length when reaching n taxa {#EG_modify_brlen}
+## Changing branch length when reaching n taxa {#EG_modify_brlen}
 
 For this scenario, we want to generate a pure birth tree until reaching 100 taxa.
 After reaching 30 taxa we want branch length growth to increase 50 folds.
