@@ -41,10 +41,10 @@ check.modifiers <- function(modifiers, events = FALSE) {
                         silent = TRUE)
 
     ## Debrief
-    if(class(test_waiting) == "try-error") {
+    if(is(test_waiting, "try-error")) {
         stop(paste0(events_msg, "The branch length element from the modifiers failed with the following error message", ifelse(length(test_waiting) > 1, "s:\n", ":\n"), paste(test_waiting, collapse = "\n")), call. = FALSE)
     } else {
-        if(class(test_waiting) != "numeric") {
+        if(!is(test_waiting, "numeric")) {
             stop(paste0(events_msg, "The branch length element from the modifiers did not produce a numeric value (it produced a ", paste(class(test_waiting), collapse = ","), " instead)."))
         }
     }
@@ -57,10 +57,10 @@ check.modifiers <- function(modifiers, events = FALSE) {
                         silent = TRUE)
 
     ## Debrief
-    if(class(test_selecting) == "try-error") {
+    if(is(test_selecting, "try-error")) {
         stop(paste0(events_msg, "The selection element from the modifiers failed with the following error message", ifelse(length(test_selecting) > 1, "s:\n", ":\n"), paste(test_selecting, collapse = "\n")), call. = FALSE)
     } else {
-        if(class(test_selecting) != "integer") {
+        if(!is(test_selecting, "integer")) {
             stop(paste0(events_msg, "The selection element from the modifiers did not produce a integer value (it produced a ", paste(class(test_selecting), collapse = ","), " instead)."))
         }
     }
@@ -74,10 +74,10 @@ check.modifiers <- function(modifiers, events = FALSE) {
                            silent = TRUE)
 
     ## Debrief
-    if(class(test_speciating) == "try-error") {
+    if(is(test_speciating, "try-error")) {
         stop(paste0(events_msg, "The speciation element from the modifiers failed with the following error message", ifelse(length(test_speciating) > 1, "s:\n", ":\n"), paste(test_speciating, collapse = "\n")), call. = FALSE)
     } else {
-        if(class(test_speciating) != "logical") {
+        if(!is(test_speciating, "logical")) {
             stop(paste0(events_msg, "The speciation element from the modifiers did not produce a logical value (it produced a ", paste(class(test_speciating), collapse = ","), " instead)."))
         }
     }

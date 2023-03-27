@@ -3,10 +3,12 @@ import(ape)
 import(stats)
 import(dispRity)
 
-importFrom("graphics","plot", "points", "lines")
-importFrom("grDevices","rgb")
+importFrom("graphics","plot", "points", "lines", "hist", "text", "polygon")
+importFrom("grDevices","rgb", "as.raster")
 importFrom("MASS","mvrnorm")
 importFrom("rgl","plot3d","segments3d","spheres3d","points3d")
+importFrom("methods", "formalArgs", "is")
+importFrom("utils", "tail")
 
 ## Main functions
 export(dads)

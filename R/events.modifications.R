@@ -5,13 +5,18 @@
 #' @description Inbuilt modifications functions for helping designing events
 #'
 #' @usage modification(x, ...)
-#' @usage founding.event(x, bd.params = NULL, traits = NULL, modifiers = NULL, events = NULL)
+#' @usage founding.event(x, bd.params = NULL, traits = NULL, modifiers = NULL,
+#'                       events = NULL)
 #' @usage random.extinction(x)
 #' @usage trait.extinction(x, condition = `<`, trait = 1)
-#' @usage update.bd.params(x, speciation = NULL, extinction = NULL, joint = NULL, absolute = NULL, speciation.args = NULL, extinction.args = NULL)
-#' @usage update.modifiers(x, branch.length = NULL, selection = NULL, speciation = NULL, condition = NULL, modify = NULL)
-#' @usage update.traits(x, process = NULL, process.args = NULL, trait.names = NULL)
-
+#' @usage update.bd.params(x, speciation = NULL, extinction = NULL,
+#'                        joint = NULL, absolute = NULL, speciation.args = NULL,
+#'                        extinction.args = NULL)
+#' @usage update.modifiers(x, branch.length = NULL, selection = NULL,
+#'                         speciation = NULL, condition = NULL, modify = NULL)
+#' @usage update.traits(x, process = NULL, process.args = NULL,
+#'                      trait.names = NULL)
+#'
 #' @param x   a numerical value to update.
 #' @param ... any specific argument for the modification (see details).
 #' @param bd.params a \code{"bd.params"} \code{"dads"} object for the founding event (see details for founding.event).

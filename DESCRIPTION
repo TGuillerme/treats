@@ -2,9 +2,9 @@ Package: dads
 Title: Disparity And Diversity Simulations
 Author: Thomas Guillerme [aut, cre, cph]
 Maintainer: Thomas Guillerme <guillert@tcd.ie>
-Version: 0.1.10
-Date: 2023-01-26
-Description: Simulating data for null disparity expectations
+Version: 0.1.11
+Date: 2023-03-27
+Description: A modular package for simulating phylogenetic trees and species traits jointly. Trees can be simulated using modulable birth-death parameters (e.g. changing starting parameters or algorithm rules). Traits can be simulated in any way designed by the user. The growth of the tree and the traits can influence each other through modifiers objects providing rules for affecting each other. Finally, events can be created to modify both the tree and the traits under specific conditions.
 Depends:
     R (>= 4.0.0),
     ape,

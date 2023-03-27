@@ -183,13 +183,13 @@ handle.colours <- function(col, points_tree_IDs, points_ages, data, legend) {
     col_scheme <- character()
     do_gradient <- FALSE
 
-    if(class(col) == "function") {
+    if(is(col, "function")) {
         ## Make a colour gradient
         do_gradient <- TRUE
         ## Check if the function works
         col.fun <- col
         test <- try(col.fun(3), silent = TRUE)
-        if(class(test) == "try-error" || length(test) != 3 || class(test) != "character") {
+        if(is(test, "try-error") || length(test) != 3 || !is(test,  "character")) {
             stop("The col function failed to generate a list of colours.", call. = FALSE)
         }
     } else {
@@ -201,7 +201,7 @@ handle.colours <- function(col, points_tree_IDs, points_ages, data, legend) {
         
         } else {
 
-            if(class(col) == "character") {
+            if(is(col,  "character")) {
                 ## col is an unamed vector
                 if(is.null(names(col))) {
                     if((n_col <- length(col)) > 3) {

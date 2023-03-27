@@ -14,17 +14,22 @@
 \usage{
 modification(x, ...)
 
-founding.event(x, bd.params = NULL, traits = NULL, modifiers = NULL, events = NULL)
+founding.event(x, bd.params = NULL, traits = NULL, modifiers = NULL,
+                      events = NULL)
 
 random.extinction(x)
 
 trait.extinction(x, condition = `<`, trait = 1)
 
-update.bd.params(x, speciation = NULL, extinction = NULL, joint = NULL, absolute = NULL, speciation.args = NULL, extinction.args = NULL)
+update.bd.params(x, speciation = NULL, extinction = NULL,
+                       joint = NULL, absolute = NULL, speciation.args = NULL,
+                       extinction.args = NULL)
 
-update.modifiers(x, branch.length = NULL, selection = NULL, speciation = NULL, condition = NULL, modify = NULL)
+update.modifiers(x, branch.length = NULL, selection = NULL,
+                        speciation = NULL, condition = NULL, modify = NULL)
 
-update.traits(x, process = NULL, process.args = NULL, trait.names = NULL)
+update.traits(x, process = NULL, process.args = NULL,
+                     trait.names = NULL)
 }
 \arguments{
 \item{x}{a numerical value to update.}

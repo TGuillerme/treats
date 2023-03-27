@@ -107,9 +107,9 @@ print.modifiers.info <- function(x) {
 print.events.info <- function(x) {
     cat(paste0(ifelse(is.null(x$call$event.name), "E", paste0(x$call$event.name, " e")), "vent targeting \"", x$target, "\" to be triggered ", x$trigger+1, " time", ifelse(x$trigger < 0, "s.", ".")))
     cat("\n")
-    condition_fun <- if(class(x$call$condition) == "name") {x$call$condition} else {x$call$condition[[1]]}
+    condition_fun <- if(is(x$call$condition, "name")) {x$call$condition} else {x$call$condition[[1]]}
     cat(paste0("The condition function is: ", condition_fun, "\n"))
-    modification_fun <- if(class(x$call$modification) == "name") {x$call$modification} else {x$call$modification[[1]]}
+    modification_fun <- if(is(x$call$modification, "name")) {x$call$modification} else {x$call$modification[[1]]}
     cat(paste0("The modification function is: ", modification_fun, "\n"))
     cat("\n")
 }
