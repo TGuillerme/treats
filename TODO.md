@@ -9,6 +9,7 @@
  - [x] test list of traits
  - [x] add + test `repulsion.process`
  - [x] add bits about save.steps and background in the manual
+ - [x] add bit about "what is a trait?"
 
 ## modifiers
 
@@ -48,9 +49,8 @@
 
  - [x] add trait labels + handeling colours for plotting traits
  - [x] adding legend options
- - [ ] add option to switch the tree age (time to present to time since past).
- - [ ] do the manual section
- - [ ] example gallery in the manual
+ - [x] add option to switch the tree age (time to present to time since past): done through `xlim`.
+ - [x] do the manual section
 
 ## utilities
 
@@ -72,3 +72,5 @@ Selling point: dads is so modular that you can simulate a dads object that simul
  - [ ] allow events per clade (see TreeSim)
  - [ ] add abiotic events (see RPANDA)
  - [ ] add the `dispRity` smart plot option handling
+ - [ ] have a function that tracks lineages through time when using `save.steps`
+ - [ ] add option to colour the elements sequentially (e.g. col = rainbow(10))
