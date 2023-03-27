@@ -1,6 +1,6 @@
 --- 
 title: "dads manual"
-author: "Thomas Guillerme (guillert@tcd.ie), Alex Slavenko (email) and others"
+author: "Thomas Guillerme (guillert@tcd.ie)"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
@@ -8,7 +8,7 @@ documentclass: book
 bibliography: [../references.bib]
 link-citations: yes
 github-repo: TGuillerme/dads
-description: "dads R package vignette"
+description: "dads R package manual"
 ---
 
 
@@ -87,7 +87,7 @@ Doing so will not only hopefully help you but also other users since it will hel
 Basically, the `dads` function intakes your personalised `traits`, `modifiers` and `events` to generate your disparity and diversity.
 You will find more details about how these objects (`traits`, `modifiers` and `events`) work in the rest of the tutorial but here is a graphical representation of how `dads` work:
 
-![Schematised summary of the `dads` package architecture](dads_structure.pdf)
+![Schematised summary of the `dads` package architecture](dads_structure.png)
 
 
 # The birth-death algorithm {#bdalgorithm} 
@@ -104,7 +104,7 @@ The algorithm used in `dads` allows modularity of this process and is based on t
  Then go to step 2.
  2. **Growing the tree** (`waiting`): this step grows the tree by a certain amount. It does so by adding the same amount of branch length to all the non-extinct lineages. In an exact birth death process, this is done by drawing a random value from an exponential distribution with a rate of $$\text{number of living lineages} \times (\text{speciation} + \text{extinction parameters})$$. In `dads`, this can be modified based on the birth-death parameters, the currently available lineages and potential trait values. *For example, it is possible to increase branch length by the ratio of living/extinct fossils and a random number drawn from the range of current trait values.*
  If the total tree length is less than the required tree length, go to step 3. Else go to step 6.
- 3. **Simulating traits** \[optional\] (`traits`): this step allows to simulate a trait value for the selected lineage from step 1. This is typically not part of a standard birth-death process and is handled via the `traits` option in `dads` (see the [`make.traits`](#maketraits) chapter for more details).
+ 3. **Simulating traits** [optional]\(`traits`): this step allows to simulate a trait value for the selected lineage from step 1. This is typically not part of a standard birth-death process and is handled via the `traits` option in `dads` (see the [`make.traits`](#maketraits) chapter for more details).
  Then go to step 4.
  4. **Speciating** (`speciating`): in this step, the selected lineage from step 1 has the option of speciating or going extinct. In a standard birth-death process, this happens by randomly drawing a value between 0 and 1 as a way to trigger speciation relatively to the birth-death parameters:
 ```

@@ -60,10 +60,17 @@
 
 ## Manual
 
- - [ ] in Index, fix illustration (pdf to eps)
+ - [x] in Index, fix illustration (pdf to eps)
  - [ ] do specific examples
 
+## Package
+
+ - [ ] compile package with CRAN check
+ - [ ] compile manual
+ - [ ] update README
+
 Selling point: dads is so modular that you can simulate a dads object that simulates a dads object.
+
 
 
 ## TODO: whishlist
