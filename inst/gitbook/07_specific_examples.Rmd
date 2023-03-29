@@ -466,7 +466,7 @@ plot(increased_brlen, main = "Increase branch length\nafter 30 taxa",
     show.tip.label = FALSE)
 ```
 
-## Founding event: a generating a subtree with no fossils {#EG_founding_purebirth}
+## Founding event: generating a subtree with no fossils {#EG_founding_purebirth}
 
 For this scenario, we want to generate a birth-death tree for 4 time units.
 After reaching 10 taxa, one random taxa will give birth to a sub-tree that is a pure birth tree (no extinction).
@@ -516,7 +516,7 @@ edge_colors <- match.tip.edge(tip_values, founding_tree, replace.na = "black")
 plot(founding_tree, show.tip.label = FALSE, edge.color = edge_colors)
 ```
 
-## Founding event: a generating a subtree a different process {#EG_founding_traits}
+## Founding event: generating a subtree a different process {#EG_founding_traits}
 
 
 For this scenario, we want to generate a birth-death tree with a one dimensional Brownian Motion trait for 6 time unit.

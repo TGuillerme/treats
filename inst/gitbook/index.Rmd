@@ -43,12 +43,14 @@ This allows you to simulate finely tuned multidimensional data for your specific
 This manual explains how `dads` work in as much details as possible and aims to give you the keys to design your own diversity and disparity simulations.
 
 The first section `Getting started` is aimed for people with a `R` beginner level:
+
  * you know what a package is - and how to install it;
  * you know what a function is - and what arguments are;
  * you have already (vaguely) heard that they are different types of objects in R - like matrices (`"matrix"`) or trees (`"phylo"`);
  * and you have already looked for documentation and bugs online.
  
 The sections after that are a bit more advanced and requires the following level:
+
  * you have already created functions before;
  * you know how to subset elements of a list - i.e. you understand the `list$element` syntax;
  * you are aware that both `TRUE == 1` and `FALSE == 0` are `TRUE`;
