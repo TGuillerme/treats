@@ -18,49 +18,52 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # `dads`: disparity and diversity simulations.
 
-Allowing to simulate disparity and diversity at the same time with interaction between both.
+Simultaneously simulate diversity (i.e. phylogenetic trees) and disparity  diversity (and the interaction between them).
 
 The core of this package is based on the [`diversitree` birth-death algorithm](https://github.com/cran/diversitree/blob/master/R/simulate-bd.R).
 
 ## What is `dads`?
 
-There are some very good packages out there to simulate birth death trees (like [TreeSim](https://github.com/tanja819/TreeSim)) or even packages simulating traits (disparity) and diversity jointly (like [RPANDA](https://github.com/cran/RPANDA) or [PETER](https://github.com/PuttickMacroevolution/PETER)).
-We strongly advice you have a look at these packages first as they might be more appropriate for your tasks.
+%NC: I think here you need an example of use case as it's not immediately obvious what the package is for...
 
-`dads` aims to be a highly modular and friendly version of all these packages: it allows to simulate disparity and diversity jointly with a vast array of options that can be easily modified by users.
-For example, you can easily generate any type of process to generate a trait (BM, OU, something else, etc...) in multiple dependent or independent dimensions through `"traits"` objects.
-You can then specify how the traits should affect disparity through `"modifiers"` objects. And finally you can create events (like mass extinctions) through `"events"` objects.
+There are some very good R packages that simulate birth-death trees (e.g. [TreeSim](https://github.com/tanja819/TreeSim)) or simulate traits (disparity) and diversity jointly (e.g. [RPANDA](https://github.com/cran/RPANDA) or [PETER](https://github.com/PuttickMacroevolution/PETER)).
+We strongly advise you look at these packages first as they might be more appropriate for your needs.
+
+`dads` is a highly modular and user-friendly package that contains the simulations functionality of all these packages: it allows you to simulate disparity and diversity jointly with a vast array of options that can be easily modified by users.
+For example, you can easily generate any type of process to generate a trait (BM, OU, something else, etc.) in multiple dependent or independent dimensions through `"traits"` objects.
+You can then specify how the traits should affect disparity through `"modifiers"` objects. 
+And finally you can create events (like mass extinctions) through `"events"` objects.
 These objects and how to modify them will be detailed throughout this manual.
-Finally we are putting an emphasise in the development of this package on the speed and reliability of the functions.
+Finally we are putting an emphasis in the development of this package on the speed and reliability of the functions.
 
 ### Modular?
 
-Because their is an infinite way you might want to generate disparity and diversity (different traits, different modifiers and different events), the `dads` package is designed to make all these parts easy to code separately and integrate them easily in the `dads` core functions.
-This allows you to simulate finely tuned multidimensional data for your specific project!
+Because there is an infinite number of ways you might want to generate disparity and diversity (different traits, different modifiers and different events), the `dads` package is designed to make all these parts easy to code separately and integrate in the `dads` core functions.
+This allows you to simulate finely-tuned multidimensional data for your specific project!
 
 ## Who is this manual for?
 
-This manual explains how `dads` work in as much details as possible and aims to give you the keys to design your own diversity and disparity simulations.
+This manual explains how `dads` works in as much details as possible and aims to give you the keys to design your own diversity and disparity simulations.
 
 The first section `Getting started` is aimed for people with a `R` beginner level:
 
  * you know what a package is - and how to install it;
  * you know what a function is - and what arguments are;
- * you have already (vaguely) heard that they are different types of objects in R - like matrices (`"matrix"`) or trees (`"phylo"`);
- * and you have already looked for documentation and bugs online.
+ * you have already (vaguely) heard that there are different types of objects in R - like matrices (`"matrix"`) or trees (`"phylo"`);
+ * and you have already looked for documentation online.
  
-The sections after that are a bit more advanced and requires the following level:
+The sections after that are a bit more advanced and require the following level:
 
  * you have already created functions before;
  * you know how to subset elements of a list - i.e. you understand the `list$element` syntax;
  * you are aware that both `TRUE == 1` and `FALSE == 0` are `TRUE`;
  * you have heard that the objects in R have classes and that it sometimes matters - for example you know that R can differentiate between `as.numeric(1)` and `as.integer(1)`;
- * you owe part of your life to Stack Overflow.
+ * you owe part of your work to Stack Overflow.
 
 
 ## Installing and running the package
 
-You can install this package easily, directly from the github:
+You can install this package easily, directly from the GitHub:
 <!-- TG: I do intend to release it on CRAN later on -->
 
 ```{r, eval = FALSE}
@@ -79,36 +82,35 @@ library(dads)
 ## Help
 
 If you need help with the package, hopefully the following manual will be useful.
-However, parts of this package are still in development and some other parts are probably not covered.
-Thus if you have suggestions or comments on on what has already been developed or will be developed, please send me an email (<guillert@tcd.ie>) or if you are a GitHub user, directly create an issue on the [GitHub page](https://github.com/TGuillerme/dads).
-Doing so will not only hopefully help you but also other users since it will help improve this manual!
+However, if you have suggestions or comments on on what has already been developed or will be developed, please send me an email (<guillert@tcd.ie>) or if you are a GitHub user, directly create an issue on the [GitHub page](https://github.com/TGuillerme/dads).
+Doing so will not only help you but also other users as it will help improve this manual and the package!
 
 
 ## How does `dads` work?
 
-Basically, the `dads` function intakes your personalised `traits`, `modifiers` and `events` to generate your disparity and diversity.
-You will find more details about how these objects (`traits`, `modifiers` and `events`) work in the rest of the tutorial but here is a graphical representation of how `dads` work:
+Basically, the `dads` function takes your `traits`, `modifiers` and `events` objects to simulate disparity and diversity.
+You will find more details about how these objects (`traits`, `modifiers` and `events`) work in the rest of the tutorial but here is a graphical representation of how `dads` works:
 
-![Schematised summary of the `dads` package architecture](dads_structure.png)
-
+![Schematic summary of the `dads` package architecture](dads_structure.png)
+% NC: The wonkiness of the figure is annoying me lol. Can you center the arrows etc?
 
 ## The birth-death algorithm {#bdalgorithm} 
 
-> If you want to get your hands dirty, you can go straight to the [getting start section](#gettingstarted), this following section just describes the process in pseudo-code.
+> If you want to get your hands dirty, you can go straight to the [getting started section](#gettingstarted), this following section just describes the process in pseudo-code.
 
 The `dads` algorithm is based on a modular version of the birth-death process algorithm.
-The birth-death model is a continuous Markov process (i.e. a continuous random process where the state will change each step are linked through time and change according to some random exponential variables) which is well defined mathematically and [commonly used in biology](https://lukejharmon.github.io/pcm/chapter10_birthdeath/#section-10.2-the-birth-death-model) but also in [many other fields](https://en.wikipedia.org/wiki/Birth%E2%80%93death_process).
+The birth-death model is a continuous Markov process (i.e. a continuous random process where future events depend only on the present, and not on past events) which is well defined mathematically and [commonly used in evolutionary biology](https://lukejharmon.github.io/pcm/chapter10_birthdeath/#section-10.2-the-birth-death-model) but also in [many other fields](https://en.wikipedia.org/wiki/Birth%E2%80%93death_process).
 
 The algorithm used in `dads` allows modularity of this process and is based on the following steps (the text in `courier font` is for the name of the process in the algorithm):
 
- 0. **Starting the process**: this step is actually non modular and creates a random tree with one tip, one node and one branch length connecting both. This step is used to optimise the rest of the algorithm in terms of speed and memory management. The node, tip and branch resulting from this step are discarded at the end of the simulations.
- 1. **Selecting a lineage** (`selecting`): this step selects a tip that is currently not extinct. In a standard birth-death process this is just done randomly, however in `dads` this can be modified based on the birth-death parameters, the currently available lineages and potential trait values. *For example, it is possible to put a higher probability in selecting a lineage that is next to a lineage that recently went extinct and has a positive trait value.*
+ 0. **Starting the process**: this step is non-modular and creates a random tree with one tip, one node and one branch connecting both. This step is used to optimise the rest of the algorithm in terms of speed and memory management. The node, tip and branch resulting from this step are discarded at the end of the simulations.
+ 1. **Selecting a lineage** (`selecting`): this step selects a tip that is currently not extinct. In a standard birth-death process this is done randomly, however in `dads` this can be modified based on the birth-death parameters, the currently available lineages and potential trait values. *For example, it is possible to put a higher probability for selecting a lineage that is closely related to a lineage that recently went extinct and has a positive trait value.*
  Then go to step 2.
- 2. **Growing the tree** (`waiting`): this step grows the tree by a certain amount. It does so by adding the same amount of branch length to all the non-extinct lineages. In an exact birth death process, this is done by drawing a random value from an exponential distribution with a rate of $$\text{number of living lineages} \times (\text{speciation} + \text{extinction parameters})$$. In `dads`, this can be modified based on the birth-death parameters, the currently available lineages and potential trait values. *For example, it is possible to increase branch length by the ratio of living/extinct fossils and a random number drawn from the range of current trait values.*
+ 2. **Growing the tree** (`waiting`): this step grows the tree by a certain amount. It does so by adding the same amount of branch length to all the non-extinct lineages. In an exact birth-death process, this is done by drawing a random value from an exponential distribution with a rate of $$\text{number of living lineages} \times (\text{speciation} + \text{extinction parameters})$$. In `dads`, this can be modified based on the birth-death parameters, the currently available lineages and potential trait values. *For example, it is possible to increase branch length by the ratio of living/extinct fossils and a random number drawn from the range of current trait values.*
  If the total tree length is less than the required tree length, go to step 3. Else go to step 6.
- 3. **Simulating traits** [optional]\(`traits`): this step allows to simulate a trait value for the selected lineage from step 1. This is typically not part of a standard birth-death process and is handled via the `traits` option in `dads` (see the [`make.traits`](#maketraits) chapter for more details).
+ 3. **Simulating traits** [optional]\(`traits`): this step allows you to simulate a trait value for the selected lineage from step 1. This is typically not part of a standard birth-death process and is handled via the `traits` option in `dads` (see the [`make.traits`](#maketraits) chapter for more details).
  Then go to step 4.
- 4. **Speciating** (`speciating`): in this step, the selected lineage from step 1 has the option of speciating or going extinct. In a standard birth-death process, this happens by randomly drawing a value between 0 and 1 as a way to trigger speciation relatively to the birth-death parameters:
+ 4. **Speciating** (`speciating`): in this step, the selected lineage from step 1 has the option of speciating or going extinct. In a standard birth-death process, this happens by randomly drawing a value between 0 and 1 as a way to trigger speciation relative to the birth-death parameters:
 ```
 if
     randomly drawn number is smaller or equal to speciation/(speciation + extinction)
@@ -117,7 +119,7 @@ then
 else
     go extinct
 ```
- Again, in `dads`, this process can be modified based on the birth-death parameters, the currently available lineages and potential trait values. *For example, the lineage can only speciate if it's trait value is positive, regardless of whether speciation or extinction has been triggered*. 
+ Again, in `dads`, this process can be modified based on the birth-death parameters, the currently available lineages and potential trait values. *For example, the lineage can only speciate if its trait value is positive, regardless of whether speciation or extinction have been triggered*. 
  Then go to step 5.
  5. If the number of lineages is less than required number of lineages, then go to step 1. Else go to step 6.
- 6. The simulation has stopped because it reached the required amount of lineages or time.
+ 6. The simulation stops because it has reached the required amount of lineages and/or time (i.e. branch length).
