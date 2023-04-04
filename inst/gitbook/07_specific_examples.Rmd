@@ -50,7 +50,7 @@ Functionality showcase | Example
 
 ## Random mass extinction after some time {#EGrandom_ext}
 
-For this scenario, we want to generate a pure birth tree (no traits and no extinction) where 80% of the species go extinct two thirds into the scenario.
+For this scenario, we want to generate a pure birth tree (no traits and no extinction) where 80% of the species go extinct two thirds of the way into the scenario.
 
 For that we first need to first set our simulation parameters: we will be running the simulation for 6 time units and with a speciation rate of 1 (and extinction of 0 - default).
 
@@ -60,7 +60,7 @@ stop_time_6 <- list(max.time = 6)
 speciation_1 <- make.bd.params(speciation = 1)
 ```
 
-We will then create a event that triggers when reaching half of the simulation (using `time.condition(2.5)`).
+We will then create a event that triggers when reaching half of the simulation time (using `time.condition(2.5)`).
 This event will target `"taxa"`, i.e. the number of species, and randomly remove 80% of them (using `random.extinction(0.8)`):
 
 ```{r}
@@ -84,10 +84,10 @@ plot(results, show.tip.label = FALSE)
 axisPhylo()
 ```
 
-## Species with negative trait values go extinct after some time {#EGneg_ext}
+## Species with negative trait values go extinct after a certain time {#EGneg_ext}
 
-For this scenario, we want to generate a pure birth tree with a one dimensional Brownian Motion trait for 5 time unit.
-We then want the species with a negative trait value go extinct after 4 time unit.
+For this scenario, we want to generate a pure birth tree with a one dimensional Brownian Motion trait for 5 time units.
+We then want species with a negative trait value go extinct after 4 time units.
 
 First we need to set up the simulation parameters:
  * The stopping rule (5 time units)
@@ -106,7 +106,7 @@ Then set up our trait which is a one dimensional Brownian Motion
 simple_bm_trait <- make.traits(n = 1, process = BM.process)
 ```
 
-And our extinction event which triggers after reaching time 4 (`time.condition(4)`), targets the `"taxa"` and modifies the extinction for species with traits lower than 0
+And our extinction event which triggers after reaching time 4 (`time.condition(4)`), targets the `"taxa"` and modifies the extinction for species with traits lower than 0.
 
 ```{r}
 ## Extinction of any tips with trait < 1 at time 4
@@ -149,8 +149,8 @@ And our change in extinction rate event which triggers after reaching 30 taxa (`
 ```{r}
 ## Adding an extinction parameter after 30 taxa
 background.extinction <- make.events(
-                      condition    = taxa.condition(30),
-                      target       = "bd.params",
+                      condition = taxa.condition(30),
+                      target = "bd.params",
                       modification = update.bd.params(extinction = 0.5))
 ```
 
@@ -161,14 +161,14 @@ Once these parameters are defined, we can run the simulations and plot the resul
 set.seed(2)
 results <- dads(stop.rule = stop_taxa_50,
                 bd.params = speciation_1,
-                events    = background.extinction)
+                events = background.extinction)
 ## Plotting the results
 plot(results, show.tip.label = FALSE)
 ```
 
-## Reducing speciation rate after some time {#EGred_spec}
+## Reducing speciation rate after a certain time {#EGred_spec}
 
-For this scenario, we want to generate a brith tree for 6 times units with random speciation rates (i.e. drawn from a uniform (0.5;1) distribution) which reduces after time 4 through the simulations to a fixed value of 1/3.
+For this scenario, we want to generate a birth tree for 6 times units with random speciation rates (i.e. drawn from a uniform (0.5;1) distribution) which reduces after time 4 through the simulations to a fixed value of 1/3.
 
 First we need to set up the simulation parameters:
  * The stopping rule (6 time units)
@@ -177,7 +177,8 @@ First we need to set up the simulation parameters:
 ```{r}
 ## Simulation parameters
 stop_time_6 <- list(max.time = 6)
-random_speciation <- make.bd.params(speciation = runif, speciation.args = list(min = 0.5, max = 1))
+random_speciation <- make.bd.params(speciation = runif, 
+                                    speciation.args = list(min = 0.5, max = 1))
 ```
 
 And our extinction event which triggers after reaching time 4 (`time.condition(4)`), targets the `"bd.params"` and modifies the speciation rate to 1/3:
@@ -185,8 +186,8 @@ And our extinction event which triggers after reaching time 4 (`time.condition(4
 ```{r}
 ## Reducing speciation after reaching time 4
 reduced.speciation <- make.events(
-                      condition    = time.condition(4),
-                      target       = "bd.params",
+                      condition = time.condition(4),
+                      target = "bd.params",
                       modification = update.bd.params(speciation = 1/3))
 ```
 
@@ -203,19 +204,21 @@ no_event <- dads(stop.rule = stop_time_6,
 set.seed(42)
 reduced_speciation_event <- dads(stop.rule = stop_time_6,
                                  bd.params = random_speciation,
-                                 events    = reduced.speciation)
+                                 events = reduced.speciation)
 
 ## Plot both trees
 par(mfrow = c(1, 2))
 plot(no_event, main = "No event", show.tip.label = FALSE)
 axisPhylo()
-plot(reduced_speciation_event, main = "Reduced speciation after time 5", show.tip.label = FALSE)
+plot(reduced_speciation_event, 
+     main = "Reduced speciation after time 5", 
+     show.tip.label = FALSE)
 axisPhylo()
 ```
 
 ## Changing the trait process after some time {#EG_change_trait}
 
-For this scenario, we want to generate a pure birth tree with a one dimensional Brownian Motion trait for 5 time unit which then changes to an OU process.
+For this scenario, we want to generate a pure birth tree with a one dimensional Brownian Motion trait for 5 time units which then changes to an OU process.
 
 First we need to set up the simulation parameters:
  * The stopping rule (6 time units)
@@ -336,7 +339,7 @@ rglwidget()
 ## Event for changing a modifier: speciation event increase for species with negative values {#EG_change_modif}
 
 For this scenario, we want to generate a pure birth tree with a one dimensional Brownian Motion trait for 4 time units.
-After three time units, we want the speciation rule to increase for species which ancestors have a negative trait value.
+After 3 time units, we want the speciation rule to increase for species which ancestors have a negative trait value.
 
 First we need to set up the simulation parameters:
  * The stopping rule (5 time units)
@@ -358,7 +361,7 @@ simple_bm_trait <- make.traits(n = 1, process = BM.process)
 And a modifier that is the default birth-death algorithm rules
 
 ```{r}
-## Birth death rules (default)
+## birth-death rules (default)
 default_modifiers <- make.modifiers()
 ```
 
@@ -424,7 +427,7 @@ speciation_1 <- make.bd.params(speciation = 1)
 Then a modifier that is the default birth-death algorithm rules
 
 ```{r}
-## Birth death rules (default)
+## birth-death rules (default)
 default_modifiers <- make.modifiers()
 ```
 
@@ -437,11 +440,11 @@ increase.50.folds <- function(x, trait.values, lineage) {
 }
 ## Event for increasing branch length after reaching 30 taxa
 increase_brlen <- make.events(
-                  condition    = taxa.condition(30),
-                  target       = "modifiers",
+                  condition = taxa.condition(30),
+                  target = "modifiers",
                   modification = update.modifiers(
                                     branch.length = branch.length,
-                                    modify        = increase.50.folds))
+                                    modify  = increase.50.folds))
 ```
 
 Once these parameters are defined, we can run the simulations and plot the results.
@@ -457,7 +460,7 @@ set.seed(5)
 increased_brlen <- dads(stop.rule = stop_taxa_100,
                         bd.params = speciation_1,
                         modifiers = default_modifiers,
-                        events    = increase_brlen)
+                        events = increase_brlen)
 
 ## Visualise the results
 par(mfrow = c(1,2))
@@ -489,8 +492,8 @@ speciation_2 <- make.bd.params(speciation = 2)
 
 ## Events that generate a new process (founding effects)
 founding_event <- make.events(
-                  condition    = taxa.condition(10),
-                  target       = "founding",
+                  condition = taxa.condition(10),
+                  target  = "founding",
                   modification = founding.event(
                                     bd.params = speciation_2),
                   additional.args = list(prefix = "founding_"))
@@ -505,7 +508,7 @@ Once these parameters are defined, we can run the simulations and plot the resul
 set.seed(11)
 founding_tree <- dads(stop.rule = stop_time_4,
                       bd.params = spec_1_ext_02,
-                      events    = founding_event)
+                      events = founding_event)
 
 ## Selecting the edges colours
 tip_values <- rep("black", Ntip(founding_tree))
@@ -518,9 +521,8 @@ plot(founding_tree, show.tip.label = FALSE, edge.color = edge_colors)
 
 ## Founding event: generating a subtree a different process {#EG_founding_traits}
 
-
-For this scenario, we want to generate a birth-death tree with a one dimensional Brownian Motion trait for 6 time unit.
-After a taxa reaches the value 3 or higher, it gives birth to a sub-tree that generates an OU trait with an optimum at the value 3.
+For this scenario, we want to generate a birth-death tree with a one dimensional Brownian Motion trait for 6 time units.
+After a taxon reaches the value 3 or higher, it gives birth to a sub-tree that generates an OU trait with a long-term mean at the value 3.
 
 First we need to set up the simulation parameters:
  * The stopping rule (6 time units)
@@ -540,10 +542,10 @@ Then set up our trait which is a one dimensional Brownian Motion
 simple_bm_trait <- make.traits(n = 1, process = BM.process)
 ```
 
-When a taxa reaches the value 3 `trait.condition`, it generates a pure birth tree (`speciation = 2`) with an OU trait with the optimum value 3.
+When a taxa reaches the value 3 `trait.condition`, it generates a pure birth tree (`speciation = 2`) with an OU trait with the long-term mean value 3.
 
 ```{r}
-## The OU trait with an optimum value of 3
+## The OU trait with a long-term mean value of 3
 OU_3 <- make.traits(process = OU.process,
                     start = 3, process.args = list(optimum = 3))
 ## The pure birth parameters
@@ -565,7 +567,7 @@ Once these parameters are defined, we can run the simulations and plot the resul
 set.seed(1)
 founding_tree <- dads(stop.rule = stop_time_6,
                       bd.params = speciation_1_extinction_03,
-                      traits    = simple_bm_trait,
-                      events    = new_OU_trait)
+                      traits = simple_bm_trait,
+                      events = new_OU_trait)
 plot(founding_tree)
 ```
