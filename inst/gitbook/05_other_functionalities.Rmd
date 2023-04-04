@@ -1,5 +1,5 @@
 ---
-title: "`make.events`"
+title: "`other functionalities`"
 author: "Thomas Guillerme (guillert@tcd.ie)"
 date: "`r Sys.Date()`"
 bibliography: [../references.bib]
@@ -19,9 +19,9 @@ knitr::knit_hooks$set(webgl = hook_webgl)
 
 ## `make.bd.params` {#makebdparams}
 
-In most examples above, birth-death parameters where set as fixed values, i.e. a speciation rate of $\lambda$ and an extinction rate of $\mu$ throughout the simulations (with maybe some events modifying these rates).
-However, it is of course possible to set these rates as specific or changing distributions! 
-You can do this using the `make.bd.params` function a provide either a `vector` of values: 
+In most examples above, birth-death parameters were set as fixed values, i.e. a speciation rate of $\lambda$ and an extinction rate of $\mu$ throughout the simulations (with maybe some events modifying these rates).
+However, it is possible to set these rates as specific or changing distributions. 
+You can do this using the `make.bd.params` function to provide either a `vector` of values: 
 
 ```{r}
 ## An example where the speciation is randomly sampled among three values
@@ -34,7 +34,7 @@ plot(dads(stop.rule = list(max.taxa = 50), bd.params = my_bd_params))
 ## (that's the speciation being 1/3 while the others are speciation = 42) 
 ```
 
-Or directly a function from which to sample:
+Or to directly provide a function from which to sample:
 
 ```{r}
 ## Another example where speciation is drawn from the interval (0, 1)
@@ -50,8 +50,9 @@ make.bd.params(speciation = runif,
                speciation.args = list(min = 0.5, max = 1.5))
 ```
 
-When using distributions for both the speciation and extinction parameters, you can run into the undesired problem of having an extinction rate that is higher than your speciation rate (and thus your tree dying out - unless this is the desired behaviour).
-You can avoid this problem by using the `joint` distribution argument this will ensure that the sampling of the extinction rate is always lower or equal to the speciation rate.
+When using distributions for both the speciation and extinction parameters, you can run into the (usually) undesired problem of having an extinction rate that is higher than your speciation rate and thus all the taxa in your tree dying out.
+You can avoid this problem by using the `joint` distribution argument. 
+This will ensure that the sampling of the extinction rate is always lower or equal to the speciation rate.
 
 ```{r}
 ## Joint speciation and extinction sampled from uniform distribution 
@@ -67,12 +68,13 @@ This argument is set to `TRUE` by default so you shouldn't have to worry about i
 make.bd.params(speciation = rnorm, absolute = TRUE)
 ```
 
-The two other possible arguments for this function are `test` and `update` that work the same as for [`make.traits`](#maketraits) or [`make.modifiers`](#makemodifiers)
+The two other possible arguments for this function are `test` and `update` that work the same way as [`make.traits`](#maketraits) or [`make.modifiers`](#makemodifiers)
 
-If you are a visual person and your `bd.params` objects are getting a bit too complicated to remember, you can always quickly plot them (the function will sample from the `bd.params` object and show the results):
+If you are a visual person and your `bd.params` objects are getting a bit too complicated to remember, you can always quickly plot them. 
+The function will sample from the `bd.params` object and show the results:
 
 ```{r}
-par(mfrow = c(2,2))
+par(mfrow = c(2,3))
 plot(make.bd.params(), main = "Default birth-death parameters")
 plot(make.bd.params(speciation = runif,
                speciation.args = list(min = 0.5, max = 1.5)),
@@ -85,12 +87,13 @@ plot(make.bd.params(speciation = runif, extinction = runif, joint = TRUE),
 plot(make.bd.params(speciation = rnorm, extinction = runif,
                     joint = FALSE, abs = FALSE),
      main = "Disjoint normal speciation and uniform extinction")
+par(mfrow = c(1,1))
 ```
 
 
 ## `drop.things` {#dropthings}
 
-You can use the function `drop.things` to drop specific elements of the tree and data at the same time by providing the argument `what` to be `"fossils"` for tips that went extinct, `"livings"` tips that where alive at the end of the simulation or `"singles"` for internal nodes.
+You can use the function `drop.things` to drop specific elements of the tree and data at the same time by providing the argument `what = "fossils"` for tips that went extinct, or `what = "livings"` for tips that where alive at the end of the simulation or `what = "singles"` to drop internal singleton nodes.
 Alternatively you can use the function aliases `drop.fossils`, `drop.livings` or `drop.singles` for the exact same results:
 
 ```{r}
