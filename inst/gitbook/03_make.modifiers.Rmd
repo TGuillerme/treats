@@ -30,7 +30,7 @@ However, contrary to `"traits"`, you cannot plot `"modifiers"`.
 
 ## The default modifier (how the process is working)
 
-The modifiers modify the core of the birth death process as implemented in `dads`.
+The modifiers modify the core of the birth-death process as implemented in `dads`.
 
 <!-- TODO: make that into a shiny app animation (or just in html?) -->
 
@@ -41,35 +41,35 @@ By default, the birth-death process in `dads` uses this modifier:
 print(make.modifiers(), all = TRUE)
 ```
 
-This contains a lot of information, much of it is actually not useful for using the modular aspects of `dads` at a high user level. I.e. unless you want to code very specific things, you won't need most of the information. The essential are these three functions in the elements named `"waiting$fun"`, `"selecting$fun"` and `"speciating$fun"`: 
+This contains a lot of information, much of it is actually not useful for using the modular aspects of `dads` at a high user level, i.e. unless you want to code very specific things, you won't need most of the information. The essentials are these three functions in the elements named `"waiting$fun"`, `"selecting$fun"` and `"speciating$fun"`: 
 
- 1. `"waiting$fun"` is the branch length function (defined in details below) which returns a randomly drawn number from an exponential distribution with the rate of the number of taxa multiplied by the speciation and extinction rate: $n \times (\lambda + \mu)$ (here is uses the extra function `sum` for internal modularity reasons). **This function is responsible for the growth of the length/age of the tree**
+ 1. `"waiting$fun"` is the branch length function (defined in detail below) which returns a randomly drawn number from an exponential distribution with the rate of the number of taxa multiplied by the speciation and extinction rate: $n \times (\lambda + \mu)$ (here is uses the extra function `sum` for internal modularity reasons). **This function is responsible for the growth of the length/age of the tree**
 
 ```{r, eval = FALSE}
 rexp(1, sum(lineage$n * (bd.params$speciation + bd.params$extinction)))
 ```
- With `lineage$n` being the number of lineages and `bd.params$speciation` and `bd.params$extinction` the speciation and extinction parameters (these specific terms are defined in details below).
+ With `lineage$n` being the number of lineages and `bd.params$speciation` and `bd.params$extinction` the speciation and extinction parameters (these specific terms are defined in detail below).
 
- 2. `"selecting$fun"` is the selection function (defined in details below) which, after the waiting time defined above returns a randomly selected lineage (a tip) among the existing ones. **This function is responsible for the branch selection**.
+ 2. `"selecting$fun"` is the selection function (defined in detail below) which, after the waiting time defined above returns a randomly selected lineage (a tip) among the existing ones. **This function is responsible for the branch selection**.
 
 ```{r, eval = FALSE}
 sample(lineage$n, 1)
 ```
 
- 3. `"speciating$fun"` is the speciation function (defined in details below) which randomly draws a number (`runif(1)`) and depending on the speciation and extinction parameters makes the selected lineage (from 2.) speciate (`TRUE`) or go extinct (`FALSE`). **This function is responsible for the speciation or extinction of species**.
+ 3. `"speciating$fun"` is the speciation function (defined in detail below) which randomly draws a number (`runif(1)`) and depending on the speciation and extinction parameters makes the selected lineage (from 2.) speciate (`TRUE`) or go extinct (`FALSE`). **This function is responsible for the speciation or extinction of species**.
 
 ```{r, eval = FALSE}
-runif(1) < (bd.params$speciation/(bd.params$speciation + bd.params$extinction)))
+runif(1) < (bd.params$speciation/(bd.params$speciation + bd.params$extinction))
 ```
 
-We will have a look at all these aspects below in more details which should make things clearer (but you can always refer to the default here for information).
+We will have a look at all these aspects below in more detail which should make things clearer (but you can always refer to the default here for information).
 
 ## The branch length function (`branch.length`)
 
-The first argument in `"modifiers"` is the branch length function (`branch.length`) this is the function that will be executed in `dads` to generate branch length.
-Note that in the `dads` algorithm, branch length is not generated _directly_ but actually results of the waiting time.
+The first argument in `"modifiers"` is the branch length function (`branch.length`) this is the function that will be executed in `dads` to generate branch lengths.
+Note that in the `dads` algorithm, branch length is not generated _directly_ but as the result of the waiting time.
 In other words, the `branch.length` function just affects waiting time for all taxa present at any time in the simulation.
-These taxa can then either go extinct (stopping the "growth" of it's branch length) or survive (continuing the "growth").
+These taxa can then either go extinct (stopping the "growth" of its branch length) or survive (continuing the "growth").
 
 By default, branch length (or waiting/growth) is a randomly drawn number from an exponential distribution with the rate of the number of taxa multiplied by the speciation and extinction rate: $n \times (\lambda + \mu)$ (where $n$ is the number of taxa currently present in the simulation, $\lambda$ and $\mu$ are respectively the speciation and extinction rates).
 This default function is simply called `branch.length` in `dads` and can be used as a modifier as follows:
@@ -90,7 +90,7 @@ default_tree <- dads(bd.params = bd_params,
 ```
 
 Of course, the point of the modularity here is that you can provide your own function for generating branch length.
-For example, we might be interested in what our tree would look like if we'd use a simple constant branch length generation (instead of randomly drawing it from an exponential distribution).
+For example, we might be interested in what our tree would look like if we use a simple constant branch length generation (instead of randomly drawing it from an exponential distribution).
 We can do so by declaring our own `branch.length` function and adding it to a `"modifiers"` object. 
 
 ```{r}
@@ -116,17 +116,18 @@ And we can visualise the difference between both resulting trees:
 par(mfrow = c(1,2))
 plot(default_tree,  main = "Default modifier")
 plot(modified_tree, main = "Constant branch length\nmodifier")
+par(mfrow = c(1,1))
 ```
 
-It is of course possible to use more complex branch length modifiers that intakes different conditions and specific modification rather than simply always output a value of one.
+It is of course possible to use more complex branch length modifiers that take different conditions and specific modification rather than simply always outputing a value of one.
 
-### The allowed arguments {#allowarguments}
+### The modifier arguments {#allowarguments}
 
 You can create a function for `branch.length`, `selection` and `speciation` that involve any of the following arguments:
 
-  * `bd.params`: a named list containing `"numeric"` values that contains the birth death parameters (at least `"speciation"` and `"extinction"`);
+  * `bd.params`: a named list containing `"numeric"` values that contains the birth-death parameters (at least `"speciation"` and `"extinction"`);
   * `lineage`: a named list containing the lineage data (see below).
-  * `trait.values`: a `"matrix"` containing `"numeric"` values with the trait names as column names and the lineages ID as row numbers (you can use it with the function `parent.traits` to access the trait of the previous node for example).
+  * `trait.values`: a `"matrix"` containing `"numeric"` values with the trait names as column names and the lineage ID as row numbers (you can use it with the function `parent.traits` to access the trait of the previous node for example).
   * `modify.fun`: a `"list"` of named `"function"` (usually passed through `condition` and `modify`).
 
 The `lineage` list contains the following elements (missing elements are allowed):
@@ -139,9 +140,9 @@ The `lineage` list contains the following elements (missing elements are allowed
  * `lineage$split`: a `"logical"` vector: the list of splits for each lineage (`TRUE`), the number of total tips is equal to `sum(!lineage$split)`.
 
 In general, unless you know what you're doing, you can ignore most arguments for specific modifiers since they are handled automatically within the `dads` function.
-Therefore any argument can be left undeclared or missing and is always handled internally. For example, if you did not declare `lineage$n` as a function argument but are using `lineage$n` in the function, `lineage$n` will be detected and treated as a current argument automatically as set accordingly within the birth death process (e.g. `lineage$n` will be set to the current number of taxa every iteration of the process).
+Therefore any argument can be left undeclared or missing and is always handled internally. For example, if you did not declare `lineage$n` as a function argument but are using `lineage$n` in the function, `lineage$n` will be detected and treated as a current argument automatically as set accordingly within the birth-death process (e.g. `lineage$n` will be set to the current number of taxa every iteration of the process).
 
-For example, we can create a function that increases branch length proportional to the number of species "alive" at each time of the simulation in a discrete way. I.e. for discrete numbers of taxa, the branch length increases by jumps (ten fold) every 5 taxa:
+For example, we can create a function that increases branch length proportional to the number of species "alive" at each time of the simulation in a discrete way, i.e. for discrete numbers of taxa, the branch length increases by jumps (ten fold) every five taxa:
 
 ```{r}
 ## A more complex binned.branch.length function
@@ -188,15 +189,16 @@ par(mfrow = c(1,3))
 plot(default_tree,    main = "Default modifier")
 plot(modified_tree,   main = "Constant branch length\nmodifier")
 plot(increasing_tree, main = "Increasing branch length\nmodifier (binned)")
+par(mfrow = c(1,1))
 ```
 
 
 ## The selection function (`selection`)
 
-The `selection` function is used in the birth death process to know which lineage to select when running a speciation (or extinction!) event.
+The `selection` function is used in the birth-death process to know which lineage to select when running a speciation (or extinction!) event.
 By default, this function randomly selects one taxon that is currently not extinct (using: `sample(1:lineage$n, 1))`.
-Similarly as `branch.length` it is possible to modify this part of the birth death process.
-For example, we could simply select always the last created lineage (to create a "ladder" or most asymmetric tree):
+Similarly to `branch.length`, it is possible to modify this part of the birth-death process.
+For example, we could simply select the last created lineage to create a "ladder" or most asymmetric tree:
 
 ```{r}
 ## Our function to always select the last taxon
@@ -206,9 +208,9 @@ select.last <- function(lineage) {
 }
 ```
 
-> Note that here the function can only intake the [allowed arguments as described above](#allowarguments) (here `lineage$n`: the number of current living taxa).
+> Note that here the function can only take the [allowed arguments as described above](#allowarguments) (here `lineage$n`: the number of current living taxa).
 
-We can then create a `"modifiers"` object the same way as before using this time the `selection` argument:
+We can then create a `"modifiers"` object the same way as before this time using the `selection` argument:
 
 ```{r}
 ## A modifier for selection
@@ -222,6 +224,7 @@ ladderised_tree <- dads(bd.params = bd_params,
 par(mfrow = c(1,2))
 plot(default_tree,    main = "Default modifier")
 plot(ladderised_tree, main = "Ladderising modifier")
+par(mfrow = c(1,1))
 ```
 
 Again, it is of course possible to make the modifier more complex and in combination with other elements of the tree.
@@ -255,13 +258,13 @@ BM_trait <- make.traits()
 set.seed(1)
 default_dads <- dads(bd.params = bd_params,
                      stop.rule = stop_rule,
-                     traits    = BM_trait)
+                     traits = BM_trait)
 
 ## Simulate a tree and trait with the modifier
 set.seed(1)
 skewed_trait_dads <- dads(bd.params = bd_params,
                           stop.rule = stop_rule,
-                          traits    = BM_trait,
+                          traits = BM_trait,
                           modifiers = positive_skew)
 
 ## Plotting the differences in trees and traits
@@ -272,8 +275,8 @@ plot(skewed_trait_dads, main = "Skewed trait and tree")
 
 ## The speciation function (`speciation`)
 
-The third function that can be used to modify the birth death process is the `speciation` function.
-This one is used during the birth death process to decide whether a lineages speciates (creating a node and two new lineages) or goes extinct (creating a tip).
+The third function that can be used to modify the birth-death process is the `speciation` function.
+This one is used during the birth-death process to decide whether a lineage speciates (creating a node and two new lineages) or goes extinct (creating a tip).
 
 > Note that the `speciation` function only affects tips or nodes before the simulation reaches the `stop.rule`.
 The then surviving lineages are all automatically transformed into tips.
@@ -285,9 +288,8 @@ By default, the `speciation` function is trigger a speciation even if a number r
 runif(1) < speciation/ (speciation + extinction)
 ```
 
-Creating a `"modifiers"` with a `speciation` function works the same way as for `branch.length` and `selection` but the function that will be used needs to output a logical value (see table [below](#summarymodifiers)).
+Creating `"modifiers"` with a `speciation` function works the same way as for `branch.length` and `selection` but the function that will be used needs to output a logical value (see table [below](#summarymodifiers)).
 Once the function is created simply input your function for speciation in the modifier and run the `dads` function with that modifier:
-
 
 ```{r, eval = FALSE}
 ## Speciating or going extinct randomly
@@ -308,11 +310,12 @@ modified_tree <- dads(bd.params = bd_params,
 par(mfrow = c(1,2))
 plot(default_tree,  main = "Default modifier")
 plot(modified_tree, main = "Random extinction\nmodifier")
+par(mfrow = c(1,1))
 ```
 
-> Note how loads of lineages end up going extinct even if the extinction parameter is set to 0!
+> Note how loads of lineages go extinct even if the extinction parameter is set to 0!
 
-And again, we can make some more advanced modifiers: for example, one where a tip always goes extinct if their ancestor has a negative trait value (here we will also introduce the utility function `parent.trait` that automatically selects the trait values of the parent of the current lineage.
+And again, we can make some more advanced modifiers: for example, one where a tip always goes extinct if their ancestor has a negative trait value. Here we will also introduce the utility function `parent.trait` that automatically selects the trait values of the parent of the current lineage.
 
 ```{r}
 ## A modifier for removing tips with negative values
@@ -321,7 +324,7 @@ bias.trait <- function(trait.values, lineage) {
         ## Go extinct!
         return(FALSE)
     } else {
-        ## Speciate
+        ## Speciate!
         return(TRUE)
     }
 }
@@ -352,11 +355,11 @@ modifier name   | accepted input (arguments) | required output (class) |
 
 ## The condition and modify functions (`condition` and `modify`)
 
-In the examples above, we have seen how to specify modifications to the birth death process (via `branch.length`, `selection` and `speciation`), however, one might note that these modifications are not dynamic.
+In the examples above, we have seen how to specify modifications to the birth-death process (via `branch.length`, `selection` and `speciation`), however, these modifications are not dynamic.
 In other words, throughout the process, the modifications remain constant (even if they are conditional).
-It is however possible to code the `"modifiers"` so that they can be affected by `"events"` objects (see next chapter [on `events`](#makeevents)).
+It is however, possible to code the `"modifiers"` so that they can be affected by `"events"` objects (see next chapter [on `events`](#makeevents)).
 
-To do so, you can formally declare conditions (`condition`) and modifications (`modify`) as internal functions that can then be modified my an `"events"` object.
+To do so, you can formally declare conditions (`condition`) and modifications (`modify`) as internal functions that can then be modified by an `"events"` object.
 `condition` and `modify` are hard coded in the `branch.length` function that they concern, i.e. they are variables (functions) within the function.
 
 For example in the `speciation` part of a modifier, the default is to trigger an event from a uniform distribution and then check if that value is smaller than ($$speciation/(speciation + extinction)$$):
@@ -368,11 +371,12 @@ speciation <- function(bd.params) {
     trigger_event <- runif(1)
 
     ## Speciate?
-    return(trigger_event < (bd.params$speciation/(bd.params$speciation + bd.params$extinction)))
+    return(trigger_event < (bd.params$speciation/
+                              (bd.params$speciation + bd.params$extinction)))
 }
 ```
 
-It is possible with some specific condition to modify this trigger by providing a `condition` and `modify` function to the speciation function.
+It is possible with some specific conditions to modify this trigger by providing a `condition` and `modify` function to the speciation function.
 That is, if the `condition` is met, apply the `modify` function to the algorithm.
 For example here we can edit the default speciation function to have a modification (`modify = double.the.trigger`: doubling the trigger value) happening half the time (`condition = half.the.time`):
 
@@ -384,9 +388,9 @@ double.the.trigger <- function(x) return(x*2)
 ## A conditional modifier
 make.modifiers(speciation = speciation,
                condition  = half.the.time, 
-               modify     = double.the.trigger)
+               modify = double.the.trigger)
 ```
-Effectively, this will internally modify the speciation function as follows
+Effectively, this will internally modify the speciation function as follows:
 
 ```{r, eval = FALSE}
 ## The default speciation algorithm
@@ -400,9 +404,10 @@ speciation <- function(bd.params) {
     }
 
     ## Speciate?
-    return(trigger_event < (bd.params$speciation/(bd.params$speciation + bd.params$extinction)))
+    return(trigger_event < (bd.params$speciation/
+                              (bd.params$speciation + bd.params$extinction)))
 }
 ```
 
 These `condition` and `modify` functions can be applied to all the `modifiers` elements (`selection`, `branch.length` and `speciation`).
-However, they are typically used in `events` that will modify... the `modifiers` ([see the `events` section](#makeevents))!
+However, they are typically used in `events` that will modify the `modifiers` ([see the `events` section](#makeevents))!

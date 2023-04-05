@@ -37,22 +37,24 @@ plot(list_of_traits, trait = 2, col = c("red", "purple", "pink"))
 ## Not using the default plot name
 plot(list_of_traits, trait = 3, main = "OU process",
      cent.tend = sd, quantiles = c(10, 30))
+par(mfrow = c(1, 1))
 ```
 
 You can also control the number of replicates in the simulation by using the `simulations` option (the default is 50).
-Bigger numbers leads to more time but smoother looking plots while smaller ones are more stochastic:
+Bigger numbers lead to more time but smoother looking plots while smaller ones are more stochastic:
 
 ```{r, fig.width=6, fig.height=12}
 par(mfrow = c(2,1))
 plot(list_of_traits, trait = 2, simulations = 10, main = "10 BM simulations")
 plot(list_of_traits, trait = 2, simulations = 1000, main = "1k BM simulations")
+par(mfrow = c(1,1))
 ```
 
 
-## Plotting dads results
+## Plotting `dads` results
 
 If `dads` is used to plot only a tree (and outputs a `"phylo"` object), you can use the function `plot.phylo` from the `ape` package to plot your tree.
-You'll find all the tree plotting option in the `?plot.phylo` manual page.
+You'll find all the tree plotting options in the `?plot.phylo` manual page.
 
 ```{r}
 ## A simple pure birth tree
@@ -71,7 +73,7 @@ plot(my_tree, main = "A tree and traits")
 
 By default, elements are coloured as follows: nodes and tips are points and coloured in blue if they are tips (light blue if they are fossils) and nodes are in orange.
 Branches linking them are grey lines.
-You can of course change this colour palette to something of you preference by calling the normal arguments that can be passed to `points` or `lines`. For example `pch` for the point type or `lty` for the line type.
+You can of course change this colour palette to whatever you prefer by calling the standard base R arguments that can be passed to `points` or `lines`. For example `pch` for the point type or `lty` for the line type.
 Furthermore, time is plotted conventionally from left to right (left is towards the past, right is towards the present) but you can change that by specifying `xlim`.
 
 
@@ -80,36 +82,35 @@ Furthermore, time is plotted conventionally from left to right (left is towards 
 plot(my_tree, main = "A tree and traits",
      ## Changing nodes colours and type
      col = c(tips = "pink", nodes = "purple"), pch = 21,
-     ## Changing edges colour and type
+     ## Changing edge colour and type
      lwd = 2, lty = 3, edges = "yellow",
      ## Changing the x axis orientation and label
      xlim = c(0, 2.5), xlab = "Time into the past")
 ```
 
-> Note that you can modify colours using the `col` argument by providing a clear indication of what you want to colour (e.g. `col = c(tips = "blue", fossils = "orange")` will apply the colours to the unambiguously named elements) or by providing a function that will scale the colours with time (e.g. `col = grDevices::heat.colors` will use the specified function to change the elements colours with time).
+> Note that in `plot.dads` you can modify colours using the `col` argument by providing a clear indication of what you want to colour (e.g. `col = c(tips = "blue", fossils = "orange")` will apply the colours to the unambiguously named elements) or by providing a function that will scale the colours with time (e.g. `col = grDevices::heat.colors` will use the specified function to change the  colours of the elements through time).
 
-And you can add a default legend by using `legend = TRUE` (if you don't want to add the default legend you can add it after your plot using `legend(...)`).
+You can add a default legend by using `legend = TRUE` (if you don't want to add the default legend you can add it after your plot using `legend(...)`).
 
 ```{r, fig.height = 6, fig.width = 6}
 ## Adding the default legend
 plot(my_tree, legend = TRUE)
 ```
 
-### 3D version!
+### Adding dimensions! Not necessary, but fun!
 
 Of course, if you're simulating multiple traits, you can always plot different ones.
 
 ```{r, fig.height = 6, fig.width = 6}
 ## Specifying a 3D trait process
 my_3D_trait <- make.traits(n = 3, )
-## Simulating a birth death tree with that 3D trait
+## Simulating a birth-death tree with that 3D trait
 my_data <- dads(bd.params = list(extinction = 0.2),
                 stop.rule = list(max.living = 50),
                 traits    = my_3D_trait)
 ```
 
-You can toggle which trait to plot using the `trait` option.
-Either by providing a single value to plot that specific trait against time or by providing two traits.
+You can toggle which trait to plot using the `trait` option, either by providing a single value to plot that specific trait against time or by providing two traits.
 
 ```{r, fig.height = 12, fig.width = 6}
 par(mfrow = c(2,1))
@@ -134,7 +135,7 @@ plot(my_data, trait = c(1,2), main = "Traits 1 and 2",
 But there's more! You can also plot these results using actual 3D plots that you can spin and all that!
 This is done through the `rgl` package and activated in `dads` using the option `use.3D = TRUE`.
 
-If two traits are provided, the 3rd dimensions is going to be time by default:
+If two traits are provided, the 3rd dimension is going to be time by default:
 
 ```{r}
 ## Plotting the tree and 2 traits in 3D: woah!
