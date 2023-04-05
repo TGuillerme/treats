@@ -77,3 +77,6 @@
  - [ ] have a function that tracks lineages through time when using `save.steps`
  - [ ] `plot`: add option to colour the elements sequentially (e.g. col = rainbow(10))
  - [ ] add option to simulate multiple trees for one or more traits (gene tree vs species tree)
+
+## Feedback
+ - [ ] From NC: I think my main feedback is similar to with the manual for dispRity. I think it needs a simple introduction to the problem(s) the package can solve early on. This can be very informal, but I think needs to focus on the biology rather than the practicalities (which I know you're more interested in so it makes sense that you'd jump right into those). It could refer to a specific Q or paper (if you have examples where you have used dads already that would be great). For example "Fred is writing a paper about the evolution of tetrapods. He's got some really interesting results and it looks like his traits are evolving differently before and after a mass extinction event. However, Fred can't be sure this is not just the effect of the method he's using. Maybe he'd expect this result? How can he tell whether his results truly are interesting? A solution would be to simulate the very situation Fred is interested in and then to see if the methods give the same results. However, existing packages only let fred simulate traits or a tree. This is where dads comes in"
