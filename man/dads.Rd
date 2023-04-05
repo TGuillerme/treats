@@ -30,14 +30,14 @@ dads(
 \item{null.error}{Logical, whether to return an error when the birth-death parameters fails to build a tree (\code{FALSE}; default and highly recommended) or whether to return \code{NULL} (\code{TRUE}). Can also be set to an integer value for the numbers of trials (see details).}
 }
 \description{
-Simulating phylogenetic trees and trait disparity. See full manual here: XXX
+Simulating phylogenetic trees and trait disparity. See full manual here: https://github.com/TGuillerme/dads
 }
 \details{
 \code{stop.rule}: The rule(s) for when to stop the simulation. When multiple rules are given, the simulation stops when any rule is broken. The allowed rules are:
 \itemize{
   \item \code{max.taxa}   The maximum number of taxa (including extinct ones).
-  \item \code{max.living} The maximum number of living (i.e. non extinct) taxa.
-  \item \code{max.time}   The maximum amount of time (in arbitrary units).
+  \item \code{max.living} The maximum number of living taxa (i.e. non extinct).
+  \item \code{max.time}   The maximum amount of phylogenetic (in arbitrary units).
 }
 
 \code{bd.params}: This can be either a \code{"dads"} \code{"bd.params"} object (see \code{\link{make.bd.params}}) or a list of named parameters. The allowed parameters are:
@@ -70,13 +70,13 @@ my_trait <- make.traits()
 ## Run a birth-death tree with traits simulation
 dads(bd.params = my_bd_params,
      stop.rule = my_stop_rule,
-     traits = my_trait)
+     traits    = my_trait)
 
 ## Simulating a tree using modifiers
 ## Making a modifier to make speciation trait dependent
 my_modifiers <- make.modifiers(branch.length = branch.length.trait,
-                               selection = selection,
-                               speciation = speciation.trait)
+                               selection     = selection,
+                               speciation    = speciation.trait)
 
 ## Simulating the tree
 dads(stop.rule = list(max.taxa = 20),
@@ -86,8 +86,8 @@ dads(stop.rule = list(max.taxa = 20),
 ## Run a birth death tree with an event
 ## 80\% mass extinction at time 4
 mass_extinction <- make.events(
-                      target = "taxa",
-                      condition = time.condition(4),
+                      target       = "taxa",
+                      condition    = time.condition(4),
                       modification = random.extinction(0.8))
 
 ## Set the simulation parameters
@@ -98,7 +98,7 @@ bd.params <- list(extinction = 0, speciation = 1)
 set.seed(123)
 results <- dads(bd.params = bd.params,
                 stop.rule = stop.rule,
-                events = mass_extinction)
+                events    = mass_extinction)
 ## Plot the results
 plot(results, show.tip.label = FALSE)
 axisPhylo()

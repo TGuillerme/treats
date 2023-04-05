@@ -1,21 +1,21 @@
 #' @title Diversity and disparity simulator
 #'
-#' @description Simulating diversity and trait disparity
+#' @description Simulating phylogenetic trees and trait disparity. See full manual here: https://github.com/TGuillerme/dads
 #'
 #' @param stop.rule  The rules on when to stop the simulation (see details).
-#' @param bd.params  A \code{"dads"} \code{"bd.params"} object or a named list of parameters for the birth death process (see details).
+#' @param bd.params  A \code{"dads"} \code{"bd.params"} object or a named list of parameters for the birth-death process (see details).
 #' @param traits     A \code{"dads"} \code{"traits"} object (see \code{\link{make.traits}}).
 #' @param modifiers  A \code{"dads"} \code{"modifiers"} object (see \code{\link{make.modifiers}}).
 #' @param events     A \code{"dads"} \code{"events"} object (see \code{\link{make.events}}).
 #' @param save.steps Optional, \code{"numeric"} value to save the simulations at specific internal points (this can slow down the algorithm significantly for large trees). 
-#' @param null.error Logical, whether to return an error when the birth death parameters fails to build a tree (\code{FALSE}; default and highly recommended) or whether to return \code{NULL} (\code{TRUE}). Can also be set to a integer value for the numbers of trials (see details).
+#' @param null.error Logical, whether to return an error when the birth-death parameters fails to build a tree (\code{FALSE}; default and highly recommended) or whether to return \code{NULL} (\code{TRUE}). Can also be set to an integer value for the numbers of trials (see details).
 #' 
 #' @details
 #' \code{stop.rule}: The rule(s) for when to stop the simulation. When multiple rules are given, the simulation stops when any rule is broken. The allowed rules are:
 #' \itemize{
-#'   \item \code{max.taxa}   The maximum number of taxa to reach (including extinct ones).
-#'   \item \code{max.living} The maximum number of living (i.e. non extinct) to reach.
-#'   \item \code{max.time}   The maximum amount of phylogenetic time to reach.
+#'   \item \code{max.taxa}   The maximum number of taxa (including extinct ones).
+#'   \item \code{max.living} The maximum number of living taxa (i.e. non extinct).
+#'   \item \code{max.time}   The maximum amount of phylogenetic (in arbitrary units).
 #' }
 #' 
 #' \code{bd.params}: This can be either a \code{"dads"} \code{"bd.params"} object (see \code{\link{make.bd.params}}) or a list of named parameters. The allowed parameters are:
@@ -29,24 +29,24 @@
 #' 
 #' 
 #' @examples
-#' ## Setting some pure birth tree (no extinction) parameters
+#' ## Setting pure birth tree (no extinction) parameters
 #' my_bd_params <- list(speciation = 1)
-#' ## Setting some stopping rule (stop when reaching 10 taxa)
+#' ## Setting a stopping rule: stop when reaching 10 taxa.
 #' my_stop_rule <- list(max.taxa = 10) 
 #' 
 #' ## Run a birth tree without traits
 #' a_tree <- dads(bd.params = my_bd_params,
 #'                stop.rule = my_stop_rule)
-#' ## Plotting the results
+#' ## Plot the results
 #' plot(a_tree)
 #' 
-#' ## Adding some extinction parameter
+#' ## Add an extinction parameter
 #' my_bd_params$extinction <- 1/3
 #' 
-#' ## Getting a simple trait (default Brownian motion)
+#' ## Add a simple trait simulation (default Brownian motion)
 #' my_trait <- make.traits()
 #' 
-#' ## Run a birth-death tree with traits
+#' ## Run a birth-death tree with traits simulation
 #' dads(bd.params = my_bd_params,
 #'      stop.rule = my_stop_rule,
 #'      traits    = my_trait)
