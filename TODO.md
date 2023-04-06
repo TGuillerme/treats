@@ -79,4 +79,23 @@
  - [ ] add option to simulate multiple trees for one or more traits (gene tree vs species tree)
 
 ## Feedback
+
+### Manual suggestions
+ - [ ] See list of issues from NC
  - [ ] From NC: I think my main feedback is similar to with the manual for dispRity. I think it needs a simple introduction to the problem(s) the package can solve early on. This can be very informal, but I think needs to focus on the biology rather than the practicalities (which I know you're more interested in so it makes sense that you'd jump right into those). It could refer to a specific Q or paper (if you have examples where you have used dads already that would be great). For example "Fred is writing a paper about the evolution of tetrapods. He's got some really interesting results and it looks like his traits are evolving differently before and after a mass extinction event. However, Fred can't be sure this is not just the effect of the method he's using. Maybe he'd expect this result? How can he tell whether his results truly are interesting? A solution would be to simulate the very situation Fred is interested in and then to see if the methods give the same results. However, existing packages only let fred simulate traits or a tree. This is where dads comes in"
+ - [ ] Get some standard examples and link to the once the the end of the vignette. BM and OU with one traits that people standardly do and use. Like get 20 basic scenarios. e.g. `geiger::fitcontinuous`
+ - [ ] add a schematic for each subsection as well (not only the main one): or maybe just do it for a specific example
+ - [ ] put correlated traits in the documentation earlier in the vignette
+ - [ ] adding budding simulation (see paleo buddy).
+ - [ ] What it does: simulates trees and traits.
+ - [ ] throughout the manual: change `disparity` to `traits` and `diversity` to `trees` `t4`
+ - [ ] Maybe a cheat sheet table for what affects what. "I want to change my extinction rate?" "where do I change that (is it in modifiers, etc...)" (kind of mini FAQ)
+
+### Bug fixes
+ - [ ] make the stop.rule warn or stop if max time is really high. (> 5)
+ - [ ] error with `simulation stop before rule` but actually does reach the rule. Which stopping rule was used to stop the process. (see issue raised by NC)
+ - [ ] error when installing `rgl`. Maybe remove it from the dependencies
+
+### Suggestions
+ - [ ] discrete traits evolution
+ - [ ] some age dependency modifier (if lineage is old, more or less speciation)
