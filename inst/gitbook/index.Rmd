@@ -24,7 +24,7 @@ The core of this package is based on the [`diversitree` birth-death algorithm](h
 
 ## What is `dads`?
 
-%NC: I think here you need an example of use case as it's not immediately obvious what the package is for...
+<!-- %NC: I think here you need an example of use case as it's not immediately obvious what the package is for... -->
 
 There are some very good R packages that simulate birth-death trees (e.g. [TreeSim](https://github.com/tanja819/TreeSim)) or simulate traits (disparity) and diversity jointly (e.g. [RPANDA](https://github.com/cran/RPANDA) or [PETER](https://github.com/PuttickMacroevolution/PETER)).
 We strongly advise you look at these packages first as they might be more appropriate for your needs.
