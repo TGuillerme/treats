@@ -77,6 +77,9 @@
  - [ ] have a function that tracks lineages through time when using `save.steps`
  - [ ] `plot`: add option to colour the elements sequentially (e.g. col = rainbow(10))
  - [ ] add option to simulate multiple trees for one or more traits (gene tree vs species tree)
+ - [ ] adding budding simulation (see paleo buddy).
+ - [ ] discrete traits evolution
+ - [ ] some age dependency modifier (if lineage is old, more or less speciation)
 
 ## Feedback
 
@@ -86,16 +89,13 @@
  - [ ] Get some standard examples and link to the once the the end of the vignette. BM and OU with one traits that people standardly do and use. Like get 20 basic scenarios. e.g. `geiger::fitcontinuous`
  - [ ] add a schematic for each subsection as well (not only the main one): or maybe just do it for a specific example
  - [ ] put correlated traits in the documentation earlier in the vignette
- - [ ] adding budding simulation (see paleo buddy).
  - [ ] What it does: simulates trees and traits.
- - [ ] throughout the manual: change `disparity` to `traits` and `diversity` to `trees` `t4`
+ - [ ] throughout the manual: change `disparity` to `traits` and `diversity` to `trees` 
  - [ ] Maybe a cheat sheet table for what affects what. "I want to change my extinction rate?" "where do I change that (is it in modifiers, etc...)" (kind of mini FAQ)
 
 ### Bug fixes
  - [ ] make the stop.rule warn or stop if max time is really high. (> 5)
+    - [ ] add to tests
  - [ ] error with `simulation stop before rule` but actually does reach the rule. Which stopping rule was used to stop the process. (see issue raised by NC)
+    - [ ] check test
  - [ ] error when installing `rgl`. Maybe remove it from the dependencies
-
-### Suggestions
- - [ ] discrete traits evolution
- - [ ] some age dependency modifier (if lineage is old, more or less speciation)
