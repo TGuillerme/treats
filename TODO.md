@@ -95,7 +95,8 @@
  - [ ] What it does: simulates trees and traits.
  - [ ] throughout the manual: change `disparity` to `traits` and `diversity` to `trees` 
  - [ ] Maybe a cheat sheet table for what affects what. "I want to change my extinction rate?" "where do I change that (is it in modifiers, etc...)" (kind of mini FAQ)
-
+ - [ ] Rename to `treats` https://docs.github.com/en/repositories/creating-and-managing-repositories/renaming-a-repository
+ 
 ### Bug fixes
  - [ ] make the stop.rule warn or stop if max time is really high. (> 5)
     - [ ] add to tests
