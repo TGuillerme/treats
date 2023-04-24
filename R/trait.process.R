@@ -68,13 +68,13 @@
 #' ## The Brownian motion process
 #' BM.process(x0 = 0)
 #' plot(make.traits(process = BM.process))
-#' ## A correlation matrix between 3 traits
-#' cor_matrix <- matrix(c(1/3,1/3,1/3,1/3,2/3,0,1/3,0,2/3), ncol = 3)
-#' BM.process(x0 = c(0,0,0), Sigma = cor_matrix)
+#' ## A covariance matrix between 3 traits
+#' varcovar_matrix <- matrix(c(1/3,1/3,1/3,1/3,2/3,0,1/3,0,2/3), ncol = 3)
+#' BM.process(x0 = c(0,0,0), Sigma = varcovar_matrix)
 #' 
 #' ## The Ornstein-Uhlenbeck process
 #' OU.process(x0 = 0)
-#' plot(make.traits(process = BM.process))
+#' plot(make.traits(process = OU.process))
 #' 
 #' ## No process
 #' no.process()
@@ -110,7 +110,7 @@ BM.process <- function(x0 = 0, edge.length = 1, Sigma = diag(length(x0)), ...) {
 ## The OU process
 OU.process <- function(x0 = 0, edge.length = 1, Sigma = diag(length(x0)), alpha = 1, optimum = 0, ...) {
     ## Calculate the means
-    means <- optimum + (x0 - optimum) * exp(-alpha * edge.length) 
+    means <- optimum + (x0 - optimum) * exp(-alpha * edge.length)
     ## Calculate the Sigma
     Sigma <- Sigma/(2 * alpha) * (1 - exp(-2 * alpha * edge.length))
     ## Get the traits
@@ -138,11 +138,11 @@ multi.peak.process <- function(x0 = 0, edge.length = 1, Sigma = diag(length(x0))
     }
     
     ## Calculate the means
-    means <- theta + (x0 - theta) * exp(-alpha)
+    means <- theta + (x0 - theta) * exp(-alpha * edge.length)
     ## Calculate the Sigma
-    Sigma <- Sigma/(2 * alpha) * (1 - exp(-2 * alpha))
+    Sigma <- Sigma/(2 * alpha) * (1 - exp(-2 * alpha * edge.length))
     ## Get the traits
-    return(t(MASS::mvrnorm(n = 1, mu = means, Sigma = Sigma * edge.length, ...)))
+    return(t(MASS::mvrnorm(n = 1, mu = means, Sigma = Sigma, ...)))
 }
 
 ## A repulsive process
