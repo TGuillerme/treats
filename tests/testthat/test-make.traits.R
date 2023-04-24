@@ -14,13 +14,13 @@ test_that("make.traits works", {
     error <- capture_error(make.traits(process.args = "nope"))
     expect_equal(error[[1]], "process.args must be of class list.")
     error <- capture_error(make.traits(add = TRUE))
-    expect_equal(error[[1]], "You can only add to a \"dads\" \"traits\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.traits")
+    expect_equal(error[[1]], "You can only add to a \"treats\" \"traits\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.traits")
     error <- capture_error(make.traits(test = "TRUE"))
     expect_equal(error[[1]], "test must be of class logical.")
 
     ## Default example works
     test <- make.traits()
-    expect_is(test, c("dads", "traits"))
+    expect_is(test, c("treats", "traits"))
     expect_equal(length(test), 2)
     expect_equal(names(test), c("main", "background"))
     expect_equal(names(test$main[[1]]), c("process", "start", "trait_id"))
@@ -36,7 +36,7 @@ test_that("make.traits works", {
     }
 
     test <- make.traits(n = 2)
-    expect_is(test, c("dads", "traits"))
+    expect_is(test, c("treats", "traits"))
     expect_equal(length(test), 2)
     expect_equal(names(test$main[[1]]), c("process", "start", "trait_id"))
     expect_equal(test$main[[1]]$trait_id, c(1,2))
@@ -46,7 +46,7 @@ test_that("make.traits works", {
 
     ## Add works
     test2 <- make.traits(process = c(BM.process, element.rank), n = c(4,2), add = test, start = 1)
-    expect_is(test2, c("dads", "traits"))
+    expect_is(test2, c("treats", "traits"))
     expect_equal(length(test2), 2)
     expect_equal(length(test2$main), 3)
     expect_equal(names(test2$main$A), c("process", "start", "trait_id"))
@@ -59,7 +59,7 @@ test_that("make.traits works", {
 
     ## Add works with proper name update
     test2 <- make.traits(process = c(BM.process, element.rank), n = c(4,2), add = make.traits(trait.names = "bob"))
-    expect_is(test2, c("dads", "traits"))
+    expect_is(test2, c("treats", "traits"))
     expect_equal(length(test2$main), 3)
     expect_equal(names(test2$main$bob), c("process", "start", "trait_id"))
     expect_equal(test2$main$bob$trait_id, c(1))
@@ -72,7 +72,7 @@ test_that("make.traits works", {
     expect_equal(names(test$main), LETTERS[1:4])
 
     test <- make.traits(process = c(BM.process, element.rank), n = 2)
-    expect_is(test, c("dads", "traits"))
+    expect_is(test, c("treats", "traits"))
     expect_equal(length(test$main), 2)
     expect_equal(names(test$main[[1]]), c("process", "start", "trait_id"))
     expect_equal(test$main[[1]]$trait_id, c(1,2))
@@ -81,7 +81,7 @@ test_that("make.traits works", {
     expect_equal(test$main[[2]]$trait_id, c(3,4))
 
     test <- make.traits(process = c(BM.process, element.rank), n = c(1, 2))
-    expect_is(test, c("dads", "traits"))
+    expect_is(test, c("treats", "traits"))
     expect_equal(length(test$main), 2)
     expect_equal(names(test$main[[1]]), c("process", "start", "trait_id"))
     expect_equal(test$main[[1]]$trait_id, 1)
@@ -91,7 +91,7 @@ test_that("make.traits works", {
     expect_equal(test$main[[2]]$start, c(0,0))
 
     test <- make.traits(process = c(BM.process, element.rank), n = c(3, 1), start = 0, trait.names = c("A", "B"))
-    expect_is(test, c("dads", "traits"))
+    expect_is(test, c("treats", "traits"))
     expect_equal(length(test$main), 2)
     expect_equal(names(test$main), c("A", "B"))
     expect_is(test$main$A$process, "function")
@@ -106,7 +106,7 @@ test_that("make.traits works", {
     expect_equal(error[[1]], "You must provide additional arguments for every process (2). You can provide NULL arguments for processes that don't need extra arguments e.g.\n\n    process.args = list(list(NULL),\n                        list(extra.arg = some_extra_argument))\n\nwill only provide extra arguments to the second process.")
     ## Working well with a single extra argument
     test <- make.traits(n = 3, process.args = list(Sigma = diag(3)))    
-    expect_is(test, c("dads", "traits"))
+    expect_is(test, c("treats", "traits"))
     expect_equal(names(test$main$A), c("process", "start", "trait_id", "Sigma"))
     ## Working well on multiple processes
     test <- make.traits(process = c(BM.process, BM.process), n = c(2,3), process.args = list(list(Sigma = diag(2)), list(Sigma = matrix(1/3, 3, 3))))
@@ -123,7 +123,7 @@ test_that("make.traits(update) works", {
 
     ## Sanitizing
     error <- capture_error(make.traits(update = "bob"))
-    expect_equal(error[[1]], "You can only update a \"dads\" \"traits\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.traits")
+    expect_equal(error[[1]], "You can only update a \"treats\" \"traits\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.traits")
     test <- make.traits()
     error <- capture_error(make.traits(update = test, trait.names = "what"))
     expect_equal(error[[1]], "No process(es) called what to update.")
@@ -202,7 +202,7 @@ test_that("bkg.traits works", {
 
     ### Error
     error <- capture_error(make.traits(background = "make.traits()"))
-    expect_equal(error[[1]], "background must be a dads traits object. You can use the following function to generate one:\nmake.traits()")
+    expect_equal(error[[1]], "background must be a treats traits object. You can use the following function to generate one:\nmake.traits()")
 
     ## Background is the same as the trait
     test <- make.traits(background = make.traits())
@@ -221,7 +221,7 @@ test_that("bkg.traits works", {
     expect_equal(error[[1]], "The background must have the same number of traits than the main process: 6 (4 + 2).")
     test2 <- make.traits(process = c(BM.process, BM.process), n = c(4,2), background = make.traits(process = OU.process, n = 6, start = 10, trait.names = "bg.OU"))
 
-    expect_is(test2, c("dads", "traits"))
+    expect_is(test2, c("treats", "traits"))
     expect_equal(length(test2$main), 2)
     expect_equal(names(test2$main$A), c("process", "start", "trait_id"))
     expect_equal(test2$main$A$trait_id, c(1,2,3,4))

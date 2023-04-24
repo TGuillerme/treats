@@ -11,9 +11,9 @@ importFrom("methods", "formalArgs", "is")
 importFrom("utils", "tail")
 
 ## Main functions
-export(dads)
-export(print.dads)
-export(plot.dads)
+export(treats)
+export(print.treats)
+export(plot.treats)
 
 ## Traits
 export(make.traits)
@@ -49,7 +49,7 @@ export(founding.event)
 
 ## Utilities
 export(make.bd.params)
-export(make.dads)
+export(make.treats)
 export(drop.things)
 export(drop.fossils)
 export(drop.livings)
@@ -57,6 +57,6 @@ export(drop.singles)
 export(parent.traits)
 
 ##S3 
-S3method(plot, dads) #incl traits
-S3method(print, dads) #incl traits modifiers and events
+S3method(plot, treats) #incl traits
+S3method(print, treats) #incl traits modifiers and events
 

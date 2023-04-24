@@ -30,10 +30,10 @@ make.bd.params(
 
 \item{test}{Logical whether to test if the bd.params object will work (default is \code{TRUE}).}
 
-\item{update}{Optional, another previous \code{"dads"} \code{"bd.params"} object to update (see details).}
+\item{update}{Optional, another previous \code{"treats"} \code{"bd.params"} object to update (see details).}
 }
 \description{
-Making bd.params objects for dads.
+Making bd.params objects for treats.
 }
 \details{
 When using \code{update}, the provided arguments (to \code{make.bd.params}) will be the ones updated in the \code{"bd.params"} object.
@@ -62,7 +62,7 @@ plot(my_bd_params)
 
 }
 \seealso{
-\code{\link{dads}}
+\code{\link{treats}}
 }
 \author{
 Thomas Guillerme

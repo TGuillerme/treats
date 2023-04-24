@@ -1,5 +1,5 @@
 ---
-title: "`dads` verbose example"
+title: "`treats` verbose example"
 author: "Thomas Guillerme"
 date: "`r Sys.Date()`"
 output:
@@ -11,7 +11,7 @@ output:
 
 ```{r}
 library(dispRity)
-library(dads)
+library(treats)
 ```
 
 ```{r}
@@ -31,11 +31,11 @@ abline(v = 10)
 ```
 
 ```{r}
-libary(dads)
+libary(treats)
 my_params <- make.bd.params(speciation = rnorm)
 my_stop_rule <- list(max.taxa = 50)
 trait <- make.traits(process = BM.process, n = 10)
-simulation <- dads(bd.params = my_params, stop.rule = my_stop_rule, trait = trait)
+simulation <- treats(bd.params = my_params, stop.rule = my_stop_rule, trait = trait)
 
 ## Measure disparity through time
 time_series <- chrono.subsets(data = simulation$data, tree = simulation$tree,
@@ -47,13 +47,13 @@ plot(results)
 
 ```{r}
 ## 
-library(dads)
+library(treats)
 set.seed(123)
 bd.params <- make.bd.params(speciation = 1)
 stop.rule <- list(max.taxa = 50, max.living = Inf, max.time = Inf)
 traits <- make.traits(process = BM.process, background = make.traits())
 par(mfrow = c(2,1))
-plot(dads(bd.params = bd.params, stop.rule = stop.rule, traits = traits), main = "no modif")
+plot(treats(bd.params = bd.params, stop.rule = stop.rule, traits = traits), main = "no modif")
 
 ## We want to change this in two ways:
  # 1- speciation = trait.value^2
@@ -69,7 +69,7 @@ select.scale.to.absolute.trait.value <- function(trait.values, lineage) {
 
 modifiers <- make.modifiers(selection = select.scale.to.absolute.trait.value)
 
-plot(dads(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = modifiers), main = "Speciation increase\nwith absolute trait value")
+plot(treats(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = modifiers), main = "Speciation increase\nwith absolute trait value")
 
 
 

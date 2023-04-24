@@ -33,14 +33,14 @@ make.events(
 \item{additional.args}{Optional, a named \code{list} of additional arguments to be used in the event.}
 }
 \description{
-Making events objects for dads
+Making events objects for treats
 }
 \details{
 \code{target} is a \code{character} to designate what will be affected by the event. It can be either \code{"taxa"}, \code{"bd.params"}, \code{"traits"} or \code{"modifiers"}. This means that the \code{condition} and \code{modification} functions will target this specific part of the algorithm.
 
 \code{condition} must be a function that returns a \code{logical} value and intakes any of the following arguments: \code{bd.params}, \code{lineage}, \code{traits} and \code{time}. See \code{\link{events.conditions}} for examples.
 
-\code{modification} must be a function that intakes a first argument named \code{"x"} an returns any specific type of class that can be handled internally by dads. For example, if \code{target = "bd.params"} the \code{modification} function should typically return an updated \code{bd.params} object (see \code{\link{make.bd.params}}). See \code{\link{events.modifications}} for examples.
+\code{modification} must be a function that intakes a first argument named \code{"x"} an returns any specific type of class that can be handled internally by treats. For example, if \code{target = "bd.params"} the \code{modification} function should typically return an updated \code{bd.params} object (see \code{\link{make.bd.params}}). See \code{\link{events.modifications}} for examples.
 }
 \examples{
 ## Generating a mass extinction
@@ -56,7 +56,7 @@ bd.params <- list(extinction = 0, speciation = 1)
 
 ## Run the simulations
 set.seed(123)
-results <- dads(bd.params = bd.params,
+results <- treats(bd.params = bd.params,
                 stop.rule = stop.rule,
                 events    = mass_extinction)
 ## Plot the results
@@ -82,11 +82,11 @@ traits    <- make.traits()
 
 ## Run the simulations
 set.seed(1)
-no_change <- dads(bd.params = bd.params,
+no_change <- treats(bd.params = bd.params,
                   stop.rule = stop.rule,
                   traits    = traits)
 set.seed(1)
-process_change <- dads(bd.params = bd.params,
+process_change <- treats(bd.params = bd.params,
                        stop.rule = stop.rule,
                        traits    = traits,
                        events    = change_process)
@@ -98,7 +98,7 @@ plot(process_change, ylim = c(-7, 7))
 
 }
 \seealso{
-\code{\link{dads}} \code{\link{make.bd.params}} \code{\link{make.traits}} \code{\link{make.modifiers}} \code{\link{events.conditions}} \code{\link{events.modifications}}
+\code{\link{treats}} \code{\link{make.bd.params}} \code{\link{make.traits}} \code{\link{make.modifiers}} \code{\link{events.conditions}} \code{\link{events.modifications}}
 }
 \author{
 Thomas Guillerme

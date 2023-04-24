@@ -10,7 +10,7 @@ bookdown::gitbook:
   config:
     toc:
       before: |
-        <li><a href="./">dads manual</a></li>
+        <li><a href="./">treats manual</a></li>
       after: |
-        <li><a href="https://github.com/TGuillerme/dads/" target="blank">Project GitHub page</a></li>
-    edit: https://github.com/TGuillerme/dads/inst/gitbook/edit/master/%s
+        <li><a href="https://github.com/TGuillerme/treats/" target="blank">Project GitHub page</a></li>
+    edit: https://github.com/TGuillerme/treats/inst/gitbook/edit/master/%s

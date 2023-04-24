@@ -1,16 +1,16 @@
 #' @title make.traits
 #'
-#' @description Making traits objects for dads
+#' @description Making traits objects for treats
 #'
 #' @param process      The trait process(es) (default is \code{\link{BM.process}}).
 #' @param n            Optional, the number of traits per process (default is \code{1}).
 #' @param start        Optional, the starting values for each traits (default is {0}).
 #' @param process.args Optional, a named list of optional arguments for the trait process.
 #' @param trait.names  Optional, the name(s) of the process(s).
-#' @param add          Optional, another previous \code{"dads"} traits object to which to add the trait.
-#' @param update       Optional, another previous \code{"dads"} traits object to update (see details).
-#' @param background    Optional, another \code{"dads"} \code{"traits"} object to simulate background trait evolution (see details).
-#' @param test         Logical, whether to test if the traits object will work with \code{\link{dads}} (\code{TRUE} - default).
+#' @param add          Optional, another previous \code{"treats"} traits object to which to add the trait.
+#' @param update       Optional, another previous \code{"treats"} traits object to update (see details).
+#' @param background    Optional, another \code{"treats"} \code{"traits"} object to simulate background trait evolution (see details).
+#' @param test         Logical, whether to test if the traits object will work with \code{\link{treats}} (\code{TRUE} - default).
 #' 
 #' 
 #' @details
@@ -20,7 +20,7 @@
 #'
 #' If a \code{background} \code{"traits"} object is given, this object is then applied to all living edges at the same in the background while the main \code{"traits"} is computed. 
 #' 
-#' More details about the \code{"dads"} \code{"traits"} objects is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
+#' More details about the \code{"treats"} \code{"traits"} objects is explained in the \code{treats} manual: \url{http://tguillerme.github.io/treats}.
 #' 
 #' @examples
 #' ## A simple Brownian motion trait (default)
@@ -43,7 +43,7 @@
 #' make.traits(process = OU.process, trait.names = "OU_trait",
 #'             add = my_traits)
 #'
-#' @seealso \code{\link{dads}} \code{\link{trait.process}}
+#' @seealso \code{\link{treats}} \code{\link{trait.process}}
 #' 
 #' @author Thomas Guillerme
 #' @export
@@ -56,10 +56,10 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
     if(is.null(update)) {
         do_update <- FALSE
     } else {
-        if(is(update, "dads") && is(update, "traits")) {
+        if(is(update, "treats") && is(update, "traits")) {
             do_update <- TRUE
         } else {
-            stop("You can only update a \"dads\" \"traits\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.traits", call. = FALSE)
+            stop("You can only update a \"treats\" \"traits\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.traits", call. = FALSE)
         }
     }
 
@@ -125,8 +125,8 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
         if(do_update) {
             stop("Impossible to add and update a traits object at the same time.")
         }
-        if(!(is(add, "dads") && is(add, "traits"))) {
-            stop("You can only add to a \"dads\" \"traits\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.traits", call. = FALSE)
+        if(!(is(add, "treats") && is(add, "traits"))) {
+            stop("You can only add to a \"treats\" \"traits\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.traits", call. = FALSE)
         }
         add_traits <- TRUE
         ## Find the previous names (to not duplicate names)
@@ -295,8 +295,8 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
     ## Add the background trait
     if(!missing(background)) {
         # Check background
-        if(!is(background, "dads") && !is(background, "traits")) {
-            stop("background must be a dads traits object. You can use the following function to generate one:\nmake.traits()")
+        if(!is(background, "treats") && !is(background, "traits")) {
+            stop("background must be a treats traits object. You can use the following function to generate one:\nmake.traits()")
         }
 
         ## Check the length of the background trait
@@ -311,6 +311,6 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
         traits$background <- background
     }
 
-    class(traits) <- c("dads", "traits")
+    class(traits) <- c("treats", "traits")
     return(traits)
 }

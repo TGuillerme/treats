@@ -14,7 +14,7 @@ knitr::knit_hooks$set(webgl = hook_webgl)
 ```
 # Thorough example
 
-Here we are going to look at an example on how to simulate complex evolutionary histories with `dads`.
+Here we are going to look at an example on how to simulate complex evolutionary histories with `treats`.
 
 Let say we want to simulate the following story:
 
@@ -50,7 +50,7 @@ And let's quickly test if the simulation works by running a birth death tree wit
 ```{r}
 set.seed(0) # 123 also works
 ## Running a birth death tree 
-results <- dads(bd.params = bd_params,
+results <- treats(bd.params = bd_params,
                 stop.rule = stop_rule)
 
 ## And displaying the results
@@ -86,7 +86,7 @@ We can then run the tree with the traits:
 ```{r}
 set.seed(0)
 ## Running a birth death tree 
-results <- dads(bd.params  = bd_params,
+results <- treats(bd.params  = bd_params,
                 stop.rule  = stop_rule,
                 traits     = two_traits)
 
@@ -115,7 +115,7 @@ distance.speciation <- make.modifiers(speciation = speciation,
 ```{r}
 set.seed(13)
 ## Running a birth death tree 
-results <- dads(bd.params  = bd_params,
+results <- treats(bd.params  = bd_params,
                 stop.rule  = stop_rule,
                 traits     = two_traits,
                 modifiers  = distance.speciation)
@@ -151,7 +151,7 @@ events_list <- make.events(event.name   = "Correlation",
 results <- NULL
 set.seed(1)
 ## Running a birth death tree 
-results <- dads(bd.params  = bd_params,
+results <- treats(bd.params  = bd_params,
                 stop.rule  = stop_rule,
                 traits     = two_traits,
                 modifiers  = distance.speciation,
@@ -209,7 +209,7 @@ Problem with `modification` argument here
 
 ```{r, eval = FALSE}
 ## Running a birth death tree 
-results <- dads(bd.params  = bd_params,
+results <- treats(bd.params  = bd_params,
                 stop.rule  = stop_rule,
                 traits     = two_traits,
                 modifiers  = distance.speciation,
@@ -252,7 +252,7 @@ events_list <- make.events(event.name   = "Founding",
 
 ```{r, eval = FALSE}
 ## Running a birth death tree 
-results <- dads(bd.params  = bd_params,
+results <- treats(bd.params  = bd_params,
                 stop.rule  = stop_rule,
                 traits     = two_traits,
                 modifiers  = distance.speciation,

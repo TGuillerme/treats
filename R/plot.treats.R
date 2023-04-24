@@ -1,24 +1,24 @@
-#' @title Plot dads objects
+#' @title Plot treats objects
 #'
-#' @description Plotting dads objects (either a simulated tree and trait(s) or a process for traits objects)
+#' @description Plotting treats objects (either a simulated tree and trait(s) or a process for traits objects)
 #'
-#' @param x \code{dads} data.
+#' @param x \code{treats} data.
 #' @param col Optional, a vector of colours that can be named (see details).
 #' @param ... Any additional options to be passed to plot functions (from \code{graphics} or \code{rgl} if \code{use.3D = TRUE}).
 #' @param trait which trait to plot (default is \code{1}; see details).
 #' @param edges either a colour name to attribute to the edges or \code{NULL} to not display the edges (default is \code{"grey"}).
 #' @param tips.nodes optional, a colour to circle tips and nodes (only used if \code{use.3D = FALSE}). By default \code{tips.nodes = NULL}.
 #' @param use.3D logical, whether to use a 3D plot or not (default is \code{FALSE}; see details).
-#' @param simulations if the input is a \code{dads} \code{traits} or \code{bd.params} object, how many replicates to run (default is \code{50}).
-#' @param cent.tend if the input is a \code{dads} \code{traits}, which central tendency to plot (default is \code{mean}).
-#' @param quantiles if the input is a \code{dads} \code{traits}, which quantiles to plot (default are \code{c(95, 50))}).
+#' @param simulations if the input is a \code{treats} \code{traits} or \code{bd.params} object, how many replicates to run (default is \code{50}).
+#' @param cent.tend if the input is a \code{treats} \code{traits}, which central tendency to plot (default is \code{mean}).
+#' @param quantiles if the input is a \code{treats} \code{traits}, which quantiles to plot (default are \code{c(95, 50))}).
 #' @param legend logical, whether to display the legend in 2D plots (\code{TRUE}) or not (\code{FALSE}; default)
 #' 
 #' @details
 #' The \code{col} option can be either:
 #' \itemize{
-#'      \item a \code{vector} of colours to be applied to \code{"dads"} \code{"traits"} objects (for respectively the median, 50% CI and 95% CI - by default this is \code{col = c("black", "grey", "lightgrey")}). This is the default option when plotting traits.
-#'      \item a \code{vector} of colours to be applied to \code{"dads"} objects for the colours of different elements of the plot. This vector cycles through different elements of the the tree depending on the length of the vector: if one colour is given, it is applied to all elements; if two colours are given, the first one is applied to the nodes and the second to the tips; if three colours are given, they are applied to the nodes, fossils and living elements respectively. If more colours are given, they are applied in a gradient way to all elements depending on their age (see the \code{function} usage below). Note that you can always name the vector elements for avoiding ambiguities: e.g. \code{col = c("nodes" = "orange", "fossils" = "lightblue", "livings" = "blue")} (the default - you can use the name \code{"tips"} to designate both livings and fossils).
+#'      \item a \code{vector} of colours to be applied to \code{"treats"} \code{"traits"} objects (for respectively the median, 50% CI and 95% CI - by default this is \code{col = c("black", "grey", "lightgrey")}). This is the default option when plotting traits.
+#'      \item a \code{vector} of colours to be applied to \code{"treats"} objects for the colours of different elements of the plot. This vector cycles through different elements of the the tree depending on the length of the vector: if one colour is given, it is applied to all elements; if two colours are given, the first one is applied to the nodes and the second to the tips; if three colours are given, they are applied to the nodes, fossils and living elements respectively. If more colours are given, they are applied in a gradient way to all elements depending on their age (see the \code{function} usage below). Note that you can always name the vector elements for avoiding ambiguities: e.g. \code{col = c("nodes" = "orange", "fossils" = "lightblue", "livings" = "blue")} (the default - you can use the name \code{"tips"} to designate both livings and fossils).
 #'      \item a \code{function} from which to sample the colours to match the time gradient for each element.
 #' }
 #' 
@@ -33,12 +33,12 @@
 #' plot(my_trait, main = "A Brownian Motion")
 #' 
 #' ## Simulating a tree with ten taxa
-#' my_tree <- dads(stop.rule = list(max.taxa = 10))
+#' my_tree <- treats(stop.rule = list(max.taxa = 10))
 #' ## Plotting a simple birth death tree (using ape::plot.phylo)
 #' plot(my_tree, main = "A pure birth tree")
 #' 
 #' ## Simulating a tree with traits
-#' my_data <- dads(stop.rule = list(max.taxa = 10),
+#' my_data <- treats(stop.rule = list(max.taxa = 10),
 #'                 traits    = my_trait)
 #' ## Plotting the tree and traits
 #' plot(my_data)
@@ -46,7 +46,7 @@
 #' ## Specifying a 3D trait process
 #' my_3D_trait <- make.traits(n = 3)
 #' ## Simulating a birth death tree with that trait
-#' my_data <- dads(bd.params = list(extinction = 0.2),
+#' my_data <- treats(bd.params = list(extinction = 0.2),
 #'                 stop.rule = list(max.living = 50),
 #'                 traits    = my_3D_trait)
 #' 
@@ -71,25 +71,25 @@
 #'      edges = NULL, tips.nodes = "black", use.3D = TRUE)
 #' #rglwidget() # to display the plot with non-default OpenRGL
 #'
-#' @seealso \code{\link{dads}}
+#' @seealso \code{\link{treats}}
 #' 
 #' @author Thomas Guillerme
 #' @export
 
-plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL, use.3D = FALSE, simulations = 50, cent.tend = mean, quantiles = c(95, 50), legend = FALSE) {
+plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL, use.3D = FALSE, simulations = 50, cent.tend = mean, quantiles = c(95, 50), legend = FALSE) {
 
     match_call <- match.call()
 
     ## Renaming the x parameter (data is nicer, x is just for the S3 method standards)
     data <- x
 
-    ## Check class dads
-    check.class(data, "dads")
+    ## Check class treats
+    check.class(data, "treats")
 
     ## Deal with dual classes
-    if(length(dads_class <- class(data)) ==  2) {
-        ## Get the second class of the dads object
-        second_class <- dads_class[2]
+    if(length(treats_class <- class(data)) ==  2) {
+        ## Get the second class of the treats object
+        second_class <- treats_class[2]
 
         if(second_class == "traits") {
             ## Selecting the trait
@@ -216,7 +216,7 @@ plot.dads <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL,
 
     ## Plot the normal data
     points_params <- lines_params <- plot_params <- list(...)
-    #points_params <- lines_params <- plot_params <- list() ; warning("DEBUG plot.dads")
+    #points_params <- lines_params <- plot_params <- list() ; warning("DEBUG plot.treats")
     
     ## Get the points IDs and ages
     points_ages     <- dispRity::tree.age(data$tree)

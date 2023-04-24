@@ -258,7 +258,7 @@ test_that("events work", {
 
     set.seed(7)
     test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = make.traits(), modifiers = NULL, events = events)
-    class(test) <- c("dads")
+    class(test) <- c("treats")
     # plot(test)
     ## 244 taxa generated
     expect_equal(Ntip(test$tree), 244)
@@ -338,8 +338,8 @@ test_that("events work", {
     test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = NULL, events = events)
     ## Visual testing
     # par(mfrow = c(1,2))
-    # class(test) <- "dads" ; plot(test, ylim = c(-5, 8))
-    # class(test2) <- "dads" ; plot(test2, ylim = c(-5, 8))
+    # class(test) <- "treats" ; plot(test, ylim = c(-5, 8))
+    # class(test2) <- "treats" ; plot(test2, ylim = c(-5, 8))
     expect_false(nrow(test$data) == nrow(test2$data))
 
     ## Changing a trait argument (e.g. sigma) when a trait reaches value x
@@ -361,8 +361,8 @@ test_that("events work", {
     test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = NULL, events = change_correlation)
     ## Visual testing
     # par(mfrow = c(2,1))
-    # class(test) <- "dads" ; plot(test, trait = 2)
-    # class(test2) <- "dads" ; plot(test2, trait = 2)
+    # class(test) <- "treats" ; plot(test, trait = 2)
+    # class(test2) <- "treats" ; plot(test2, trait = 2)
     # plot(test, trait = c(1:2))
     # plot(test2, trait = c(1:2), use.3D = TRUE)
 
@@ -395,8 +395,8 @@ test_that("events work", {
 
     ## Visual testing
     # par(mfrow = c(2,1))
-    # class(test) <- "dads" ; plot(test)
-    # class(test2) <- "dads" ; plot(test2)
+    # class(test) <- "treats" ; plot(test)
+    # class(test2) <- "treats" ; plot(test2)
 
     ## Less tips in the second tree
     expect_lt(Ntip(test2$tree), Ntip(test$tree))
@@ -424,8 +424,8 @@ test_that("events work", {
 
     # # Visual testing
     # par(mfrow = c(2,1))
-    # class(test) <- "dads" ; plot(test)
-    # class(test2) <- "dads" ; plot(test2)
+    # class(test) <- "treats" ; plot(test)
+    # class(test2) <- "treats" ; plot(test2)
 
     ## Same number of tips
     expect_equal(Ntip(test2$tree), Ntip(test$tree))
@@ -649,6 +649,6 @@ test_that("snapshots/internal save works", {
     set.seed(3)
     test <- birth.death.tree.traits(bd.params = bd.params, traits = traits, stop.rule = stop.rule)
     expect_equal(dim(test$data), c(182, 3))
-    class(test) <- "dads"
+    class(test) <- "treats"
     expect_null(plot(test))
 })

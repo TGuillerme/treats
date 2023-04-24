@@ -27,16 +27,16 @@ make.traits(
 
 \item{trait.names}{Optional, the name(s) of the process(s).}
 
-\item{add}{Optional, another previous \code{"dads"} traits object to which to add the trait.}
+\item{add}{Optional, another previous \code{"treats"} traits object to which to add the trait.}
 
-\item{update}{Optional, another previous \code{"dads"} traits object to update (see details).}
+\item{update}{Optional, another previous \code{"treats"} traits object to update (see details).}
 
-\item{test}{Logical, whether to test if the traits object will work with \code{\link{dads}} (\code{TRUE} - default).}
+\item{test}{Logical, whether to test if the traits object will work with \code{\link{treats}} (\code{TRUE} - default).}
 
-\item{background}{Optional, another \code{"dads"} \code{"traits"} object to simulate background trait evolution (see details).}
+\item{background}{Optional, another \code{"treats"} \code{"traits"} object to simulate background trait evolution (see details).}
 }
 \description{
-Making traits objects for dads
+Making traits objects for treats
 }
 \details{
 When using \code{update}, the provided arguments (to \code{make.traits}) will be the ones updated in the \code{"traits"} object.
@@ -45,7 +45,7 @@ Note that you cannot update the \code{traits.names} or the number of traits per 
 
 If a \code{background} \code{"traits"} object is given, this object is then applied to all living edges at the same in the background while the main \code{"traits"} is computed. 
 
-More details about the \code{"dads"} \code{"traits"} objects is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
+More details about the \code{"treats"} \code{"traits"} objects is explained in the \code{treats} manual: \url{http://tguillerme.github.io/treats}.
 }
 \examples{
 ## A simple Brownian motion trait (default)
@@ -70,7 +70,7 @@ make.traits(process = OU.process, trait.names = "OU_trait",
 
 }
 \seealso{
-\code{\link{dads}} \code{\link{trait.process}}
+\code{\link{treats}} \code{\link{trait.process}}
 }
 \author{
 Thomas Guillerme

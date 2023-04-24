@@ -1,15 +1,15 @@
-## Utility functions for dads
+## Utility functions for treats
 
 #' @title Get parent traits
 #'
-#' @description An internal utility function for \code{modifiers}, \code{traits} or \code{events} to access the value(s) of the parent traits in the \code{dads} algorithm
+#' @description An internal utility function for \code{modifiers}, \code{traits} or \code{events} to access the value(s) of the parent traits in the \code{treats} algorithm
 #'
 #' @param trait.values   The internal table of trait values
 #' @param lineage        The internal lineage data list
 #' @param current        Whether to consider only the current lineage (\code{TRUE} - default) or all the living lineages (\code{FALSE}).
 #' 
 #' @details
-#' This function is designed to be used internally in \code{dads} to help \code{modifiers}, \code{traits} or \code{events} objects to access the parent traits of the lineages simulated through the internal birth death algorithm. 
+#' This function is designed to be used internally in \code{treats} to help \code{modifiers}, \code{traits} or \code{events} objects to access the parent traits of the lineages simulated through the internal birth death algorithm. 
 #' 
 #' @examples
 #' ## Speciation event is more likely if lineage's ancestor is further away from the mean trait value
@@ -26,7 +26,7 @@
 #' distance.speciation <- make.modifiers(speciation = speciation,
 #'                                       modify = distance.modify)
 #'
-#' @seealso \code{\link{dads}} \code{\link{make.modifiers}}
+#' @seealso \code{\link{treats}} \code{\link{make.modifiers}}
 #' 
 #' @author Thomas Guillerme
 #' @export

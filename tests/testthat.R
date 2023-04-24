@@ -1,5 +1,5 @@
 library(testthat)
-library(dads)
+library(treats)
 
 # test_check("dispRity", reporter = "list")
-test_check("dads")
+test_check("treats")

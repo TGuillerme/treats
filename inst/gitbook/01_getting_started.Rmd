@@ -9,7 +9,7 @@ output:
 ---
 
 ```{r, echo = FALSE}
-library(dads)
+library(treats)
 set.seed(4242)
 ```
 
@@ -17,8 +17,8 @@ set.seed(4242)
 
 ## The simplest analysis: simulating diversity only
 
-One of the simplest things to do with the `dads` package is to simulate a birth-death tree.
-For that you can use the function `dads` and specify your stopping rule.
+One of the simplest things to do with the `treats` package is to simulate a birth-death tree.
+For that you can use the function `treats` and specify your stopping rule.
 The stopping rule simply tells the birth-death process to stop whenever it reaches one of these three conditions:
 
  * `"max.taxa"   = n` stop when `n` taxa are generated;
@@ -36,7 +36,7 @@ We can now run the simulations using:
 
 ```{r}
 ## Running the birth-death simulation
-my_tree <- dads(stop.rule = my_stop_rule)
+my_tree <- treats(stop.rule = my_stop_rule)
 ```
 
 > Note that here we could have specified more than one stopping rule, for example, we might want to run a simulation and stop it if it *either* reaches 10 taxa *or* the age 2 using `stop.rule = list(max.time = 2, max.taxa = 10)`. The simulation will then stop when either of these conditions are met.
@@ -53,7 +53,7 @@ plot(my_tree)
 ### Changing the birth-death parameters
 
 People familiar with the [birth-death models](https://lukejharmon.github.io/pcm/chapter10_birthdeath/) might have noticed that we did not specify two important things here: the speciation parameter (sometimes called "lambda" or "birth") and the extinction parameter (sometimes called "mu", "death" or "background extinction").
-By default `dads` runs a pure birth model (speciation is set to 1 and extinction to 0).
+By default `treats` runs a pure birth model (speciation is set to 1 and extinction to 0).
 However, you can easily change that by specifying your own birth-death parameters:
 
 ```{r}
@@ -68,15 +68,15 @@ You can then run the same birth-death tree simulation with extinction:
 
 ```{r}
 ## Generating a birth-death tree with extinctions:
-my_tree <- dads(bd.params = my_params, stop.rule = my_stop_rule)
+my_tree <- treats(bd.params = my_params, stop.rule = my_stop_rule)
 ## Visualising the new tree
 plot(my_tree)
 ```
 
 ## Slightly more complex: simulating disparity and diversity
 
-Chances are that you are using `dads` because you also want to simulate traits (disparity) along with your diversity (otherwise, we suggest using the [`TreeSim`](https://github.com/tanja819/TreeSim/) package that provides many more birth-death models).
-Simulating traits is not much more complicated in `dads`: you'll simply need to create a `"traits"` object using the `make.traits` function.
+Chances are that you are using `treats` because you also want to simulate traits (disparity) along with your diversity (otherwise, we suggest using the [`TreeSim`](https://github.com/tanja819/TreeSim/) package that provides many more birth-death models).
+Simulating traits is not much more complicated in `treats`: you'll simply need to create a `"traits"` object using the `make.traits` function.
 These objects can have increasing complexity (see the rest of this tutorial) but we will keep it simple here.
 
 `"traits"` objects contain one or more processes which are the ways to generate the trait.
@@ -99,11 +99,11 @@ plot(my_trait)
 
 By default, this trait is called "A".
 This is not a really good name but you'll see more about specifying trait names later on.
-If this is what the process should look like (theoretically) you can then add its `"traits"` object to our previous `dads` function to generate the tree and the traits:
+If this is what the process should look like (theoretically) you can then add its `"traits"` object to our previous `treats` function to generate the tree and the traits:
 
 ```{r}
 ## Simulate disparity and diversity
-my_data <- dads(bd.params = my_params,
+my_data <- treats(bd.params = my_params,
                 stop.rule = my_stop_rule,
                 traits    = my_trait)
 ```
@@ -159,7 +159,7 @@ default_modifiers <- make.modifiers()
 default_modifiers
 ```
 
-This will not do anything to our simulations compared to the previous trait and tree simulation but we can provide our `"modifiers"` object to the `dads` function:
+This will not do anything to our simulations compared to the previous trait and tree simulation but we can provide our `"modifiers"` object to the `treats` function:
 
 ```{r}
 ## Setting the simulation parameters
@@ -171,7 +171,7 @@ BM_trait      <- make.traits()
 set.seed(1)
 
 ## Simulate disparity and diversity
-default_data <- dads(bd.params = extinction_02,
+default_data <- treats(bd.params = extinction_02,
                      stop.rule = living_20,
                      traits    = BM_trait,
                      modifiers = default_modifiers)
@@ -191,7 +191,7 @@ In other words, if the lineage's trait value is negative, make sure that _x_ is 
 First we need to create a `condition` function to trigger this (non) speciation event.
 We can do that by specifying our `condition` function (here the `staying.alive` function) to apply our modification.
 For that we can use the `parent.traits` utility function that is optimised for accessing traits in the birth-death process (but you can of course write your own).
-This function takes the `trait.values` and `parent.lineage` arguments, two arguments that you can leave named as they are to facilitate `dads`' understanding of what you want to assess:
+This function takes the `trait.values` and `parent.lineage` arguments, two arguments that you can leave named as they are to facilitate `treats`' understanding of what you want to assess:
 
 ```{r}
 ## Triggering a modification only if the ancestor trait is negative
@@ -211,7 +211,7 @@ going.extinct <- function(x) return(1)
 ```
 
 We can then provide these two functions (the condition `negative.ancestor` and how to modify the speciation event when this condition is met `staying.alive`).
-If you are an advances `dads` user, you can design your own `speciation` function but if you just want to use a normal `speciation` function, you can use the default one from `dads` called `speciation`.
+If you are an advances `treats` user, you can design your own `speciation` function but if you just want to use a normal `speciation` function, you can use the default one from `treats` called `speciation`.
 
 ```{r}
 ## Making a modifier for species to go extinct if
@@ -228,13 +228,13 @@ negatives_extinct <- make.modifiers(
 negatives_extinct
 ```
 
-Note that the `make.modifiers` function tests whether the input is compatible with `dads` by default so unless you have an error message, your `modifiers` will work!
+Note that the `make.modifiers` function tests whether the input is compatible with `treats` by default so unless you have an error message, your `modifiers` will work!
 We can now simulate our tree and traits with our modifier: species will go extinct if their ancestor has a negative trait value:
 
 ```{r}
 set.seed(1)
 ## Simulate disparity and diversity
-biased_data <- dads(bd.params = extinction_02,
+biased_data <- treats(bd.params = extinction_02,
                     stop.rule = living_20,
                     traits    = BM_trait,
                     modifiers = negatives_extinct)

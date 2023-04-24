@@ -26,14 +26,14 @@ make.modifiers(
 
 \item{modify}{A function giving the rule of how to modify the output of \code{branch.length} or \code{speciation} (see details). If \code{NULL} no modification is used.}
 
-\item{add}{Whether to add this modifier to a \code{"dads"} \code{"modifier"} object.}
+\item{add}{Whether to add this modifier to a \code{"treats"} \code{"modifier"} object.}
 
-\item{update}{Optional, another previous \code{"dads"} modifiers object to update (see details).}
+\item{update}{Optional, another previous \code{"treats"} modifiers object to update (see details).}
 
 \item{test}{Logical whether to test if the modifiers object will work (default is TRUE).}
 }
 \description{
-Making modifiers objects for dads based on an ancestor's (parent) trait.
+Making modifiers objects for treats based on an ancestor's (parent) trait.
 }
 \details{
 \code{branch.length}, \code{selection} and \code{speciation} must be a functions that intakes the following arguments: \code{bd.params, lineage, trait.values, modify.fun}. If left empty, any of these arguments is considered as NULL.
@@ -70,11 +70,11 @@ or a modifier depending on the number of taxa:
 When using \code{update}, the provided arguments (to \code{make.modifiers}) will be the ones updated in the \code{"modifiers"} object.
 If the \code{"modifiers"} object contains multiple modifiers (\code{branch.length}, \code{selection} or \code{speciation}), only the called arguments will be updated (e.g. \code{make.modifiers(update = previous_modifiers, speciation = new_speciation)} will only update the speciation process).
 
-More details about the \code{modifiers} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
+More details about the \code{modifiers} functions is explained in the \code{treats} manual: \url{http://tguillerme.github.io/treats}.
 }
 \examples{
 ## These functions should be fed to the make.modifiers function to create
-## modifiers for dads objects. For example, the following sets specifies that
+## modifiers for treats objects. For example, the following sets specifies that
 ## the branch length should be generated using the branch.length.trait function
 ## the selection using the selection function and the speciation using the
 ## speciation.trait function:
@@ -82,14 +82,14 @@ my_modifiers <- make.modifiers(branch.length = branch.length.trait,
                                selection     = selection,
                                speciation    = speciation.trait)
 
-## Creating a dads simulation using these modifiers
-dads(stop.rule = list(max.taxa = 20),
+## Creating a treats simulation using these modifiers
+treats(stop.rule = list(max.taxa = 20),
      traits = make.traits(),
      modifiers = my_modifiers)
 
 }
 \seealso{
-\code{\link{dads}} \code{\link{modifiers}}
+\code{\link{treats}} \code{\link{modifiers}}
 }
 \author{
 Thomas Guillerme

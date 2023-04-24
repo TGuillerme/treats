@@ -1,10 +1,10 @@
-#' @title Make a dads object
+#' @title Make a treats object
 #'
-#' @description Combines a tree and some associated data into a dads object (e.g. for plotting)
+#' @description Combines a tree and some associated data into a treats object (e.g. for plotting)
 #'
 #' @param tree a phylogenetic tree.
 #' @param data a dataset of traits, either a \code{matrix} with column names or a named \code{vector}.
-# @param ... additional \code{dads} objects to add (e.g. \code{traits}).
+# @param ... additional \code{treats} objects to add (e.g. \code{traits}).
 #'
 #' @examples
 #' ## Creating a random tree
@@ -14,16 +14,16 @@
 #' ## Creating a random dataset
 #' my_data <- matrix(rnorm(9),
 #'     dimnames = list(c(my_tree$tip.label, my_tree$node.label)))
-#' ## Creating the dads object
-#' my_dads <- make.dads(tree = my_tree, data = my_data)
-#' plot(my_dads)
+#' ## Creating the treats object
+#' my_treats <- make.treats(tree = my_tree, data = my_data)
+#' plot(my_treats)
 #'
-#' @seealso \code{\link{dads}} \code{\link{plot.dads}}
+#' @seealso \code{\link{treats}} \code{\link{plot.treats}}
 #' 
 #' @author Thomas Guillerme
 #' @export
 
-make.dads <- function(tree, data) {#, ...) {
+make.treats <- function(tree, data) {#, ...) {
     ## Sanitizing
 
     ## Check the tree
@@ -61,13 +61,13 @@ make.dads <- function(tree, data) {#, ...) {
 
     ## Catch the optional info
     # options <- list(...)
-    # valid_options <- unlist(lapply(lapply(options, class), function(x) return("dads" %in% x)))
+    # valid_options <- unlist(lapply(lapply(options, class), function(x) return("treats" %in% x)))
 
     ## Making output
     # output <- list(valid_options)
     output <- list()
     output$tree <- tree
     output$data <- data
-    class(output) <- "dads"
+    class(output) <- "treats"
     return(output)
 }

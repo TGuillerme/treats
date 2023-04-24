@@ -2,7 +2,7 @@
 #' @aliases branch.length selection speciation branch.length.trait speciation.trait
 #' @title Modifiers
 #'
-#' @description Different modifiers for the birth death process implemented in dads.
+#' @description Different modifiers for the birth death process implemented in treats.
 #'
 #' @usage branch.length(bd.params = NULL, lineage = NULL, trait.values = NULL,
 #'                      modify.fun = NULL)
@@ -21,13 +21,13 @@
 #' @param modify.fun     A list of internals functions that can modified by \code{events} (see details).
 #' 
 #' @details
-#' \code{bd.params} can be either a named list of parameter values (e.g. \code{list("extinction" = 0, "speciation" = 1)}) but it is typically handled internally from a \code{"dads"} \code{"bd.params"} object.
+#' \code{bd.params} can be either a named list of parameter values (e.g. \code{list("extinction" = 0, "speciation" = 1)}) but it is typically handled internally from a \code{"treats"} \code{"bd.params"} object.
 #' 
-#' \code{modifiers} are functions passed to the birth death process in \code{\link{dads}} to either generate the branch length (named \code{branch.length} and similar) or to decide whether to speciate or go extinct (named \code{speciation} and similar).
+#' \code{modifiers} are functions passed to the birth death process in \code{\link{treats}} to either generate the branch length (named \code{branch.length} and similar) or to decide whether to speciate or go extinct (named \code{speciation} and similar).
 #'
 #' For user defined functions, the \code{modifiers} \emph{must} have at least the arguments described above. For safety, we suggest setting these arguments to \code{NULL}.
 #'
-#' The pre-build \code{modifiers} in the \code{dads} package are (so far):
+#' The pre-build \code{modifiers} in the \code{treats} package are (so far):
 #'
 #' \itemize{
 #'
@@ -43,11 +43,11 @@
 #'
 #'  }
 #' 
-#' More details about the \code{modifiers} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
+#' More details about the \code{modifiers} functions is explained in the \code{treats} manual: \url{http://tguillerme.github.io/treats}.
 #'
 #' @examples
 #' ## These functions should be fed to the make.modifiers function to create
-#' ## modifiers for dads objects. For example, the following sets specifies that
+#' ## modifiers for treats objects. For example, the following sets specifies that
 #' ## the branch length should be generated using the branch.length.trait function
 #' ## the selection using the selection function and the speciation using the
 #' ## speciation.trait function:
@@ -55,17 +55,17 @@
 #'                                selection     = selection,
 #'                                speciation    = speciation.trait)
 #'
-#' ## Creating a dads simulation using these modifiers
-#' dads(stop.rule = list(max.taxa = 20),
+#' ## Creating a treats simulation using these modifiers
+#' treats(stop.rule = list(max.taxa = 20),
 #'      traits = make.traits(),
 #'      modifiers = my_modifiers)
 #'
-#' @seealso \code{\link{dads}} \code{\link{make.modifiers}}
+#' @seealso \code{\link{treats}} \code{\link{make.modifiers}}
 #' @author Thomas Guillerme
 
 
 modifiers <- function(bd.params = NULL, lineage = NULL, trait.values = NULL, modify.fun = NULL) {
-    cat("modifiers functions implemented in dads:\n")
+    cat("modifiers functions implemented in treats:\n")
     cat("branch length generating functions:\n")
     cat("   ?branch.length\n")
     cat("   ?branch.length.trait\n")

@@ -10,7 +10,7 @@ output:
 
 
 ```{r, echo = FALSE}
-library(dads)
+library(treats)
 library(rgl)
 knitr::knit_hooks$set(webgl = hook_webgl)
 ```
@@ -29,7 +29,7 @@ my_bd_params <- make.bd.params(speciation = c(1/3,42))
 
 ## Building a tree using this set of parameters
 set.seed(123)
-plot(dads(stop.rule = list(max.taxa = 50), bd.params = my_bd_params))
+plot(treats(stop.rule = list(max.taxa = 50), bd.params = my_bd_params))
 ## Note the regions in the tree with short branches
 ## (that's the speciation being 1/3 while the others are speciation = 42) 
 ```
@@ -41,7 +41,7 @@ Or to directly provide a function from which to sample:
 make.bd.params(speciation = runif)
 ```
 
-In this example, the `"bd.params"` object passed to the `dads` function will allow the birth-death process to sample the speciation parameter each time it is called (e.g. during the speciation/extinction step, the branch length step, etc.).
+In this example, the `"bd.params"` object passed to the `treats` function will allow the birth-death process to sample the speciation parameter each time it is called (e.g. during the speciation/extinction step, the branch length step, etc.).
 If using a function, you can fine tune the arguments to be passed to that function using the `speciation.args` or the `extinction.args` arguments (as a named list matching the function's arguments):
 
 ```{r}
@@ -99,7 +99,7 @@ Alternatively you can use the function aliases `drop.fossils`, `drop.livings` or
 ```{r}
 ## A random tree with fossils and traits and internal nodes every 0.5 times
 set.seed(3)
-my_data <- dads(stop.rule = list(max.taxa = 20),
+my_data <- treats(stop.rule = list(max.taxa = 20),
                 bd.params = list(speciation = 1, extinction = 1/3),
                 traits    = make.traits(), save.steps = 0.5)
 
@@ -124,10 +124,10 @@ dim(drop.singles(my_data)$data)
 drop.singles(drop.fossils(my_data))
 ```
 
-## `"dads"` internal utilities
+## `"treats"` internal utilities
 
 The package also provides utilities for internal functions, namely for designing `modifiers` or `events` more easily.
-These functions don't do anything useful on their own but are optimised to be used internally in `dads`.
+These functions don't do anything useful on their own but are optimised to be used internally in `treats`.
 For all these functions, you can look at the internal manual for an example (i.e. using `?<function_name>`)
 
 So far the package has the following internals:

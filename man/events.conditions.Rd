@@ -46,7 +46,7 @@ The following functions allow to design specific conditions for events:
      }
 }
 
-More details about the \code{events} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
+More details about the \code{events} functions is explained in the \code{treats} manual: \url{http://tguillerme.github.io/treats}.
 }
 \examples{
 ## Generating a mass extinction
@@ -62,7 +62,7 @@ bd.params <- list(extinction = 0, speciation = 1)
 
 ## Run the simulations
 set.seed(123)
-results <- dads(bd.params = bd.params,
+results <- treats(bd.params = bd.params,
                 stop.rule = stop.rule,
                 events    = mass_extinction)
 ## Plot the results
@@ -88,11 +88,11 @@ traits    <- make.traits()
 
 ## Run the simulations
 set.seed(1)
-no_change <- dads(bd.params = bd.params,
+no_change <- treats(bd.params = bd.params,
                   stop.rule = stop.rule,
                   traits    = traits)
 set.seed(1)
-process_change <- dads(bd.params = bd.params,
+process_change <- treats(bd.params = bd.params,
                        stop.rule = stop.rule,
                        traits    = traits,
                        events    = change_process)
@@ -104,7 +104,7 @@ plot(process_change, ylim = c(-7, 7))
 
 }
 \seealso{
-\code{\link{dads}} \code{\link{make.events}} \code{\link{events.modifications}}
+\code{\link{treats}} \code{\link{make.events}} \code{\link{events.modifications}}
 }
 \author{
 Thomas Guillerme

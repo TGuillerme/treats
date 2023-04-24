@@ -1,27 +1,27 @@
-#' @title Prints a \code{dads} object.
+#' @title Prints a \code{treats} object.
 #'
-#' @description Summarises the content of a \code{dads} object.
+#' @description Summarises the content of a \code{treats} object.
 #'
-#' @param x   A \code{dads} object.
+#' @param x   A \code{treats} object.
 #' @param all \code{logical}; whether to display the entire object (\code{TRUE}) or just summarise its contents (\code{FALSE} - default).
-#' @param ... further arguments to be passed to \code{print} or to \code{print.dads}.
+#' @param ... further arguments to be passed to \code{print} or to \code{print.treats}.
 #' 
 #' @examples
-#' ## A dads birth-death parameters object
+#' ## A treats birth-death parameters object
 #' make.bd.params()
-#' ## A dads traits object
+#' ## A treats traits object
 #' make.traits()
-#' ## A dads modifiers object
+#' ## A treats modifiers object
 #' make.modifiers()
-#' ## A dads object
-#' dads(stop.rule = list(max.taxa = 10), traits = make.traits())
+#' ## A treats object
+#' treats(stop.rule = list(max.taxa = 10), traits = make.traits())
 #'
-#' @seealso \code{\link{dads}}
+#' @seealso \code{\link{treats}}
 #' 
 #' @author Thomas Guillerme
 #' @export
 
-print.dads <- function(x, all = FALSE, ...) {
+print.treats <- function(x, all = FALSE, ...) {
     
     ## Get the call name
     match_call <- match.call()
@@ -33,34 +33,34 @@ print.dads <- function(x, all = FALSE, ...) {
         class(tmp) <- "list"
         print(tmp)
     } else {
-        ## Dual class dads objects
+        ## Dual class treats objects
         if(length(class(x)) > 1) {
             switch(class(x)[[2]],
                 traits = {
-                    cat(" ---- dads traits object ---- \n")
+                    cat(" ---- treats traits object ---- \n")
                     print.traits.info(x$main)
                     if(!is.null(x$background)) {
                         cat("And a background trait (see x$background for info).")
                     }
                 },
                 events = {
-                    cat(" ---- dads events object ---- \n")
+                    cat(" ---- treats events object ---- \n")
                     lapply(x, print.events.info)
                 },
                 modifiers = {
-                    cat(" ---- dads modifiers object ---- \n")
+                    cat(" ---- treats modifiers object ---- \n")
                     print.modifiers.info(x)
                 },
                 bd.params = {
-                    cat(" ---- dads birth-death parameters object ---- \n")
+                    cat(" ---- treats birth-death parameters object ---- \n")
                     print.bd.params.info(x)
                 }
                 )
             return(invisible())
         }
 
-        ## Normal class dads objects (tree + traits)
-        cat(" ---- dads object ---- \n")
+        ## Normal class treats objects (tree + traits)
+        cat(" ---- treats object ---- \n")
         ## Print the modifiers and/or events
         if(!is.null(x$modifiers) || !is.null(x$events)) {
             cat(paste0(

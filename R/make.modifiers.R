@@ -1,14 +1,14 @@
 #' @title make.modifiers
 #'
-#' @description Making modifiers objects for dads based on an ancestor's (parent) trait.
+#' @description Making modifiers objects for treats based on an ancestor's (parent) trait.
 #'
 #' @param branch.length A function for the waiting time generating branch length (can be left empty for the defeault branch length function; see details).
 #' @param selection     A function for selecting the lineage(s) affected by speciation (can be left empty for the default selection function; see details).
 #' @param speciation    A function for triggering the speciation events (can be left empty for the default speciation function; see details).
 #' @param condition     A function giving the condition on which to modify the output of \code{branch.length} or \code{speciation} (see details). If \code{NULL} the condition is always met.
 #' @param modify        A function giving the rule of how to modify the output of \code{branch.length} or \code{speciation} (see details). If \code{NULL} no modification is used.
-#' @param add           Whether to add this modifier to a \code{"dads"} \code{"modifier"} object.
-#' @param update        Optional, another previous \code{"dads"} modifiers object to update (see details).
+#' @param add           Whether to add this modifier to a \code{"treats"} \code{"modifier"} object.
+#' @param update        Optional, another previous \code{"treats"} modifiers object to update (see details).
 #' @param test          Logical whether to test if the modifiers object will work (default is TRUE).
 #' 
 #' @details
@@ -47,11 +47,11 @@
 #' When using \code{update}, the provided arguments (to \code{make.modifiers}) will be the ones updated in the \code{"modifiers"} object.
 #' If the \code{"modifiers"} object contains multiple modifiers (\code{branch.length}, \code{selection} or \code{speciation}), only the called arguments will be updated (e.g. \code{make.modifiers(update = previous_modifiers, speciation = new_speciation)} will only update the speciation process).
 #' 
-#' More details about the \code{modifiers} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
+#' More details about the \code{modifiers} functions is explained in the \code{treats} manual: \url{http://tguillerme.github.io/treats}.
 #' 
 #' @examples
 #' ## These functions should be fed to the make.modifiers function to create
-#' ## modifiers for dads objects. For example, the following sets specifies that
+#' ## modifiers for treats objects. For example, the following sets specifies that
 #' ## the branch length should be generated using the branch.length.trait function
 #' ## the selection using the selection function and the speciation using the
 #' ## speciation.trait function:
@@ -59,12 +59,12 @@
 #'                                selection     = selection,
 #'                                speciation    = speciation.trait)
 #'
-#' ## Creating a dads simulation using these modifiers
-#' dads(stop.rule = list(max.taxa = 20),
+#' ## Creating a treats simulation using these modifiers
+#' treats(stop.rule = list(max.taxa = 20),
 #'      traits = make.traits(),
 #'      modifiers = my_modifiers)
 #'
-#' @seealso \code{\link{dads}} \code{\link{modifiers}}
+#' @seealso \code{\link{treats}} \code{\link{modifiers}}
 #' 
 #' @author Thomas Guillerme
 #' @export
@@ -131,10 +131,10 @@ make.modifiers <- function(branch.length = NULL, selection = NULL, speciation = 
     ## Update a modifier
     do_update <- FALSE
     if(!is.null(update)) {
-        if(is(update, "dads") && is(update, "modifiers")) {
+        if(is(update, "treats") && is(update, "modifiers")) {
             do_update <- TRUE
         } else {
-            stop("You can only update a \"dads\" \"modifiers\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.modifiers", call. = FALSE)
+            stop("You can only update a \"treats\" \"modifiers\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.modifiers", call. = FALSE)
         }
     }
 
@@ -148,8 +148,8 @@ make.modifiers <- function(branch.length = NULL, selection = NULL, speciation = 
         }
 
         ## Check input
-        if(!(is(add, "dads") && is(add, "modifiers"))) {
-            stop("You can only add to a \"dads\" \"modifiers\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.modifiers", call. = FALSE)
+        if(!(is(add, "treats") && is(add, "modifiers"))) {
+            stop("You can only add to a \"treats\" \"modifiers\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.modifiers", call. = FALSE)
         }
 
         ## Update the modifiers
@@ -366,6 +366,6 @@ make.modifiers <- function(branch.length = NULL, selection = NULL, speciation = 
         check.modifiers(modifiers, events = FALSE)
     }
 
-    class(modifiers) <- c("dads", "modifiers")
+    class(modifiers) <- c("treats", "modifiers")
     return(modifiers)
 }

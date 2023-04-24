@@ -11,7 +11,7 @@ output:
 # Modifying the birth-death process {#makemodifiers}
 
 ```{r, echo = FALSE}
-library(dads)
+library(treats)
 set.seed(123)
 ```
 
@@ -23,25 +23,25 @@ my_default_modifiers <- make.modifiers()
 my_default_modifiers
 ```
 
-Similarly to `"traits"` objects, `"modifiers"` are also printed by default using `print.dads`.
-You can see details about what's actually in the object using `print.dads(my_default_modifiers, all = TRUE)`.
+Similarly to `"traits"` objects, `"modifiers"` are also printed by default using `print.treats`.
+You can see details about what's actually in the object using `print.treats(my_default_modifiers, all = TRUE)`.
 However, contrary to `"traits"`, you cannot plot `"modifiers"`.
 
 
 ## The default modifier (how the process is working)
 
-The modifiers modify the core of the birth-death process as implemented in `dads`.
+The modifiers modify the core of the birth-death process as implemented in `treats`.
 
 <!-- TODO: make that into a shiny app animation (or just in html?) -->
 
-By default, the birth-death process in `dads` uses this modifier:
+By default, the birth-death process in `treats` uses this modifier:
 
 ```{r}
 ## What is actually in the default modifier?
 print(make.modifiers(), all = TRUE)
 ```
 
-This contains a lot of information, much of it is actually not useful for using the modular aspects of `dads` at a high user level, i.e. unless you want to code very specific things, you won't need most of the information. The essentials are these three functions in the elements named `"waiting$fun"`, `"selecting$fun"` and `"speciating$fun"`: 
+This contains a lot of information, much of it is actually not useful for using the modular aspects of `treats` at a high user level, i.e. unless you want to code very specific things, you won't need most of the information. The essentials are these three functions in the elements named `"waiting$fun"`, `"selecting$fun"` and `"speciating$fun"`: 
 
  1. `"waiting$fun"` is the branch length function (defined in detail below) which returns a randomly drawn number from an exponential distribution with the rate of the number of taxa multiplied by the speciation and extinction rate: $n \times (\lambda + \mu)$ (here is uses the extra function `sum` for internal modularity reasons). **This function is responsible for the growth of the length/age of the tree**
 
@@ -66,13 +66,13 @@ We will have a look at all these aspects below in more detail which should make 
 
 ## The branch length function (`branch.length`)
 
-The first argument in `"modifiers"` is the branch length function (`branch.length`) this is the function that will be executed in `dads` to generate branch lengths.
-Note that in the `dads` algorithm, branch length is not generated _directly_ but as the result of the waiting time.
+The first argument in `"modifiers"` is the branch length function (`branch.length`) this is the function that will be executed in `treats` to generate branch lengths.
+Note that in the `treats` algorithm, branch length is not generated _directly_ but as the result of the waiting time.
 In other words, the `branch.length` function just affects waiting time for all taxa present at any time in the simulation.
 These taxa can then either go extinct (stopping the "growth" of its branch length) or survive (continuing the "growth").
 
 By default, branch length (or waiting/growth) is a randomly drawn number from an exponential distribution with the rate of the number of taxa multiplied by the speciation and extinction rate: $n \times (\lambda + \mu)$ (where $n$ is the number of taxa currently present in the simulation, $\lambda$ and $\mu$ are respectively the speciation and extinction rates).
-This default function is simply called `branch.length` in `dads` and can be used as a modifier as follows:
+This default function is simply called `branch.length` in `treats` and can be used as a modifier as follows:
 
 ```{r}
 ## Specifying the default modifier
@@ -84,7 +84,7 @@ stop_rule <- list(max.living = 20)
 
 ## Generating a tree with the default branch length parameter
 set.seed(0)
-default_tree <- dads(bd.params = bd_params,
+default_tree <- treats(bd.params = bd_params,
                      stop.rule = stop_rule,
                      modifiers = default_modifiers)
 ```
@@ -105,7 +105,7 @@ constant_modifier <- make.modifiers(branch.length = constant.brlen)
 
 ## Generating a new tree with this modifier
 set.seed(0)
-modified_tree <- dads(bd.params = bd_params,
+modified_tree <- treats(bd.params = bd_params,
                       stop.rule = stop_rule,
                       modifiers = constant_modifier)
 ``` 
@@ -139,7 +139,7 @@ The `lineage` list contains the following elements (missing elements are allowed
  * `lineage$n`: a single `"integer"`: the current number of non extinct lineage (is equal to `length(lineage$livings))`;
  * `lineage$split`: a `"logical"` vector: the list of splits for each lineage (`TRUE`), the number of total tips is equal to `sum(!lineage$split)`.
 
-In general, unless you know what you're doing, you can ignore most arguments for specific modifiers since they are handled automatically within the `dads` function.
+In general, unless you know what you're doing, you can ignore most arguments for specific modifiers since they are handled automatically within the `treats` function.
 Therefore any argument can be left undeclared or missing and is always handled internally. For example, if you did not declare `lineage$n` as a function argument but are using `lineage$n` in the function, `lineage$n` will be detected and treated as a current argument automatically as set accordingly within the birth-death process (e.g. `lineage$n` will be set to the current number of taxa every iteration of the process).
 
 For example, we can create a function that increases branch length proportional to the number of species "alive" at each time of the simulation in a discrete way, i.e. for discrete numbers of taxa, the branch length increases by jumps (ten fold) every five taxa:
@@ -177,7 +177,7 @@ increasing_modifier <- make.modifiers(branch.length = increasing.brlen)
 
 ## Generating a new tree with this modifier
 set.seed(0)
-increasing_tree <- dads(bd.params = bd_params,
+increasing_tree <- treats(bd.params = bd_params,
                         stop.rule = stop_rule,
                         modifiers = increasing_modifier)
 ``` 
@@ -217,7 +217,7 @@ We can then create a `"modifiers"` object the same way as before this time using
 ladderised_modifier <- make.modifiers(selection = select.last)
 ## Generating a new tree with this modifier
 set.seed(0)
-ladderised_tree <- dads(bd.params = bd_params,
+ladderised_tree <- treats(bd.params = bd_params,
                         stop.rule = stop_rule,
                         modifiers = ladderised_modifier)
 ## Displaying the results
@@ -228,7 +228,7 @@ par(mfrow = c(1,1))
 ```
 
 Again, it is of course possible to make the modifier more complex and in combination with other elements of the tree.
-For example, we can create a `"dads"` object that also generates a BM trait and add to it this object a `selection` modifier that only selects tips with positive trait values (only species with positive trait values will speciate).
+For example, we can create a `"treats"` object that also generates a BM trait and add to it this object a `selection` modifier that only selects tips with positive trait values (only species with positive trait values will speciate).
 
 ```{r}
 ## Our function that only select taxa with positive trait values
@@ -256,21 +256,21 @@ BM_trait <- make.traits()
 
 ## Simulate a tree and trait with no modifier
 set.seed(1)
-default_dads <- dads(bd.params = bd_params,
+default_treats <- treats(bd.params = bd_params,
                      stop.rule = stop_rule,
                      traits = BM_trait)
 
 ## Simulate a tree and trait with the modifier
 set.seed(1)
-skewed_trait_dads <- dads(bd.params = bd_params,
+skewed_trait_treats <- treats(bd.params = bd_params,
                           stop.rule = stop_rule,
                           traits = BM_trait,
                           modifiers = positive_skew)
 
 ## Plotting the differences in trees and traits
 par(mfrow = c(1, 2))
-plot(default_dads, main = "Default trait and tree")
-plot(skewed_trait_dads, main = "Skewed trait and tree")
+plot(default_treats, main = "Default trait and tree")
+plot(skewed_trait_treats, main = "Skewed trait and tree")
 ```
 
 ## The speciation function (`speciation`)
@@ -289,7 +289,7 @@ runif(1) < speciation/ (speciation + extinction)
 ```
 
 Creating `"modifiers"` with a `speciation` function works the same way as for `branch.length` and `selection` but the function that will be used needs to output a logical value (see table [below](#summarymodifiers)).
-Once the function is created simply input your function for speciation in the modifier and run the `dads` function with that modifier:
+Once the function is created simply input your function for speciation in the modifier and run the `treats` function with that modifier:
 
 ```{r, eval = FALSE}
 ## Speciating or going extinct randomly
@@ -303,7 +303,7 @@ random_extinction <- make.modifiers(speciation = random.extinct)
 
 ## Generating a new tree with this modifier
 set.seed(2)
-modified_tree <- dads(bd.params = bd_params,
+modified_tree <- treats(bd.params = bd_params,
                       stop.rule = stop_rule,
                       modifiers = random_extinction)
 
@@ -334,15 +334,15 @@ biased_trait <- make.modifiers(speciation = bias.trait)
 
 ## Simulate a tree and trait with the modifier
 set.seed(1)
-biased_trait_dads <- dads(bd.params = bd_params,
+biased_trait_treats <- treats(bd.params = bd_params,
                           stop.rule = stop_rule,
                           traits    = BM_trait,
                           modifiers = biased_trait)
 
 ## Plotting the differences in trees and traits
 par(mfrow = c(1, 2))
-plot(default_dads, main = "Default trait and tree")
-plot(biased_trait_dads, main = "Biased trait and tree")
+plot(default_treats, main = "Default trait and tree")
+plot(biased_trait_treats, main = "Biased trait and tree")
 ```
 
 ## Summary of the inputs and outputs for the `branch.length`, `selection` and `speciation` modifiers {#summarymodifiers}

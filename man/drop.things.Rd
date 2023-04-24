@@ -5,23 +5,23 @@
 \alias{drop.singles}
 \alias{drop.fossils}
 \alias{drop.livings}
-\title{Drop things from a dads object}
+\title{Drop things from a treats object}
 \usage{
-drop.things(dads, what)
+drop.things(treats, what)
 
-drop.fossils(dads)
+drop.fossils(treats)
 
-drop.livings(dads)
+drop.livings(treats)
 
-drop.singles(dads)
+drop.singles(treats)
 }
 \arguments{
-\item{dads}{\code{dads} data.}
+\item{treats}{\code{treats} data.}
 
 \item{what}{what to drop. Can be \code{"fossils"}, \code{"livings"} or \code{"singles"} (non-bifurcating nodes).}
 }
 \description{
-Remove fossils or living species or non-bifurcating nodes (singles) from \code{dads} objects or \code{phylo} objects.
+Remove fossils or living species or non-bifurcating nodes (singles) from \code{treats} objects or \code{phylo} objects.
 }
 \details{
 \emph{NOTE} that dropping living or fossils species DOES NOT drop associated internal nodes and edge lengths. To drop both fossil/living taxa AND internal nodes, you can use for example: \code{drop.things(drop.things(my_data, what = "fossils"), what = "singles")}.
@@ -29,7 +29,7 @@ Remove fossils or living species or non-bifurcating nodes (singles) from \code{d
 \examples{
 ## A random tree with fossils and traits and internal nodes every 0.5 times
 set.seed(3)
-my_data <- dads(stop.rule = list(max.taxa = 20),
+my_data <- treats(stop.rule = list(max.taxa = 20),
                 bd.params = list(speciation = 1, extinction = 1/3),
                 traits    = make.traits(), save.steps = 0.5)
 
@@ -55,7 +55,7 @@ drop.singles(drop.fossils(my_data))
 
 }
 \seealso{
-\code{\link{dads}} \code{\link{plot.dads}}
+\code{\link{treats}} \code{\link{plot.treats}}
 }
 \author{
 Thomas Guillerme

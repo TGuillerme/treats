@@ -1,8 +1,8 @@
 ## This is a quick script to simulate some trees with various birth-death parameters and some traits with OU or BM processes
 
-## Installing the development version of dads
-devtools::install_github("TGuillerme/dads")
-library(dads)
+## Installing the development version of treats
+devtools::install_github("TGuillerme/treats")
+library(treats)
 
 
 ####################
@@ -29,7 +29,7 @@ trait_process <- make.traits(process = BM.process)
 ## Generating the trees and data
 ## -----------
 ## Generating a random tree with 100 living species
-my_data <- dads(bd.params  = bd_params,
+my_data <- treats(bd.params  = bd_params,
                 stop.rule  = stop_rule,
                 traits     = trait_process,
                 null.error = 100) # the null.error parameter will loop through the parameters up to 100 times before returning an error (i.e. a failed tree)
@@ -39,7 +39,7 @@ plot(my_data)
 ## ------------
 ## Keeping only the living species
 ## ------------
-my_data <- drop.fossil.dads(my_data)
+my_data <- drop.fossil.treats(my_data)
 plot(my_data)
 
 ## ------------
@@ -65,7 +65,7 @@ trait_process <- make.traits(process = OU.process)
 ## Running multiple simulations
 ## ------------
 ## You can wrap all that into a replicate loop to generate a list of trees (here to generate 5 simulations)
-all_data <- replicate(5, dads(bd.params  = bd_params,
+all_data <- replicate(5, treats(bd.params  = bd_params,
                               stop.rule  = stop_rule,
                               traits     = trait_process,
                               null.error = 100), simplify = FALSE)

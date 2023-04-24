@@ -1,5 +1,5 @@
 ---
-title: "`dads`: a modular `R` package for simulating diversity and traits data."
+title: "`treats`: a modular `R` package for simulating diversity and traits data."
 author: "homas Guillerme, Natalie Cooper, Andrew P. Beckerman, and Gavin H. Thomas"
 bibliography: references.bib
 csl: mee.csl
@@ -14,7 +14,7 @@ output:
 
 <!-- Keywords: diversity, disparity, simulations, birth-death, null-models, ecology, evolution -->
 
-<!-- SET URL FOR [manual](dads_manual) -->
+<!-- SET URL FOR [manual](treats_manual) -->
 
 # Abstract
 
@@ -24,11 +24,11 @@ Like null models, base line models or something else models, they allow us to ge
 2. In evolutionary biology, these simulations often involve the need of an evolutionary process where descent with modification is at the core of how the simulated data is generated.
 This can be made much more complicated with loads of different stuff needing to be taken into account to affect the simulations (e.g. traits, mechanisms such as competition or events such as mass extinctions).
 
-3. Here I present the `dads` package, a modular `R` package for diversity and trait disparity simulations.
+3. Here I present the `treats` package, a modular `R` package for diversity and trait disparity simulations.
 This package is based on a standard birth death algorithm that can be easily tuned to the user specific needs by designing their specific trait process, birth-death modifiers and events.
-It also provides a tidy interface through the `dads` object, allowing users to easily run reproducible simulations.
+It also provides a tidy interface through the `treats` object, allowing users to easily run reproducible simulations.
 
-4. The `dads` package also comes with an extend manual regularly updated following users' questions or suggestions.
+4. The `treats` package also comes with an extend manual regularly updated following users' questions or suggestions.
 
 # Introduction
 
@@ -55,12 +55,12 @@ This can be problematic for generating specific simulations to be used as a spec
 For example, `TreeSim` can simulate a birth-death tree with some extinction event but is not designed to simulated one with an extinction event that leads to the birth-death process to be not diversity dependent anymore (e.g. simulating a release in selection pressure after the extinction process that leads to a different process dominating speciation).
 Or `PETER` is not designed to simulate a complex set of traits (say three correlated BM traits and two independent OU ones).
 Although we don't think this was the aim of these specific packages authors (not to create a strawman argument) we think this hampers the use of specific null model (or baseline model) to test specific dynamic mechanisms or to compare to specific datasets. 
-<!-- % The solution with dads -->
-Therefore, we propose `dads` a modular `R` package to simulate both diversity and disparity through time.
+<!-- % The solution with treats -->
+Therefore, we propose `treats` a modular `R` package to simulate both diversity and disparity through time.
 
 # Description
 <!-- % Very briefly how does it work -->
-`dads` is based on a core birth-death process implemented in the function `dads` that simulates diversity through time using the following steps:
+`treats` is based on a core birth-death process implemented in the function `treats` that simulates diversity through time using the following steps:
 
 1. **Branch length**: Generating some waiting time corresponding to the growth in length of the tree (e.g. the duration of a lineage through time);
 2. **Selection**: Choosing a lineage _alive_ at the time of the simulation;
@@ -72,12 +72,12 @@ If traits are simulated during the process, a fourth step is added:
 4. Trait: Generate some trait(s) value(s) based for the extinct species or the node leading to the two new lineages.
 This/these value(s) are generated taking into account the trait value of the extinct species/new node's ancestor and the time elapsed (generated in step 1).
 
-In `dads`, these three or four steps are implemented as modular functions that the user can easily change using an internal class of objects called `"modifiers"` or `"traits"` (Fig.  \ref{Fig_workflow}).
-The simulation then outputs a tree (of class `"phylo"` and a associated table of traits - `"matrix"`) that can be visualised using the `plot.dads` function.
+In `treats`, these three or four steps are implemented as modular functions that the user can easily change using an internal class of objects called `"modifiers"` or `"traits"` (Fig.  \ref{Fig_workflow}).
+The simulation then outputs a tree (of class `"phylo"` and a associated table of traits - `"matrix"`) that can be visualised using the `plot.treats` function.
 
-![Figure 1:](gitbook/dads_structure.pdf)
+![Figure 1:](gitbook/treats_structure.pdf)
 
-\label{Fig_workflow}`dads` package workflow @@@. `"events"` are an additional category of modular objects discussed later.
+\label{Fig_workflow}`treats` package workflow @@@. `"events"` are an additional category of modular objects discussed later.
 
 ## Simulating diversity
 
@@ -86,7 +86,7 @@ To simulate a birth-death tree, two arguments are essentially needed: the birth-
 ```{r, eval = FALSE, echo = TRUE}
 ## Running a simulation with a speciation rate of 1, an extinction rate of 0.1
 ## and stopping when it reaches 20 taxa
-my_simulation <- dads(bd.params = list(speciation = 1, extinction = 0.1),
+my_simulation <- treats(bd.params = list(speciation = 1, extinction = 0.1),
                       stop.rule = list(max.taxa = 20))
 ```
 
@@ -96,9 +96,9 @@ By default, the three first steps are included in a default modifier that reprod
 2. **Selection**: randomly choosing on of the $n$ taxa currently alive in the process;
 3. **Speciation**: drawing a random number between 0 and 1; if that number is smaller than the speciation relative to the turnover ($\lambda / \lambda+\mu$), the lineage goes extinct <!-- %TODO: check!!! -->; else, the lineage speciates.
 
-These are included by default in a `dads` process.
+These are included by default in a `treats` process.
 The modularity of the packages works with the ability to code the modifiers manually rather than using default ones.
-Using a reserved syntax in this case the arguments `lineage` and `bd.params` (much more details about the syntax is available in the [manual](dads_manual)). <!-- TODO: make link -->
+Using a reserved syntax in this case the arguments `lineage` and `bd.params` (much more details about the syntax is available in the [manual](treats_manual)). <!-- TODO: make link -->
 For example, to simulate the same process but hard coding the modifiers we can use the following functions for each process:
 
 ```{r, eval = FALSE, echo = TRUE}
@@ -124,20 +124,20 @@ my_modifiers <- make.modifiers(branch.length = step1.branch.length,
 
 ## Running a simulation with a speciation rate of 1, an extinction rate of 0.1
 ## and stopping when it reaches 20 taxa with the default birth-death modifiers specified
-my_simulation <- dads(bd.params = list(speciation = 1, extinction = 0.1),
+my_simulation <- treats(bd.params = list(speciation = 1, extinction = 0.1),
                       stop.rule = list(max.taxa = 20),
                       modifiers = my_modifiers)
 ```
 
 Of course these function can be greatly modified and depend on other parameters of the the simulation.
 For example if traits are also simulated (see below) we can bias the branch length to be also dependent on the trait distribution, the selection to be biased towards species at the extremes of the distribution and the speciation modifier to only allow speciation when the lineage's parent trait value is positive.
-More example of biased or special `"modifiers"` are available in the [manual](dads_manual).
+More example of biased or special `"modifiers"` are available in the [manual](treats_manual).
 
 ## Simulating traits (disparity)
 
-Another major feature of `dads` is to allow to specify the trait simulation process manually as a `"traits"` object.
+Another major feature of `treats` is to allow to specify the trait simulation process manually as a `"traits"` object.
 This can be done in the same way as for the `"modifiers"` but with the `make.traits` function.
-Here the Brownian motion syntax is also specific (especially `x0` and `edge.length`), more details are available in the [manual](dads_manual). 
+Here the Brownian motion syntax is also specific (especially `x0` and `edge.length`), more details are available in the [manual](treats_manual). 
 
 ```{r, eval = FALSE, echo = TRUE}
 ## A simple Brownian motion process
@@ -151,7 +151,7 @@ my_trait <- make.traits(process = my.BM.process)
 ## Running a simulation with a speciation rate of 1, an extinction rate of 0.1
 ## and stopping when it reaches 20 taxa with the default birth-death modifiers specified
 ## and a Brownian Motion trait process simulated
-my_simulation <- dads(bd.params = list(speciation = 1, extinction = 0.1),
+my_simulation <- treats(bd.params = list(speciation = 1, extinction = 0.1),
                       stop.rule = list(max.taxa = 20),
                       modifiers = my_modifiers,
                       trait     = my_trait)
@@ -166,16 +166,16 @@ It is of course possible to simulate multiple traits at the same time using mult
 ## (all the options described above, modifiers and traits are default)
 ## so it's pretty easy (we don't need to specify the trait process and the modifiers)
 set.seed(2)
-my_simulation <- dads(bd.params = list(speciation = 1, extinction = 0.1),
+my_simulation <- treats(bd.params = list(speciation = 1, extinction = 0.1),
                       stop.rule = list(max.taxa = 20),
                       trait     = make.traits())
 # plot(my_simulation)
 ```
 
-The resulting object is a `"dads"` object containing a `$tree` element (a `"phylo"`) object and a `$data` object containing a `"matrix"` object:
+The resulting object is a `"treats"` object containing a `$tree` element (a `"phylo"`) object and a `$data` object containing a `"matrix"` object:
 
 ```{r, eval = TRUE, echo = TRUE, fig.height = 4, fig.width = 4}
-## Printing the dads object
+## Printing the treats object
 my_simulation
 
 ## The generated data
@@ -186,14 +186,14 @@ my_simulation$tree
 plot(my_simulation$tree)
 ```
 
-The package also comes with it's own plotting function allowing to directly display `dads` generated tree and data in the same plot:
+The package also comes with it's own plotting function allowing to directly display `treats` generated tree and data in the same plot:
 
 ```{r, eval = TRUE, echo = TRUE, fig.height = 4, fig.width = 4}
-## A default dads plot
+## A default treats plot
 plot(my_simulation, main = "Default plot")
 ```
 
-Note that here too many options are available for plotting such objects. More information is again available in the [manual](dads_manual).
+Note that here too many options are available for plotting such objects. More information is again available in the [manual](treats_manual).
 
 ## Using modular and dynamic modifiers
 
@@ -207,16 +207,16 @@ Note that here too many options are available for plotting such objects. More in
 Every bit can be coded as a function.
 Many already implemented functions (e.g. in events.modifications) but many more possibilities to modify the current ones or design completely new ones.
 
-## `dads` compared to other packages
+## `treats` compared to other packages
 
 ## Further directions
 
 
 # Conclusion
-The `dads` is modular and nice to use.
+The `treats` is modular and nice to use.
 
 # Package location
-The `dads` package is available on the CRAN at \url{https://cran.r-project.org/web/packages/dads/index.html} or on GitHub at \url{https://github.com/TGuillerme/dads} with more associated information.
+The `treats` package is available on the CRAN at \url{https://cran.r-project.org/web/packages/treats/index.html} or on GitHub at \url{https://github.com/TGuillerme/treats} with more associated information.
 All the versions of the package are archived on ZENODO with associated DOI \url{https://zenodo.org/@@@}.
 
 # Acknowledgments

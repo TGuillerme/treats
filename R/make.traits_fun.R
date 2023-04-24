@@ -7,7 +7,7 @@ check.traits <- function(traits, events = FALSE) {
     }
 
     if(events) {
-        events_msg <- "The dads traits object returned by the modification function does not work: "
+        events_msg <- "The treats traits object returned by the modification function does not work: "
     } else {
         events_msg <- ""
     }

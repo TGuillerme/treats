@@ -12,7 +12,7 @@ output:
 
 
 ```{r, echo = FALSE}
-library(dads)
+library(treats)
 library(rgl)
 knitr::knit_hooks$set(webgl = hook_webgl)
 options(rgl.useNULL = TRUE) # Suppress the separate window.
@@ -76,7 +76,7 @@ Once these parameters are defined, we can run the simulations and plot the resul
 ```{r}
 ## Running the simulations
 set.seed(1)
-results <- dads(stop.rule = stop_time_6,
+results <- treats(stop.rule = stop_time_6,
                 bd.params = speciation_1,
                 events    = mass.extinction)
 ## Plotting the results
@@ -122,7 +122,7 @@ Once these parameters are defined, we can run the simulations and plot the resul
 ```{r}
 ## Running the simulations
 set.seed(7)
-results <- dads(stop.rule = stop_time_5,
+results <- treats(stop.rule = stop_time_5,
                 bd.params = speciation_1,
                 traits    = simple_bm_trait,
                 events    = trait.extinction)
@@ -159,7 +159,7 @@ Once these parameters are defined, we can run the simulations and plot the resul
 ```{r}
 ## Running the simulations
 set.seed(2)
-results <- dads(stop.rule = stop_taxa_50,
+results <- treats(stop.rule = stop_taxa_50,
                 bd.params = speciation_1,
                 events = background.extinction)
 ## Plotting the results
@@ -197,12 +197,12 @@ We can contrast the results with the scenario without an event (but same random 
 ```{r}
 ## No event
 set.seed(42)
-no_event <- dads(stop.rule = stop_time_6,
+no_event <- treats(stop.rule = stop_time_6,
                  bd.params = random_speciation)
 
 ## Reduced speciation event
 set.seed(42)
-reduced_speciation_event <- dads(stop.rule = stop_time_6,
+reduced_speciation_event <- treats(stop.rule = stop_time_6,
                                  bd.params = random_speciation,
                                  events = reduced.speciation)
 
@@ -253,12 +253,12 @@ We can contrast the results with the scenario without an event (but same random 
 ```{r}
 ## Run the simulations without change
 set.seed(1)
-no_change <- dads(stop.rule = stop_time_6,
+no_change <- treats(stop.rule = stop_time_6,
                   bd.params = speciation_1,
                   traits    = simple_bm_trait)
 ## Run the simulations with change
 set.seed(1)
-process_change <- dads(stop.rule = stop_time_6,
+process_change <- treats(stop.rule = stop_time_6,
                        bd.params = speciation_1,
                        traits    = simple_bm_trait,
                        events    = change.process.to.OU)
@@ -313,11 +313,11 @@ We can contrast the results with the scenario without an event (but same random 
 ```{r}
 ## Run the simulations
 set.seed(2)
-no_event <- dads(stop.rule = stop_taxa_100,
+no_event <- treats(stop.rule = stop_taxa_100,
                  bd.params = speciation_1,
                  traits    = correlated_2D_BM)
 set.seed(2)
-change_correlation <- dads(stop.rule = stop_taxa_100,
+change_correlation <- treats(stop.rule = stop_taxa_100,
                            bd.params = speciation_1,
                            traits    = correlated_2D_BM,
                            events    = correlation.change)
@@ -392,12 +392,12 @@ We can contrast the results with the scenario without an event (but same random 
 
 ```{r}
 set.seed(4)
-no_event <- dads(stop.rule = stop_time_4,
+no_event <- treats(stop.rule = stop_time_4,
                  bd.params = speciation_1,
                  traits    = simple_bm_trait,
                  modifiers = default_modifiers)
 set.seed(4)
-change_spec <- dads(stop.rule = stop_time_4,
+change_spec <- treats(stop.rule = stop_time_4,
                     bd.params = speciation_1,
                     traits    = simple_bm_trait,
                     modifiers = default_modifiers,
@@ -453,11 +453,11 @@ We can contrast the results with the scenario without an event (but same random 
 ```{r}
 ## Run the simulations
 set.seed(5)
-no_event <- dads(stop.rule = stop_taxa_100,
+no_event <- treats(stop.rule = stop_taxa_100,
                  bd.params = speciation_1,
                  modifiers = default_modifiers)
 set.seed(5)
-increased_brlen <- dads(stop.rule = stop_taxa_100,
+increased_brlen <- treats(stop.rule = stop_taxa_100,
                         bd.params = speciation_1,
                         modifiers = default_modifiers,
                         events = increase_brlen)
@@ -506,7 +506,7 @@ Once these parameters are defined, we can run the simulations and plot the resul
 ```{r}    
 ## Simulations
 set.seed(11)
-founding_tree <- dads(stop.rule = stop_time_4,
+founding_tree <- treats(stop.rule = stop_time_4,
                       bd.params = spec_1_ext_02,
                       events = founding_event)
 
@@ -565,7 +565,7 @@ Once these parameters are defined, we can run the simulations and plot the resul
 ```{r}
 ## Simulating the tree
 set.seed(1)
-founding_tree <- dads(stop.rule = stop_time_6,
+founding_tree <- treats(stop.rule = stop_time_6,
                       bd.params = speciation_1_extinction_03,
                       traits = simple_bm_trait,
                       events = new_OU_trait)

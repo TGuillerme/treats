@@ -36,13 +36,13 @@ update.traits(x, process = NULL, process.args = NULL,
 
 \item{...}{any specific argument for the modification (see details).}
 
-\item{bd.params}{a \code{"bd.params"} \code{"dads"} object for the founding event (see details for founding.event).}
+\item{bd.params}{a \code{"bd.params"} \code{"treats"} object for the founding event (see details for founding.event).}
 
-\item{traits}{a \code{"traits"} \code{"dads"} object for the founding event (see details for founding.event).}
+\item{traits}{a \code{"traits"} \code{"treats"} object for the founding event (see details for founding.event).}
 
-\item{modifiers}{a \code{"modifiers"} \code{"dads"} object for the founding event (see details for founding.event).}
+\item{modifiers}{a \code{"modifiers"} \code{"treats"} object for the founding event (see details for founding.event).}
 
-\item{events}{an \code{"events"} \code{"dads"} object for the founding event (see details for founding.event).}
+\item{events}{an \code{"events"} \code{"treats"} object for the founding event (see details for founding.event).}
 
 \item{condition}{a condition function for the trait value (see details for trait.extinction and update.modifiers).}
 
@@ -93,22 +93,22 @@ The following functions allow to design specific modifications for events:
 
 \item modifications for the target \code{"traits"} 
      \itemize{
-         \item \code{update.traits}: this function updates a \code{"dads"} \code{"traits"} object. This function takes as arguments any arguments that can be updated in \code{\link{make.traits}}, namely \code{process}, \code{process.args} and \code{trait.names}.
+         \item \code{update.traits}: this function updates a \code{"treats"} \code{"traits"} object. This function takes as arguments any arguments that can be updated in \code{\link{make.traits}}, namely \code{process}, \code{process.args} and \code{trait.names}.
      }
 
 \item modifications for the target \code{"modifiers"}
      \itemize{
-         \item \code{update.modifiers}: this function updates a \code{"dads"} \code{"modifiers"} object. This function takes as arguments any arguments that can be updated in \code{\link{make.modifiers}}, namely \code{branch.length}, \code{selection}, \code{speciation}, \code{condition} and \code{modify}.
+         \item \code{update.modifiers}: this function updates a \code{"treats"} \code{"modifiers"} object. This function takes as arguments any arguments that can be updated in \code{\link{make.modifiers}}, namely \code{branch.length}, \code{selection}, \code{speciation}, \code{condition} and \code{modify}.
      }
 
 \item modifications for the target \code{"founding"} 
      \itemize{
-         \item \code{founding.event}: this function runs an independent birth-death process when the condition is met. This function takes the arguments \code{"bd.params"}, \code{"traits"}, \code{"modifiers"} and \code{"events"} as they would normally be specified for the \code{\link{dads}} function. The \code{stop.rule} and other arguments are handled internally: namely the \code{stop.rule} argument is updated to match the time and number of taxa when the founding event is triggered. \emph{Note that this can lead to the simulation stopping just before reaching the \code{max.taxa} or \code{max.living} stop rule}.
+         \item \code{founding.event}: this function runs an independent birth-death process when the condition is met. This function takes the arguments \code{"bd.params"}, \code{"traits"}, \code{"modifiers"} and \code{"events"} as they would normally be specified for the \code{\link{treats}} function. The \code{stop.rule} and other arguments are handled internally: namely the \code{stop.rule} argument is updated to match the time and number of taxa when the founding event is triggered. \emph{Note that this can lead to the simulation stopping just before reaching the \code{max.taxa} or \code{max.living} stop rule}.
      }
 }
 
 
-More details about the \code{events} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
+More details about the \code{events} functions is explained in the \code{treats} manual: \url{http://tguillerme.github.io/treats}.
 }
 \examples{
 ## Generating a mass extinction
@@ -124,7 +124,7 @@ bd.params <- list(extinction = 0, speciation = 1)
 
 ## Run the simulations
 set.seed(123)
-results <- dads(bd.params = bd.params,
+results <- treats(bd.params = bd.params,
                 stop.rule = stop.rule,
                 events    = mass_extinction)
 ## Plot the results
@@ -150,11 +150,11 @@ traits    <- make.traits()
 
 ## Run the simulations
 set.seed(1)
-no_change <- dads(bd.params = bd.params,
+no_change <- treats(bd.params = bd.params,
                   stop.rule = stop.rule,
                   traits    = traits)
 set.seed(1)
-process_change <- dads(bd.params = bd.params,
+process_change <- treats(bd.params = bd.params,
                        stop.rule = stop.rule,
                        traits    = traits,
                        events    = change_process)
@@ -166,7 +166,7 @@ plot(process_change, ylim = c(-7, 7))
 
 }
 \seealso{
-\code{\link{dads}} \code{\link{make.events}} \code{\link{events.conditions}}
+\code{\link{treats}} \code{\link{make.events}} \code{\link{events.conditions}}
 }
 \author{
 Thomas Guillerme

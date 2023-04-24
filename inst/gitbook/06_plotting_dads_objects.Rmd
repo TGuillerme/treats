@@ -1,5 +1,5 @@
 ---
-title: "`plot.dads`"
+title: "`plot.treats`"
 author: "Thomas Guillerme (guillert@tcd.ie)"
 date: "`r Sys.Date()`"
 # bibliography: [../References.bib, ../packages.bib]
@@ -9,7 +9,7 @@ output:
 ---
 
 ```{r, echo = FALSE}
-library(dads)
+library(treats)
 library(rgl)
 knitr::knit_hooks$set(webgl = hook_webgl)
 options(rgl.useNULL = TRUE) # Suppress the separate window.
@@ -18,13 +18,13 @@ options(rgl.useNULL = TRUE) # Suppress the separate window.
 # Plots
 
 
-`"dads"` objects can be directly plotted in `dads` using the S3 `plot.dads` function (or just `plot(x)` if `x` is of class `"dads"`).
+`"treats"` objects can be directly plotted in `treats` using the S3 `plot.treats` function (or just `plot(x)` if `x` is of class `"treats"`).
 
 
 ## Plotting traits
 
-`"dads"` `"traits"` objects are covered in the [traits section](#maketraits).
-You can use `plot.dads` to plot them by choosing which specific trait to plot using the `trait` argument (default is 1):
+`"treats"` `"traits"` objects are covered in the [traits section](#maketraits).
+You can use `plot.treats` to plot them by choosing which specific trait to plot using the `trait` argument (default is 1):
 
 ```{r, fig.height=8, fig.width=8}
 ## Making a list of three traits
@@ -51,22 +51,22 @@ par(mfrow = c(1,1))
 ```
 
 
-## Plotting `dads` results
+## Plotting `treats` results
 
-If `dads` is used to plot only a tree (and outputs a `"phylo"` object), you can use the function `plot.phylo` from the `ape` package to plot your tree.
+If `treats` is used to plot only a tree (and outputs a `"phylo"` object), you can use the function `plot.phylo` from the `ape` package to plot your tree.
 You'll find all the tree plotting options in the `?plot.phylo` manual page.
 
 ```{r}
 ## A simple pure birth tree
-my_tree <- dads(stop.rule = list(max.taxa = 20))
+my_tree <- treats(stop.rule = list(max.taxa = 20))
 plot(my_tree, main = "Plotting a \"phylo\" object")
 ```
 
-However, if you also simulated a trait along with the tree you can use the `plot.dads` function to plot both the tree and the trait:
+However, if you also simulated a trait along with the tree you can use the `plot.treats` function to plot both the tree and the trait:
 
 ```{r}
 ## A simple pure birth tree with a BM process
-my_tree <- dads(stop.rule = list(max.taxa = 20), traits = make.traits())
+my_tree <- treats(stop.rule = list(max.taxa = 20), traits = make.traits())
 ## Playing with the default options
 plot(my_tree, main = "A tree and traits")
 ```
@@ -88,7 +88,7 @@ plot(my_tree, main = "A tree and traits",
      xlim = c(0, 2.5), xlab = "Time into the past")
 ```
 
-> Note that in `plot.dads` you can modify colours using the `col` argument by providing a clear indication of what you want to colour (e.g. `col = c(tips = "blue", fossils = "orange")` will apply the colours to the unambiguously named elements) or by providing a function that will scale the colours with time (e.g. `col = grDevices::heat.colors` will use the specified function to change the  colours of the elements through time).
+> Note that in `plot.treats` you can modify colours using the `col` argument by providing a clear indication of what you want to colour (e.g. `col = c(tips = "blue", fossils = "orange")` will apply the colours to the unambiguously named elements) or by providing a function that will scale the colours with time (e.g. `col = grDevices::heat.colors` will use the specified function to change the  colours of the elements through time).
 
 You can add a default legend by using `legend = TRUE` (if you don't want to add the default legend you can add it after your plot using `legend(...)`).
 
@@ -105,7 +105,7 @@ Of course, if you're simulating multiple traits, you can always plot different o
 ## Specifying a 3D trait process
 my_3D_trait <- make.traits(n = 3, )
 ## Simulating a birth-death tree with that 3D trait
-my_data <- dads(bd.params = list(extinction = 0.2),
+my_data <- treats(bd.params = list(extinction = 0.2),
                 stop.rule = list(max.living = 50),
                 traits    = my_3D_trait)
 ```
@@ -133,7 +133,7 @@ plot(my_data, trait = c(1,2), main = "Traits 1 and 2",
 ```
 
 But there's more! You can also plot these results using actual 3D plots that you can spin and all that!
-This is done through the `rgl` package and activated in `dads` using the option `use.3D = TRUE`.
+This is done through the `rgl` package and activated in `treats` using the option `use.3D = TRUE`.
 
 If two traits are provided, the 3rd dimension is going to be time by default:
 

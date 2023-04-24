@@ -2,7 +2,7 @@
 test_that("drop.fossils and drop.livings works", {
     ## Create a simple bd tree
     set.seed(1)
-    phy <- dads(bd.params = list(extinction = 1/3), stop.rule = list(max.living = 20))
+    phy <- treats(bd.params = list(extinction = 1/3), stop.rule = list(max.living = 20))
     expect_gt(Ntip(phy), 20)
     test <- drop.fossils(phy)
     expect_is(test, "phylo")
@@ -13,15 +13,15 @@ test_that("drop.fossils and drop.livings works", {
 
         ## Create a simple bd tree + traits
         set.seed(12)
-        phy <- dads(bd.params = list(extinction = 1/3), stop.rule = list(max.living = 20), traits = make.traits())
+        phy <- treats(bd.params = list(extinction = 1/3), stop.rule = list(max.living = 20), traits = make.traits())
         expect_gt(Ntip(phy$tree), 20)
         expect_gt(nrow(phy$data), 39)
         test <- drop.fossils(phy)
-        expect_is(test, "dads")
+        expect_is(test, "treats")
         expect_equal(Ntip(test$tree), 20)
         expect_equal(nrow(test$data), 42)
         test <- drop.livings(phy)
-        expect_is(test, "dads")
+        expect_is(test, "treats")
         expect_equal(Ntip(test$tree), 3)
         expect_equal(nrow(test$data), 12)
 })
@@ -34,7 +34,7 @@ test_that("drop.singles works", {
 
     ## Working for regular steps
     set.seed(2)
-    test <- dads(bd.params = bd.params, traits = traits, stop.rule = stop.rule, save.steps = 0.5)
+    test <- treats(bd.params = bd.params, traits = traits, stop.rule = stop.rule, save.steps = 0.5)
     expect_equal(Ntip(test$tree), 44)
     expect_equal(Nnode(test$tree), 128)
 
@@ -44,10 +44,10 @@ test_that("drop.singles works", {
     expect_is(tust, "phylo")
     expect_equal(Nnode(tust), 43)
 
-    test_dads <- test
-    expect_equal(Nnode(test_dads$tree), 128)
-    tast <- drop.singles(test_dads)
-    expect_is(tast, "dads")
+    test_treats <- test
+    expect_equal(Nnode(test_treats$tree), 128)
+    tast <- drop.singles(test_treats)
+    expect_is(tast, "treats")
     expect_equal(Nnode(tast$tree), 43)
     expect_equal(nrow(tast$data), 43+44)
 
@@ -60,7 +60,7 @@ test_that("drop.things works", {
 
     ## Working for regular steps
     set.seed(2)
-    test <- dads(bd.params = bd.params, traits = traits, stop.rule = stop.rule, save.steps = 0.5)
+    test <- treats(bd.params = bd.params, traits = traits, stop.rule = stop.rule, save.steps = 0.5)
     expect_equal(Nnode(test$tree), 128)
     expect_equal(Ntip(test$tree), 44)
 

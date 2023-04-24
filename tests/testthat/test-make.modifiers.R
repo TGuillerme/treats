@@ -44,7 +44,7 @@ test_that("make.modifiers works", {
 
     ## Wrong arguments for add
     error <- capture_error(make.modifiers(add = TRUE))
-    expect_equal(error[[1]], "You can only add to a \"dads\" \"modifiers\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.modifiers")
+    expect_equal(error[[1]], "You can only add to a \"treats\" \"modifiers\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.modifiers")
 
     ## Wrong arguments for test
     error <- capture_error(make.modifiers(test = "whatever"))
@@ -58,7 +58,7 @@ test_that("make.modifiers works", {
                            speciation    = speciation,
                            condition     = condition,
                            modify        = modify)
-    expect_is(test, c("dads", "modifiers"))
+    expect_is(test, c("treats", "modifiers"))
     expect_equal(names(test), c("waiting", "selecting", "speciating", "call"))
     expect_equal(names(test[[1]]), c("fun", "internal"))
     expect_equal(names(test[[2]]), c("fun", "internal"))
@@ -67,7 +67,7 @@ test_that("make.modifiers works", {
     ## Working correctly without condition and modify
     test <- make.modifiers(branch.length = branch.length.trait,
                            speciation    = speciation.trait)    
-    expect_is(test, c("dads", "modifiers"))
+    expect_is(test, c("treats", "modifiers"))
     expect_equal(names(test), c("waiting", "selecting", "speciating", "call"))
     expect_equal(names(test[[1]]), c("fun", "internal"))
     expect_equal(names(test[[2]]), c("fun", "internal"))
@@ -87,7 +87,7 @@ test_that("make.modifiers works", {
     test <- make.modifiers(branch.length = branch.length.trait,
                            speciation    = speciation.trait,
                            condition     = always.false)    
-    expect_is(test, c("dads", "modifiers"))
+    expect_is(test, c("treats", "modifiers"))
     expect_equal(names(test), c("waiting", "selecting", "speciating", "call"))
     expect_equal(names(test[[1]]), c("fun", "internal"))
     expect_equal(names(test[[2]]), c("fun", "internal"))
@@ -107,7 +107,7 @@ test_that("make.modifiers works", {
     test <- make.modifiers(branch.length = branch.length.trait,
                            speciation    = speciation.trait,
                            modify        = always.one)
-    expect_is(test, c("dads", "modifiers"))
+    expect_is(test, c("treats", "modifiers"))
     expect_equal(names(test), c("waiting", "selecting", "speciating", "call"))
     expect_equal(names(test[[1]]), c("fun", "internal"))
     expect_equal(names(test[[2]]), c("fun", "internal"))
@@ -119,7 +119,7 @@ test_that("make.modifiers works", {
     test <- make.modifiers(branch.length = branch.length,
                            condition     = condition,
                            modify        = modify)
-    expect_is(test, c("dads", "modifiers"))
+    expect_is(test, c("treats", "modifiers"))
     expect_equal(names(test), c("waiting", "selecting", "speciating", "call"))
     expect_equal(names(test[[1]]), c("fun", "internal"))
     expect_equal(names(test[[2]]), c("fun", "internal"))
@@ -129,7 +129,7 @@ test_that("make.modifiers works", {
     test <- make.modifiers(speciation    = speciation,
                            condition     = condition,
                            modify        = modify)
-    expect_is(test, c("dads", "modifiers"))
+    expect_is(test, c("treats", "modifiers"))
     expect_equal(names(test), c("waiting", "selecting", "speciating", "call"))
     expect_equal(names(test[[1]]), c("fun", "internal"))
     expect_equal(names(test[[2]]), c("fun", "internal"))
@@ -137,7 +137,7 @@ test_that("make.modifiers works", {
 
     ## Adds works correctly
     base <- make.modifiers()
-    expect_is(base, c("dads", "modifiers"))
+    expect_is(base, c("treats", "modifiers"))
     expect_equal(names(base), c("waiting", "selecting", "speciating", "call"))
     expect_equal(names(base[[1]]), c("fun", "internal"))
     expect_equal(names(base[[2]]), c("fun", "internal"))
@@ -147,7 +147,7 @@ test_that("make.modifiers works", {
     ## Add a condition for speciation
     test <- NULL
     expect_message(test <- make.modifiers(speciation = speciation, condition = always.false, add = base))
-    expect_is(test, c("dads", "modifiers"))
+    expect_is(test, c("treats", "modifiers"))
     expect_equal(names(test), c("waiting", "selecting", "speciating", "call"))
     expect_equal(names(test[[1]]), c("fun", "internal"))
     expect_equal(names(test[[2]]), c("fun", "internal"))
@@ -161,7 +161,7 @@ test_that("make.modifiers works", {
 
     test2 <- NULL
     expect_message(test2 <- make.modifiers(branch.length = branch.length, modify = always.one, add = test))
-    expect_is(test2, c("dads", "modifiers"))
+    expect_is(test2, c("treats", "modifiers"))
     expect_equal(names(test2), c("waiting", "selecting", "speciating", "call"))
     expect_equal(names(test2[[1]]), c("fun", "internal"))
     expect_equal(names(test2[[2]]), c("fun", "internal"))
@@ -181,7 +181,7 @@ test_that("make.modifiers(update) works", {
 
     ## Sanitizing
     error <- capture_error(make.modifiers(update = "bob"))
-    expect_equal(error[[1]], "You can only update a \"dads\" \"modifiers\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.modifiers")
+    expect_equal(error[[1]], "You can only update a \"treats\" \"modifiers\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.modifiers")
     test <- make.modifiers()
     error <- capture_error(make.modifiers(update = test, branch.length = "what"))
     expect_equal(error[[1]], "function for branch length is not a function.")
@@ -227,7 +227,7 @@ test_that("make.modifiers(update) works", {
 
 #     test2 <- NULL
 #     expect_message(test2 <- make.modifiers(branch.length = branch.length, modify = always.one, add = test))
-#     expect_is(test2, c("dads", "modifiers"))
+#     expect_is(test2, c("treats", "modifiers"))
 #     expect_equal(names(test2), c("waiting", "selecting", "speciating", "call"))
 #     expect_equal(names(test2[[1]]), c("fun", "internal"))
 #     expect_equal(names(test2[[2]]), c("fun", "internal"))

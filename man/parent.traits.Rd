@@ -14,10 +14,10 @@ parent.traits(trait.values, lineage, current = TRUE)
 \item{current}{Whether to consider only the current lineage (\code{TRUE} - default) or all the living lineages (\code{FALSE}).}
 }
 \description{
-An internal utility function for \code{modifiers}, \code{traits} or \code{events} to access the value(s) of the parent traits in the \code{dads} algorithm
+An internal utility function for \code{modifiers}, \code{traits} or \code{events} to access the value(s) of the parent traits in the \code{treats} algorithm
 }
 \details{
-This function is designed to be used internally in \code{dads} to help \code{modifiers}, \code{traits} or \code{events} objects to access the parent traits of the lineages simulated through the internal birth death algorithm.
+This function is designed to be used internally in \code{treats} to help \code{modifiers}, \code{traits} or \code{events} objects to access the parent traits of the lineages simulated through the internal birth death algorithm.
 }
 \examples{
 ## Speciation event is more likely if lineage's ancestor is further away from the mean trait value
@@ -36,7 +36,7 @@ distance.speciation <- make.modifiers(speciation = speciation,
 
 }
 \seealso{
-\code{\link{dads}} \code{\link{make.modifiers}}
+\code{\link{treats}} \code{\link{make.modifiers}}
 }
 \author{
 Thomas Guillerme

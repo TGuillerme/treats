@@ -11,19 +11,19 @@ output:
 # Simulating traits {#maketraits}
 
 ```{r, echo = FALSE}
-library(dads)
+library(treats)
 set.seed(123)
 ```
 
-In `dads`, traits are simulating by providing a `traits` object to the `traits` argument.
+In `treats`, traits are simulating by providing a `traits` object to the `traits` argument.
 This object is generated using `make.traits`.
 
 > **What is a trait in biology?** This is one of these epistemological questions like what _is_ a species and is not covered in this package.
 For the purpose of _this manual_, a **biological trait** can be any coherent character of any number of dimensions which may or may not be independent of other traits.
 Basically anything can be a trait if it's defined by the user (e.g. one trait can be a 20 dimensional Brownian process that's correlated to a 1D OU process - which is another trait).
-For the purpose of the syntax in _this package_ a **trait in `dads`** is a column in the output trait matrix.
+For the purpose of the syntax in _this package_ a **trait in `treats`** is a column in the output trait matrix.
 For example, one might be interested in a biological trait that is "beak shape" which is defined as one complex biological trait that is the Procrustes superimposition of 4 3D landmarks and 300 3D semi-landmarks.
-This single "beak shape" **biological trait** is then composed of 912 **traits in `dads`** (i.e. a matrix of $(4+300)\times3$ columns).
+This single "beak shape" **biological trait** is then composed of 912 **traits in `treats`** (i.e. a matrix of $(4+300)\times3$ columns).
 
 ## The process (`process`)
 
@@ -35,7 +35,7 @@ Note that it _can_ depend on both the ancestor and the branch length but does _n
 
 ### The syntax (how to code a process?)
 
-Trait processes in `dads` are functions that must always take the following arguments by default.
+Trait processes in `treats` are functions that must always take the following arguments by default.
 
  * `x0`: the previous trait value(s)
  * `edge.length`: the branch length
@@ -51,7 +51,7 @@ valid.process <- function(x0 = 0, edge.length = 1, ...) {
 }
 ```
 
-> Note that in this function definition the arguments `x0` and `edge.length` have a default value of `0` and `1` respectively. In practice, these arguments are effectively set to the correct values in the `dads` internal function (i.e. whatever `x0` and `edge.length` are at that specific time of the process) but providing a default can help speed up the algorithms (specifically all the internal checks).
+> Note that in this function definition the arguments `x0` and `edge.length` have a default value of `0` and `1` respectively. In practice, these arguments are effectively set to the correct values in the `treats` internal function (i.e. whatever `x0` and `edge.length` are at that specific time of the process) but providing a default can help speed up the algorithms (specifically all the internal checks).
 
 On the other hand, the following process (a unidimensional Brownian motion) is incorrect (it's missing `edge.length` and `...`):
 
@@ -64,10 +64,10 @@ invalid.process <- function(x0 = 0) {
 
 This will not work in `make.traits` (see below).
 
-### Using a `"process"` in `dads`
+### Using a `"process"` in `treats`
 
 You can design your own process as a function, as long as it has a valid syntax.
-Alternatively, the `dads` package has several inbuilt processes, namely a multidimensional Brownian motion (`BM.process`) or a multidimensional Ornstein-Uhlenbeck process (`OU.process`).
+Alternatively, the `treats` package has several inbuilt processes, namely a multidimensional Brownian motion (`BM.process`) or a multidimensional Ornstein-Uhlenbeck process (`OU.process`).
 You can find the list of implemented processes by looking at the `?trait.process` manual page in `R`.
 
 Once a process is chosen, you can feed it into the `make.traits` function:
@@ -77,7 +77,7 @@ Once a process is chosen, you can feed it into the `make.traits` function:
 my_trait_object <- make.traits(process = BM.process)
 ```
 
-This creates `"dads"` `"traits"` objects that you can print and visualise using the `plot` function:
+This creates `"treats"` `"traits"` objects that you can print and visualise using the `plot` function:
 
 ```{r}
 ## The class of the object
@@ -88,12 +88,12 @@ my_trait_object
 plot(my_trait_object)
 ```
 
-Note that you can see the multiple options for plotting the trait process by looking at `?plot.dads` manual. Furthermore, you can look at what's actually in the object using this specific syntax (this applies to every object handled by the `dads` package):
+Note that you can see the multiple options for plotting the trait process by looking at `?plot.treats` manual. Furthermore, you can look at what's actually in the object using this specific syntax (this applies to every object handled by the `treats` package):
 
 
 ```{r}
 ## What's actually in that object?
-print.dads(my_trait_object, all = TRUE)
+print.treats(my_trait_object, all = TRUE)
 ```
 
 As traits can get more and more complex, the automatic printing of its summary allows for a easier display of what's in the `"traits"` object.
@@ -109,7 +109,7 @@ four_traits <- make.traits(process = c(BM.process,
 four_traits
 ```
 
-You can visualise them individually using the `trait` argument in `plot.dads`:
+You can visualise them individually using the `trait` argument in `plot.treats`:
 
 ```{r}
 ## Plot options (4 plots in one window)
@@ -164,12 +164,12 @@ make.traits(c(BM.process, OU.process), n = 3, start = 1:6)
 make.traits(c(BM.process, OU.process), n = 3, start = c(1,1))
 ```
 
-### What is a trait in `dads`?
+### What is a trait in `treats`?
 
-Because it would be impossible to accommodate all definitions of a trait in `dads` we chose an arbitrary one: a trait is whatever you define as a trait!
+Because it would be impossible to accommodate all definitions of a trait in `treats` we chose an arbitrary one: a trait is whatever you define as a trait!
 A trait can be uni-dimensional as the measurement of a feature of an organism (e.g. leaf surface, femur length, etc.) but can also be a multi-dimensional description of a feature, for example in 3D geometric morphometric context, a trait could be defined as "position of landmark X" (which will be a trait with three dimensions, _x_, _y_ and _z_) or in ecology, the location of a plant can be expressed as latitude and longitude coordinates.
-In `dads`, the **process** corresponds to this trait definition (e.g. a process can be of n-dimensions and represents one organisms feature) and the **traits** represents the number of dimensions in total. 
-So in the examples above, this is how the following traits are interpreted by `dads`:
+In `treats`, the **process** corresponds to this trait definition (e.g. a process can be of n-dimensions and represents one organisms feature) and the **traits** represents the number of dimensions in total. 
+So in the examples above, this is how the following traits are interpreted by `treats`:
 
 ```{r, eval = FALSE}
 ## Three traits with one process:
@@ -247,7 +247,7 @@ make.traits(process      = c(no.process, no.process, no.process),
 ## Combining multiple traits with `add`
 
 You can also add traits to already existing trait objects using the simple `add` option.
-This option just takes a `"dads"` `"traits"` object and the additional process(es) will be added to it. 
+This option just takes a `"treats"` `"traits"` object and the additional process(es) will be added to it. 
 For example:
 
 ```{r}
@@ -288,7 +288,7 @@ You can remove these nodes using the [`drop.things` function](#dropthings).
 ```{r}
 set.seed(1)
 ## Generating a pure birth tree with the background trait
-tree_bkg <- dads(stop.rule = list(max.taxa = 20),
+tree_bkg <- treats(stop.rule = list(max.taxa = 20),
                  traits = my_trait)
 ## This tree has many internal singleton nodes
 plot(tree_bkg)
@@ -296,14 +296,14 @@ plot(tree_bkg)
 
 ## Saving trait values at different time steps
 
-You can also simulate a tree by generating traits at specific time steps with the `save.steps` option in `dads`.
+You can also simulate a tree by generating traits at specific time steps with the `save.steps` option in `treats`.
 This will apply the `traits` object to all lineages currently alive at the required time steps.
 These time steps can be either regular by providing a single numeric value; e.g. `save.steps = 0.1` will take a snapshot of the trait values every 0.1 units of time, or specific, by providing a specific set of values; e.g. `save.steps = c(1, 1.2, 3)` will take a snapshot of the trait values at the required time steps.
 
 ```{r}
 set.seed(123)
 ## Generating a birth-death tree with a BM trait and saving steps at specific times
-tree_steps <- dads(stop.rule  = list(max.time = 3),
+tree_steps <- treats(stop.rule  = list(max.time = 3),
                    bd.params  = list(speciation = 1, extinction = 0.1),
                    traits     = make.traits(),
                    save.steps = c(1/3, 1, 2))
@@ -312,9 +312,9 @@ plot(tree_steps)
 abline(v = 3 - c(1/3, 1, 2), lwd = 0.5, col = "grey")
 ```
 
-## Traits implemented in `dads`
+## Traits implemented in `treats`
 
-If you don't want to design your own trait process, you can use one of the following trait processes that are currently implemented in `dads`. You can find more information about their many options using their specific manuals in R or the generic `?trait.process`:
+If you don't want to design your own trait process, you can use one of the following trait processes that are currently implemented in `treats`. You can find more information about their many options using their specific manuals in R or the generic `?trait.process`:
 
  * `BM.process`: this is the well known [Brownian motion process](https://en.wikipedia.org/wiki/Brownian_motion).
 
@@ -351,7 +351,7 @@ plot(make.traits(repulsion.process, process.args = list(repulsion = 5)), main = 
 
 **This bit is still in development.**
 We highly suggest leaving `test = TRUE` so that `make.traits` returns an error if a process or its additional arguments (`process.args`) are not formatted correctly.
-`make.traits` will send an error if the trait cannot be directly passed to `dads`.
+`make.traits` will send an error if the trait cannot be directly passed to `treats`.
 However, in some specific cases (again, probably mainly for development and debugging) it could be useful to skip the tests using `test = FALSE`.
 
 
@@ -359,7 +359,7 @@ However, in some specific cases (again, probably mainly for development and debu
 
 As detailed above, any process of your own design will work as long as it is a function that takes at least the arguments `x0` and `edge.length`.
 You can be imaginative and creative when designing your own process but here are two detailed example functions for a unidimensional Brownian Motion and Ornstein-Uhlenbeck process that you can use for a start (or not).
-Remember it is good practice for `dads` processes to set all the arguments with default values (just in case).
+Remember it is good practice for `treats` processes to set all the arguments with default values (just in case).
 
 > Note that the functions below are not equal to the already implemented `BM.process` and `OU.process` but an easier to edit version that you can use as a template:
 

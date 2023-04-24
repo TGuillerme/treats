@@ -1,6 +1,6 @@
 #' @title Make birth death parameters
 #'
-#' @description Making bd.params objects for dads.
+#' @description Making bd.params objects for treats.
 #'
 #' @param speciation The speciation parameter. Can be a single \code{numeric} value, a \code{numeric} vector or a \code{function} (default is \code{1}).
 #' @param extinction The extinction parameter. Can be a single \code{numeric} value, a \code{numeric} vector or a \code{function} (default is \code{0}).
@@ -9,7 +9,7 @@
 #' @param speciation.args If \code{speciation} is a function, any additional arguments to passed to the \code{speciation} function.
 #' @param extinction.args If \code{speciation} is a function, any additional arguments to passed to the \code{speciation} function.
 #' @param test Logical whether to test if the bd.params object will work (default is \code{TRUE}).
-#' @param update Optional, another previous \code{"dads"} \code{"bd.params"} object to update (see details).
+#' @param update Optional, another previous \code{"treats"} \code{"bd.params"} object to update (see details).
 
 #' @details
 #' When using \code{update}, the provided arguments (to \code{make.bd.params}) will be the ones updated in the \code{"bd.params"} object.
@@ -38,7 +38,7 @@
 #' plot(my_bd_params)
 #' 
 #'
-#' @seealso \code{\link{dads}}
+#' @seealso \code{\link{treats}}
 #' 
 #' @author Thomas Guillerme
 #' @export
@@ -51,8 +51,8 @@ make.bd.params <- function(speciation = NULL, extinction = NULL, joint = NULL, a
     if(is.null(update)) {
         do_update <- FALSE
     } else {
-        if(!is(update, "dads") || !is(update, "bd.params")) {
-            stop(paste0("This function can only update \"dads\", \"bd.params\" objects. The current object to update is of class: ", paste(class(update), collapse = ", "), "."), call. = FALSE)
+        if(!is(update, "treats") || !is(update, "bd.params")) {
+            stop(paste0("This function can only update \"treats\", \"bd.params\" objects. The current object to update is of class: ", paste(class(update), collapse = ", "), "."), call. = FALSE)
         } else {
             do_update <- TRUE
         }
@@ -187,6 +187,6 @@ make.bd.params <- function(speciation = NULL, extinction = NULL, joint = NULL, a
     }
 
     ## Add the classes
-    class(bd_params) <- c("dads", "bd.params")
+    class(bd_params) <- c("treats", "bd.params")
     return(bd_params)
 }

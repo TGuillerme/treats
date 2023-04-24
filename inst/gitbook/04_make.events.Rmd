@@ -15,17 +15,17 @@ knitr::knit_hooks$set(webgl = hook_webgl)
 ```
 
 ```{r, echo = FALSE}
-library(dads)
+library(treats)
 set.seed(123)
 ```
 
 # Adding events to simulations {#makeevents}
 
-One other major feature of the `dads` package is that it allows simulations to run with specified events that occur during the simulation.
+One other major feature of the `treats` package is that it allows simulations to run with specified events that occur during the simulation.
 These are typically events that can drastically change the course of the simulation.
 For example, you might want simulate a mass extinction at some specific point in time.
 However, these can also be more subtle, like the internal change of parameter values when reaching a specific trait value.
-These are all handled by `dads` with the `events` object that you can create using `make.events` and has the same overall logic as `make.traits` and `make.modifiers`.
+These are all handled by `treats` with the `events` object that you can create using `make.events` and has the same overall logic as `make.traits` and `make.modifiers`.
 
 `events` require three main arguments:
  * the `target` which designates what the extinction should affect (e.g. the taxa, the speciation rate, etc...);
@@ -44,7 +44,7 @@ The targets that are currently available are:
  * `"bd.params"` to modify anything linked to the [`bd.params` object](#makebdparams). For example you might want to change the distribution of one of the parameter after some `conditions`. This is typically done by updating the object using the argument `update` from `make.bd.params`.
  * `"traits"` to modify anything linked to the [`traits` object](#maketraits). For example you might want to change the trait process after some `conditions`. This is typically done by updating the object using the argument `update` from `make.traits`.
  * `"modifiers"` to modify anything linked to the [`modifiers` object](#makebdmodifiers). For example you might want to change the speciation rule after some `conditions`. This is typically done by updating the object using the argument `update` from `make.modifiers`.
- * `"founding"` this target is a bit more specialised and allows you run a nested `dads` object in the simulation. It is covered in a [specific section below](#founding).
+ * `"founding"` this target is a bit more specialised and allows you run a nested `treats` object in the simulation. It is covered in a [specific section below](#founding).
 
 We will see some examples of these targets in the `conditions` and `modifications` described below.
 
@@ -52,9 +52,9 @@ We will see some examples of these targets in the `conditions` and `modification
 
 `condition` is a function that returns a logical value. When a specific condition is met, it should return `TRUE` and trigger the event, else it should return `FALSE`.
 
-Currently there are three conditions functions implemented in `dads` but you can easily come up with your own version of them.
+Currently there are three conditions functions implemented in `treats` but you can easily come up with your own version of them.
 
-All `condition` functions in `dads` take at least two arguments: `x` for the variable of interest (e.g. time, number of taxa, trait value, etc.) and `condition`, the relational operator to evaluate. A relational operator is the proper (fancy) term designating all the comparisons you're regularly using in `R` like `==` (is equal?) `<` (is smaller?) `>=` (is bigger or equal?). You can get the full list in the R base manual (using `?Comparison` or any of the relational operator in a function form). For more details on how functions _really_ work in R see the [Advanced `R` book](https://adv-r.hadley.nz/functions.html)!
+All `condition` functions in `treats` take at least two arguments: `x` for the variable of interest (e.g. time, number of taxa, trait value, etc.) and `condition`, the relational operator to evaluate. A relational operator is the proper (fancy) term designating all the comparisons you're regularly using in `R` like `==` (is equal?) `<` (is smaller?) `>=` (is bigger or equal?). You can get the full list in the R base manual (using `?Comparison` or any of the relational operator in a function form). For more details on how functions _really_ work in R see the [Advanced `R` book](https://adv-r.hadley.nz/functions.html)!
 
  * `time.condition` will trigger the `event` once a certain time is reached in the simulations and is the simplest/most basic condition with no arguments other than the time required. For example ``time.condition(4, condition = `==`)`` will trigger the `event` once the simulations reaches 4 time units. Easy.
  * `taxa.condition` will trigger the `event` once a certain number of taxa are reached. This can be considered including or excluding fossil species. For example ``taxa.condition(42, condition = `>=`, living = TRUE)`` will trigger the `event` if there are at least 42 living taxa.
@@ -112,7 +112,7 @@ bd.params <- list(extinction = 0, speciation = 1)
 
 ## Running the simulations
 set.seed(123)
-results <- dads(bd.params = bd.params,
+results <- treats(bd.params = bd.params,
                 stop.rule = stop.rule,
                 events = mass_extinction)
 ## Plotting the results
@@ -141,11 +141,11 @@ traits    <- make.traits()
 
 ## Run the simulations
 set.seed(1)
-no_change <- dads(bd.params = bd.params,
+no_change <- treats(bd.params = bd.params,
                   stop.rule = stop.rule,
                   traits = traits)
 set.seed(1)
-process_change <- dads(bd.params = bd.params,
+process_change <- treats(bd.params = bd.params,
                        stop.rule = stop.rule,
                        traits = traits,
                        events = change_process)
@@ -160,13 +160,13 @@ par(mfrow = c(1,1))
 ## Founding events {#founding}
 
 Founding events are a specific `target` for `events` that allows you to simulate a birth-death process within the current one!
-It allows you to simulate a specific `dads` process using the `dads` function with its own `traits`, `modifiers`, `bd.params` and `events` (and yes, that's including `events` that have their own `founding` event).
+It allows you to simulate a specific `treats` process using the `treats` function with its own `traits`, `modifiers`, `bd.params` and `events` (and yes, that's including `events` that have their own `founding` event).
 This is basically the ultimate nested boss of modularity!
 
-The founding event will run an internal `dads` process (i.e. simulating a tree and, optionally, some data) resulting in a founding sub-tree.
+The founding event will run an internal `treats` process (i.e. simulating a tree and, optionally, some data) resulting in a founding sub-tree.
 It will then branch this sub-tree onto the rest of the simulation that continued normally in the mean time.
 You can specify the founding event using the inbuilt `founding.event` modification event.
-This function takes the exact same arguments as `dads` to simulate the sub-tree with its own parameters.
+This function takes the exact same arguments as `treats` to simulate the sub-tree with its own parameters.
 Additionally, we will use the `additional.args` argument from `make.events` to specify a prefix for the founding tree tips (to make them easier to distinguish).
 
 ```{r}
@@ -185,7 +185,7 @@ founding_event <- make.events(
     
 ## Simulations
 set.seed(11)
-founding_tree <- dads(bd.params = bd.params,
+founding_tree <- treats(bd.params = bd.params,
                       stop.rule = stop.rule,
                       events = founding_event)
 plot(founding_tree, cex = 0.4)

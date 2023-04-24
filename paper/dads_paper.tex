@@ -54,7 +54,7 @@
 %
 %---------------------------------------------
 
-\newcommand{\dads}{\texttt{dads} }
+\newcommand{\treats}{\texttt{treats} }
 
 \begin{document}
 
@@ -63,13 +63,13 @@
 Version dated: \today
 \end{flushright}
 \bigskip
-\noindent RH: \dads package.
+\noindent RH: \treats package.
 
 \bigskip
 \medskip
 \begin{center}
 
-\noindent{\Large \bf \dads: a modular \texttt{R} package for simulating diversity and traits data.} 
+\noindent{\Large \bf \treats: a modular \texttt{R} package for simulating diversity and traits data.} 
 \bigskip
 
 \noindent {\normalsize \sc Thomas Guillerme$^{1,*}$, Natalie Cooper$^{2}$, Andrew P. Beckerman$^{1}$, and Gavin H. Thomas$^{1,3}$}\\
@@ -107,11 +107,11 @@ $^3$Bird Group, Department of Life Sciences, the Natural History Museum at Tring
         \item In evolutionary biology, these simulations often involve the need of an evolutionary process where descent with modification is at the core of how the simulated data is generated.
         This can be made much more complicated with loads of different stuff needing to be taken into account to affect the simulations (e.g. traits, mechanisms such as competition or events such as mass extinctions).
 
-        \item Here I present the \dads package, a modular \texttt{R} package for diversity and trait disparity simulations.
+        \item Here I present the \treats package, a modular \texttt{R} package for diversity and trait disparity simulations.
         This package is based on a standard birth death algorithm that can be easily tuned to the user specific needs by designing their specific trait process, birth-death modifiers and events.
-        It also provides a tidy interface through the \dads object, allowing users to easily run reproducible simulations.
+        It also provides a tidy interface through the \treats object, allowing users to easily run reproducible simulations.
 
-        \item The \dads package also comes with an extend manual regularly updated following users' questions or suggestions.
+        \item The \treats package also comes with an extend manual regularly updated following users' questions or suggestions.
 
     \end{enumerate}
 
@@ -155,12 +155,12 @@ For example, \texttt{TreeSim} can simulate a birth-death tree with some extincti
 Or \texttt{PETER} is not designed to simulate a complex set of traits (say three correlated BM traits and two independent OU ones).
 Although we don't think this was the aim of these specific packages authors (not to create a strawman argument) we think this hampers the use of specific null model (or baseline model) to test specific dynamic mechanisms or to compare to specific datasets. 
 
-% The solution with dads
-Therefore, we propose \dads a modular \texttt{R} package to simulate both diversity and disparity through time.
+% The solution with treats
+Therefore, we propose \treats a modular \texttt{R} package to simulate both diversity and disparity through time.
 
 \section{Description}
 % Very briefly how does it work
-\dads is based on a core birth-death process implemented in the function \texttt{dads} that simulates diversity through time using the following steps:
+\treats is based on a core birth-death process implemented in the function \texttt{treats} that simulates diversity through time using the following steps:
 
 \begin{enumerate}
     \item Waiting: Generating some waiting time corresponding to the growth in length of the tree (e.g. the duration of a lineage through time);
@@ -174,13 +174,13 @@ If traits are simulated during the process, a fourth step is added:
 \indent 4. Trait: Generate some trait(s) value(s) based for the extinct species or the node leading to the two new lineages.
 This/these value(s) are generated taking into account the trait value of the extinct species/new node's ancestor and the time elapsed (generated in step 1).
 
-In \dads, these three or four steps are implemented as modular functions that the user can easily change using an internal class of objects called \texttt{``modifiers''} or \texttt{``traits''} (Fig. \ref{Fig:workflow}).
-The simulation then outputs a tree (of class \texttt{``phylo''} and a associated table of traits - \texttt{``matrix''}) that can be visualised using the \texttt{plot.dads} function.
+In \treats, these three or four steps are implemented as modular functions that the user can easily change using an internal class of objects called \texttt{``modifiers''} or \texttt{``traits''} (Fig. \ref{Fig:workflow}).
+The simulation then outputs a tree (of class \texttt{``phylo''} and a associated table of traits - \texttt{``matrix''}) that can be visualised using the \texttt{plot.treats} function.
 
 \begin{figure}[!htbp]
 \centering
-   \includegraphics[width=1\textwidth]{../inst/gitbook/dads_structure.pdf} 
-\caption{\dads package workflow: @@@.}
+   \includegraphics[width=1\textwidth]{../inst/gitbook/treats_structure.pdf} 
+\caption{\treats package workflow: @@@.}
 \label{Fig:workflow}
 \end{figure}
 % \texttt{"events"} are an additional category of modular objects discussed later.
@@ -190,7 +190,7 @@ The simulation then outputs a tree (of class \texttt{``phylo''} and a associated
 To simulate a birth-death tree, two arguments are essentially needed: the birth-death parameters (\texttt{bd.params}) the rate of speciation (birth or \lambda), the rate of extinction (death or \mu - this parameter can be equal to 0) and \texttt{stop.rule}, a rule for when to stop the growth of the tree (e.g. when reaching 20 species).
 
 \texttt{## Running a simulation with a speciation rate of 1, an extinction rate of 0.1 and stopping when it reaches 20 taxa}
-\texttt{my_simulation <- dads(bd.params = list(speciation = 1, extinction = 0.1), stop.rule = list(max.taxa = 20))}
+\texttt{my_simulation <- treats(bd.params = list(speciation = 1, extinction = 0.1), stop.rule = list(max.taxa = 20))}
 
 By default, the three first steps are included in a default modifier that reproduces a simple birth-death process given the input birth and death parameters.
 
@@ -201,12 +201,12 @@ By default, the three first steps are included in a default modifier that reprod
     ; else, the lineage speciates.
 \end{enumerate}
 
-These are included by default in a \texttt{dads} process but can be also set manually by creating a \texttt{``modifiers''} object with no options:
+These are included by default in a \texttt{treats} process but can be also set manually by creating a \texttt{``modifiers''} object with no options:
 
 \texttt{## Generating the default modifiers}
 \texttt{my_modifiers <- make.modifiers()}
 \texttt{## Running a simulation with a speciation rate of 1, an extinction rate of 0.1 and stopping when it reaches 20 taxa with the default modifiers}
-\texttt{my_simulation <- dads(bd.params = list(speciation = 1, extinction = 0), stop.rule = list(max.taxa = 20), modifiers = my_modifiers)}
+\texttt{my_simulation <- treats(bd.params = list(speciation = 1, extinction = 0), stop.rule = list(max.taxa = 20), modifiers = my_modifiers)}
 
 The modularity of the packages works with the ability to code the modifiers manually rather than using default ones.
 For example, to simulate the same process but hard coding the modifiers we can use the following
@@ -228,16 +228,16 @@ For example, to simulate the same process but hard coding the modifiers we can u
 
 \subsection{Modularity}
 
-\subsection{\dads compared to other packages}
+\subsection{\treats compared to other packages}
 
 \subsection{Further directions}
 
 
 \section{Conclusion}
-The \dads is modular and nice to use.
+The \treats is modular and nice to use.
 
 \section{Package location}
-The \dads package is available on the CRAN at \url{https://cran.r-project.org/web/packages/dads/index.html} or on GitHub at \url{https://github.com/TGuillerme/dads} with more associated information.
+The \treats package is available on the CRAN at \url{https://cran.r-project.org/web/packages/treats/index.html} or on GitHub at \url{https://github.com/TGuillerme/treats} with more associated information.
 All the versions of the package are archived on ZENODO with associated DOI \url{https://zenodo.org/@@@}.
 
 \section{Acknowledgments}

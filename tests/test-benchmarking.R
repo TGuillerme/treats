@@ -25,16 +25,16 @@
 
 # test_age_2_fail <- microbenchmark(
 #     treeSim = sim.bd.age(age = 2, lambda = lambda, mu = mu, numbsim = 1),
-#     dads = dads(stop.rule = list(max.time = 2), bd.params = list(speciation = lambda, extinction = mu), null.error = TRUE))
+#     treats = treats(stop.rule = list(max.time = 2), bd.params = list(speciation = lambda, extinction = mu), null.error = TRUE))
 # test_age_3_fail <- microbenchmark(
 #     treeSim = sim.bd.age(age = 3, lambda = lambda, mu = mu, numbsim = 1),
-#     dads = dads(stop.rule = list(max.time = 3), bd.params = list(speciation = lambda, extinction = mu), null.error = TRUE))
+#     treats = treats(stop.rule = list(max.time = 3), bd.params = list(speciation = lambda, extinction = mu), null.error = TRUE))
 # test_age_4_fail <- microbenchmark(
 #     treeSim = sim.bd.age(age = 4, lambda = lambda, mu = mu, numbsim = 1),
-#     dads = dads(stop.rule = list(max.time = 4), bd.params = list(speciation = lambda, extinction = mu), null.error = TRUE))
+#     treats = treats(stop.rule = list(max.time = 4), bd.params = list(speciation = lambda, extinction = mu), null.error = TRUE))
 # test_age_5_fail <- microbenchmark(
 #     treeSim = sim.bd.age(age = 5, lambda = lambda, mu = mu, numbsim = 1),
-#     dads = dads(stop.rule = list(max.time = 5), bd.params = list(speciation = lambda, extinction = mu), null.error = TRUE))
+#     treats = treats(stop.rule = list(max.time = 5), bd.params = list(speciation = lambda, extinction = mu), null.error = TRUE))
 
 # n<-10
 # lambda <- 2.0
@@ -49,16 +49,16 @@
 
 # test_taxa_10_fail <- microbenchmark(
 #     treeSim = sim.bd.taxa(n = 10, lambda = lambda, mu = mu, numbsim = 1),
-#     dads = dads(stop.rule = list(max.living = 10), bd.params = list(speciation = lambda, extinction = mu), null.error = TRUE))
+#     treats = treats(stop.rule = list(max.living = 10), bd.params = list(speciation = lambda, extinction = mu), null.error = TRUE))
 # test_taxa_50_fail <- microbenchmark(
 #     treeSim = sim.bd.taxa(n = 50, lambda = lambda, mu = mu, numbsim = 1),
-#     dads = dads(stop.rule = list(max.living = 50), bd.params = list(speciation = lambda, extinction = mu), null.error = TRUE))
+#     treats = treats(stop.rule = list(max.living = 50), bd.params = list(speciation = lambda, extinction = mu), null.error = TRUE))
 # test_taxa_150_fail <- microbenchmark(
 #     treeSim = sim.bd.taxa(n = 150, lambda = lambda, mu = mu, numbsim = 1),
-#     dads = dads(stop.rule = list(max.living = 150), bd.params = list(speciation = lambda, extinction = mu), null.error = TRUE))
+#     treats = treats(stop.rule = list(max.living = 150), bd.params = list(speciation = lambda, extinction = mu), null.error = TRUE))
 # test_taxa_500_fail <- microbenchmark(
 #     treeSim = sim.bd.taxa(n = 500, lambda = lambda, mu = mu, numbsim = 1),
-#     dads = dads(stop.rule = list(max.living = 500), bd.params = list(speciation = lambda, extinction = mu), null.error = TRUE))
+#     treats = treats(stop.rule = list(max.living = 500), bd.params = list(speciation = lambda, extinction = mu), null.error = TRUE))
 
 
 # ## On average, TreeSim is 2-3x faster

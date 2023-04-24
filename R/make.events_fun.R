@@ -110,7 +110,7 @@ check.events <- function(events) {
 
             bd.params = {
                 bd.params_names <- names(bd.params)
-                if(!is(test_modification, "dads") && !is(test_modification, "bd.params")) {
+                if(!is(test_modification, "treats") && !is(test_modification, "bd.params")) {
                     stop(paste0("The modification function targeting \"bd.params\" must output a list of integers. Currently the modification function output is a ", paste(class(test_modification), collapse = ", "), " object."), call. = FALSE)
                 } 
                 if(!all(bd.params_names %in% names(test_modification))) {
@@ -119,17 +119,17 @@ check.events <- function(events) {
             },
 
             # traits    = {
-            #     if(!is(test_modification, "dads") && !is(test_modification, "traits")) {
+            #     if(!is(test_modification, "treats") && !is(test_modification, "traits")) {
             #         ## Check if the error comes from additional args (i.e. wrong dummy traits object)
-            #         stop(paste0("The modification function targeting \"traits\" must output a dads traits object. Currently the modification function output is a ", paste(class(test_modification), collapse = ", "), "."))
+            #         stop(paste0("The modification function targeting \"traits\" must output a treats traits object. Currently the modification function output is a ", paste(class(test_modification), collapse = ", "), "."))
             #     } else {
             #         check.traits(test_modification, events = TRUE)
             #     }
             # },
 
             modifiers = {
-                if(!is(test_modification, "dads") && !is(test_modification, "modifiers")) {
-                    stop(paste0("The modification function targeting \"modifiers\" must output a dads modifiers object. Currently the modification function output is a ", paste(class(test_modification), collapse = ", "), "."))
+                if(!is(test_modification, "treats") && !is(test_modification, "modifiers")) {
+                    stop(paste0("The modification function targeting \"modifiers\" must output a treats modifiers object. Currently the modification function output is a ", paste(class(test_modification), collapse = ", "), "."))
                 } else {
                     check.modifiers(test_modification, events = TRUE)
                 }

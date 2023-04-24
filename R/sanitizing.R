@@ -99,7 +99,7 @@ check.list <- function(list, check.fun, condition, ...) {
     }
 }
 
-## Checking dads specific class
+## Checking treats specific class
 check.args <- function(fun, fun_name, required_args) {
 
     ## Must be a function

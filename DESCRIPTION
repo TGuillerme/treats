@@ -1,5 +1,5 @@
-Package: dads
-Title: Disparity And Diversity Simulations
+Package: treats
+Title: Trees and Traits Simulations
 Author: Thomas Guillerme [aut, cre, cph]
 Maintainer: Thomas Guillerme <guillert@tcd.ie>
 Version: 0.1.13
@@ -21,4 +21,4 @@ Suggests:
     knitr
 License: GPL-3 | file LICENSE
 RoxygenNote: 7.2.1
-URL: https://github.com/TGuillerme/dads
+URL: https://github.com/TGuillerme/treats

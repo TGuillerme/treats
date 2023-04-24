@@ -2,7 +2,7 @@
 check.modifiers <- function(modifiers, events = FALSE) {
 
     if(events) {
-        events_msg <- "The dads modifiers object returned by the modification function does not work: "
+        events_msg <- "The treats modifiers object returned by the modification function does not work: "
     } else {
         events_msg <- ""
     }

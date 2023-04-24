@@ -1,6 +1,6 @@
 #' @title make.events
 #'
-#' @description Making events objects for dads
+#' @description Making events objects for treats
 #'
 #' @param target        What to modify, can be \code{"taxa"}, \code{"bd.params"}, \code{"traits"} or \code{"modifiers"} (see details).
 #' @param condition     A \code{function} returning a logical to trigger the event (see details).
@@ -17,7 +17,7 @@
 #' 
 #' \code{condition} must be a function that returns a \code{logical} value and intakes any of the following arguments: \code{bd.params}, \code{lineage}, \code{traits} and \code{time}. See \code{\link{events.conditions}} for examples.
 #'
-#' \code{modification} must be a function that intakes a first argument named \code{"x"} an returns any specific type of class that can be handled internally by dads. For example, if \code{target = "bd.params"} the \code{modification} function should typically return an updated \code{bd.params} object (see \code{\link{make.bd.params}}). See \code{\link{events.modifications}} for examples.
+#' \code{modification} must be a function that intakes a first argument named \code{"x"} an returns any specific type of class that can be handled internally by treats. For example, if \code{target = "bd.params"} the \code{modification} function should typically return an updated \code{bd.params} object (see \code{\link{make.bd.params}}). See \code{\link{events.modifications}} for examples.
 #' 
 #' 
 #' @examples
@@ -35,7 +35,7 @@
 #' 
 #' ## Run the simulations
 #' set.seed(123)
-#' results <- dads(bd.params = bd.params,
+#' results <- treats(bd.params = bd.params,
 #'                 stop.rule = stop.rule,
 #'                 events    = mass_extinction)
 #' ## Plot the results
@@ -61,11 +61,11 @@
 #' 
 #' ## Run the simulations
 #' set.seed(1)
-#' no_change <- dads(bd.params = bd.params,
+#' no_change <- treats(bd.params = bd.params,
 #'                   stop.rule = stop.rule,
 #'                   traits    = traits)
 #' set.seed(1)
-#' process_change <- dads(bd.params = bd.params,
+#' process_change <- treats(bd.params = bd.params,
 #'                        stop.rule = stop.rule,
 #'                        traits    = traits,
 #'                        events    = change_process)
@@ -75,7 +75,7 @@
 #' plot(process_change, ylim = c(-7, 7))
 #' 
 #' 
-#' @seealso \code{\link{dads}} \code{\link{make.bd.params}} \code{\link{make.traits}} \code{\link{make.modifiers}} \code{\link{events.conditions}} \code{\link{events.modifications}}
+#' @seealso \code{\link{treats}} \code{\link{make.bd.params}} \code{\link{make.traits}} \code{\link{make.modifiers}} \code{\link{events.conditions}} \code{\link{events.modifications}}
 #' @author Thomas Guillerme
 #' @export
 
@@ -103,8 +103,8 @@ make.events <- function(target, condition, modification, add, test = TRUE, event
     if(missing(add)) {
         do_add <- FALSE
     } else {
-        ## Add must be a dads events
-        check.class(add, c("dads", "events"))
+        ## Add must be a treats events
+        check.class(add, c("treats", "events"))
         do_add <- TRUE
     }
 
@@ -159,6 +159,6 @@ make.events <- function(target, condition, modification, add, test = TRUE, event
         check.events(events[[length(events)]])
     }
 
-    class(events) <- c("dads", "events")
+    class(events) <- c("treats", "events")
     return(events)
 }

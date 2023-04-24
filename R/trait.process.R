@@ -2,7 +2,7 @@
 #' @aliases BM.process OU.process no.process multi.peak.process repulsion.process
 #' @title Trait processes
 #'
-#' @description Different trait processes implemented in dads.
+#' @description Different trait processes implemented in treats.
 #'
 #' @usage trait.process(x0, edge.length, ...)
 #'
@@ -11,7 +11,7 @@
 #' @param ... Any optional argument for the specific process (see details).
 #' 
 #' @details
-#' The different trait processes implemented in dads are:
+#' The different trait processes implemented in treats are:
 #' 
 #' \itemize{
 #'      \item{BM.process} A Brownian motion process (uni or multidimensional). This function is based on \code{\link[MASS]{mvrnorm}}.
@@ -52,18 +52,18 @@
 #'               \item \code{sd} the normal distribution standard deviation.
 #'               \item \code{repulsion} the minimal distance requested between trait values.
 #'               \item \code{max.try} the maximum number of values to draw (if the repulsion value is to hard to achieve).
-#'               \item \code{trait.values} LEAVE AS \code{NULL} (it designates the trait value table from the birth death process and is handled internally by \code{\link{dads}}).
-#'               \item \code{lineage} LEAVE AS \code{NULL} (it designates the lineage object from the birth death process and is handled internally by \code{\link{dads}}).
-#'               \item \code{trait} LEAVE AS \code{NULL} (it which trait to use and is analysed an is handled internally by \code{\link{dads}}).
+#'               \item \code{trait.values} LEAVE AS \code{NULL} (it designates the trait value table from the birth death process and is handled internally by \code{\link{treats}}).
+#'               \item \code{lineage} LEAVE AS \code{NULL} (it designates the lineage object from the birth death process and is handled internally by \code{\link{treats}}).
+#'               \item \code{trait} LEAVE AS \code{NULL} (it which trait to use and is analysed an is handled internally by \code{\link{treats}}).
 #'          }
 #' 
 #' }
 #' 
-#' More details about the \code{trait.process} functions is explained in the \code{dads} manual: \url{http://tguillerme.github.io/dads}.
+#' More details about the \code{trait.process} functions is explained in the \code{treats} manual: \url{http://tguillerme.github.io/treats}.
 #' 
 #' @examples
 #' ## NOTE: You can visualise most process by making them
-#' ## into a "dads" "traits" object using make.traits():
+#' ## into a "treats" "traits" object using make.traits():
 #'
 #' ## The Brownian motion process
 #' BM.process(x0 = 0)
@@ -88,13 +88,13 @@
 #' repulsion.process(x0 = 0, repulsion = 1)
 #' plot(make.traits(repulsion.process, process.args = list(repulsion = 5)))
 #' 
-#' @seealso \code{\link{dads}} \code{\link{make.traits}}
+#' @seealso \code{\link{treats}} \code{\link{make.traits}}
 #' 
 #' @author Thomas Guillerme
 #' @export
 
 trait.process <- function(x0 = 0, edge.length = 1, ...) {
-    cat("Trait processes implemented in dads:\n")
+    cat("Trait processes implemented in treats:\n")
     cat("?BM.process\n")
     cat("?OU.process\n")
     cat("?no.process\n")

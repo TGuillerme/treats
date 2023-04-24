@@ -1,4 +1,4 @@
-rm dads_manual.Rmd
+rm treats_manual.Rmd
 
 ## Remove files before hand
 rm -R _book/

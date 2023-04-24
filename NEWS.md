@@ -1,4 +1,4 @@
-dads v0.1.11 (2023-03-27) 
+treats v0.1.12 (2023-04-28) 
 =========================
 
 ### BUG FIXES
@@ -7,9 +7,10 @@ dads v0.1.11 (2023-03-27)
  * Fixed `bd.params` print display when inputs are numeric.
 
 ### NEW FEATURES
- 
+
+ * Changed package name from `dads` to `treats`
  * Full polished version of the manual!
- * `dads` has now a `save.steps` option to create internal nodes at regular intervals or specified ones.
+ * `treats` has now a `save.steps` option to create internal nodes at regular intervals or specified ones.
  * Added a `make.bd.parms` utility function for sampling from distributions (jointly or not).
  * Trees can now be generated with birth-death parameters sampled from functions.
  * added a list of pre-made `modification` and `condition` for events.
@@ -17,23 +18,23 @@ dads v0.1.11 (2023-03-27)
  * `events` are now fully handled and modular.
  * `make.events` function for helping to make events.
  * `make.modifiers` now has a `select.taxa` argument.
- * `make.dads` to create `"dads"` objects from a tree and a dataset (e.g. matrix). This can be useful for using the the `plot.dads` function on non `"dads"` objects. 
+ * `make.treats` to create `"treats"` objects from a tree and a dataset (e.g. matrix). This can be useful for using the the `plot.treats` function on non `"treats"` objects. 
  * `"events"` class objects are now implemented and fully functional with the `make.events` function and the pre-made `mass.extinction` and `founding.event` events.
- * `drop.things` to drop fossils or livings species or internal nodes from `"dads"` objects.
+ * `drop.things` to drop fossils or livings species or internal nodes from `"treats"` objects.
 
 ### MINOR IMPROVEMENTS
 
  * Many clarifications and rewording to the manual.
 
-dads v0.1.0 (2020-11-13) *first release*
+treats v0.1.0 (2020-11-13) *first release*
 =========================
 
 ### NEW FEATURES
  
- * `dads` function first release.
+ * `treats` function first release.
  * `make.traits` function first release.
  * `make.modifiers` function first release.
- * `print` and `plot` functions for `"dads"` objects.
+ * `print` and `plot` functions for `"treats"` objects.
  * `parent.traits` utility function first release.
  * Manual first release
 
