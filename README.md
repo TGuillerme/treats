@@ -1,14 +1,14 @@
-[![Build Status](https://travis-ci.org/TGuillerme/dads.svg?branch=master)](https://travis-ci.org/TGuillerme/dads)
-[![R-CMD-check](https://github.com/TGuillerme/dads/workflows/R-CMD-check/badge.svg)](https://github.com/TGuillerme/dads/actions)
-[![codecov](https://codecov.io/gh/TGuillerme/dads/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dads)
+[![Build Status](https://travis-ci.org/TGuillerme/treats.svg?branch=master)](https://travis-ci.org/TGuillerme/treats)
+[![R-CMD-check](https://github.com/TGuillerme/treats/workflows/R-CMD-check/badge.svg)](https://github.com/TGuillerme/treats/actions)
+[![codecov](https://codecov.io/gh/TGuillerme/treats/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/treats)
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
-[![develVersion](https://img.shields.io/badge/devel%20version-0.1.11-green.svg?style=flat)](https://github.com/TGuillerme/dads/tree/master)
+[![develVersion](https://img.shields.io/badge/devel%20version-0.1.12-green.svg?style=flat)](https://github.com/TGuillerme/treats/tree/master)
 [![DOI](https://zenodo.org/badge/299272555.svg)](https://zenodo.org/badge/latestdoi/299272555)
 
 
-# dads: diversity and disparity simulations
+# `treats`: TREes And Traits Simulation
 
-**THIS IS THE PRE-RELEASE VERSION**.
+**REPO NAME CHANGE IN PROGRESSE**
 
 ### What is `dads`?
 
