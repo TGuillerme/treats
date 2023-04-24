@@ -110,7 +110,7 @@ dads <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events =
 
     ## Warning message for stop rule
     if(stop.rule$max.time != Inf && stop.rule$max.time > 6) {
-        warning_message <- "Stop rule was step higher than 6 time units. This can take a considerable amount of time and RAM to simulate"
+        warning_message <- "Stop rule was step higher than 6 time units.\nThis can take a considerable amount of time and RAM to simulate"
         additional_message <- ifelse((stop.rule$max.taxa == Inf && stop.rule$max.living == Inf), " if no other stop rules are given", "")
         message(paste0(warning_message, additional_message, "."))
     }

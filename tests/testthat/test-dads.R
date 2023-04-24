@@ -42,8 +42,11 @@ test_that("dads works for simple birth-deaths", {
     prints <- capture_messages(test <- dads(bd.params = list(speciation = 1, extinction = 0.9), stop.rule = list("max.living" = 10), null.error = 50))
     expect_is(test, "phylo")
     expect_equal(length(prints), 6)
-})
 
+    ## Long sim warning
+    messages <- capture_messages(dads(stop.rule = list(max.time = 6.1)))
+    expect_equal(messages[[1]], "Stop rule was step higher than 6 time units.\nThis can take a considerable amount of time and RAM to simulate if no other stop rules are given.\n")
+})
 
 test_that("dads works for trees + traits", {
 
