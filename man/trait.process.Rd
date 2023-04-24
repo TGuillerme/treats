@@ -79,13 +79,13 @@ More details about the \code{trait.process} functions is explained in the \code{
 ## The Brownian motion process
 BM.process(x0 = 0)
 plot(make.traits(process = BM.process))
-## A correlation matrix between 3 traits
-cor_matrix <- matrix(c(1/3,1/3,1/3,1/3,2/3,0,1/3,0,2/3), ncol = 3)
-BM.process(x0 = c(0,0,0), Sigma = cor_matrix)
+## A covariance matrix between 3 traits
+varcovar_matrix <- matrix(c(1/3,1/3,1/3,1/3,2/3,0,1/3,0,2/3), ncol = 3)
+BM.process(x0 = c(0,0,0), Sigma = varcovar_matrix)
 
 ## The Ornstein-Uhlenbeck process
 OU.process(x0 = 0)
-plot(make.traits(process = BM.process))
+plot(make.traits(process = OU.process))
 
 ## No process
 no.process()
