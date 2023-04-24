@@ -134,7 +134,7 @@ The `lineage` list contains the following elements (missing elements are allowed
  
  * `lineage$parents`: an `"integer"` vector: the list of parent lineages;
  * `lineage$livings`: an `"integer"` vector: the list of lineages still not extinct;
- * `lineage$drawn`: a single `"integer"`: the ID of the selected lineage;
+ * `lineage$drawn`: a single `"integer"`: the ID of the selected lineage; this must be a number in `1:lineage$n`;
  * `lineage$current`: a single `"integer"`: the selected lineage (is equal to `lineage$livings[lineage$drawn]`);
  * `lineage$n`: a single `"integer"`: the current number of non extinct lineage (is equal to `length(lineage$livings))`;
  * `lineage$split`: a `"logical"` vector: the list of splits for each lineage (`TRUE`), the number of total tips is equal to `sum(!lineage$split)`.

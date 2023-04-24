@@ -1,0 +1,79 @@
+---
+title: "`dads` verbose example"
+author: "Thomas Guillerme"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    fig_width: 8
+    fig_height: 8
+---
+
+
+```{r}
+library(dispRity)
+library(dads)
+```
+
+```{r}
+## K-Pg mass extinction in mammals
+data(BeckLee_tree)
+data(BeckLee_mat99)
+data(BeckLee_ages)
+time_series <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree,
+                              method = "continuous", model = "acctran", time = 20,
+                              FADLAD = BeckLee_ages)
+result <- dispRity(time_series, metric = c(sum, variances))
+plot(result)
+abline(v = 10)
+results <- dispRity(boot.matrix(time_series), metric = c(sum, variances))
+plot(results)
+abline(v = 10)
+```
+
+```{r}
+libary(dads)
+my_params <- make.bd.params(speciation = rnorm)
+my_stop_rule <- list(max.taxa = 50)
+trait <- make.traits(process = BM.process, n = 10)
+simulation <- dads(bd.params = my_params, stop.rule = my_stop_rule, trait = trait)
+
+## Measure disparity through time
+time_series <- chrono.subsets(data = simulation$data, tree = simulation$tree,
+                              method = "continuous", model = "acctran", time = 20)
+results <- dispRity(boot.matrix(time_series), metric = c(sum, variances))
+plot(results)
+```
+
+
+```{r}
+## 
+library(dads)
+set.seed(123)
+bd.params <- make.bd.params(speciation = 1)
+stop.rule <- list(max.taxa = 50, max.living = Inf, max.time = Inf)
+traits <- make.traits(process = BM.process, background = make.traits())
+par(mfrow = c(2,1))
+plot(dads(bd.params = bd.params, stop.rule = stop.rule, traits = traits), main = "no modif")
+
+## We want to change this in two ways:
+ # 1- speciation = trait.value^2
+
+select.scale.to.absolute.trait.value <- function(trait.values, lineage) {
+    ## Sampling any of the living lineages with the probability of being selected being relative to the current lineage trait value. The bigger the value, the higher the probability
+
+    ## Get the trait values of the descendants (as base probabilities + 0.01 to avoid 0 probabilities)
+    sample_probs <- (abs(trait.values[as.character(lineage$parents[lineage$livings]), ]) + 0.01)
+
+    return(as.integer(sample(1:lineage$n, size = 1, prob = sample_probs )))
+}
+
+modifiers <- make.modifiers(selection = select.scale.to.absolute.trait.value)
+
+plot(dads(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = modifiers), main = "Speciation increase\nwith absolute trait value")
+
+
+
+## THIS IS BUGGED: to test in birth.death_fun.R: problem with selecting the current lineage (NA)
+
+
+```

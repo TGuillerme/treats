@@ -206,10 +206,10 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
             return(NULL)
         }
     }
-
     # ##DEBUG: creating right handed trees
     # warning("DEBUG birth.death_fun.R") ; lineage$current <- 3 ; lineage$drawn   <- 2
-
+    # warning("DEBUG"); lineage_base <- lineage; trait_values_base <- trait_values; edge_lengths_base <- edge_lengths
+    # lineage <- lineage_base ; trait_values <- trait_values_base; edge_lengths <- edge_lengths_base
     ############
     ## Rest of the tree
     ############
@@ -234,7 +234,6 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                             lineage      = lineage,
                             trait.values = trait_values,
                             modify.fun   = modifiers$selecting$internal)
-        
         lineage$current <- lineage$livings[lineage$drawn]
 
         ## Get the waiting time
@@ -288,6 +287,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
 
 
             if(!is.null(traits$background)) {
+
                 # time.slice <- first_waiting_time + time
                 ## Update the lineage and create generate background traits
                 lineage      <- update.single.nodes(lineage)
@@ -323,7 +323,6 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
 
         # warning("DEBUG birth.death_fun.R") ; step_counter <- step_counter + 1; record_everything[[step_counter]] <- list(lineage = lineage, edge_lengths = edge_lengths, trait_values = trait_values)
 
-
         ## Randomly triggering an event
         if(modifiers$speciating$fun(bd.params    = sample.from(bd.params),
                                     lineage      = lineage,
@@ -350,7 +349,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
             ## Go extinct
             was_alive <- lineage$livings[lineage$drawn]
             lineage$livings <- lineage$livings[-lineage$drawn]
-            lineage$n <- lineage$n - 1L   
+            lineage$n <- lineage$n - 1L
         }
 
         # warning("DEBUG"); reached_event <- TRUE

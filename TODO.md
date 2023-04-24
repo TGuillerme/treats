@@ -98,7 +98,3 @@
  - [ ] Rename to `treats` https://docs.github.com/en/repositories/creating-and-managing-repositories/renaming-a-repository
  
 ### Bug fixes
- - [ ] make the stop.rule warn or stop if max time is really high. (> 5)
-    - [ ] add to tests
- - [ ] error when installing `rgl`. Maybe remove it from the dependencies
- - [ ] error from verbose example with background traits.
