@@ -2,8 +2,8 @@ Package: dads
 Title: Disparity And Diversity Simulations
 Author: Thomas Guillerme [aut, cre, cph]
 Maintainer: Thomas Guillerme <guillert@tcd.ie>
-Version: 0.1.11
-Date: 2023-03-27
+Version: 0.1.12
+Date: 2023-04-12
 Description: A modular package for simulating phylogenetic trees and species traits jointly. Trees can be simulated using modulable birth-death parameters (e.g. changing starting parameters or algorithm rules). Traits can be simulated in any way designed by the user. The growth of the tree and the traits can influence each other through modifiers objects providing rules for affecting each other. Finally, events can be created to modify both the tree and the traits under specific conditions.
 Depends:
     R (>= 4.0.0),
@@ -13,12 +13,12 @@ Depends:
 Imports:
 	graphics,
 	MASS,
-	rgl,
     methods,
     utils,
-License: GPL-3 | file LICENSE
 Suggests:
+    rgl,
     testthat,
     knitr
+License: GPL-3 | file LICENSE
 RoxygenNote: 7.2.1
 URL: https://github.com/TGuillerme/dads

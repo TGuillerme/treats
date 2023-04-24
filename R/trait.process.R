@@ -114,7 +114,7 @@ OU.process <- function(x0 = 0, edge.length = 1, Sigma = diag(length(x0)), alpha 
     ## Calculate the Sigma
     Sigma <- Sigma/(2 * alpha) * (1 - exp(-2 * alpha * edge.length))
     ## Get the traits
-    return(t(MASS::mvrnorm(n = 1, mu = means, Sigma = Sigma * edge.length, ...)))
+    return(t(MASS::mvrnorm(n = 1, mu = means, Sigma = Sigma, ...)))
 }
 
 ## no.process
@@ -142,7 +142,7 @@ multi.peak.process <- function(x0 = 0, edge.length = 1, Sigma = diag(length(x0))
     ## Calculate the Sigma
     Sigma <- Sigma/(2 * alpha) * (1 - exp(-2 * alpha * edge.length))
     ## Get the traits
-    return(t(MASS::mvrnorm(n = 1, mu = means, Sigma = Sigma * edge.length, ...)))
+    return(t(MASS::mvrnorm(n = 1, mu = means, Sigma = Sigma, ...)))
 }
 
 ## A repulsive process
