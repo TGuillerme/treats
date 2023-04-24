@@ -104,17 +104,17 @@ trait.process <- function(x0 = 0, edge.length = 1, ...) {
 
 ## The Brownian motion
 BM.process <- function(x0 = 0, edge.length = 1, Sigma = diag(length(x0)), ...) {
-    return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = sqrt(Sigma^2 * edge.length), ...)))
+    return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = Sigma * edge.length, ...)))
 }
 
 ## The OU process
 OU.process <- function(x0 = 0, edge.length = 1, Sigma = diag(length(x0)), alpha = 1, optimum = 0, ...) {
     ## Calculate the means
-    means <- optimum + (x0 - optimum) * exp(-alpha)
+    means <- optimum + (x0 - optimum) * exp(-alpha * edge.length) 
     ## Calculate the Sigma
-    Sigma <- Sigma/(2 * alpha) * (1 - exp(-2 * alpha))
+    Sigma <- Sigma/(2 * alpha) * (1 - exp(-2 * alpha * edge.length))
     ## Get the traits
-    return(t(MASS::mvrnorm(n = 1, mu = means, Sigma = Sigma * edge.length, ...)))
+    return(t(MASS::mvrnorm(n = 1, mu = means, Sigma = Sigma, ...)))
 }
 
 ## no.process

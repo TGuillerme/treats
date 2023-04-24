@@ -89,9 +89,9 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     ## Initialising
     #############
     # warning("DEBUG in birth.death_fun.R::birth.death.tree.traits: snapshot")
-    # bd.params <- make.bd.params(speciation = 1, extinction = 0.1)
-    # stop.rule <- list(max.living = Inf, max.time = 1, max.taxa = Inf)
-    # traits <- make.traits(process = BM.process, n = 3, background = make.traits(process = c(no.process, no.process, no.process), n = 1))
+    # bd.params <- make.bd.params(speciation = 1, extinction = 0)
+    # stop.rule <- list(max.living = Inf, max.time = Inf, max.taxa = 100)
+    # traits <- make.traits(process = BM.process, background = make.traits())
     # constant.brlen <- function() {
     #     return(as.numeric(1))
     # }
@@ -101,6 +101,10 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     # }
     # constant_modifier <- make.modifiers(branch.length = constant.brlen, selection = select.last)
     # modifiers <- NULL
+    # select.scale.to.absolute.trait.value <- function(trait.values, lineage) {
+    #     return(as.integer(sample(lineage$livings, size = 1, prob = abs(trait.values[as.character(lineage$parents[lineage$livings]), ])+1 )))
+    # }
+    # modifiers <- make.modifiers(selection = select.scale.to.absolute.trait.value)
     # events <- NULL
     # null.error <- FALSE
     # check.results <- TRUE
@@ -280,8 +284,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
 
         ## Adding a new row to the trait_values matrix
         if(do_traits) {
-
-        # warning("DEBUG birth.death_fun.R") ; step_counter <- step_counter + 1; record_everything[[step_counter]] <- list(lineage = lineage, edge_lengths = edge_lengths, trait_values = trait_values)
+            # warning("DEBUG birth.death_fun.R") ; step_counter <- step_counter + 1; record_everything[[step_counter]] <- list(lineage = lineage, edge_lengths = edge_lengths, trait_values = trait_values)
 
 
             if(!is.null(traits$background)) {
@@ -675,7 +678,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
         achieved <- unlist(mapply(check.requested, stop.rule[names(achieved)], achieved))
         
         ## Warning or fail
-        if(any(!achieved)) {
+        if(!any(achieved)) {        #TODO: debug this (should ping only one if more than one rule is requested.)
             if(!null.error) {
                 warning("The simulation stopped before reaching any of the stopping rule.", call. = FALSE)
             } else {
