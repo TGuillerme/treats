@@ -3,7 +3,7 @@ treats v0.1.12 (2023-04-28)
 
 ### BUG FIXES
 
- * Corrected the `BM.process` to now be to `rnorm(n = 1, mean = x0, sd = sqrt(sd^2 * edge.length))` (thanks to Rachel Warnock for spotting that one).
+ * Corrected the `BM.process` and `OU.process` to now be exact (thanks to Rachel Warnock and Louie Rombaut for spotting that one).
  * Fixed `bd.params` print display when inputs are numeric.
 
 ### NEW FEATURES
