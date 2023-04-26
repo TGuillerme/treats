@@ -1,12 +1,12 @@
 #' @title Diversity and disparity simulator
 #'
-#' @description Simulating phylogenetic trees and trait disparity. See full manual here: https://github.com/TGuillerme/treats
+#' @description Simulating phylogenetic trees and traits. See full manual here: https://github.com/TGuillerme/treats
 #'
 #' @param stop.rule  The rules on when to stop the simulation (see details).
-#' @param bd.params  A \code{"treats"} \code{"bd.params"} object or a named list of parameters for the birth-death process (see details).
-#' @param traits     A \code{"treats"} \code{"traits"} object (see \code{\link{make.traits}}).
-#' @param modifiers  A \code{"treats"} \code{"modifiers"} object (see \code{\link{make.modifiers}}).
-#' @param events     A \code{"treats"} \code{"events"} object (see \code{\link{make.events}}).
+#' @param bd.params  A \code{"bd.params"} object or a named list of parameters for the birth-death process (see details or \code{\link{make.bd.params}}).
+#' @param traits     A \code{"traits"} object (see \code{\link{make.traits}}).
+#' @param modifiers  A \code{"modifiers"} object (see \code{\link{make.modifiers}}).
+#' @param events     A \code{"events"} object (see \code{\link{make.events}}).
 #' @param save.steps Optional, \code{"numeric"} value to save the simulations at specific internal points (this can slow down the algorithm significantly for large trees). 
 #' @param null.error Logical, whether to return an error when the birth-death parameters fails to build a tree (\code{FALSE}; default and highly recommended) or whether to return \code{NULL} (\code{TRUE}). Can also be set to an integer value for the numbers of trials (see details).
 #' 
