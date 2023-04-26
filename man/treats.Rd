@@ -17,20 +17,20 @@ treats(
 \arguments{
 \item{stop.rule}{The rules on when to stop the simulation (see details).}
 
-\item{bd.params}{A \code{"treats"} \code{"bd.params"} object or a named list of parameters for the birth-death process (see details).}
+\item{bd.params}{A \code{"bd.params"} object or a named list of parameters for the birth-death process (see details or \code{\link{make.bd.params}}).}
 
-\item{traits}{A \code{"treats"} \code{"traits"} object (see \code{\link{make.traits}}).}
+\item{traits}{A \code{"traits"} object (see \code{\link{make.traits}}).}
 
-\item{modifiers}{A \code{"treats"} \code{"modifiers"} object (see \code{\link{make.modifiers}}).}
+\item{modifiers}{A \code{"modifiers"} object (see \code{\link{make.modifiers}}).}
 
-\item{events}{A \code{"treats"} \code{"events"} object (see \code{\link{make.events}}).}
+\item{events}{A \code{"events"} object (see \code{\link{make.events}}).}
 
 \item{save.steps}{Optional, \code{"numeric"} value to save the simulations at specific internal points (this can slow down the algorithm significantly for large trees).}
 
 \item{null.error}{Logical, whether to return an error when the birth-death parameters fails to build a tree (\code{FALSE}; default and highly recommended) or whether to return \code{NULL} (\code{TRUE}). Can also be set to an integer value for the numbers of trials (see details).}
 }
 \description{
-Simulating phylogenetic trees and trait disparity. See full manual here: https://github.com/TGuillerme/treats
+Simulating phylogenetic trees and traits. See full manual here: https://github.com/TGuillerme/treats
 }
 \details{
 \code{stop.rule}: The rule(s) for when to stop the simulation. When multiple rules are given, the simulation stops when any rule is broken. The allowed rules are:
