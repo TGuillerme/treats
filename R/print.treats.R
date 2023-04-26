@@ -81,13 +81,16 @@ print.treats <- function(x, all = FALSE, ...) {
         }
 
         ## Print the tree
-        cat("Simulated diversity data (x$tree):\n")
+        cat("Simulated phylogenetic tree (x$tree):\n")
         cat(print(x$tree))
         cat("\n")
 
         ## Print the traits
+        if(!is.null(x$data)) {
+            cat("Simulated trait data (x$data)")
+        }
         if(!is.null(x$traits)) {
-            cat("Simulated disparity data (x$data):\n")
+            cat(":\n")
             print.traits.info(x$traits$main)
             if(!is.null(x$traits$background)) {
                 cat("And a background trait (see x$background for info).")
