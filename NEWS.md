@@ -8,6 +8,7 @@ treats v0.1.12 (2023-04-28)
 
 ### NEW FEATURES
 
+ * New utility function `map.traits` for mapping a `"traits"` onto a tree.
  * Changed package name from `dads` to `treats`
  * Full polished version of the manual!
  * `treats` has now a `save.steps` option to create internal nodes at regular intervals or specified ones.

@@ -48,6 +48,7 @@ export(update.modifiers)
 export(founding.event)
 
 ## Utilities
+export(map.traits)
 export(make.bd.params)
 export(make.treats)
 export(drop.things)
