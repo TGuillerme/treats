@@ -17,13 +17,8 @@ set.seed(123)
 
 In `treats`, traits are simulating by providing a `traits` object to the `traits` argument.
 This object is generated using `make.traits`.
-
-> **What is a trait in biology?** This is one of these epistemological questions like what _is_ a species and is not covered in this package.
-For the purpose of _this manual_, a **biological trait** can be any coherent character of any number of dimensions which may or may not be independent of other traits.
-Basically anything can be a trait if it's defined by the user (e.g. one trait can be a 20 dimensional Brownian process that's correlated to a 1D OU process - which is another trait).
-For the purpose of the syntax in _this package_ a **trait in `treats`** is a column in the output trait matrix.
-For example, one might be interested in a biological trait that is "beak shape" which is defined as one complex biological trait that is the Procrustes superimposition of 4 3D landmarks and 300 3D semi-landmarks.
-This single "beak shape" **biological trait** is then composed of 912 **traits in `treats`** (i.e. a matrix of $(4+300)\times3$ columns).
+In `treats` a trait designate any coherent character of any number of dimensions which may or may not be independent of other traits.
+For example, it can be a uni-dimensional variable uncorrelated to other traits or a multi-dimensional one with different amounts of correlation.
 
 ## The process (`process`)
 
@@ -142,8 +137,8 @@ Or the following with each dimensions starting with different values (respective
 make.traits(BM.process, n = 3, start = c(1,2,3))
 ```
 
-Note that the number of traits are distributed per processes.
-If the traits contains multiple processes, the number of traits are distributed per processes:
+Note that the number of traits are applied for each process by default.
+However, you can apply different number of traits for different processes:
 
 ```{r}
 ## two 3D processes (BM and OU)

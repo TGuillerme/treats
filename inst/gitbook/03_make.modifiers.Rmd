@@ -319,7 +319,7 @@ And again, we can make some more advanced modifiers: for example, one where a ti
 
 ```{r}
 ## A modifier for removing tips with negative values
-bias.trait <- function(trait.values, lineage) {
+modify.trait <- function(trait.values, lineage) {
     if(parent.traits(trait.values, lineage) < 0) {
         ## Go extinct!
         return(FALSE)
@@ -330,19 +330,19 @@ bias.trait <- function(trait.values, lineage) {
 }
 
 ## Creating the modifier
-biased_trait <- make.modifiers(speciation = bias.trait)
+modified_trait <- make.modifiers(speciation = modify.trait)
 
 ## Simulate a tree and trait with the modifier
 set.seed(1)
-biased_trait_treats <- treats(bd.params = bd_params,
+modified_trait_treats <- treats(bd.params = bd_params,
                           stop.rule = stop_rule,
                           traits    = BM_trait,
-                          modifiers = biased_trait)
+                          modifiers = modified_trait)
 
 ## Plotting the differences in trees and traits
 par(mfrow = c(1, 2))
 plot(default_treats, main = "Default trait and tree")
-plot(biased_trait_treats, main = "Biased trait and tree")
+plot(modified_trait_treats, main = "Biased trait and tree")
 ```
 
 ## Summary of the inputs and outputs for the `branch.length`, `selection` and `speciation` modifiers {#summarymodifiers}
