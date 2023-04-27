@@ -1,43 +1,13 @@
 #' @name events.modifications
-#' @aliases modification, random.extinction, trait.extinction, update.bd.params, update.traits, update.modifiers, founding.event
-#' @title events.modifications
+#' @aliases random.extinction trait.extinction bd.params.update traits.update modifiers.update founding.event
+#' @title Events modifications
 #'
 #' @description Inbuilt modifications functions for helping designing events
 #'
-#' @usage modification(x, ...)
-#' @usage founding.event(x, bd.params = NULL, traits = NULL, modifiers = NULL,
-#'                       events = NULL)
-#' @usage random.extinction(x)
-#' @usage trait.extinction(x, condition = `<`, trait = 1)
-#' @usage update.bd.params(x, speciation = NULL, extinction = NULL,
-#'                        joint = NULL, absolute = NULL, speciation.args = NULL,
-#'                        extinction.args = NULL)
-#' @usage update.modifiers(x, branch.length = NULL, selection = NULL,
-#'                         speciation = NULL, condition = NULL, modify = NULL)
-#' @usage update.traits(x, process = NULL, process.args = NULL,
-#'                      trait.names = NULL)
+#' @usage events.modification(x, ...)
 #'
 #' @param x   a numerical value to update.
 #' @param ... any specific argument for the modification (see details).
-#' @param bd.params a \code{"bd.params"} \code{"treats"} object for the founding event (see details for founding.event).
-#' @param traits a \code{"traits"} \code{"treats"} object for the founding event (see details for founding.event).
-#' @param modifiers a \code{"modifiers"} \code{"treats"} object for the founding event (see details for founding.event).
-#' @param events an \code{"events"} \code{"treats"} object for the founding event (see details for founding.event).
-#' @param condition a condition function for the trait value (see details for trait.extinction and update.modifiers).
-#' @param trait which trait to use (see details for trait.extinction).
-#' @param speciation the same argument as in \code{\link{make.bd.params}} (see details for update.bd.params).
-#' @param extinction the same argument as in \code{\link{make.bd.params}} (see details for update.bd.params).
-#' @param joint the same argument as in \code{\link{make.bd.params}} (see details for update.bd.params).
-#' @param absolute the same argument as in \code{\link{make.bd.params}} (see details for update.bd.params).
-#' @param speciation.args the same argument as in \code{\link{make.bd.params}} (see details for update.bd.params).
-#' @param extinction.args the same argument as in \code{\link{make.bd.params}} (see details for update.bd.params).
-#' @param branch.length the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).
-#' @param selection the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).
-#' @param speciation the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).
-#' @param modify the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).
-#' @param process the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).
-#' @param process.args the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).
-#' @param trait.names the same argument as in \code{\link{make.modifiers}} (see details for update.modifiers).
 #' 
 #' @details
 #' The following functions allow to design specific modifications for events:
@@ -46,36 +16,39 @@
 #'      
 #' \item modifications for the target \code{"taxa"}
 #'      \itemize{
-#'          \item \code{random.extinction}: this function removes (makes extinct) a proportion of living taxa when the event is triggered. The proportion of taxa to remove can be changed with the argument \code{x}. 
-#'          \item \code{trait.extinction}: this function removes (makes extinct) a number of living taxa based on their trait(s) values when the event is triggered. The trait value is specified with the argument \code{x}. You can specify the condition in relation to that trait value with \code{condition} (the default is \code{condition = `<`} meaning taxa with a trait value lower that \code{x} will go extinct) and which trait(s) to consider using \code{trait} (the default is \code{trait = 1}, meaning it will only consider the first trait).
+#'          \item \code{random.extinction}: this function removes (makes extinct) a proportion of living taxa when the event is triggered. The proportion of taxa to remove can be changed with the argument \code{x}.
+#'          \item \code{trait.extinction}: this function removes (makes extinct) a number of living taxa based on their trait(s) values when the event is triggered. The trait value is specified with the argument \code{x}.This function has one optional argument:
+#'          \itemize{
+#'              \item{condition} to specify the condition in relation to that trait value (the default is \code{condition = `<`} meaning taxa with a trait value lower that \code{x} will go extinct).
+#'              \item{trait} to specify which trait will be affected (the default is \code{trait = 1}, meaning it will only consider the first trait).
+#'          }
+#' 
 #'      }
 #' 
 #' \item modifications for the target \code{"bd.params"}
 #'      \itemize{
-#'          \item \code{update.bd.params}: this function updates the birth death parameters within the birth death process. The value of the parameter to change is specified with the argument \code{x} and the argument to change is specified with the argument \code{parameter} (e.g. \code{parameter = "speciation"} will attribute the value \code{x} to \code{bd.params$speciation}).
+#'          \item \code{bd.params.update}: this function updates a \code{"bd.params"} object within the birth death process. It takes any unambiguous named argument to be passed to \code{\link{make.bd.params}}. For example, to update the speciation from any current rate to a new rate of 42, you can use \code{bd.params.update(speciation = 42)}.
 #'      }
 #'
 #' \item modifications for the target \code{"traits"} 
 #'      \itemize{
-#'          \item \code{update.traits}: this function updates a \code{"treats"} \code{"traits"} object. This function takes as arguments any arguments that can be updated in \code{\link{make.traits}}, namely \code{process}, \code{process.args} and \code{trait.names}.
+#'          \item \code{traits.update}: this function updates a \code{"traits"} object within the birth death process. It takes any unambiguous named argument to be passed to \code{\link{make.traits}}. For example, to update the trait process from the current one to an OU process, you can use \code{traits.update(process = OU.process)}.
 #'      }
 #' 
 #' \item modifications for the target \code{"modifiers"}
 #'      \itemize{
-#'          \item \code{update.modifiers}: this function updates a \code{"treats"} \code{"modifiers"} object. This function takes as arguments any arguments that can be updated in \code{\link{make.modifiers}}, namely \code{branch.length}, \code{selection}, \code{speciation}, \code{condition} and \code{modify}.
+#'          \item \code{modifiers.update}: this function updates a \code{"modifiers"} object within the birth death process. It takes any unambiguous named argument to be passed to \code{\link{make.modifiers}}. For example, to update the speciation from the current process to be dependent to trait values, you can use \code{modifiers.update(speciation = speciation.trait)}.
 #'      }
 #' 
 #' \item modifications for the target \code{"founding"} 
 #'      \itemize{
-#'          \item \code{founding.event}: this function runs an independent birth-death process when the condition is met. This function takes the arguments \code{"bd.params"}, \code{"traits"}, \code{"modifiers"} and \code{"events"} as they would normally be specified for the \code{\link{treats}} function. The \code{stop.rule} and other arguments are handled internally: namely the \code{stop.rule} argument is updated to match the time and number of taxa when the founding event is triggered. \emph{Note that this can lead to the simulation stopping just before reaching the \code{max.taxa} or \code{max.living} stop rule}.
+#'          \item \code{founding.event}: this function runs an independent birth-death process when the condition is met. This function takes any of the arguments normally passed to \code{\link{treats}} (\code{"bd.params"}, \code{"traits"}, \code{"modifiers"} and \code{"events"}). The \code{stop.rule} and other arguments are handled internally: namely the \code{stop.rule} argument is updated to match the time and number of taxa when the founding event is triggered. \emph{Note that this can lead to the simulation stopping just before reaching the \code{max.taxa} or \code{max.living} stop rule}.
 #'      }
 #' }
-#' 
 #' 
 #' More details about the \code{events} functions is explained in the \code{treats} manual: \url{http://tguillerme.github.io/treats}.
 #' 
 #' @examples
-
 #' ## Generating a mass extinction
 #' ## 80% mass extinction at time 4
 #' mass_extinction <- make.events(
@@ -106,7 +79,7 @@
 #'                   target       = "traits",
 #'                   ## condition is triggered if(upper.95(x) > 3)
 #'                   condition    = trait.condition(3, condition = `>`, what = upper.95),
-#'                   modification = update.traits(process = OU.process))
+#'                   modification = traits.update(process = OU.process))
 #' 
 #' ## Set the simulation parameters
 #' bd.params <- list(extinction = 0, speciation = 1)
@@ -134,17 +107,17 @@
 #' @author Thomas Guillerme
 
 ## The list of conditions
-modification <- function(x) {
+events.modification <- function(x, ...) {
     cat("List of inbuilt modification functions in treats:\n")
     cat("For the taxa target:\n")
     cat("   ?random.extinction\n")
     cat("   ?trait.extinction\n")
     cat("For the bd.params target:\n")
-    cat("   ?update.bd.params\n")
+    cat("   ?bd.params.update\n")
     cat("For the traits target:\n")
-    cat("   ?update.traits\n")
+    cat("   ?traits.update\n")
     cat("For the modifiers target:\n")
-    cat("   ?update.modifiers\n")
+    cat("   ?modifiers.update\n")
     cat("For the founding target:\n")
     cat("   ?founding.event\n")
     return(invisible())
@@ -226,7 +199,7 @@ trait.extinction <- function(x, condition = `<`, trait = 1) {
 }
 
 ## Updating the bd.params
-update.bd.params <- function(x, speciation = NULL, extinction = NULL, joint = NULL, absolute = NULL, speciation.args = NULL, extinction.args = NULL) {
+bd.params.update <- function(x, speciation = NULL, extinction = NULL, joint = NULL, absolute = NULL, speciation.args = NULL, extinction.args = NULL) {
 
     change.bd.params <- function(traits, bd.params, lineage, trait.values) {
         ## Changing the traits
@@ -244,7 +217,7 @@ update.bd.params <- function(x, speciation = NULL, extinction = NULL, joint = NU
 }
 
 ## Updating a traits object
-update.traits <- function(x, process = NULL, process.args = NULL, trait.names = NULL) {
+traits.update <- function(x, process = NULL, process.args = NULL, trait.names = NULL) {
 
     change.traits <- function(traits, bd.params, lineage, trait.values) {
         ## Changing the traits
@@ -258,7 +231,7 @@ update.traits <- function(x, process = NULL, process.args = NULL, trait.names = 
 }
 
 ## Updating a modifiers object
-update.modifiers <- function(x, branch.length = NULL, selection = NULL, speciation = NULL, condition = NULL, modify = NULL) {
+modifiers.update <- function(x, branch.length = NULL, selection = NULL, speciation = NULL, condition = NULL, modify = NULL) {
 
     change.modifiers <- function(modifiers, bd.params, lineage, trait.values) {
         ## Setting the variables

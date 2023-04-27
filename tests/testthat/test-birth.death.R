@@ -285,7 +285,7 @@ test_that("events work", {
     events <- make.events(
         condition    = taxa.condition(30),
         target       = "bd.params",
-        modification = update.bd.params(extinction = 1/3))
+        modification = bd.params.update(extinction = 1/3))
     ## Testing the results
     set.seed(2)
     test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = NULL, modifiers = NULL, events = events)
@@ -302,7 +302,7 @@ test_that("events work", {
     events <- make.events(
         condition    = time.condition(2),
         target       = "bd.params",
-        modification = update.bd.params(speciation = 1/3))
+        modification = bd.params.update(speciation = 1/3))
     
     ## Updating the stop.rule
     stop.rule$max.living <- Inf
@@ -330,7 +330,7 @@ test_that("events work", {
     events <- make.events(
         condition    = time.condition(5),
         target       = "traits",
-        modification = update.traits(process = OU.process))
+        modification = traits.update(process = OU.process))
     
     set.seed(1)
     test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = NULL, events = NULL)
@@ -349,7 +349,7 @@ test_that("events work", {
     change_correlation <- make.events(
         condition    = trait.condition(3, absolute = TRUE),
         target       = "traits",
-        modification = update.traits(process.args = list(Sigma = matrix(c(10,3,3,2),2,2))))
+        modification = traits.update(process.args = list(Sigma = matrix(c(10,3,3,2),2,2))))
 
     stop.rule$max.living <- Inf
     stop.rule$max.time <- Inf
@@ -386,7 +386,7 @@ test_that("events work", {
     events <- make.events(
         condition    = time.condition(3),
         target       = "modifiers",
-        modification = update.modifiers(speciation = speciation, condition = new.condition, modify = new.modify))
+        modification = modifiers.update(speciation = speciation, condition = new.condition, modify = new.modify))
 
     set.seed(4)
     test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modifiers = modifiers, events = NULL)
@@ -410,7 +410,7 @@ test_that("events work", {
     events <- make.events(
         condition    = taxa.condition(30),
         target       = "modifiers",
-        modification = update.modifiers(branch.length = branch.length, modify = new.modify))
+        modification = modifiers.update(branch.length = branch.length, modify = new.modify))
 
     stop.rule <- list(max.time = Inf, max.taxa = 100, max.living = Inf)
     bd.params <- make.bd.params(extinction = 0, speciation = 1)

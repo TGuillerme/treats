@@ -9,20 +9,8 @@
 \alias{speciation.trait}
 \title{Modifiers}
 \usage{
-branch.length(bd.params = NULL, lineage = NULL, trait.values = NULL,
+modifiers(bd.params = NULL, lineage = NULL, trait.values = NULL,
                      modify.fun = NULL)
-
-selection(bd.params = NULL, lineage = NULL, trait.values = NULL,
-                 modify.fun = NULL)
-
-speciation(bd.params = NULL, lineage = NULL, trait.values = NULL,
-                  modify.fun = NULL)
-
-branch.length.trait(bd.params = NULL, lineage = NULL,
-                           trait.values = NULL, modify.fun = NULL)
-
-speciation.trait(bd.params = NULL, lineage = NULL,
-                        trait.values = NULL, modify.fun = NULL)
 }
 \arguments{
 \item{bd.params}{A named list of birth death parameters (see details).}

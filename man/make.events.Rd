@@ -73,7 +73,7 @@ change_process <- make.events(
                   target       = "traits",
                   ## condition is triggered if(upper.95(x) > 3)
                   condition    = trait.condition(3, condition = `>`, what = upper.95),
-                  modification = update.traits(process = OU.process))
+                  modification = traits.update(process = OU.process))
 
 ## Set the simulation parameters
 bd.params <- list(extinction = 0, speciation = 1)

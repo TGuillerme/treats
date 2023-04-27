@@ -3,7 +3,7 @@ test_that("make.events works", {
 
     condition.test.ok <- time.condition(5)
     condition.test.wrong <- "bob"
-    modification.test.ok <- update.traits(process = OU.process)
+    modification.test.ok <- traits.update(process = OU.process)
     modification.test.wrong <- "bub"
 
     error <- capture_error(make.events(target = "target"))

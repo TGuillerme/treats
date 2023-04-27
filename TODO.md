@@ -1,7 +1,7 @@
 # TODO list: finish package!
 
 ## New function
- - [ ] allow inputing a tree and simulating from there (handled separately through `map.trait` (map trait on tree) with `map.trait(tree = tree, trait = traits)`.
+ - [x] allow inputing a tree and simulating from there (handled separately through `map.trait` (map trait on tree) with `map.trait(tree = tree, trait = traits)`.
 
 ## utilities
 
@@ -11,7 +11,9 @@
 
 ## Package
 
- - [ ] compile package with CRAN check
+ - [x] compile package with CRAN check
+    - [x] clean S3
+    - [x] clean codoc
  - [x] compile manual
  - [x] update README
 

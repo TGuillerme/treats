@@ -1,13 +1,10 @@
 #' @name events.conditions
-#' @aliases condition, time.condition, taxa.condition, trait.condition
+#' @aliases time.condition taxa.condition trait.condition
 #' @title events.conditions
 #'
 #' @description Inbuilt conditions functions for helping designing events
 #'
-#' @usage condition(x, condition, ...)
-#' @usage taxa.condition(x, condition, ...)
-#' @usage time.condition(x, condition, ...)
-#' @usage trait.condition(x, condition, ...)
+#' @usage events.condition(x, condition, ...)
 #'
 #' @param x         the variable to reach for satisfying a condition (see details)
 #' @param condition the logical function for triggering the condition (e.g. `<`, `==`, `!>`, etc...).
@@ -66,7 +63,7 @@
 #'                   target       = "traits",
 #'                   ## condition is triggered if(upper.95(x) > 3)
 #'                   condition    = trait.condition(3, condition = `>`, what = upper.95),
-#'                   modification = update.traits(process = OU.process))
+#'                   modification = traits.update(process = OU.process))
 #' 
 #' ## Set the simulation parameters
 #' bd.params <- list(extinction = 0, speciation = 1)
@@ -94,7 +91,7 @@
 #' @author Thomas Guillerme
 
 ## The list of conditions
-condition <- function(x, condition) {
+events.condition <- function(x, condition, ...) {
     cat("List of inbuilt condition functions in treats:\n")
     cat("   ?taxa.condition\n")
     cat("   ?time.condition\n")

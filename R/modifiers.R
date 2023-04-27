@@ -4,16 +4,16 @@
 #'
 #' @description Different modifiers for the birth death process implemented in treats.
 #'
-#' @usage branch.length(bd.params = NULL, lineage = NULL, trait.values = NULL,
+#' @usage modifiers(bd.params = NULL, lineage = NULL, trait.values = NULL,
 #'                      modify.fun = NULL)
-#' @usage selection(bd.params = NULL, lineage = NULL, trait.values = NULL,
-#'                  modify.fun = NULL)
-#' @usage speciation(bd.params = NULL, lineage = NULL, trait.values = NULL,
-#'                   modify.fun = NULL)
-#' @usage branch.length.trait(bd.params = NULL, lineage = NULL,
-#'                            trait.values = NULL, modify.fun = NULL)
-#' @usage speciation.trait(bd.params = NULL, lineage = NULL,
-#'                         trait.values = NULL, modify.fun = NULL)
+# @usage selection(bd.params = NULL, lineage = NULL, trait.values = NULL,
+#                  modify.fun = NULL)
+# @usage speciation(bd.params = NULL, lineage = NULL, trait.values = NULL,
+#                   modify.fun = NULL)
+# @usage branch.length.trait(bd.params = NULL, lineage = NULL,
+#                            trait.values = NULL, modify.fun = NULL)
+# @usage speciation.trait(bd.params = NULL, lineage = NULL,
+#                         trait.values = NULL, modify.fun = NULL)
 #'
 #' @param bd.params      A named list of birth death parameters (see details).
 #' @param lineage        A named list containing the lineage data (see details).

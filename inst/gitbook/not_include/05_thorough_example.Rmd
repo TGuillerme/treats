@@ -137,12 +137,12 @@ plot(results, trait = c(2,3), use.3D = TRUE)
 
 ```{r}
 ## The correlation change event
-update.correlation <- update.traits(process.args =list(Sigma = matrix(c(10,3,3,2),2,2)))
+update.correlation <- traits.update(process.args =list(Sigma = matrix(c(10,3,3,2),2,2)))
 
 events_list <- make.events(event.name   = "Correlation",
                            target       = "traits",
                            condition    = time.condition(2),
-                           modification = update.traits(
+                           modification = traits.update(
                     process.args =list(Sigma = matrix(c(10,3,3,2),2,2)),
                     trait.names  = "Variables"))
 ```

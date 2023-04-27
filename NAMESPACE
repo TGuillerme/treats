@@ -35,16 +35,16 @@ export(speciation.trait)
 
 ## Events
 export(make.events)
-export(condition)
+export(events.condition)
 export(time.condition)
 export(taxa.condition)
 export(trait.condition)
-export(modification)
+export(events.modification)
 export(random.extinction)
 export(trait.extinction)
-export(update.bd.params)
-export(update.traits)
-export(update.modifiers)
+export(bd.params.update)
+export(traits.update)
+export(modifiers.update)
 export(founding.event)
 
 ## Utilities

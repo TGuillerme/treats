@@ -68,9 +68,9 @@ Depending on the target you can modify the following:
 
  * if the target is `"taxa"` you can modify the internal [`lineage` list](#allowarguments) by removing living species using `random.extinction` or `trait.extinction`.
  * if the target is `"taxa"` you can modify the lineage tracker by removing living species using `random.extinction` or `trait.extinction`.
- * if the target is `"bd.params"` you can modify the [`bd.params` object](#makebdparams) using `update.bd.params`.
- * if the target is `"traits"` you can modify the [`traits` object](#maketraits) using `update.traits`.
- * if the target is `"modifiers"` you can modify the [`modifiers` object](#makemodifiers) using `update.modifiers`.
+ * if the target is `"bd.params"` you can modify the [`bd.params` object](#makebdparams) using `bd.params.update`.
+ * if the target is `"traits"` you can modify the [`traits` object](#maketraits) using `traits.update`.
+ * if the target is `"modifiers"` you can modify the [`modifiers` object](#makemodifiers) using `modifiers.update`.
  * (for the `"founding"` target [see below](#founding))
 
 The most straightforward example is for `modifications` on `bd.params`, `traits` or `modifiers` objects because they use the same syntax as for their generic `make.X` function.
@@ -89,7 +89,7 @@ The following `event` updates the `bd.params` object by setting the extinction p
 ```{r, eval = FALSE}
 make.events(target = "bd.params",
             condition = taxa.condition(10, condition = `>=`),
-            modification = update.bd.params(extinction = 1/3))
+            modification = bd.params.update(extinction = 1/3))
 ```
 
 > Note that by default events are triggered only once across the whole simulation, so although the example above states that the condition is reaching at least 10 taxa, it will not trigger every time it reaches more than 10 taxa, only the first time. You can change the number of times the events can be triggered using the argument `replications` (by default it's set to `replications = 0` for triggering the event only once).
@@ -132,7 +132,7 @@ change_process <- make.events(
                   target = "traits",
                   ## condition is triggered if(upper.95(x) > 3)
                   condition = trait.condition(3, condition = `>`, what = upper.95),
-                  modification = update.traits(process = OU.process))
+                  modification = traits.update(process = OU.process))
 
 ## Set the simulation parameters
 bd.params <- list(extinction = 0, speciation = 1)
