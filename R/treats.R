@@ -9,6 +9,7 @@
 #' @param events     A \code{"events"} object (see \code{\link{make.events}}).
 #' @param save.steps Optional, \code{"numeric"} value to save the simulations at specific internal points (this can slow down the algorithm significantly for large trees). 
 #' @param null.error Logical, whether to return an error when the birth-death parameters fails to build a tree (\code{FALSE}; default and highly recommended) or whether to return \code{NULL} (\code{TRUE}). Can also be set to an integer value for the numbers of trials (see details).
+#' @param replicates Optional, the number of replicates for the simulation.
 #' 
 #' @details
 #' \code{stop.rule}: The rule(s) for when to stop the simulation. When multiple rules are given, the simulation stops when any rule is broken. The allowed rules are:
@@ -88,7 +89,13 @@
 #' @author Thomas Guillerme
 #' @export
 
-treats <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events = NULL, save.steps = NULL, null.error = FALSE) {
+treats <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events = NULL, save.steps = NULL, null.error = FALSE, replicates) {
+
+    ## Replicates
+    if(!missing(replicates)) {
+        check.class(replicates, c("integer", "numeric"))
+        return(replicate(replicates, treats(stop.rule, bd.params, traits, modifiers, events, save.steps, null.error), simplify = FALSE))
+    }
 
     ## Sanitizing
     ## stop.rule

@@ -671,13 +671,15 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
 
     ## Find if any matches the requested ones
     if(check.results) {
+        ## Infinite rules are now NAs
         check.requested <- function(requested, achieved){
-            if(requested == Inf) {TRUE} else {achieved == requested}
+            if(requested == Inf) {NA} else {achieved == requested}
         }
-        achieved <- unlist(mapply(check.requested, stop.rule[names(achieved)], achieved))
+        ## Check achievements
+        achievements <- unlist(mapply(check.requested, stop.rule[names(achieved)], achieved))
         
         ## Warning or fail
-        if(!any(achieved)) {        #TODO: debug this (should ping only one if more than one rule is requested.)
+        if(!any(achievements[-which(is.na(achievements))])) {
             if(!null.error) {
                 warning("The simulation stopped before reaching any of the stopping rule.", call. = FALSE)
             } else {

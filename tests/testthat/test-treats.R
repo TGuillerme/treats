@@ -41,7 +41,7 @@ test_that("treats works for simple birth-deaths", {
     set.seed(123)
     prints <- capture_messages(test <- treats(bd.params = list(speciation = 1, extinction = 0.9), stop.rule = list("max.living" = 10), null.error = 50))
     expect_is(test, "phylo")
-    expect_equal(length(prints), 6)
+    expect_equal(length(prints), 7)
 
     ## Long sim warning
     messages <- capture_messages(treats(stop.rule = list(max.time = 6.1)))
