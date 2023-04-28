@@ -31,7 +31,7 @@ abline(v = 10)
 ```
 
 ```{r}
-libary(treats)
+library(treats)
 my_params <- make.bd.params(speciation = rnorm)
 my_stop_rule <- list(max.taxa = 50)
 trait <- make.traits(process = BM.process, n = 10)
