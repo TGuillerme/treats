@@ -8,10 +8,12 @@ treats v0.1.13 (2023-04-28)
 
 ### NEW FEATURES
 
+ * New utility function `dispRitreats` to convert `"treats"` output as input for `dispRity`
+ * New utility function `crude.bd.est` for a crude estimation of speciation and extinction rates from an input tree.
  * New utility function `map.traits` for mapping a `"traits"` onto a tree.
  * Changed package name from `dads` to `treats`
  * Full polished version of the manual!
- * `treats` has now a `save.steps` option to create internal nodes at regular intervals or specified ones.
+ * `treats` has now a `save.steps` option to create internal nodes at regular intervals or specified ones and a `replicates` option to automatically replicate the simulations.
  * Added a `make.bd.parms` utility function for sampling from distributions (jointly or not).
  * Trees can now be generated with birth-death parameters sampled from functions.
  * added a list of pre-made `modification` and `condition` for events.
@@ -26,6 +28,7 @@ treats v0.1.13 (2023-04-28)
 ### MINOR IMPROVEMENTS
 
  * Many clarifications and rewording to the manual.
+
 
 treats v0.1.0 (2020-11-13) *first release*
 =========================

@@ -48,13 +48,15 @@ export(modifiers.update)
 export(founding.event)
 
 ## Utilities
-export(map.traits)
-export(make.bd.params)
-export(make.treats)
+export(crude.bd.est)
+export(dispRitreats)
 export(drop.things)
 export(drop.fossils)
 export(drop.livings)
 export(drop.singles)
+export(make.bd.params)
+export(make.treats)
+export(map.traits)
 export(parent.traits)
 
 ##S3 
