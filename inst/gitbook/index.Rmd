@@ -16,15 +16,42 @@ description: "treats R package manual"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# `treats`: disparity and diversity simulations.
+# `treats`: trees and traits simulations.
 
-Simultaneously simulate diversity (i.e. phylogenetic trees) and disparity  diversity (and the interaction between them).
+Simultaneously simulate phylogenetic trees and traits (and the interaction between them).
 
 The core of this package is based on the [`diversitree` birth-death algorithm](https://github.com/cran/diversitree/blob/master/R/simulate-bd.R).
 
 ## What is `treats`?
 
-<!-- %NC: I think here you need an example of use case as it's not immediately obvious what the package is for... -->
+
+
+
+Ar Macarface is studying the evolution of mammalian disparity (i.e. diversity of shapes) across the Cretaceous-Palaeogene mass extinction event (K-Pg - 66 million years ago).
+They observe a decrease of morphological disparity after the extinction event followed by a sharp increase of disparity.
+However Ar is also prudent and wants to test whether their observed pattern is just an artifact of the data or actually showing some effect of the K-Pg extinction on mammalian evolution.
+First they need to check whether changes in disparity can actually be discernables due to an extinction event (i.e. if an extinction event happens, would it be possible to detect a change in disparity)?
+Second they want to know whether these changes are due to changes are due to the mass extinction event being selective or not.
+
+The [getting started](#kpgexample) section actually shows how do implement this example in `treats` in details. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 There are some very good R packages that simulate birth-death trees (e.g. [TreeSim](https://github.com/tanja819/TreeSim)) or simulate traits (disparity) and diversity jointly (e.g. [RPANDA](https://github.com/cran/RPANDA) or [PETER](https://github.com/PuttickMacroevolution/PETER)).
 We strongly advise you look at these packages first as they might be more appropriate for your needs.
@@ -35,6 +62,9 @@ You can then specify how the traits should affect disparity through `"modifiers"
 And finally you can create events (like mass extinctions) through `"events"` objects.
 These objects and how to modify them will be detailed throughout this manual.
 Finally we are putting an emphasis in the development of this package on the speed and reliability of the functions.
+
+
+
 
 ### Modular?
 
