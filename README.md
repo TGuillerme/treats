@@ -2,7 +2,7 @@
 [![R-CMD-check](https://github.com/TGuillerme/treats/workflows/R-CMD-check/badge.svg)](https://github.com/TGuillerme/treats/actions)
 [![codecov](https://codecov.io/gh/TGuillerme/treats/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/treats)
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
-[![develVersion](https://img.shields.io/badge/devel%20version-0.1.12-green.svg?style=flat)](https://github.com/TGuillerme/treats/tree/master)
+[![develVersion](https://img.shields.io/badge/devel%20version-0.1.13-green.svg?style=flat)](https://github.com/TGuillerme/treats/tree/master)
 [![DOI](https://zenodo.org/badge/299272555.svg)](https://zenodo.org/badge/latestdoi/299272555)
 
 
