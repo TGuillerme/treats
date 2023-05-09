@@ -116,11 +116,6 @@ treats <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events
     stop.rule$max.time    <- ifelse(is.null(stop.rule$max.time),   Inf, stop.rule$max.time)
 
     ## Warning message for stop rule
-    if(stop.rule$max.time != Inf && stop.rule$max.time > 6) {
-        warning_message <- "Stop rule was step higher than 6 time units.\nThis can take a considerable amount of time and RAM to simulate"
-        additional_message <- ifelse((stop.rule$max.taxa == Inf && stop.rule$max.living == Inf), " if no other stop rules are given", "")
-        message(paste0(warning_message, additional_message, "."))
-    }
 
     ## bd.params
     if(missing(bd.params)) {
@@ -141,6 +136,12 @@ treats <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events
             bd.params <- make.bd.params(speciation = ifelse(is.null(bd.params$speciation), 1, bd.params$speciation),
                                         extinction = ifelse(is.null(bd.params$extinction), 0, bd.params$extinction))
         }
+    }
+
+    if(stop.rule$max.time != Inf && stop.rule$max.time > 6 && bd.params$speciation() > 0.5) {
+        warning_message <- "Stop rule was step higher than 6 time units.\nThis can take a considerable amount of time and RAM to simulate"
+        additional_message <- ifelse((stop.rule$max.taxa == Inf && stop.rule$max.living == Inf), " if no other stop rules are given", "")
+        message(paste0(warning_message, additional_message, "."))
     }
 
     ## traits

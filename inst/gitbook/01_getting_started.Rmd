@@ -75,8 +75,8 @@ We can do that by using crude parameters from the observed tree:
 (est_params <- crude.bd.est(BeckLee_tree))
 ## These parameters are the observed speciation and extinction rate per million years.
 
-## Setting the stopping rule (stop when reaching a total of 50 taxa)
-stop_rule <- list(max.taxa = 50)
+## Setting the stopping rule (stop after 30 time units)
+stop_rule <- list(max.time = 30)
 
 ## Simulating just a birth-death tree with these parameters to check
 set.seed(1)
@@ -237,7 +237,7 @@ plot(sim_rand_ext_disp, main = "simulated disparity\n(mass extinction)")
 plot(simulated_disparity, main = "simulated disparity\n(trait extinction)")
 ```
 
-Interestingly, with all our parameters used here and our specific disparity metric we cannot detect the effect of a mass extinction.
+Interestingly, with all our parameters used here and our specific disparity metric we cannot detcet the effect of a mass extinction.
 
 
 
