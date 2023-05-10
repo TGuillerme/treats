@@ -15,250 +15,6 @@ set.seed(4242)
 
 # Getting started {#gettingstarted}
 
-
-<!-- ## An illustrative example -->
-## A verbose example: mammals disparity through the K-Pg extinction {kpgexample}
-
-
-Ar Macarface is studying the evolution of mammalian disparity (i.e. diversity of shapes) across the Cretaceous-Palaeogene mass extinction event (K-Pg - 66 million years ago).
-
-They use a dataset from @BeckLee that is a discrete morphological space containing the ordination of the around 400 morphological characters for 50 species and estimated for their 49 descendants into an ordinated shapespace of 99 elements and 97 dimensions.
-
-```{r}
-library(dispRity)
-## Loading the mammalian morphological example data
-data(BeckLee_mat99)
-
-## This is what the dataset looks like
-head(BeckLee_mat99)[1:5, 1:5]
-```
-
-And a tree showing the relation between these species through time:
-
-```{r}
-## The phylogenetic tree
-data(BeckLee_tree)
-
-## And what the tree looks like
-plot(BeckLee_tree, cex = 0.8)
-axisPhylo()
-abline(v = BeckLee_tree$root.time - 66, col = "red")
-```
-
-They measure the disparity as the sum of variances as a proxy for changes in the traitspace size (@moms) with some bootstrapping to create some confidence intervals around that curve.
-
-```{r}
-## Making continuous time series
-time_series <- chrono.subsets(data = BeckLee_mat99,
-                              tree = BeckLee_tree,
-                              method = "continuous", model = "proximity",
-                              time = seq(from = 101, to = 41, by = -5))
-## Calculating disparity
-change_in_size <- dispRity(boot.matrix(time_series), metric = c(sum, variances))
-plot(change_in_size)
-abline(v = 8, col = "red")
-```
-
-> For more info about `chrono.subsets` and the `dispRity` package, you can have a look at the [`dispRity` manual](http://tguillerme.github.io/dispRity.html).
-
-Looking at this curve, Ar wants to know whether disparity increased as a response to the K-Pg mass extinction or not.
-To do this, they need to check whether changes in disparity can actually be detected due to an extinction event (e.g. if an extinction event happens, does that change disparity curves?).
-As a subsidiary question, they want to know whether the pattern is more likely due to a selective or random extinction event.
-
-### Simulating trees and traits using the observed parameters
-
-The first step is to simulate the observed tree.
-We can do that by using crude parameters from the observed tree:
-
-```{r}
-## Extracting the crude parameters
-(est_params <- crude.bd.est(BeckLee_tree))
-## These parameters are the observed speciation and extinction rate per million years.
-
-## Setting the stopping rule (stop after 30 time units)
-stop_rule <- list(max.time = 30)
-
-## Simulating just a birth-death tree with these parameters to check
-set.seed(1)
-test_tree <- treats(bd.params  = est_params,
-                    stop.rule  = stop_rule,
-                    null.error = 100)
-plot(ladderize(test_tree), cex = 0.8)
-axisPhylo()
-```
-
-> Note that because of the high extinction to speciation ratio, the tree simulations can often fail before reaching the stop rule (i.e. all lineages go extinct before reaching 50 taxa). To avoid getting stuck in there, we use the option `null.error = 100` to rerun the simulations up to 100 times before obtaining a tree that did not went fully extinct. Also note that using such parameters make the simulations run slowlier but ensure the requested results are always achieved.
-
-We now have a way to simulate a topology close to the observed one. We can simulate a list of topologies by replicating this function X amounts of time to get a distribution of trees:
-
-```{r, eval = FALSE, message = FALSE}
-## Generating 50 trees
-tree_distribution <- treats(bd.params  = est_params,
-                            stop.rule  = stop_rule,
-                            null.error = 100,
-                            replicates = 50)
-```
-
-Of course, here our objective is to also simulate some trait values to measure disparity under some simulated scenario.
-We can do that be adding a `"traits"` object to the `treats` function.
-Here we will use a default [Brownian Motion](https://en.wikipedia.org/wiki/Brownian_motion) to simulate our trait.
-
-```{r}
-## Creating a trait in 97 dimensions.
-my_traits <- make.traits(process = BM.process, n = ncol(BeckLee_mat99))
-```
-
-> Note that there are many more options on how to simulate your trait such as using correlation, different processes, etc... See details in the [make traits section](#maketraits).
-
-```{r, message = FALSE}
-## Simulate the tree and traits
-sim_data <- treats(traits     = my_traits,
-                   bd.params  = est_params,
-                   stop.rule  = stop_rule,
-                   null.error = 100)
-```
-
-We can visualise the resulting tree using the `plot` function and visualising the different traits using the `trait` option in `plot`:
-
-```{r}
-## Plotting the results (first trait)
-plot(sim_data, trait = 1)
-```
-
-Of course, here we want to simulate a distribution of trees and traits:
-
-```{r, message = FALSE}
-## Simulate the tree and traits
-sim_data <- treats(traits     = my_traits,
-                   bd.params  = est_params,
-                   stop.rule  = stop_rule,
-                   null.error = 100,
-                   replicates = 50)
-```
-
-Et voila! We now have a distribution of 50 trees and 50 datasets from which we can calculate disparity.
-We can convert this list into `dispRity` using the `treats.dispRity` function.
-
-```{r}
-## Converting the data to be passed to dispRity functions
-dispRity_data <- dispRitreats(sim_data)
-
-## Creating the time series (by default dispRitreats scales the trees to be 1 unit of times old)
-time_series <- chrono.subsets(data = dispRity_data$data,
-                              tree = dispRity_data$tree,
-                              time = seq(from = 0.9, to = 0, by = -0.1),
-                              method = "continuous", model = "proximity")
-
-## Calculating the disparity from the simulated data
-simulated_disparity <- dispRity(time_series, metric = c(sum, variances),
-                                verbose = TRUE)
-par(mfrow = c(1,2))
-plot(simulated_disparity, main = "simulated disparity")
-plot(change_in_size, main = "observed disparity")
-```
-
-We can see that both simulated and observed disparity curves are different.
-From there one could already reasonably propose that the observe disparity does not entirely follows our parametrised scenario (constant speciation and extinction and BM trait evolution).
-
-However, we can complexify our scenario to introduce the effect of mass extinction event.
-We can simulate two alternative scenarios:
- * one where we create a random extinction event after having simulated half of the species (25) where we remove 75% of species;
- * and a second one where we remove all the species with negative values.
-This allows us to simulate two contrasted scenarios to see whether using our observed dataset it would be possible to detect changes in disparity due to mass extinctions.
-
-To do so, we need to create two mass extinction `"event"` objects:
-
-```{r}
-## Creating a random mass extinction
-random_extinction <- make.events(target = "taxa",
-                                 condition = taxa.condition(25, condition = `>=`),
-                                 modification = random.extinction(0.75))
-## Creating an extrinction that removes species with negative trait values
-negative_extinction <- make.events(target = "taxa",
-                                   condition = taxa.condition(25, condition = `>=`),
-                                   modification = trait.extinction(x = 0, condition = `>=`))
-```
-
-We can then feed these two extinction events to our previous simulations
-
-```{r}
-## Simulate the tree and traits with a random extinction event
-sim_rand_extinction <- treats(
-                   traits     = my_traits,
-                   bd.params  = est_params,
-                   stop.rule  = stop_rule,
-                   events     = random_extinction,
-                   null.error = 100,
-                   replicates = 50)
-
-## Simulate the tree and traits with a random extinction event
-sim_trait_extinction <- treats(
-                   traits     = my_traits,
-                   bd.params  = est_params,
-                   stop.rule  = stop_rule,
-                   events     = negative_extinction,
-                   null.error = 100,
-                   replicates = 50)
-
-## Visualising the difference between both scenarios
-par(mfrow = c(1,2))
-plot(sim_rand_extinction[[1]], main = "Random extinction")
-plot(sim_trait_extinction[[1]], main = "Negative extinction")
-```
-
-We can then measure the disparity from these scenarios and compare them to our observed ones
-
-```{r}
-## Converting the data to be passed to dispRity functions
-rand_ext_data <- dispRitreats(sim_rand_extinction)
-trait_ext_data <- dispRitreats(sim_trait_extinction)
-
-## Creating the time series
-rand_ext_time_series <- chrono.subsets(data = rand_ext_data$data,
-                                       tree = rand_ext_data$tree,
-                                       time = seq(from = 0.9, to = 0, by = -0.1),
-                                       method = "continuous", model = "proximity")
-trait_ext_time_series <- chrono.subsets(data = trait_ext_data$data,
-                                        tree = trait_ext_data$tree,
-                                        time = seq(from = 0.9, to = 0, by = -0.1),
-                                        method = "continuous", model = "proximity")
-
-
-## Calculating the disparity from the simulated data
-sim_rand_ext_disp <- dispRity(rand_ext_time_series, metric = c(sum, variances),
-                              verbose = TRUE)
-sim_trait_ext_disp <- dispRity(trait_ext_time_series, metric = c(sum, variances),
-                               verbose = TRUE)
-
-par(mfrow = c(2,2))
-plot(change_in_size, main = "observed disparity")
-plot(simulated_disparity, main = "simulated disparity")
-plot(sim_rand_ext_disp, main = "simulated disparity\n(mass extinction)")
-plot(simulated_disparity, main = "simulated disparity\n(trait extinction)")
-```
-
-Interestingly, with all our parameters used here and our specific disparity metric we cannot detcet the effect of a mass extinction.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## The simplest analysis: simulating diversity only
 
 One of the simplest things to do with the `treats` package is to simulate a birth-death tree.
@@ -495,5 +251,229 @@ plot(modified_data, main = "results with the modifier")
 ```
 
 You can find much more about how to design modifiers in the [`make.modifiers` section](#makemodifiers).
+
+
+
+## An illustrative example: mammals disparity through the K-Pg extinction {kpgexample}
+
+Bib is studying the evolution of mammalian disparity (i.e. diversity of shapes) across the Cretaceous-Palaeogene mass extinction event (K-Pg - 66 million years ago).
+
+They use a dataset from @BeckLee that is a discrete morphological space containing the ordination of the around 400 morphological characters for 50 species and estimated for their 49 descendants into an ordinated shapespace of 99 elements and 97 dimensions.
+
+```{r}
+library(dispRity)
+## Loading the mammalian morphological example data
+data(BeckLee_mat99)
+
+## This is what the dataset looks like
+head(BeckLee_mat99)[1:5, 1:5]
+```
+
+And a tree showing the relation between these species through time:
+
+```{r}
+## The phylogenetic tree
+data(BeckLee_tree)
+
+## And what the tree looks like
+plot(BeckLee_tree, cex = 0.8)
+axisPhylo()
+abline(v = BeckLee_tree$root.time - 66, col = "red")
+```
+
+They measure the disparity as the sum of variances as a proxy for changes in the traitspace size (@moms) with some bootstrapping to create some confidence intervals around that curve.
+
+```{r}
+## Making continuous time series
+time_series <- chrono.subsets(data = BeckLee_mat99,
+                              tree = BeckLee_tree,
+                              method = "continuous", model = "proximity",
+                              time = seq(from = 101, to = 41, by = -5))
+## Calculating disparity
+change_in_size <- dispRity(boot.matrix(time_series), metric = c(sum, variances))
+plot(change_in_size)
+abline(v = 8, col = "red")
+```
+
+> For more info about `chrono.subsets` and the `dispRity` package, you can have a look at the [`dispRity` manual](http://tguillerme.github.io/dispRity.html).
+
+Looking at this curve, Bib wants to know whether disparity increased as a response to the K-Pg mass extinction or not.
+To do this, they need to check whether changes in disparity can actually be detected due to an extinction event (e.g. if an extinction event happens, does that change disparity curves?).
+As a subsidiary question, they want to know whether the pattern is more likely due to a selective or random extinction event.
+
+### Simulating trees and traits using the observed parameters
+
+The first step is to simulate the observed tree.
+We can do that by using crude parameters from the observed tree:
+
+```{r}
+## Extracting the crude parameters
+(est_params <- crude.bd.est(BeckLee_tree))
+## These parameters are the observed speciation and extinction rate per million years.
+
+## Setting the stopping rule (stop after reaching 50 taxa)
+stop_rule <- list(max.taxa = 50)
+
+## Simulating just a birth-death tree with these parameters to check
+set.seed(1)
+test_tree <- treats(bd.params  = est_params,
+                    stop.rule  = stop_rule,
+                    null.error = 100)
+plot(ladderize(test_tree), cex = 0.8)
+axisPhylo()
+```
+
+> Note that because of the high extinction to speciation ratio, the tree simulations can often fail before reaching the stop rule (i.e. all lineages go extinct before reaching 50 taxa). To avoid getting stuck in there, we use the option `null.error = 100` to rerun the simulations up to 100 times before obtaining a tree that did not went fully extinct. Also note that using such parameters make the simulations run slowlier but ensure the requested results are always achieved.
+
+We now have a way to simulate a topology close to the observed one. We can simulate a list of topologies by replicating this function X amounts of time to get a distribution of trees:
+
+```{r, eval = FALSE, message = FALSE}
+## Generating 50 trees
+tree_distribution <- treats(bd.params  = est_params,
+                            stop.rule  = stop_rule,
+                            null.error = 100,
+                            replicates = 50)
+```
+
+Of course, here our objective is to also simulate some trait values to measure disparity under some simulated scenario.
+We can do that be adding a `"traits"` object to the `treats` function.
+Here we will use a default [Brownian Motion](https://en.wikipedia.org/wiki/Brownian_motion) to simulate our trait.
+
+```{r}
+## Creating a trait in 97 dimensions.
+my_traits <- make.traits(process = BM.process, n = ncol(BeckLee_mat99))
+```
+
+> Note that there are many more options on how to simulate your trait such as using correlation, different processes, etc... See details in the [make traits section](#maketraits).
+
+```{r, message = FALSE}
+## Simulate the tree and traits
+sim_data <- treats(traits     = my_traits,
+                   bd.params  = est_params,
+                   stop.rule  = stop_rule,
+                   null.error = 100)
+```
+
+We can visualise the resulting tree using the `plot` function and visualising the different traits using the `trait` option in `plot`:
+
+```{r}
+## Plotting the results (first trait)
+plot(sim_data, trait = 1)
+```
+
+Of course, here we want to simulate a distribution of trees and traits:
+
+```{r, message = FALSE}
+## Simulate the tree and traits
+sim_data <- treats(traits     = my_traits,
+                   bd.params  = est_params,
+                   stop.rule  = stop_rule,
+                   null.error = 100,
+                   replicates = 50)
+```
+
+Et voila! We now have a distribution of 50 trees and 50 datasets from which we can calculate disparity.
+We can convert this list into `dispRity` using the `treats.dispRity` function.
+
+```{r, message = FALSE}
+## Converting the data to be passed to dispRity functions
+dispRity_data <- dispRitreats(sim_data)
+
+## Creating the time series (by default dispRitreats scales the trees to be 1 unit of times old)
+time_series <- chrono.subsets(data = dispRity_data$data,
+                              tree = dispRity_data$tree,
+                              time = seq(from = 0.9, to = 0, by = -0.1),
+                              method = "continuous", model = "proximity")
+
+## Calculating the disparity from the simulated data
+simulated_disparity <- dispRity(time_series, metric = c(sum, variances),
+                                verbose = TRUE)
+par(mfrow = c(1,2))
+plot(simulated_disparity, main = "simulated disparity")
+plot(change_in_size, main = "observed disparity")
+```
+
+We can see that both simulated and observed disparity curves are different.
+From there one could already reasonably propose that the observe disparity does not entirely follows our parametrised scenario (constant speciation and extinction and BM trait evolution).
+
+However, we can complexify our scenario to introduce the effect of mass extinction event.
+We can simulate two alternative scenarios:
+ * one where we create a random extinction event after having simulated half of the species (25) where we remove 75% of species;
+ * and a second one where we remove all the species with negative values.
+This allows us to simulate two contrasted scenarios to see whether using our observed dataset it would be possible to detect changes in disparity due to mass extinctions.
+
+To do so, we need to create two mass extinction `"event"` objects:
+
+```{r}
+## Creating a random mass extinction
+random_extinction <- make.events(target = "taxa",
+                                 condition = taxa.condition(25, condition = `>=`),
+                                 modification = random.extinction(0.75))
+## Creating an extrinction that removes species with negative trait values
+negative_extinction <- make.events(target = "taxa",
+                                   condition = taxa.condition(25, condition = `>=`),
+                                   modification = trait.extinction(x = 0, condition = `>=`))
+```
+
+We can then feed these two extinction events to our previous simulations
+
+```{r}
+## Simulate the tree and traits with a random extinction event
+sim_rand_extinction <- treats(
+                   traits     = my_traits,
+                   bd.params  = est_params,
+                   stop.rule  = stop_rule,
+                   events     = random_extinction,
+                   null.error = 100,
+                   replicates = 50)
+
+## Simulate the tree and traits with a random extinction event
+sim_trait_extinction <- treats(
+                   traits     = my_traits,
+                   bd.params  = est_params,
+                   stop.rule  = stop_rule,
+                   events     = negative_extinction,
+                   null.error = 100,
+                   replicates = 50)
+
+## Visualising the difference between both scenarios
+par(mfrow = c(1,2))
+plot(sim_rand_extinction[[1]], main = "Random extinction")
+plot(sim_trait_extinction[[1]], main = "Negative extinction")
+```
+
+We can then measure the disparity from these scenarios and compare them to our observed ones
+
+```{r}
+## Converting the data to be passed to dispRity functions
+rand_ext_data <- dispRitreats(sim_rand_extinction)
+trait_ext_data <- dispRitreats(sim_trait_extinction)
+
+## Creating the time series
+rand_ext_time_series <- chrono.subsets(data = rand_ext_data$data,
+                                       tree = rand_ext_data$tree,
+                                       time = seq(from = 0.9, to = 0, by = -0.1),
+                                       method = "continuous", model = "proximity")
+trait_ext_time_series <- chrono.subsets(data = trait_ext_data$data,
+                                        tree = trait_ext_data$tree,
+                                        time = seq(from = 0.9, to = 0, by = -0.1),
+                                        method = "continuous", model = "proximity")
+
+
+## Calculating the disparity from the simulated data
+sim_rand_ext_disp <- dispRity(rand_ext_time_series, metric = c(sum, variances),
+                              verbose = TRUE)
+sim_trait_ext_disp <- dispRity(trait_ext_time_series, metric = c(sum, variances),
+                               verbose = TRUE)
+
+par(mfrow = c(2,2))
+plot(change_in_size, main = "observed disparity")
+plot(simulated_disparity, main = "simulated disparity")
+plot(sim_rand_ext_disp, main = "simulated disparity\n(mass extinction)")
+plot(simulated_disparity, main = "simulated disparity\n(trait extinction)")
+```
+
+Interestingly, with all our parameters used here and our specific disparity metric we cannot detcet the effect of a mass extinction.
+
 
 
