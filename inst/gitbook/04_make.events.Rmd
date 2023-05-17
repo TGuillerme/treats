@@ -40,6 +40,7 @@ First let's focus on these three main arguments:
 The target of the event is what the event is going to modify in the birth-death algorithm.
 You can only have one target per event (along with one condition and one modification) but you can create events that contain multiple events (i.e. multiple triplets of target/condition/modification).
 The targets that are currently available are:
+
  * `"taxa"` to modify anything linked to the [`lineage` list](#allowarguments). e.g. making half of the living taxa go extinct.
  * `"bd.params"` to modify anything linked to the [`bd.params` object](#makebdparams). For example you might want to change the distribution of one of the parameter after some `conditions`. This is typically done by updating the object using the argument `update` from `make.bd.params`.
  * `"traits"` to modify anything linked to the [`traits` object](#maketraits). For example you might want to change the trait process after some `conditions`. This is typically done by updating the object using the argument `update` from `make.traits`.
