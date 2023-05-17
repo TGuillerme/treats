@@ -38,9 +38,6 @@
 ## Feedback
 
 ### Manual suggestions
- - [ ] See list of issues from NC
-    - [ ] change and standardise throughout the manuscript `"traits"` object to `"traits"`, etc.
-    - [ ] Add Louie's example
  - [ ] add a schematic for each subsection as well (not only the main one): or maybe just do it for a specific example
  - [ ] Get some standard examples and link to the once the the end of the vignette. BM and OU with one traits that people standardly do and use. Like get 20 basic scenarios. e.g. `geiger::fitcontinuous`. Do that into the last part (example gallery).
  - [ ] put correlated traits in the documentation earlier in the vignette
