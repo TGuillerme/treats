@@ -24,36 +24,24 @@ The core of this package is based on the [`diversitree` birth-death algorithm](h
 
 ## What is `treats`?
 
-
-
-
-Ar Macarface is studying the evolution of mammalian disparity (i.e. diversity of shapes) across the Cretaceous-Palaeogene mass extinction event (K-Pg - 66 million years ago).
+Bib is studying the evolution of mammalian disparity (i.e. diversity of shapes) across the Cretaceous-Palaeogene mass extinction event (K-Pg - 66 million years ago).
 They observe a decrease of morphological disparity after the extinction event followed by a sharp increase of disparity.
-However Ar is also prudent and wants to test whether their observed pattern is just an artifact of the data or actually showing some effect of the K-Pg extinction on mammalian evolution.
+However Bib is also prudent and wants to test whether their observed pattern is just an artifact of the data or actually showing some effect of the K-Pg extinction on mammalian evolution.
 First they need to check whether changes in disparity can actually be discernables due to an extinction event (i.e. if an extinction event happens, would it be possible to detect a change in disparity)?
-Second they want to know whether these changes are due to changes are due to the mass extinction event being selective or not.
+Second they want to know whether these changes are due to the mass extinction event being selective or not (i.e. the mass extinction favored some traits).
 
-The [getting started](#kpgexample) section actually shows how do implement this example in `treats` in details. 
+The [illustrative example](#kpgexample) section actually shows how do implement this example in `treats` in details. 
 
+Of course, this is just an example of when to use `treats`.
+Simulating trees and traits can also be useful for:
 
+ * Provide a baseline/null model to compare to an observed one.
+ * Testing evolutionary hypotheses.
+ * Exploring statistics properties (i.e. can the disparity metric X capture changes in Y).
+ * Easily generating illustrative/simplified evolutionary history examples.
+ * Teaching simplified macro-evolutionary theory (e.g. the birth-death model).
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-There are some very good R packages that simulate birth-death trees (e.g. [TreeSim](https://github.com/tanja819/TreeSim)) or simulate traits (disparity) and diversity jointly (e.g. [RPANDA](https://github.com/cran/RPANDA) or [PETER](https://github.com/PuttickMacroevolution/PETER)).
+Note that for approaching these points individually (or some aspects of it), there are some very good R packages that simulate birth-death trees (e.g. [TreeSim](https://github.com/tanja819/TreeSim)) or simulate traits (disparity) and diversity jointly (e.g. [RPANDA](https://github.com/cran/RPANDA) or [PETER](https://github.com/PuttickMacroevolution/PETER)).
 We strongly advise you look at these packages first as they might be more appropriate for your needs.
 
 `treats` is a highly modular and user-friendly package that contains the simulations functionality of all these packages: it allows you to simulate disparity and diversity jointly with a vast array of options that can be easily modified by users.
@@ -62,9 +50,6 @@ You can then specify how the traits should affect disparity through `"modifiers"
 And finally you can create events (like mass extinctions) through `"events"` objects.
 These objects and how to modify them will be detailed throughout this manual.
 Finally we are putting an emphasis in the development of this package on the speed and reliability of the functions.
-
-
-
 
 ### Modular?
 
@@ -122,7 +107,6 @@ Basically, the `treats` function takes your `traits`, `modifiers` and `events` o
 You will find more details about how these objects (`traits`, `modifiers` and `events`) work in the rest of the tutorial but here is a graphical representation of how `treats` works:
 
 ![Schematic summary of the `treats` package architecture](treats_structure.png)
-% NC: The wonkiness of the figure is annoying me lol. Can you center the arrows etc?
 
 ## The birth-death algorithm {#bdalgorithm} 
 
