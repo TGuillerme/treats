@@ -20,5 +20,5 @@ Suggests:
     testthat,
     knitr
 License: GPL-3 | file LICENSE
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 URL: https://github.com/TGuillerme/treats
