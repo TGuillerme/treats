@@ -32,6 +32,13 @@ The different trait processes implemented in treats are:
               \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
          }
 
+     \item{discrete.process} TODO
+     This process can take following optional arguments:
+         \itemize{
+              \item \code{Sigma} a positive-definite symmetric matrix specifying the covariance matrix of the variables (default is \code{diag(length(x0))}).
+              \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
+         }
+
      \item{OU.process} A Ornstein-Uhlenbeck process (uni or multidimensional). This function is based on \code{\link[MASS]{mvrnorm}}.
      This process can take following optional arguments:
          \itemize{

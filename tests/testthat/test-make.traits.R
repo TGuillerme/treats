@@ -196,6 +196,14 @@ test_that("different processes works", {
     results <- c(multi.peak.process(x0 = c(7, -2, 3), peaks = optimums, alpha = 1000))
     expect_equal(round(results[1:2]), c(1, 0))
     expect_equal(round(results[3], 1), c(5.5))
+
+    ## Discrete traits
+    expect_equal(discrete.process(0, 1, transition.matrix = transition.matrix("ER", 2, self = FALSE)), 1)
+    expect_equal(discrete.process(0, 1, transition.matrix = matrix(c(1,0,0,1), 2, 2)), 0)
+    expect_equal(discrete.process(1, 100, transition.matrix = matrix(c(1,0,0,1), 2, 2)), 1)
+    set.seed(1)
+    expect_equal(discrete.process(0, 1, transition.matrix = transition.matrix("ER", 2)), 1)
+    expect_equal(discrete.process(0, 1, transition.matrix = transition.matrix("ER", 2)), 0)
 })
 
 test_that("bkg.traits works", {
