@@ -21,11 +21,10 @@
 #'               \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
 #'          }
 #'
-#'      \item{discrete.process} TODO
+#'      \item{discrete.process}
 #'      This process can take following optional arguments:
 #'          \itemize{
-#'               \item \code{Sigma} a positive-definite symmetric matrix specifying the covariance matrix of the variables (default is \code{diag(length(x0))}).
-#'               \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
+#'               \item \code{trans.matrix} a positive-definite squared transition matrix..
 #'          }
 #' 
 #'      \item{OU.process} A Ornstein-Uhlenbeck process (uni or multidimensional). This function is based on \code{\link[MASS]{mvrnorm}}.
@@ -116,14 +115,14 @@ BM.process <- function(x0 = 0, edge.length = 1, Sigma = diag(length(x0)), ...) {
 }
 
 ## Discrete traits
-discrete.process <- function(x0 = 0, edge.length = 1, transition.matrix = transition.matrix("ER", 2)) {
+discrete.process <- function(x0 = 0, edge.length = 1, trans.matrix = transition.matrix("ER", 2)) {
     ## Get the previous state (as a discrete value)
     prev_state <- round(abs(x0))+1
     # if(prev_state < 1 && prev_state > nrow(transition.matrix)) {
     #     ## Rescale the state
 
     # }
-    return(sample(0:(nrow(transition.matrix)-1), size = 1, prob = transition.matrix[prev_state, ] * edge.length))
+    return(sample(0:(nrow(trans.matrix)-1), size = 1, prob = trans.matrix[prev_state, ] * edge.length))
 }
 
 ## The OU process

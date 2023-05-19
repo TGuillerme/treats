@@ -70,8 +70,6 @@ parent.traits <- function(trait.values, lineage, current = TRUE) {
 #' 
 #' @author Thomas Guillerme
 #' @export
-
-
 transition.matrix <- function(type, states, rates = runif, self = TRUE) {
     ## Sanitizing
     check.class(type, "character")
