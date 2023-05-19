@@ -19,6 +19,7 @@ export(plot.treats)
 export(make.traits)
 export(trait.process)
 export(BM.process)
+export(discrete.process)
 export(OU.process)
 export(no.process)
 export(multi.peak.process)
@@ -58,6 +59,7 @@ export(make.bd.params)
 export(make.treats)
 export(map.traits)
 export(parent.traits)
+export(transition.matrix)
 
 ##S3 
 S3method(plot, treats) #incl traits

@@ -30,7 +30,6 @@
 #' 
 #' @author Thomas Guillerme
 #' @export
-
 parent.traits <- function(trait.values, lineage, current = TRUE) {
     if(current) {
         ## Find only the current lineage
@@ -41,4 +40,89 @@ parent.traits <- function(trait.values, lineage, current = TRUE) {
     }
 
     return(trait.values[as.numeric(rownames(trait.values)) %in% find, , drop = FALSE])
+}
+
+
+#' @title Makes a transition matrix
+#'
+#' @description Utility function for generating discrete characters evolution transition matrices. 
+#'
+#' @param type the type of transition matrix, either "equal rates", "stepwise", "symmetric", or  "all rates different". See details.
+#' @param states the number of states
+#' @param rates either a fixed value for a rate to attribute to each possible transitions or a \code{function} to generate the rates (default is \code{\link[base]{runif}). See details.
+#' @param self logical, whether to allow reverting states (i.e. transition rates from state A to the same state A; \code{TRUE}; default) or not (\code{FALSE}).
+#'
+#' @details
+#' The following transition rate matrices are currently implemented:
+#' \itemize{
+#'      \item "equal rates" where all transitions are equal (including no transition if \code{self = TRUE}).
+#'      \item "stepwise" transitions are allowed only in a step wise way (e.g. state 1 to 2 and 2 to 3 are allowed but not 1 to 3).
+#'      \item "symmetric" where transitions between states are all different but not directional (e.g. the change of state 1 to 2 is equal to 2 to 1). If \code{self = TRUE}, the non transitions (e.g. from state 1 to 1) are equal.
+#'      \item "all rates different" where all transitions are different. Note that if rates is a give value (rather than a function), then all rates are actually equal.
+#'}
+#'
+#' If \code{rates} is a function that generates negative values or a negative value, the output transition matrix always returns absolute values.
+#'
+#' @examples
+#' ## A two states equal rates matrix
+#'
+#' @seealso \code{\link{make.traits}} \code{\link{discrete.process}}
+#' 
+#' @author Thomas Guillerme
+#' @export
+
+
+transition.matrix <- function(type, states, rates = runif, self = TRUE) {
+    ## Sanitizing
+    check.class(type, "character")
+    if(!(type %in% c("ER", "Equal rates", "Equal Rates", "equal rates", "SYM", "Symmetric", "symmetric", "ARD", "All rates different", "all rates different", "Dollo", "Stepwise", "stepwise"))) {
+        stop(paste("type must be one of the followings: ", paste(c('equal rates', 'symmetric', 'all rates different', 'stepwise'), collapse = ", "), ".", sep = ""))
+    }
+    check.class(states, c("numeric", "integer"))
+    check.class(self, "logical")
+
+    ## Rates
+    rates_class <- check.class(rates, c("function", "numeric", "integer"))
+    if(rates_class != "function") {
+        rates_val <- rates
+        rates <- function(...) return(rates_val)
+    }
+
+    ## Create the empty states matrix
+    rate_matrix <- matrix(0, states, states)
+
+    ## Normalise type names
+    if(type == "ER" || type == "Equal rates" || type == "Equal Rates") type <- "equal rates"
+    if(type == "SYM" || type == "Symmetric") type <- "symmetric"
+    if(type == "ARD" || type == "All rates different") type <- "all rates different"
+    if(type == "Dollo" || type == "Stepwise") type <- "stepwise"
+
+    ## Equal rates
+    if(type == "equal rates") {
+        rate_matrix[,] <- rates(1)
+    }
+    if(type == "stepwise") {
+        diag(rate_matrix) <- 1
+        ## Make a fat diagonal
+        for(diag_i in 1:(length(diag(rate_matrix))-1)) {
+         rate_matrix[diag_i + 1, diag_i] <- rate_matrix[diag_i, diag_i + 1] <- 1
+        }
+        rate_matrix <- rate_matrix * rates(1)
+    }
+    if(type == "symmetric") {
+        diag(rate_matrix) <- rates(1)
+        ## Populate the diagonal
+        rate_matrix[lower.tri(rate_matrix)] <- rates(n = sum(lower.tri(rate_matrix)))
+        rate_matrix[upper.tri(rate_matrix)] <- t(rate_matrix)[upper.tri(rate_matrix)]
+    }
+    if(type == "all rates different") {
+        ## All rates different
+        rate_matrix[,] <- rates(states^2)
+    }
+
+    ## no self?
+    if(!self) {
+        diag(rate_matrix) <- 0
+    }
+    return(abs(rate_matrix))
 }
