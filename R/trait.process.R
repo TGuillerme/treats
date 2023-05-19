@@ -123,7 +123,7 @@ discrete.process <- function(x0 = 0, edge.length = 1, transition.matrix = transi
     #     ## Rescale the state
 
     # }
-    return(sample(0:(nrow(transition.matrix)-1), size = 1, prob = transition.matrix[prev_state+1, ] * edge.length))
+    return(sample(0:(nrow(transition.matrix)-1), size = 1, prob = transition.matrix[prev_state, ] * edge.length))
 }
 
 ## The OU process

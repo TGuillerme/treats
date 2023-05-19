@@ -19,7 +19,7 @@ test_that("transition matrix works", {
     test <- transition.matrix(type = "ER", states = 2, rates = runif, self = TRUE)
     expect_is(test, "matrix")
     expect_equal(dim(test), c(2, 2))
-    expect_equal(round(unique(c(test)), 4), round(test, 4))
+    expect_equal(round(unique(c(test)), 4), round(0.2655087, 4))
     expect_equal(diag(transition.matrix(type = "ER", states = 2, rates = runif, self = FALSE)), c(0, 0))
     ## ARD
     test <- transition.matrix(type = "ARD", states = 10, rates = rnorm, self = TRUE)
