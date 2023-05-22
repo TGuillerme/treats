@@ -1,4 +1,4 @@
----
+<!-- ---
 title: "`treats` verbose example"
 author: "Thomas Guillerme"
 date: "`r Sys.Date()`"
@@ -76,4 +76,4 @@ plot(treats(bd.params = bd.params, stop.rule = stop.rule, traits = traits, modif
 ## THIS IS BUGGED: to test in birth.death_fun.R: problem with selecting the current lineage (NA)
 
 
-```
+``` -->
