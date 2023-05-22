@@ -51,6 +51,7 @@ parent.traits <- function(trait.values, lineage, current = TRUE) {
 #' @param states the number of states
 #' @param rates either a fixed value for a rate to attribute to each possible transitions or a \code{function} to generate the rates (default is \code{\link[base]{runif}). See details.
 #' @param self logical, whether to allow reverting states (i.e. transition rates from state A to the same state A; \code{TRUE}; default) or not (\code{FALSE}).
+#' @param ... if \code{rates} is a function, any optional arguments to be passed to it.
 #'
 #' @details
 #' The following transition rate matrices are currently implemented:
@@ -70,7 +71,7 @@ parent.traits <- function(trait.values, lineage, current = TRUE) {
 #' 
 #' @author Thomas Guillerme
 #' @export
-transition.matrix <- function(type, states, rates = runif, self = TRUE) {
+transition.matrix <- function(type, states, rates = runif, self = TRUE, ...) {
     ## Sanitizing
     check.class(type, "character")
     if(!(type %in% c("ER", "Equal rates", "Equal Rates", "equal rates", "SYM", "Symmetric", "symmetric", "ARD", "All rates different", "all rates different", "Dollo", "Stepwise", "stepwise"))) {
@@ -97,7 +98,7 @@ transition.matrix <- function(type, states, rates = runif, self = TRUE) {
 
     ## Equal rates
     if(type == "equal rates") {
-        rate_matrix[,] <- rates(1)
+        rate_matrix[,] <- rates(1, ...)
     }
     if(type == "stepwise") {
         diag(rate_matrix) <- 1
@@ -105,17 +106,17 @@ transition.matrix <- function(type, states, rates = runif, self = TRUE) {
         for(diag_i in 1:(length(diag(rate_matrix))-1)) {
          rate_matrix[diag_i + 1, diag_i] <- rate_matrix[diag_i, diag_i + 1] <- 1
         }
-        rate_matrix <- rate_matrix * rates(1)
+        rate_matrix <- rate_matrix * rates(1, ...)
     }
     if(type == "symmetric") {
-        diag(rate_matrix) <- rates(1)
+        diag(rate_matrix) <- rates(1, ...)
         ## Populate the diagonal
-        rate_matrix[lower.tri(rate_matrix)] <- rates(n = sum(lower.tri(rate_matrix)))
+        rate_matrix[lower.tri(rate_matrix)] <- rates(n = sum(lower.tri(rate_matrix)), ...)
         rate_matrix[upper.tri(rate_matrix)] <- t(rate_matrix)[upper.tri(rate_matrix)]
     }
     if(type == "all rates different") {
         ## All rates different
-        rate_matrix[,] <- rates(states^2)
+        rate_matrix[,] <- rates(states^2, ...)
     }
 
     ## no self?

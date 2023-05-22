@@ -15,7 +15,7 @@ check.traits <- function(traits, events = FALSE) {
     ## Make dummy edge.length
     edge.length <- 42
     ## Make dummy parent trait
-    parent.trait <- 123
+    parent.trait <- 1 #TG changed from 123 for discrete traits bug
 
     ## Loop through each trait for detailed explanation on why it failed
     try_success <- list()

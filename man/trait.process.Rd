@@ -7,6 +7,7 @@
 \alias{no.process}
 \alias{multi.peak.process}
 \alias{repulsion.process}
+\alias{discrete.process}
 \title{Trait processes}
 \usage{
 trait.process(x0, edge.length, ...)
@@ -32,12 +33,12 @@ The different trait processes implemented in treats are:
               \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
          }
 
-     \item{discrete.process} TODO
+     \item{discrete.process}
      This process can take following optional arguments:
          \itemize{
-              \item \code{Sigma} a positive-definite symmetric matrix specifying the covariance matrix of the variables (default is \code{diag(length(x0))}).
-              \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
+              \item \code{transitions} a positive-definite squared transition matrix. If left missing, a 2 states equal rates matrix is used.
          }
+     Note that for this process, 0 corresponds to state 1, 1 corresponds to state 2, etc... The current version of this process does not allow other discrete traits notation (but future versions will!).
 
      \item{OU.process} A Ornstein-Uhlenbeck process (uni or multidimensional). This function is based on \code{\link[MASS]{mvrnorm}}.
      This process can take following optional arguments:

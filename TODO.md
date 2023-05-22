@@ -3,7 +3,11 @@
 ## New function
  - [x] allow inputing a tree and simulating from there (handled separately through `map.trait` (map trait on tree) with `map.trait(tree = tree, trait = traits)`.
 
-
+## New traits
+ - [x] `discrete.process`
+    - [x] test
+    - [x] doc
+    - [x] man
 
 ## utilities
 
@@ -31,9 +35,12 @@
  - [ ] `plot`: add option to colour the elements sequentially (e.g. col = rainbow(10))
  - [ ] add option to simulate multiple trees for one or more traits (gene tree vs species tree)
  - [ ] adding budding simulation (see paleo buddy).
- - [ ] discrete traits evolution
  - [ ] some age dependency modifier (if lineage is old, more or less speciation)
  - [ ] add a function to make `tree` and `data` in `treats` format manually
+ - [ ] `discretise.traits`,
+  * [ ] either applied a posteriori on the whole `treats` object (to discretise the output)
+  * [ ] or converts a process into `discrete.process` where the rate sampler is the one from the previous process.
+  * [ ] allow `discretise.traits` and `discrete.process` to handle any states names (not just 0, 1, 2, ...)
 
 ## Feedback
 

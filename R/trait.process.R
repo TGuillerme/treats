@@ -1,5 +1,5 @@
 #' @name trait.process
-#' @aliases BM.process OU.process no.process multi.peak.process repulsion.process
+#' @aliases BM.process OU.process no.process multi.peak.process repulsion.process discrete.process
 #' @title Trait processes
 #'
 #' @description Different trait processes implemented in treats.
@@ -24,8 +24,9 @@
 #'      \item{discrete.process}
 #'      This process can take following optional arguments:
 #'          \itemize{
-#'               \item \code{trans.matrix} a positive-definite squared transition matrix..
+#'               \item \code{transitions} a positive-definite squared transition matrix. If left missing, a 2 states equal rates matrix is used.
 #'          }
+#'      Note that for this process, 0 corresponds to state 1, 1 corresponds to state 2, etc... The current version of this process does not allow other discrete traits notation (but future versions will!).
 #' 
 #'      \item{OU.process} A Ornstein-Uhlenbeck process (uni or multidimensional). This function is based on \code{\link[MASS]{mvrnorm}}.
 #'      This process can take following optional arguments:
@@ -115,14 +116,9 @@ BM.process <- function(x0 = 0, edge.length = 1, Sigma = diag(length(x0)), ...) {
 }
 
 ## Discrete traits
-discrete.process <- function(x0 = 0, edge.length = 1, trans.matrix = transition.matrix("ER", 2)) {
-    ## Get the previous state (as a discrete value)
-    prev_state <- round(abs(x0))+1
-    # if(prev_state < 1 && prev_state > nrow(transition.matrix)) {
-    #     ## Rescale the state
-
-    # }
-    return(sample(0:(nrow(trans.matrix)-1), size = 1, prob = trans.matrix[prev_state, ] * edge.length))
+discrete.process <- function(x0 = 0, edge.length = 1, transitions = transition.matrix("ER", 2)) {
+    # TODO: wishlist: allow for rownames in the transition matrix as state names.
+    return(sample(0:(nrow(transitions)-1), size = 1, prob = transitions[round(abs(x0))+1, ] * edge.length))
 }
 
 ## The OU process

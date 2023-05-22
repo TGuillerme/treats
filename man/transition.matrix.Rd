@@ -4,7 +4,7 @@
 \alias{transition.matrix}
 \title{Makes a transition matrix}
 \usage{
-transition.matrix(type, states, rates = runif, self = TRUE)
+transition.matrix(type, states, rates = runif, self = TRUE, ...)
 }
 \arguments{
 \item{type}{the type of transition matrix, either "equal rates", "stepwise", "symmetric", or  "all rates different". See details.}
@@ -12,6 +12,8 @@ transition.matrix(type, states, rates = runif, self = TRUE)
 \item{states}{the number of states}
 
 \item{self}{logical, whether to allow reverting states (i.e. transition rates from state A to the same state A; \code{TRUE}; default) or not (\code{FALSE}).}
+
+\item{...}{if \code{rates} is a function, any optional arguments to be passed to it.}
 }
 \description{
 Utility function for generating discrete characters evolution transition matrices.

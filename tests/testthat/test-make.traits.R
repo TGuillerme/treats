@@ -198,12 +198,12 @@ test_that("different processes works", {
     expect_equal(round(results[3], 1), c(5.5))
 
     ## Discrete traits
-    expect_equal(discrete.process(0, 1, transition.matrix = transition.matrix("ER", 2, self = FALSE)), 1)
-    expect_equal(discrete.process(0, 1, transition.matrix = matrix(c(1,0,0,1), 2, 2)), 0)
-    expect_equal(discrete.process(1, 100, transition.matrix = matrix(c(1,0,0,1), 2, 2)), 1)
+    expect_equal(discrete.process(0, 1, transitions = transition.matrix("ER", 2, self = FALSE)), 1)
+    expect_equal(discrete.process(0, 1, transitions = matrix(c(1,0,0,1), 2, 2)), 0)
+    expect_equal(discrete.process(1, 100, transitions = matrix(c(1,0,0,1), 2, 2)), 1)
     set.seed(1)
-    expect_equal(discrete.process(0, 1, transition.matrix = transition.matrix("ER", 2)), 1)
-    expect_equal(discrete.process(0, 1, transition.matrix = transition.matrix("ER", 2)), 0)
+    expect_equal(discrete.process(0, 1, transitions = transition.matrix("ER", 2)), 1)
+    expect_equal(discrete.process(0, 1, transitions = transition.matrix("ER", 2)), 0)
 })
 
 test_that("bkg.traits works", {
