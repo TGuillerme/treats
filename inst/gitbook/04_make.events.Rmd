@@ -35,6 +35,9 @@ These are all handled by `treats` with the `events` object that you can create u
 There are several more arguments that can be passed to `make.events` but they are discussed later on.
 First let's focus on these three main arguments:
 
+![`make.events`: events are encoded using three main arguments: the `target`, specifying _what_ the event is modifying, the `condition` specifying _when_ to trigger the event, and `modification`, specifying _how_ the event modifies the simulations.](make.events.png)
+
+
 ## Target
 
 The target of the event is what the event is going to modify in the birth-death algorithm.

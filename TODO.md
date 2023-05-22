@@ -45,7 +45,7 @@
 ## Feedback
 
 ### Manual suggestions
- - [ ] add a schematic for each subsection as well (not only the main one): or maybe just do it for a specific example
+ - [x] add a schematic for each subsection as well (not only the main one): or maybe just do it for a specific example
  - [ ] Get some standard examples and link to the once the the end of the vignette. BM and OU with one traits that people standardly do and use. Like get 20 basic scenarios. e.g. `geiger::fitcontinuous`. Do that into the last part (example gallery).
  - [ ] put correlated traits in the documentation earlier in the vignette
  - [ ] What it does: simulates trees and traits. throughout the manual: change `disparity` to `traits` and `diversity` to `trees` 

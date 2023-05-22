@@ -20,6 +20,8 @@ This object is generated using `make.traits`.
 In `treats` a trait designate any coherent character of any number of dimensions which may or may not be independent of other traits.
 For example, it can be a uni-dimensional variable uncorrelated to other traits or a multi-dimensional one with different amounts of correlation.
 
+![`make.traits`: The main inputs are (1) the `process`, one or more functions to describe the trait(s) as a function of previous state (`x0`) and the branch length (`edge.length`), (2) `n` the number of dimensions of the trait and (3) the starting value `start`.](make.traits.png)
+
 ## The process (`process`)
 
 The function `make.traits` allows you to design the process of a trait or a set of traits.
@@ -174,6 +176,13 @@ make.traits(c(BM.process, OU.process), n = 3)
 ## Five traits with two processes
 make.traits(c(BM.process, OU.process), n = c(1, 4))
 ```
+
+### Multidimensional traits and correlations
+
+As shown in the example above, a trait can be made multidimensional by using the `n` argument specifically passed to a `process`.
+However, in this case, traits are simulated independently of each other.
+It is possible to include correlation by designing a multidimensional trait `process` directly generating the correlation between within the dimensions of the process.
+Alternatively, the inbuilt `BM.process` and `OU.process` can intake a correlation matrix to simulate traits independtly but with a correlation coefficient (see [this illustration with an event](#EG_change_correlation)).
 
 ## Extra argument for the processes with `process.args`
 
@@ -341,6 +350,17 @@ plot(make.traits(multi.peak.process, process.args = list(peaks = c(1, 5, 10))), 
 ```{r, echo = FALSE}
 plot(make.traits(repulsion.process, process.args = list(repulsion = 5)), main = "A repulsion process\nwith a repulsion parameter of 5")
 ```
+
+ * `discrete.process`: this one generates discrete trait values based on a transition matrix (you can use the utility function `transition.matrix` to generate one).
+
+```{r, echo = FALSE}
+## Generating a stepwise transition matrix for 3 states (with an overal random transition rate)
+stepwise_matrix <- transition.matrix(type = "stepwise", states = 3)
+## Generatin and plotting the the trait
+plot(make.traits(discrete.process, process.args = list(transitions = stepwise_matrix)))
+```
+
+Of course here the plotting of a discrete trait is not that informative...
 
 ## Testing the traits with `test`
 

@@ -28,12 +28,12 @@ You can see details about what's actually in the object using `print.treats(my_d
 However, contrary to `"traits"`, you cannot plot `"modifiers"`.
 
 
+![`make.modifiers`: The three main inputs to make modifiers are functions to modify the `branch.length` (waiting) process controlling the "growth" of the tree; the `selection` (selecting) process controlling the selection of the tip on which to apply speciation or extinction; and the `speciation` (speciating) process controlling whether the select tip goes extinct or speciates. The allowed arguments are detailed [here](#allowarguments).](make.modifiers.png)
+
+
 ## The default modifier (how the process is working)
 
 The modifiers modify the core of the birth-death process as implemented in `treats`.
-
-<!-- TODO: make that into a shiny app animation (or just in html?) -->
-
 By default, the birth-death process in `treats` uses this modifier:
 
 ```{r}
