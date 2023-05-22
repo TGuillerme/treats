@@ -11,6 +11,8 @@ treats v0.1.13 (2023-04-28)
  * New utility function `dispRitreats` to convert `"treats"` output as input for `dispRity`
  * New utility function `crude.bd.est` for a crude estimation of speciation and extinction rates from an input tree.
  * New utility function `map.traits` for mapping a `"traits"` onto a tree.
+ * New utility function `transition.matrix` for designing transition matrices for discrete characters.
+ * New `traits` process: `discrete.process` to generate discrete characters.
  * Changed package name from `dads` to `treats`
  * Full polished version of the manual!
  * `treats` has now a `save.steps` option to create internal nodes at regular intervals or specified ones and a `replicates` option to automatically replicate the simulations.
