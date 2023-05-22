@@ -30,7 +30,13 @@ The following transition rate matrices are currently implemented:
 If \code{rates} is a function that generates negative values or a negative value, the output transition matrix always returns absolute values.
 }
 \examples{
-## A two states equal rates matrix
+## A two states equal rates matrix with a rate of 1
+## and no stationary rates (no probability of staying in the same state)
+transition.matrix(type = "equal rates", states = 2, rates = 1, self = FALSE)
+
+## Two different 6 states stepwise matrix with a random absolute normal rate
+transition.matrix(type = "stepwise", states = 6, rates = rnorm)
+transition.matrix(type = "stepwise", states = 6, rates = rnorm)
 
 }
 \seealso{

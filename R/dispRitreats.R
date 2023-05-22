@@ -11,7 +11,24 @@
 #' The \code{scale.tree} function is highly recommended if trees have various root ages.
 #' 
 #' @examples
-#'
+#' ## Simulate a random tree with a 10 dimensional Brownian Motion trait
+#' my_treats <- treats(stop.rule = list("max.taxa" = 20),
+#'                     traits    = make.traits(BM.process, n = 10),
+#'                     bd.params = make.bd.params(speciation = 1))
+#' 
+#' ## Converting the treats object to be used for a dispRity function
+#' my_dispRity <- dispRitreats(my_treats)
+#' 
+#' ## Creating 5 time slices (dispRity)
+#' time_slices <- dispRity::chrono.subsets(data      = my_dispRity$data,
+#'                                         tree      = my_dispRity$tree,
+#'                                         method    = "continuous",
+#'                                         model     = "acctran",
+#'                                         time      = 5,
+#'                                         inc.nodes = TRUE)
+#' 
+#' ## Calculating the sum of variances for these slices
+#' dispRity::dispRity(time_slices, metric = c(sum, variances))
 #'
 #' @seealso \code{\link{treats}} \code{\link[dispRity]{dispRity}} \code{\link[dispRity]{chrono.subsets}} \code{\link[dispRity]{custom.subsets}}
 #' 
@@ -42,8 +59,14 @@ dispRitreats <- function(data, scale.tree = TRUE) {
         }
         trees <- lapply(trees, scale.tree.fun)
     }
+    ## Change the tree to phylo if its alone
+    if(length(trees) == 1) {
+        trees <- trees[[1]]
+        class(trees) <- "phylo"
+    } else {
+        class(trees) <- "multiPhylo"
+    }
 
-    class(trees) <- "multiPhylo"
     output <- list("data" = matrices, "tree" = trees)
     class(output) <- c("dispRity", "treats")
     return(output)

@@ -107,6 +107,12 @@ plot(make.traits(multi.peak.process, process.args = list(peaks = c(1, 5, 10))))
 repulsion.process(x0 = 0, repulsion = 1)
 plot(make.traits(repulsion.process, process.args = list(repulsion = 5)))
 
+## Discrete trait process
+## Generating a stepwise transition matrix for 3 states (with an overal random transition rate)
+stepwise_matrix <- transition.matrix(type = "stepwise", states = 3)
+## Generatin and plotting the the trait
+plot(make.traits(discrete.process, process.args = list(transitions = stepwise_matrix)))
+
 }
 \seealso{
 \code{\link{treats}} \code{\link{make.traits}}

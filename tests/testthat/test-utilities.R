@@ -1,11 +1,23 @@
 ## Testing utilities
 
 test_that("parent.traits works", {
+    ## Some madeup lineage object
+    lineage <- list(parents = c(0, 1, 1, 2, 3, 5, 5, 4, 6, 7),
+                    livings = c(8, 9, 10),
+                    drawn   = 3,
+                    current = 5,
+                    n       = 3,
+                    split   = c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE))
 
+    ## Some madeup trait values
+    trait.values <- matrix(c(0,1,3,5,4,6,7), ncol = 1, dimnames = list(c(1,2,3,5,4,6,7)))
+
+    ## Find the parent value of the current lineage
+    expect_equal(parent.traits(trait.values, lineage), matrix(3, 1, 1, dimnames = list(c(3))))
+    expect_equal(parent.traits(trait.values, lineage, current = FALSE), matrix(c(4,6,7), ncol = 1, dimnames = list(c(4,6,7))))
 })
 
 test_that("transition matrix works", {
-
     error <- capture_error(transition.matrix(type = "eR", states = 2, rates = runif, self = TRUE))
     expect_equal(error[[1]], "type must be one of the followings: equal rates, symmetric, all rates different, stepwise.")
     error <- capture_error(transition.matrix(type = "ER", states = "2", rates = runif, self = TRUE))

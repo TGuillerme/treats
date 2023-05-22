@@ -18,6 +18,27 @@ Converts \code{treats} data output to be passed to \code{\link[dispRity]{dispRit
 The tree and data parts can be passed to the \code{dispRity} package functions \link[dispRity]{dispRity}, \code{\link[dispRity]{chrono.subsets}} or \link[dispRity]{custom.subsets} as the \code{data} argument (if needed, the \code{tree} argument is automatically recycled).
 The \code{scale.tree} function is highly recommended if trees have various root ages.
 }
+\examples{
+## Simulate a random tree with a 10 dimensional Brownian Motion trait
+my_treats <- treats(stop.rule = list("max.taxa" = 20),
+                    traits    = make.traits(BM.process, n = 10),
+                    bd.params = make.bd.params(speciation = 1))
+
+## Converting the treats object to be used for a dispRity function
+my_dispRity <- dispRitreats(my_treats)
+
+## Creating 5 time slices (dispRity)
+time_slices <- dispRity::chrono.subsets(data      = my_dispRity$data,
+                                        tree      = my_dispRity$tree,
+                                        method    = "continuous",
+                                        model     = "acctran",
+                                        time      = 5,
+                                        inc.nodes = TRUE)
+
+## Calculating the sum of variances for these slices
+dispRity::dispRity(time_slices, metric = c(sum, variances))
+
+}
 \seealso{
 \code{\link{treats}} \code{\link[dispRity]{dispRity}} \code{\link[dispRity]{chrono.subsets}} \code{\link[dispRity]{custom.subsets}}
 }

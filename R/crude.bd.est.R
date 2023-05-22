@@ -14,7 +14,17 @@
 #' A \code{"bd.params"} object to be fed to \code{\link{treats}}.
 #'
 #' @examples 
-
+#' set.seed(1)
+#' ## Generating a random tree
+#' my_tree <- rtree(20)
+#' ## Calculating the number of speciations and extinctions events
+#' crude.bd.est(my_tree)
+#'
+#' ## Adding a root time
+#' my_tree$root.time <- 5
+#' ## Calculating the number of speciations and extinctions
+#' ## per units of time
+#' crude.bd.est(my_tree)
 #'
 #' @seealso \code{\link{treats}} \code{\link{make.bd.params}}
 #' 

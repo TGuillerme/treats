@@ -13,10 +13,10 @@
 
  - [x] add manual for utilities
  - [x] example for: `utilities::parent.traits`: Write examples (write manual at the same time)
- - [ ] add test for `parent.traits`
- - [ ] doc for `crude.bd.est`
- - [ ] dic for `dispRitreats`
- - [ ] add test for `dispRitreats`
+ - [x] add test for `parent.traits`
+ - [x] doc for `crude.bd.est`
+ - [x] doc for `dispRitreats`
+ - [x] add test for `dispRitreats`
 
 ## Package
 
@@ -46,7 +46,6 @@
 
 ### Manual suggestions
  - [x] add a schematic for each subsection as well (not only the main one): or maybe just do it for a specific example
- - [ ] Get some standard examples and link to the once the the end of the vignette. BM and OU with one traits that people standardly do and use. Like get 20 basic scenarios. e.g. `geiger::fitcontinuous`. Do that into the last part (example gallery).
- - [ ] put correlated traits in the documentation earlier in the vignette
- - [ ] What it does: simulates trees and traits. throughout the manual: change `disparity` to `traits` and `diversity` to `trees` 
+ - [x] put correlated traits in the documentation earlier in the vignette
+ - [x] What it does: simulates trees and traits. throughout the manual: change `disparity` to `traits` and `diversity` to `trees` 
  - [ ] Maybe a cheat sheet table for what affects what. "I want to change my extinction rate?" "where do I change that (is it in modifiers, etc...)" (kind of mini FAQ)
