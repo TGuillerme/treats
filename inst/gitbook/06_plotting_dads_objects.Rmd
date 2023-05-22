@@ -17,9 +17,7 @@ options(rgl.useNULL = TRUE) # Suppress the separate window.
 
 # Plots
 
-
 `"treats"` objects can be directly plotted in `treats` using the S3 `plot.treats` function (or just `plot(x)` if `x` is of class `"treats"`).
-
 
 ## Plotting traits
 

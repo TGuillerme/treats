@@ -369,6 +369,34 @@ We highly suggest leaving `test = TRUE` so that `make.traits` returns an error i
 `make.traits` will send an error if the trait cannot be directly passed to `treats`.
 However, in some specific cases (again, probably mainly for development and debugging) it could be useful to skip the tests using `test = FALSE`.
 
+## Mapping traits on a tree: `map.traits`
+
+Although `make.traits` is mainly designed for `treats` simulations, i.e. simulating both the trees AND the traits at the same time, it is possible to use an already simulated or estimated tree and generating one or more traits on it using the `map.traits` function. This function takes the trait input as a `"traits"` object (from `make.traits`) and a tree topology with branch length. Note that you can also use `"traits"` objects with multiple or multi-dimensional traits as well as multiple phylogenies (`"multiPhylo"`).
+
+```{r}
+## Simulating a random tree with branch length
+my_tree <- rtree(20)
+
+## Creating three different traits objects:
+## A Brownian Motion
+bm_process <- make.traits(process = BM.process)
+## An Ornstein-Uhlenbeck process
+ou_process <- make.traits(process = OU.process)
+## No process (just randomly drawing values from a normal distribution)
+no_process <- make.traits(process = no.process)
+
+## Mapping the three traits on the phylogeny
+bm_traits <- map.traits(bm_process, my_tree)
+ou_traits <- map.traits(ou_process, my_tree)
+no_traits <- map.traits(no_process, my_tree)
+
+## Plotting the topology and the different traits
+par(mfrow = c(2,2))
+plot(my_tree, main = "Base topology")
+plot(bm_traits, main = "Mapped BM")
+plot(ou_traits, main = "Mapped OU")
+plot(no_traits, main = "Mapped normal trait")
+```
 
 ## Templates for making your very own process
 

@@ -46,6 +46,8 @@ Functionality showcase | Example
 `founding.event` | [generating a subtree with no extinction](#EG_founding_purebirth), [generating a subtree with a different process](EG_founding_traits)
 
 
+<!-- TODO add a recursive event example where discrete self rate is changed by half everytime you reach 10 living species -->
+
 
 
 ## Random mass extinction after some time {#EGrandom_ext}
@@ -287,24 +289,24 @@ Then set up our trait which is a 2 dimensional Brownian Motion with a correlatio
 
 ```{r}
 ## A 2D variance covariance matrix
-vcv_matrix <- matrix(1, 2, 2)
+cor_matrix <- matrix(1, 2, 2)
 
 ## A correlated 2D Brownian Motion
 correlated_2D_BM <- make.traits(n = 2, process = BM.process,
-                      process.args = list(Sigma = vcv_matrix))
+                      process.args = list(Sigma = cor_matrix))
 ```
 
 And our event which triggers after a taxa gets the trait value 3 (`trait.condition(3, absolute = TRUE)`), targets the `"traits"` and modifies the traits correlation
 
 ```{r}
 ## New correlation
-new_vcv <- matrix(c(10,3,3,2),2,2)
+new_cor <- matrix(c(10,3,3,2),2,2)
 
 ## Event changing a trait correlation
 correlation.change <- make.events(
     condition    = trait.condition(3, absolute = TRUE),
     target       = "traits",
-    modification = traits.update(process.args = list(Sigma = new_vcv)))
+    modification = traits.update(process.args = list(Sigma = new_cor)))
 ```
 
 Once these parameters are defined, we can run the simulations and plot the results.
