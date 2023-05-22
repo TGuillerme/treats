@@ -9,7 +9,9 @@ transition.matrix(type, states, rates = runif, self = TRUE, ...)
 \arguments{
 \item{type}{the type of transition matrix, either "equal rates", "stepwise", "symmetric", or  "all rates different". See details.}
 
-\item{states}{the number of states}
+\item{states}{the number of states.}
+
+\item{rates}{either a fixed value for a rate to attribute to each possible transitions or a \code{function} to generate the rates (default is \code{\link[base]{runif}}). See details.}
 
 \item{self}{logical, whether to allow reverting states (i.e. transition rates from state A to the same state A; \code{TRUE}; default) or not (\code{FALSE}).}
 
