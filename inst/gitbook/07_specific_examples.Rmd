@@ -1,5 +1,5 @@
 ---
-title: "Specific examples"
+title: "treats manual"
 author: "Thomas Guillerme (guillert@tcd.ie)"
 date: "`r Sys.Date()`"
 # bibliography: [../References.bib, ../packages.bib]

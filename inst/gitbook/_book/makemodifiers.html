@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>4 Modifying the birth-death process | Specific examples</title>
+  <title>4 Modifying the birth-death process | treats manual</title>
   <meta name="description" content="treats R package manual" />
   <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="4 Modifying the birth-death process | Specific examples" />
+  <meta property="og:title" content="4 Modifying the birth-death process | treats manual" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="treats R package manual" />
   <meta name="github-repo" content="TGuillerme/treats" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="4 Modifying the birth-death process | Specific examples" />
+  <meta name="twitter:title" content="4 Modifying the birth-death process | treats manual" />
   
   <meta name="twitter:description" content="treats R package manual" />
   
@@ -268,7 +268,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Specific examples</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">treats manual</a>
           </h1>
         </div>
 
@@ -303,7 +303,7 @@ By default, the birth-death process in <code>treats</code> uses this modifier:</
 ## {
 ##     return(rexp(1, sum(lineage$n * (bd.params$speciation + bd.params$extinction))))
 ## }
-## &lt;bytecode: 0x558c025b4638&gt;
+## &lt;bytecode: 0x55c09a7d04a0&gt;
 ## &lt;environment: namespace:treats&gt;
 ## 
 ## $waiting$internal
@@ -316,7 +316,7 @@ By default, the birth-death process in <code>treats</code> uses this modifier:</
 ## {
 ##     return(sample(lineage$n, 1))
 ## }
-## &lt;bytecode: 0x558c025b5320&gt;
+## &lt;bytecode: 0x55c09a7cd588&gt;
 ## &lt;environment: namespace:treats&gt;
 ## 
 ## $selecting$internal
@@ -330,7 +330,7 @@ By default, the birth-death process in <code>treats</code> uses this modifier:</
 ##     return(runif(1) &lt; (bd.params$speciation/(bd.params$speciation + 
 ##         bd.params$extinction)))
 ## }
-## &lt;bytecode: 0x558c025b1e90&gt;
+## &lt;bytecode: 0x55c09a7ce0b0&gt;
 ## &lt;environment: namespace:treats&gt;
 ## 
 ## $speciating$internal
