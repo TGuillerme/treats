@@ -49,7 +49,7 @@ parent.traits <- function(trait.values, lineage, current = TRUE) {
 #'
 #' @param type the type of transition matrix, either "equal rates", "stepwise", "symmetric", or  "all rates different". See details.
 #' @param states the number of states.
-#' @param rates either a fixed value for a rate to attribute to each possible transitions or a \code{function} to generate the rates (default is \code{\link[base]{runif}}). See details.
+#' @param rates either a fixed value for a rate to attribute to each possible transitions or a \code{function} to generate the rates (default is \code{\link[stats]{runif}}). See details.
 #' @param self logical, whether to allow reverting states (i.e. transition rates from state A to the same state A; \code{TRUE}; default) or not (\code{FALSE}).
 #' @param ... if \code{rates} is a function, any optional arguments to be passed to it.
 #'

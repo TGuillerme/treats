@@ -1,4 +1,4 @@
-treats v0.1.15 (2023-05-22) 
+treats v0.2 (2023-05-25) *CRAN friendly pre-release*
 =========================
 
 ### BUG FIXES
