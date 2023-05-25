@@ -19,14 +19,11 @@ This can be useful for simulating mass extinctions, species competition, traitsp
 
 ![](TreatYoSelf.jpg)
 
-
-# THIS IS STILL WORK IN PROGRESS
-
+## Still work in progress (but nearly done!)
 
 ### So what's missing?
 
-Basically some bits and bobs for CRAN requirements, some more unit testing coverage and a biiiiiig typo check.
-But all functionalities for the future first release (`treats v.1.0`) are now implemented and solid.
+All functionalities for the future first release (`treats v.1.0`) are now implemented and solid.
 The package is now at the pre-release stage which means I am looking for minor improvements here and there before submitting it to the CRAN.
 
 ### What can you do for helping?
