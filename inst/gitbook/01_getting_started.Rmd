@@ -254,11 +254,11 @@ You can find much more about how to design modifiers in the [`make.modifiers` se
 
 
 
-## An illustrative example: mammals disparity through the K-Pg extinction {kpgexample}
+## An illustrative example: mammals disparity through the K-Pg extinction {#kpgexample}
 
 Bib is studying the evolution of mammalian disparity (i.e. diversity of shapes) across the Cretaceous-Palaeogene mass extinction event (K-Pg - 66 million years ago).
 
-They use a dataset from @BeckLee that is a discrete morphological space containing the ordination of the around 400 morphological characters for 50 species and estimated for their 49 descendants into an ordinated shapespace of 99 elements and 97 dimensions.
+They use a dataset from @beckancient2014 that is a discrete morphological space containing the ordination of the around 400 morphological characters for 50 species and estimated for their 49 descendants into an ordinated shapespace of 99 elements and 97 dimensions.
 
 ```{r}
 library(dispRity)
@@ -417,7 +417,7 @@ negative_extinction <- make.events(target = "taxa",
 
 We can then feed these two extinction events to our previous simulations
 
-```{r}
+```{r, message = FALSE}
 ## Simulate the tree and traits with a random extinction event
 sim_rand_extinction <- treats(
                    traits     = my_traits,

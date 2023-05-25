@@ -177,7 +177,7 @@ make.traits(c(BM.process, OU.process), n = 3)
 make.traits(c(BM.process, OU.process), n = c(1, 4))
 ```
 
-### Multidimensional traits and correlations
+## Multidimensional traits and correlations
 
 As shown in the example above, a trait can be made multidimensional by using the `n` argument specifically passed to a `process`.
 However, in this case, traits are simulated independently of each other.
