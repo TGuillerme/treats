@@ -7,8 +7,6 @@
 
 # `treats`: TREes And Traits Simulation
 
-**REPO NAME CHANGE IN PROGRESS**
-
 ### What is `treats`?
 
 With `treats` you can simulate phylogenetic trees and traits at the same time.
