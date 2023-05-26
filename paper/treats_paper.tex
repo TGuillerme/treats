@@ -184,14 +184,33 @@ If traits are simulated during the process, a fourth step is added:
 
 In \treats, these three or four steps are implemented as modular functions that the user can easily change using an internal class of objects called \texttt{``modifiers''} or \texttt{``traits''} (Fig. \ref{Fig:workflow}).
 The simulation then outputs a tree (of class \texttt{``phylo''} and a associated table of traits - \texttt{``matrix''}) that can be visualised using the \texttt{plot.treats} function.
+A third class of object called \texttt{``events''} can be added to the simulations to modify it under certain conditions (e.g. simulating a mass extinction).
+Each element in the algorithm described above can be modified by the user using the implemented functions \texttt{make.bd.params} to set the birth-death parameters, \texttt{make.traits} to set the trait(s), \texttt{make.modifiers} to set the birth-death algorithm and \texttt{make.events} to eventually add one or more events.
 
 \begin{figure}[!htbp]
 \centering
-   \includegraphics[width=1\textwidth]{../inst/gitbook/treats_structure.pdf} 
-\caption{\treats package workflow: @@@.}
+   \includegraphics[width=0.6\textwidth]{../inst/gitbook/treats_structure.pdf} 
+\caption{\treats package workflow: the \treats algorithm generates a tree and traits using inbuilt \texttt{``traits''} objects that contain the instructions on how to generate the trait data (e.g. which process? how many dimensions?); \texttt{``modifiers''} objects that contains instructions on how to ``grow'' the tree (e.g. by linking speciation to trait values, or to the current number of species); and \texttt{``events''} objects that can modify the tree structure, \texttt{``modifiers''} or \texttt{``traits''} depending on specific conditions (e.g. 80\% of species with positive trait values go extinct after reaching a specific time).}
 \label{Fig:workflow}
 \end{figure}
-% \texttt{"events"} are an additional category of modular objects discussed later.
+
+\section{Brief applied example}
+
+The modularity structure of the \treats packages allows users to design complex simulation scenarios to fit their specific question and data.
+To illustrate this we will look whether it is possible to detect changes in disparity (i.e. diversity of traits) in a subset of the data published from \cite{beck2014ancient} implemented in \cite{dispRity}.
+This dataset contains the ordinated traits for 50 mammalian species across the cretaceous-palaeogene extinction event (K-Pg, 66 Mya).
+
+
+\subsection{Simulating trees}
+
+
+\subsection{Simulating traits}
+
+
+\subsection{Adding events}
+
+
+
 
 \subsection{Simulating diversity}
 
@@ -250,11 +269,13 @@ Extended manual following recommendations from \cite{cooper2016dark}
 
 
 \section{Package location}
-The \treats package is available on the CRAN at \url{https://cran.r-project.org/web/packages/treats/index.html} or on GitHub at \url{https://github.com/TGuillerme/treats} with more associated information.
-All the versions of the package are archived on ZENODO with associated DOI \url{https://zenodo.org/@@@}.
+The \treats package is available 
+% on the CRAN at \url{https://cran.r-project.org/web/packages/treats/index.html} or 
+on GitHub at \url{https://github.com/TGuillerme/treats} with more associated information.
+All the versions of the package are archived on ZENODO with associated DOI \url{https://doi.org/10.5281/zenodo.7970384}.
 
 \section{Acknowledgments}
-Thanks to Mark Puttick and Alex Slavenko for comments on the early stage of the development of this package. Thanks to @@@. This work was funded by UKRI-NERC Grant NE/T000139/1 and a Royal Society University Research Fellowship (URF R 180006 to GHT).
+Thanks to Mark Puttick for inspiring to develop the package through previous collaborations. Thanks to Ian Brennan, Gustavo Burin, Christopher Cooney, Natalie Cooper, Alex Cranston, Jasmine Hardie, Tom Lansley, Clement Prieul, Joe Rees, James Rule, Sophie Ryan and Gavin Thomas, for useful comments on late stages of the development of this package. This work was funded by UKRI-NERC Grant NE/T000139/1 and a Royal Society University Research Fellowship (URF R 180006 to Gavin Thomas).
 
 \bibliographystyle{sysbio}
 \bibliography{References}
