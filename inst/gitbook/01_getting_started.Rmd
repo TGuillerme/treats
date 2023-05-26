@@ -409,7 +409,7 @@ To do so, we need to create two mass extinction `"event"` objects:
 random_extinction <- make.events(target = "taxa",
                                  condition = taxa.condition(25, condition = `>=`),
                                  modification = random.extinction(0.75))
-## Creating an extrinction that removes species with negative trait values
+## Creating an extinction that removes species with negative trait values
 negative_extinction <- make.events(target = "taxa",
                                    condition = taxa.condition(25, condition = `>=`),
                                    modification = trait.extinction(x = 0, condition = `>=`))
