@@ -1,0 +1,44 @@
+---
+title: "treats paper plots"
+author: "Thomas Guillerme"
+date: "`r Sys.Date()`"
+bibliography: references.bib
+output:
+  html_document:
+    fig_width: 8
+    fig_height: 8
+---
+
+This script reproduces the plots and analyses used in the `treats` paper.
+
+## Beck Lee data (figure 1)
+
+```{r}
+## Loading the data and packages
+library(treats)
+library(dispRity)
+data(BeckLee_tree)
+data(BeckLee_mat99)
+
+## Creating the time slices
+time_slices <- chrono.subsets(BeckLee_mat99, BeckLee_tree,
+                              method = "continuous",
+                              model  = "acctran",
+                              time   = seq(from = 96, to = 36, by = -10))
+
+## Calculating disparity on the two first dimensions only
+observed_disparity <- dispRity(boot.matrix(time_slices), metric = c(sum, variances), dimensions = c(1,2))
+
+## Plotting the tree and the disparity through time
+pdf(file = "treats_example_figure1.pdf", width = 14, height = 7)
+par(mfrow = c(1,2))
+plot(BeckLee_tree, show.tip.label = FALSE)
+axisPhylo()
+abline(v = BeckLee_tree$root.time - 66, col = "red")
+legend("topleft", pch = NULL, legend = "A", bty = "n", cex = 2)
+par(bty = "n")
+plot(observed_disparity, ylab = "Sum of variances")
+abline(v = 4, col = "red")
+legend("topleft", pch = NULL, legend = "B", bty = "n", cex = 2)
+dev.off()
+```
