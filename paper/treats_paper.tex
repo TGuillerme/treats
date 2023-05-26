@@ -15,6 +15,28 @@
 \usepackage{textcomp}
 \usepackage{float}
 \usepackage[osf]{mathpazo}
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=R,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=false,
+  tabsize=4
+}
+
 \restylefloat{table}
 \newcolumntype{d}[1]{D{.}{.}{#1}}
 
@@ -198,16 +220,164 @@ Each element in the algorithm described above can be modified by the user using 
 
 The modularity structure of the \treats packages allows users to design complex simulation scenarios to fit their specific question and data.
 To illustrate this we will look whether it is possible to detect changes in disparity (i.e. diversity of traits) in a subset of the data published from \cite{beck2014ancient} implemented in \cite{dispRity}.
-This dataset contains the ordinated traits for 50 mammalian species across the cretaceous-palaeogene extinction event (K-Pg, 66 Mya).
+This dataset contains the ordinated traits for 50 mammalian species across the cretaceous-palaeogene extinction event (K-Pg, 66 Mya; \ref{Fig:example1}).
 
+\begin{lstlisting}
+## Loading the packages and the data
+library(dispRity)
+library(treats)
+## The observed tree
+data(BeckLee_tree)
+## The observed data
+data(BeckLee_mat99)
+\end{lstlisting}
+
+\begin{figure}[!htbp]
+\centering
+   \includegraphics[width=0.9\textwidth]{treats_example_figure1.pdf} 
+\caption{Observed phylogeny (A) and disparity through time (B) in the subset of \cite{beck2014ancient}'s dataset. For this specific data, is it possible to detect potential changes of disparity due to a mass extinction event?}
+\label{Fig:example1}
+\end{figure}
+
+Using this example dataset, one might be interested in testing whether the K-Pg extinction had an effect on disparity through time.
+However, one legitimate question to ask would be whether such effect could be detectable in the first place in this dataset.
+Do test this we can simulate some datasets with similar properties as the observed data and measure changes in disparity in these simulated datasets.
+If the simulations contain some mass extinction events we will then be able to see whether they cause a detectable change in disparity or not.
 
 \subsection{Simulating trees}
 
+The first and simplest way is to simulate tree topologies that have similar properties than the observed ones.
+To do so, we need to use some \textbf{speciation} parameter indicating the rate at which lineages speciate (\textit{aka} ``birth'' or ``$\lambda$'') and an \textbf{extinction} parameter indicating the rate at which they go extinct (\textit{aka} ``death'' or ``$\mu$'').
+These two parameters can be crudely calculated from a give tree by counting the number of speciations and extinction events through time (note that better analytical methods exist, e.g. \texttt{ape::birthdeath}; \citealt{lawton1995extinction,ape}).
+We also need a stopping rule for when to stop the simulations (in our case when reaching 50 taxa, extinct or living).
+This will produce a single random tree using the input parameters (Fig.\ref{Fig:example2}).
+Note that I will not discuss the options here in great details.
+Much more information can be found in the \href{http://tguillerme.github.io/treats.htm}{\treats manual}.
+% Note that the \treats function can automatically restart if the simulations did not produce the required tree (i.e. if all lineages go extinct before reaching the stopping rule).
+% This is done through the \texttt{null.error} option. 
 
-\subsection{Simulating traits}
+\begin{lstlisting}
+## Using the birth-death parameters from the observed tree
+my_bd_params <- crude.bd.est(BeckLee_tree)
+## Setting the stopping rule (stop after reaching 30 time units)
+stop_rule <- list(max.time = 30)
+## Generate the tree
+sim_tree <- treats(bd.params  = my_bd_params,
+                   stop.rule  = stop_rule,
+                   null.error = 100)
+## Visualising the results
+plot(tree_tree, show.tip.label = FALSE) ; axisPhylo()
+\end{lstlisting}
+
+\begin{figure}[!htbp]
+\centering
+   \includegraphics[width=0.9\textwidth]{treats_example_figure2.pdf} 
+\caption{A randomly simulated tree with similar properties as the observed one. Note that the time here is expressed in arbitrary units.}
+\label{Fig:example2}
+\end{figure}
+
+\subsection{Simulating trees and traits}
+
+For our specific question, we will also need to simulate some traits associated with each node and tip.
+For simplicity we will simulate a two dimensional Brownian Motion trait.
+To do so, we can create a \texttt{``traits''} object with the function \texttt{make.traits}.
+This results in a 2 dimensional trait space for all the simulated species and their nodes (Fig.\ref{Fig:example3}).
+
+\begin{lstlisting}
+## Creating a trait in 97 dimensions.
+my_traits <- make.traits(process = BM.process, n = 2)
+## Simulate the tree and traits
+sim_data <- treats(traits     = my_traits,
+                   bd.params  = my_bd_params,
+                   stop.rule  = stop_rule,
+                   null.error = 100)
+## Plotting the first trait through time
+plot(sim_data)
+## Plotting both traits
+plot(sim_data, trait = c(1,2))
+\end{lstlisting}
+
+\begin{figure}[!htbp]
+\centering
+   \includegraphics[width=0.9\textwidth]{treats_example_figure3.pdf} 
+\caption{A randomly simulated tree with a 2 dimensional random Brownian Motion trait.}
+\label{Fig:example3}
+\end{figure}
+
+\subsection{Simulating a trees and traits with events}
+
+However, for our specific question we want to simulate both a tree and some traits but with an extinction event in order to get some simulated data to answer our question.
+To do so, we can create two different \texttt{``events''} object with the function \texttt{make.events}.
+The first one will simulate a random extinction event after reaching half of the simulations (15 time units) and then making three quarter (0.75) of the taxa go extinct.
+The second one will simulate a random extinction but based on trait values: after reaching time 20, all the species with positive trait values will go extinct.
+Both scenarios thus illustrate two different types of mass extinction (selective and random \citealt{puttick2020complex}).
+
+\begin{lstlisting}
+## Creating a random mass extinction
+random_extinction <- make.events(
+    target       = "taxa",
+    condition    = time.condition(15),
+    modification = random.extinction(0.75))
+
+## Creating an extinction that removes species with positive trait values
+negative_extinction <- make.events(
+    target = "taxa",
+    condition = time.condition(15),
+    modification = trait.extinction(x = 0, condition = `>=`))
+
+## Simulating a random extinction
+sim_rand_extinction <- treats(
+                   traits     = my_traits,
+                   bd.params  = my_bd_params,
+                   stop.rule  = stop_rule,
+                   events     = random_extinction,
+                   null.error = 100)
+
+## Simulate a selective extinction
+sim_trait_extinction <- treats(
+                   traits     = my_traits,
+                   bd.params  = my_bd_params,
+                   stop.rule  = stop_rule,
+                   events     = negative_extinction,
+                   null.error = 100)
+
+## Visualising the difference between both scenarios
+plot(sim_rand_extinction, main = "Random extinction")
+abline(v = 10, col = "red")
+plot(sim_trait_extinction, main = "Negative extinction")
+abline(v = 10, col = "red")
+\end{lstlisting}
+
+\begin{figure}[!htbp]
+\centering
+   \includegraphics[width=0.9\textwidth]{treats_example_figure4.pdf} 
+\caption{Two different mass extinction events: (A) 75\% of species go extinct; (B) all species with positive trait values go extinct.}
+\label{Fig:example4}
+\end{figure}
+
+Again, the syntax is not developed in this example.
+For more information, you can refer to the \href{http://tguillerme.github.io/treats.htm}{\treats manual}.
+
+Once we have simualted a distribution of trees and traits with the two extinction scenarios, we can measure disparity as in Fig. \ref{Fig:example1} for all the simulated data and compare it to the observed disparity.
 
 
-\subsection{Adding events}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -275,7 +445,7 @@ on GitHub at \url{https://github.com/TGuillerme/treats} with more associated inf
 All the versions of the package are archived on ZENODO with associated DOI \url{https://doi.org/10.5281/zenodo.7970384}.
 
 \section{Acknowledgments}
-Thanks to Mark Puttick for inspiring to develop the package through previous collaborations. Thanks to Ian Brennan, Gustavo Burin, Christopher Cooney, Natalie Cooper, Alex Cranston, Jasmine Hardie, Tom Lansley, Clement Prieul, Joe Rees, James Rule, Sophie Ryan and Gavin Thomas, for useful comments on late stages of the development of this package. This work was funded by UKRI-NERC Grant NE/T000139/1 and a Royal Society University Research Fellowship (URF R 180006 to Gavin Thomas).
+Thanks to Mark Puttick for inspiring to develop the package through previous collaborations. Thanks to Andrew Beckerman, Ian Brennan, Gustavo Burin, Christopher Cooney, Natalie Cooper, Alex Cranston, Jasmine Hardie, Tom Lansley, Clement Prieul, Joe Rees, James Rule, Sophie Ryan and Gavin Thomas, for support and useful comments on late stages of the development of this package. This work was funded by UKRI-NERC Grant NE/T000139/1 and a Royal Society University Research Fellowship (URF R 180006 to Gavin Thomas).
 
 \bibliographystyle{sysbio}
 \bibliography{References}
