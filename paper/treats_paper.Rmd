@@ -1,0 +1,354 @@
+---
+title: "`treats`: a modular `R` package for simulating trees and traits."
+author: "Thomas Guillerme$^1$"
+bibliography: References.bib
+# csl: mee.csl
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    fig_width: 8
+    fig_height: 8
+  bookdown::html_document2: default
+  bookdown::pdf_document2: default
+---
+
+$^1$ School of Biosciences, University of Sheffield, Sheffield, S10 2TN, United Kingdom. guillert@tcd.ie
+
+# Abstract
+
+1. Simulating biological realistic data can be an important step to understand and investigate biological mechanisms.
+Simulated data can be used to generate null, base line or neutral models.
+These models can be used either in comparison to observed data to estimate the mechanisms that generated the data.
+Or they can be used to explore, understand and develop theoretical advances by proposing toy models.
+
+2. In evolutionary biology, such simulations often involve the need of an evolutionary process where descent with modification is at the core of how the simulated data is generated.
+These evolutionary processes can then be nearly infinitely modified to include much more complex processes to affect the simulations such as traits co-evolution, competition mechanisms or mass extinction events.
+
+3. Here I present the `treats` package, a modular `R` package for trees and traits simulations.
+This package is based on a simple birth death algorithm from which all core steps can easily be modified by users (hence the modularity).
+It also provides a tidy interface through the `treats` object, allowing users to easily run reproducible simulations.
+
+4. Here I present the core algorithms and their integrated modularity and provide an example of how to use the `treats` package when studying disparity, the diversity of traits.
+The `treats` package also comes with an extend manual regularly updated following users' questions or suggestions which comes as an extended supplementary material to this paper.
+
+###### Keywords: trees, traits, simulations, birth-death, null-models, ecology, evolution, disparity
+
+
+# Introduction
+
+<!-- % Simulations in biology -->
+Comparing biological patterns is one of the key ways to understand mechanisms in evolutionary biology.
+This lead to the development of phylogenetic comparative methods as key methodologically driven topic in ecology, evolution and palaeontology [@felsensteinPCM; @pennell2013review].
+As indicated in the name, phylogenetic comparative methods rely on comparing patterns in a phylogenetic context (i.e. descent with modification) to understand biological mechanisms or concepts [@harmon2019book].
+These comparisons can be done between observed patterns under different conditions or against null, neutral or baseline models (see @bausman2018neutral for distinctions or common misconceptions) suggesting different processes or mechanisms.
+<!-- % These types phylogenetic comparative methods analysis of traits through time are routinely done in palaeontology (disparity; @guillerme2020disparities) or in ecology (functional diversity; @mammola2021concepts). -->
+For example different traits distribution for species with different diets [@deepak2023diet],
+<!-- % different habitats https://onlinelibrary.wiley.com/doi/full/10.1111/jbi.12939 -->
+or by comparing some observed pattern to one simulated under null or base conditions [@miller2022alternating].
+In theory, workers can follow the research pipeline of thinking of a specific mechanism (e.g. mass extinction allowing the surviving species to acquire new morphologies), collect some data to test this mechanism (e.g. some traits of species across and extinction event) and then compare these patterns to one simulated under no specific conditions (e.g. a null model where the traits evolve randomly regardless of an extinction event @puttick2020complex).
+For such an approach, we need statistical and softwares solutions to simulate trees and data to generate these specific null models.
+
+<!-- % What already exists -->
+In practice, these evolutionary simulations can be done relatively easily on computers using a birth-death process [@feller1939birthdeath; @stadler2010birthdeath; @diversitree].
+A birth-death process is a continuous time Markov process that had been routinely implemented in `R` [@R] to simulate biological phylogenies (e.g. [@ape], [@diversitree]).
+These algorithm to generate phylogenetic trees can be coupled with other Markov processes to also generate traits, for example using a Brownian Motion process (BM; @cavalli1967BM) or an Ornstein Uhlenbeck  (OU; @lande1976OU; see @cooper2016cautionary for a distinction between both).
+In `R`, this can be done with several already well used and well documented packages.
+For example if you want to simulate diversity through time, you can use `TreeSim` [@treesim] to simulate diversity under a set of specific parameters (e.g. speciation and extinction) with some events disrupting the simulations (e.g. mass extinctions).
+One can even improve on generating these patterns using `FossilSim` [@fossilsim] to generate a pattern that will take into account fossilization processes.
+Or use `paleobuddy` [@paleobuddy] or `paleotree` [@paleotree] to generate palaeontology specific data.
+On the other hand, if you need to simulate both diversity and traits through time, this can be done with specific parameters in `RPANDA` [@rpanda] or in `PETER` [@puttick2020complex] where the traits are generated stochasticaly through time (given some process) during the birth-death process.
+
+<!-- % The problems with the absence of modularity -->
+Although the packages mentioned above are excellent and routinely used with fast and reliable algorithms and associated documentation, they are all designed for specific tasks and don't allow much modification beyond the input parameters designed by the authors.
+For example, `TreeSim` can simulate a birth-death tree with some extinction event but is not designed to simulated one with an extinction event that leads to the birth-death process to be not diversity dependent anymore (e.g. simulating a release in selection pressure after the extinction process that leads to a different process dominating speciation).
+Or `PETER` is not designed to simulate a complex set of traits (say three correlated BM traits and two independent OU ones).
+This absence of modularity has hampered the use of complex and question tailored simulations evolutionary biology, although I acknowledge this was not the primary aim of the authors of the packages mentioned above.
+This has led workers to often develop their own tools to answer specific questions (e.g. @puttick2020complex).
+Therefore, we propose `treats` a modular `R` package to simulate both diversity and disparity through time.
+
+
+
+# Description
+
+<!-- % Very briefly how does it work -->
+`treats` is based on the eponymous `treats` function that allows to simulate a phylogeny and some trait(s) simultaneously.
+The base birth-death algorithm "grows" a phylogenetic tree and generates traits for each node and tips in the following manner:
+
+1. Generating branch length;
+2. Selecting a lineage among the currently living ones;
+3. Choosing whether that lineage goes extinct (becomes a tip) or speciates (becomes a node).
+
+These four steps are repeated until the tree reaches the desired age or number of species.
+If traits are simulated during the process, a fourth step is added:
+
+4. Generating some trait(s) value(s) for the selected lineage (no either a tip or a node).
+
+In `treats`, these three or four steps are implemented as modular functions that the user can easily change using an internal class of objects called `"modifiers"` or `"traits"` (Fig. \ref{Fig:workflow}).
+The simulation then outputs a tree (of class `"phylo"` and a associated table of traits - `"matrix"`) that can be visualised using the `plot.treats` function.
+A third class of object called `"events"` can be added to the simulations to modify it under certain conditions (e.g. simulating a mass extinction).
+Each element in the algorithm described above can be modified by the user using the implemented functions `make.bd.params` to set the birth-death parameters, `make.traits` to set the trait(s), `make.modifiers` to set the birth-death algorithm and `make.events` to eventually add one or more events.
+
+![Figure 1: `treats` package workflow: the `treats` algorithm generates a tree and traits using inbuilt `"traits"` objects that contain the instructions on how to generate the trait data (e.g. which process? how many dimensions?); `"modifiers"` objects that contains instructions on how to "grow" the tree (e.g. by linking speciation to trait values, or to the current number of species); and `"events"` objects that can modify the tree structure, `"modifiers"` or `"traits"` depending on specific conditions (e.g. 80% of species with positive trait values go extinct after reaching a specific time).](../inst/gitbook/treats_structure.png){#figure1} 
+
+## Brief applied example
+
+The modularity structure of the `treats` packages allows users to design complex simulation scenarios to fit their specific question and data.
+To illustrate this we will look whether it is possible to detect changes in disparity (i.e. diversity of traits) in a subset of the data published from @beck2014ancient implemented in @dispRity.
+This dataset contains the ordinated traits for 50 mammalian species across the cretaceous-palaeogene extinction event (K-Pg, 66 Mya; Fig. 2).
+
+```{r, message = FALSE}
+## Loading the data and packages
+library(treats)
+library(dispRity)
+data(BeckLee_tree)
+data(BeckLee_mat99)
+
+## Creating the time slices
+time_slices <- chrono.subsets(BeckLee_mat99, BeckLee_tree,
+                              method = "continuous",
+                              model  = "acctran",
+                              time   = seq(from = 96, to = 36, by = -10))
+
+## Calculating disparity on the two first dimensions only
+observed_disparity <- dispRity(boot.matrix(time_slices), metric = c(sum, variances), dimensions = c(1,2))
+```
+
+```{r prepdata, echo = FALSE, fig.cap="Figure 2: Observed phylogeny (A) and disparity through time (B) in the subset of @beck2014ancient's dataset. For this specific data, is it possible to detect potential changes of disparity due to a mass extinction event?", fig.width = 18, fig.height = 8}
+## Plotting the tree and the disparity through time
+par(mfrow = c(1,2))
+plot(BeckLee_tree, show.tip.label = FALSE)
+axisPhylo()
+abline(v = BeckLee_tree$root.time - 66, col = "red")
+legend("topleft", pch = NULL, legend = "A", bty = "n", cex = 2)
+par(bty = "n")
+plot(observed_disparity, ylab = "Sum of variances")
+abline(v = 4, col = "red")
+legend("topleft", pch = NULL, legend = "B", bty = "n", cex = 2)
+```
+
+Using this example dataset, one might be interested in testing whether the K-Pg extinction had an effect on disparity through time.
+However, one legitimate question to ask would be whether such effect could be detectable in the first place in this dataset.
+Do test this we can simulate some datasets with similar properties as the observed data and measure changes in disparity in these simulated datasets.
+If the simulations contain some mass extinction events we will then be able to see whether they cause a detectable change in disparity or not.
+
+### Simulating trees
+
+The first and simplest way is to simulate tree topologies that have similar properties than the observed ones.
+To do so, we need to use some **speciation** parameter indicating the rate at which lineages speciate (_aka_ "birth" or "$\lambda$") and an **extinction** parameter indicating the rate at which they go extinct (_aka_ "death" or "$\mu$").
+These two parameters can be crudely calculated from a give tree by counting the number of speciations and extinction events through time (note that better analytical methods exist, e.g. `ape::birthdeath`; @lawton1995extinction; @ape).
+We also need a stopping rule for when to stop the simulations (in our case when reaching 50 taxa, extinct or living).
+This will produce a single random tree using the input parameters (Fig. 3).
+Note that I will not discuss the options here in great details.
+Much more information can be found in the [`treats` manual](http://tguillerme.github.io/treats.html).
+Note that because of stochasticity the `treats` function can automatically restart if the simulations did not produce the required tree (i.e. if all lineages go extinct before reaching the stopping rule; using the `null.error` option).
+
+```{r, message = FALSE}
+## Using the birth-death parameters from the observed tree
+my_bd_params <- crude.bd.est(BeckLee_tree)
+## Setting the stopping rule (stop after 30 time units)
+stop_rule <- list(max.time = 30)
+
+## Simulate the tree
+set.seed(1)
+sim_tree <- treats(bd.params  = my_bd_params,
+                   stop.rule  = stop_rule,
+                   null.error = 100)
+```
+```{r simtree, echo = FALSE, fig.cap="Figure 3: A randomly simulated tree with similar properties as the observed one. Note that the time here is expressed in arbitrary units.", fig.width = 6, fig.height = 6}
+## Plotting the resulting tree
+plot(sim_tree, show.tip.label = FALSE)
+## Adding the phylogenetic axis
+axisPhylo()
+```
+
+### Simulating trees and traits
+
+For our specific question, we will also need to simulate some traits associated with each node and tip.
+For simplicity we will simulate a two dimensional Brownian Motion trait.
+To do so, we can create a `"traits"` object with the function `make.traits`.
+This results in a 2 dimensional trait space for all the simulated species and their nodes (Fig. 4).
+
+```{r, message = FALSE}
+## Creating a trait in 2 dimensions.
+my_traits <- make.traits(process = BM.process, n = 2)
+
+## Simulate the tree and traits
+set.seed(1)
+sim_data <- treats(traits     = my_traits,
+                   bd.params  = my_bd_params,
+                   stop.rule  = stop_rule,
+                   null.error = 100)
+```
+```{r simtreetraits, echo = FALSE, fig.cap="Figure 4: A randomly simulated tree with a 2 dimensional random Brownian Motion trait.", fig.width = 16, fig.height = 8}
+par(mfrow = c(1,2))
+## Plotting one trait through time
+plot(sim_data, ylab = "Trait 1", las = 1, main = "Trait 1 through time")
+## Plotting the two dimensions against each other
+plot(sim_data, trait = c(2,1), ylab = "Trait 1", xlab = "Trait 2", las = 1, main = "Traits 1 and 2")
+```
+
+### Simulating a trees and traits with events
+
+However, for our specific question we want to simulate both a tree and some traits but with an extinction event in order to get some simulated data to answer our question.
+To do so, we can create two different `"events"` object with the function `make.events`.
+The first one will simulate a random extinction event after reaching half of the simulations (15 time units) and then making three quarter (0.75) of the taxa go extinct.
+The second one will simulate a random extinction but based on trait values: after reaching time 20, all the species with positive trait values will go extinct.
+Both scenarios thus illustrate two different types of mass extinction (selective and random @puttick2020complex).
+Note that for such simulations, it is easy to replicate the scenarios to have a distribution of trees and traits using `replicate`.
+
+```{r, message = FALSE}
+## Creating a random mass extinction
+random_extinction <- make.events(
+    target       = "taxa",
+    condition    = time.condition(15),
+    modification = random.extinction(0.75))
+## Creating an extinction that removes species with positive trait values
+positive_extinction <- make.events(
+    target = "taxa",
+    condition = time.condition(15),
+    modification = trait.extinction(x = 0, condition = `>=`))
+
+set.seed(2)
+## Simulate the tree and traits with a random extinction event
+sim_rand_extinction <- treats(
+                   traits     = my_traits,
+                   bd.params  = my_bd_params,
+                   stop.rule  = stop_rule,
+                   events     = random_extinction,
+                   null.error = 100,
+                   replicates = 50)
+
+## Simulate the tree and traits with a random extinction event
+sim_trait_extinction <- treats(
+                   traits     = my_traits,
+                   bd.params  = my_bd_params,
+                   stop.rule  = stop_rule,
+                   events     = positive_extinction,
+                   null.error = 100,
+                   replicates = 50)
+```
+```{r simtreetraitsevents, echo = FALSE, fig.cap="Figure 5: Two different mass extinction events: (A) 75% of species go extinct; (B) all species with positive trait values go extinct.", fig.width = 16, fig.height = 8}
+par(mfrow = c(1,2))
+## Visualising the difference between both scenarios
+plot(sim_rand_extinction[[11]], main = "Random extinction")
+abline(v = 15, col = "red")
+legend("topleft", pch = NULL, legend = "A", bty = "n", cex = 2)
+plot(sim_trait_extinction[[10]], main = "Positive extinction")
+legend("topleft", pch = NULL, legend = "B", bty = "n", cex = 2)
+abline(v = 15, col = "red")
+```
+
+Again, the syntax is not developed in this example.
+For more information, you can refer to the [`treats` manual](http://tguillerme.github.io/treats.html).
+Once we have simulated a distribution of trees and traits with the two extinction scenarios, we can measure disparity as in Fig. 1 for all the simulated data and compare it to the observed disparity.
+
+
+```{r simdisparity, warning = FALSE, echo = FALSE, fig.cap="Figure 6: Comparison of the observed sum of variances (dashed line) to the simulated one (ligth and dark grey polygons and black line representing respectively the 95% and 50% confidence interval and the median value).", fig.width = 16, fig.height = 8}
+## Wrapper function for measuring disparity across the datasets
+measure.disparity <- function(one_simulation) {
+    ## transform the data
+    sim <- dispRitreats(one_simulation, scale.tree = FALSE)
+    ## Calculate disparity
+    disparity <- dispRity(
+             chrono.subsets(data = sim$data, tree = sim$tree,
+                            method = "continuous", model = "acctran",
+                            time = seq(from = 30, to = 0, by = -5)),
+                            metric = c(sum, variances))
+    ## Scale the disparity
+    disparity <- unlist(get.disparity(disparity))
+    return(disparity/max(disparity))
+}
+
+## Measuring disparities
+random_extinction_disparity <- do.call(rbind, lapply(sim_rand_extinction, measure.disparity))
+selective_extinction_disparity <- do.call(rbind, lapply(sim_trait_extinction, measure.disparity))
+
+## Get the observed disparity
+observed_disparity <- rescale.dispRity(observed_disparity)
+observed_disparity <- unlist(get.disparity(observed_disparity))
+
+## Plotting the results
+polygon.plot <- function(disparity_results, main = "") {
+    ## Get the quantiles
+    quantiles <- apply(disparity_results, 2, quantile, probs = c(0.025, 0.25, 0.5, 0.75, 0.975), na.rm = TRUE)
+
+    plot(NULL, xlim = c(1, ncol(quantiles)), ylim = range(quantiles), ylab = "scaled sum of ranges", xlab = "Relative time", main = main )
+    polygon(x = c(1:ncol(quantiles), ncol(quantiles):1),
+            y = c(quantiles[1, ], rev(quantiles[5, ])),
+            col = "lightgrey", border = FALSE)
+    polygon(x = c(1:ncol(quantiles), ncol(quantiles):1),
+            y = c(quantiles[2, ], rev(quantiles[4, ])),
+            col = "grey", border = FALSE)
+    lines(x = c(1:ncol(quantiles)), y = quantiles[3, ])
+}
+
+par(mfrow = c(1,2))
+polygon.plot(random_extinction_disparity, main = "Random extinction")
+abline(v = 4, col = "red")
+lines(x = 1:7, y = observed_disparity, lty = 2, lwd = 2)
+polygon.plot(selective_extinction_disparity, main = "Selective extinction")
+abline(v = 4, col = "red")
+lines(x = 1:7, y = observed_disparity, lty = 2, lwd = 2)
+```
+
+From these results we can draw some preliminary conclusions suggesting that the observed change disparity is more likely due to a random mass extinction rather than a selective one.
+However this is of course a really crude way to test this and is not to be taken literally here.
+The aim here is to illustrate the use of the package.
+To test the question asked here more work is needed (i.e. more and better quality data, and more thorough methods, e.g. using a rank envelope test @murrell2018global).
+
+## Major functionalities
+
+### Simulating traits
+
+multivariate stuff @adams2019multivarPCM
+
+### Modifying the birth-death process
+
+Dynamic ones will be for bd.params = list(speciation = runif)
+
+### Creating events
+
+# Discussion
+
+## Modularity
+
+The modular structure allows
+
+## `treats` compared to other packages
+
+As previously mentioned, many other excellent packages are available for simulating biologically realistic data.
+However each of these packages focuses on simulating specific scenarios and none provide the levels of modularity implemented in `treats`.
+Note that these comparison is somewhat a strawman argument since the packages I am comparing to `treats` here are used for many other anlyses or simulations not at all implemented in `treats` and where probably never intended to be a modular tree and traits simulation package in the first place.
+
+package | tree simulation parameters | trait simulation models | events 
+--------|----------------|----------------|----------------|--------
+`TreeSim` | speciation, extinction and sampling | NA | rate shifts and mass extinctions
+`diversitree` | speciation, extinction and 9 types of simulations available | 5 implemented models | NA 
+`RPANDA` | NA | 9 implemented models | NA 
+`traits` | infinite (modulable through `make.bd.params` and `make.modifiers`) | infinite (modulable through `make.traits` with 6 implemented models) | infinite (modulable through `make.events`) 
+
+Table 1: comparison between the `traits` package and other packages.
+
+## Further directions
+
+<!-- Integrating with dispRity -->
+<!-- Lineage specific simulations. -->
+<!-- Abiotic events -->
+<!-- Time depend simulations -->
+
+# Conclusion
+The `treats` is modular and nice to use.
+
+Extended manual following recommendations from @cooper2016dark
+
+
+## Package location
+The `treats` package is available 
+<!-- % on the [CRAN](https://cran.r-project.org/web/packages/treats/index.html) or  -->
+on [GitHub](https://github.com/TGuillerme/treats) with more associated information.
+All the versions of the package are archived on ZENODO with associated [DOI:10.5281/zenodo.7970384](https://doi.org/10.5281/zenodo.7970384).
+
+## Acknowledgments
+Thanks to Mark Puttick for inspiring to develop the package through previous collaborations. Thanks to Andrew Beckerman, Ian Brennan, Gustavo Burin, Christopher Cooney, Natalie Cooper, Alex Cranston, Jasmine Hardie, Tom Lansley, Clement Prieul, Joe Rees, James Rule, Sophie Ryan and Gavin Thomas, for support and useful comments on late stages of the development of this package. This work was funded by UKRI-NERC Grant NE/T000139/1 and a Royal Society University Research Fellowship (URF R 180006 to Gavin Thomas).
+
+# References
