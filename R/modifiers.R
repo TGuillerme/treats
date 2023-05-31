@@ -104,7 +104,7 @@ speciation <- function(bd.params, lineage = NULL, trait.values = NULL, modify.fu
     }
 
     ## Speciate?
-    return(trigger_event < (bd.params$speciation/(bd.params$speciation + bd.params$extinction)))
+    return(trigger_event <= (bd.params$speciation/(bd.params$speciation + bd.params$extinction)))
 }
 
 ## Normal selection
@@ -123,7 +123,7 @@ branch.length.fast <- function(bd.params, lineage = NULL, trait.values = NULL, m
 ## Normal speciation  (internal usage only)
 speciation.fast <- function(bd.params, lineage = NULL, trait.values = NULL, modify.fun = NULL) {
     ## Speciate?
-    return(runif(1) < (bd.params$speciation/(bd.params$speciation + bd.params$extinction)))
+    return(runif(1) <= (bd.params$speciation/(bd.params$speciation + bd.params$extinction)))
 }
 
 ## Normal selector (internal usage only)
