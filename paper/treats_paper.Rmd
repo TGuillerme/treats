@@ -13,8 +13,11 @@ output:
 ---
 
 <!-- no more than 3000-4000 words total -->
-
+<!-- The code checklist must be filled in and uploaded as a 'File for editors'.  -->
 $^1$ School of Biosciences, University of Sheffield, Sheffield, S10 2TN, United Kingdom. guillert@tcd.ie
+
+Running head:
+`treats`: TREes And Traits Simulations
 
 # Abstract
 
