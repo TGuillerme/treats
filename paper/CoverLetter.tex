@@ -11,25 +11,32 @@
 \opening{Dear Editors,}
 
 % Simulations are important in biology
-% Studying multivariate data as an alternative to univariate data has become increasingly popular in the last decades in both ecology and evolution. This includes, for example, studying form and function (e.g. Diaz et al., 2016, Nature) or morphological diversity (i.e. disparity - e.g. Brusatte et al. 2012, Science). These methods all use a multidimensional space (through ordination or other techniques) representing the combination of all possible observed traits and then measuring some aspect of the space (e.g. its hypervolume) for different groups, and comparing these to each other or to a null hypothesis.
+Simulating biological data is an important step for testing biological hypothesis.
+For example, one might be interested in comparing observed diversification patterns to simulated ones to understand the mechanisms leading to the observed patterns (e.g. Miller et al. 2022 PNAS).
+In general, one might be interested in simulated either some phylogenetic hypothesis (topology), some traits or both to generate biologically realistic datasets to be compared to the observed ones.
 
 % There are many tools but they are not modular
-% There are a multitude of ways of carrying out each of these steps, and numerous software implementations in several languages (e.g. in R: Claddis, geomorph, ade4, vegan, or in javascript: GINGKO). However, each of these implementations is particular to the package author’s defini- tion of the multidimensional space, metric and test. This leads researchers to use these toolkits by default, thus preventing them from using the best definitions of the space/metric/test for their particular question or dataset. At worst this leads to incorrect statistic claims, and, at best to time consuming code retro-engineering.
+Such simulation based approach can be routinely done in many different \texttt{R} packages, such as \texttt{ape} (Paradis \& Schliep 2019 Bioinformatics), \texttt{diversitree} (FitzJohn 2012 MEE), \texttt{TreeSim} (Stadler 2011 Systematic Biology) or \texttt{RPANDA} (Morlon et al. 2016 MEE) to only mention a few.
+Each of this packages however was designed of a specific simulation type in mind with a restricted number of options reflecting the objectives of the authors (i.e. simulations where not designed at the core of these excellent packages).
+For example, it is possible to simulate traits in \texttt{RPANDA} but not jointly with phylogenies, \texttt{TreeSim} allows for the simualtions of tree topologies and mass extinction events but doesn't allow simulating traits, or \texttt{diversitree} allows to simulate trees and traits but not mass extinction events.
 
 % Here is a treats, a modular package for simulations in biology
-% In this application manuscript entitled “dispRity: an R package for measuring disparity”, I present a complete and flexible R package for running multidimensional analysis where each parameter can be easily defined by the user (the space, the metric and the test). This package provides a tidy and modular environment where users can use their own multidimensional space defined as a matrix and apply to it any metric and any test (provided as functions). This allows for highly modular multidimensional analysis and the tidy interface allows easily reproducible analysis. All functions have documentation and unit tests. Additionally, this package comes with an in depth Gitbook manual covering most functionalities that will be updated regularly following user requests. Finally, the package is likely to be well cited as it is already being used in at least five projects that I am aware of.
+Here I propose the \texttt{treats} package: ``TREes And Traits Simulations''.
+This package is based on a highly modular architecture allowing users to simulate both trees and traits with the inclusions of events (e.g. mass extinction).
+Briefly, it allows and helps users to design their own function (or modify the implemented functions) to design their very own specific simulation scenarios, for example, a birth-death tree with variable speciation and extinction parameters and two 3D dimensional traits (one BM and one OU with multiple beaks) where the speciations becomes trait dependent after reaching a certain number of taxa.
+The package comes with an extended documentation and unit tests for each function.
+Additionally, this package comes with an in depth Gitbook manual covering most functionalities that will be updated regularly following user requests.
 
-We look forward to hearing from you soon,
+I look forward to hearing from you soon,
 
 \closing{Yours sincerely,}
-
 
 \end{letter}
 \end{document}
 
 
 %Editors:
-%Laura Graham, University of Southampton, UK
+% Laura Graham, University of Southampton, UK
 % Timothée Poisot, Université de Montréal, Canada
 % Samantha Price, Clemson University, USA
 
