@@ -1,31 +1,5 @@
 # TODO list: finish package!
 
-## New function
- - [x] allow inputing a tree and simulating from there (handled separately through `map.trait` (map trait on tree) with `map.trait(tree = tree, trait = traits)`.
-
-## New traits
- - [x] `discrete.process`
-    - [x] test
-    - [x] doc
-    - [x] man
-
-## utilities
-
- - [x] add manual for utilities
- - [x] example for: `utilities::parent.traits`: Write examples (write manual at the same time)
- - [x] add test for `parent.traits`
- - [x] doc for `crude.bd.est`
- - [x] doc for `dispRitreats`
- - [x] add test for `dispRitreats`
-
-## Package
-
- - [x] compile package with CRAN check
-    - [x] clean S3
-    - [x] clean codoc
- - [x] compile manual
- - [x] update README
-
 ## TODO: whishlist
  - [ ] Add lineage tracking mechanism (i.e. allow `traits`, `modifiers` or `events` to be applied to specific lineages); also allow giving prefixes to the names of tips and nodes in the lineage.
  - [ ] allow events per clade (see TreeSim)
@@ -41,11 +15,3 @@
   * [ ] either applied a posteriori on the whole `treats` object (to discretise the output)
   * [ ] or converts a process into `discrete.process` where the rate sampler is the one from the previous process.
   * [ ] allow `discretise.traits` and `discrete.process` to handle any states names (not just 0, 1, 2, ...)
-
-## Feedback
-
-### Manual suggestions
- - [x] add a schematic for each subsection as well (not only the main one): or maybe just do it for a specific example
- - [x] put correlated traits in the documentation earlier in the vignette
- - [x] What it does: simulates trees and traits. throughout the manual: change `disparity` to `traits` and `diversity` to `trees` 
- - [ ] Maybe a cheat sheet table for what affects what. "I want to change my extinction rate?" "where do I change that (is it in modifiers, etc...)" (kind of mini FAQ)
