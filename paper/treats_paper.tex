@@ -109,7 +109,7 @@
 \title{\texttt{treats}: a modular \texttt{R} package for simulating
 trees and traits.}
 \author{Thomas Guillerme\(^1\)}
-\date{2023-06-07}
+\date{2023-06-09}
 
 \begin{document}
 \maketitle
@@ -156,54 +156,54 @@ evolution, disparity
 \section{Introduction}\label{introduction}}
 
 Comparing biological patterns is one of the key ways to understand
-mechanisms in evolutionary biology. This lead to the development of
+mechanisms in evolutionary biology. This leads to the development of
 phylogenetic comparative methods as key methodologically driven topic in
 ecology, evolution and palaeontology (Felsenstein 1985; Pennell and
-Harmon 2013). As indicated in the name, phylogenetic comparative methods
-rely on comparing patterns in a phylogenetic context to understand
-biological mechanisms or concepts (Harmon 2019). These comparisons can
-be done between observed patterns under different conditions or against
-null, neutral or baseline models (see Bausman (2018) for distinctions)
-suggesting different processes or mechanisms. For example different
-traits distribution for species with different diets (Deepak, Gower, and
-Cooper 2023), or habitats (Pinto-Ledezma et al. 2017) or by comparing
-some observed pattern to one simulated under null or base conditions
-(Miller et al. 2022). In theory, workers can follow the research
-pipeline of thinking of a specific mechanism (e.g.~mass extinction
-allowing the surviving species to acquire new morphologies), collect
-some data to test this mechanism (e.g.~some traits of species across and
-extinction event) and then compare these patterns to one simulated under
-no specific conditions (e.g.~a null model where the traits evolve
-randomly regardless of an extinction event Puttick, Guillerme, and Wills
-(2020)). For such an approach, we need statistical and softwares
-solutions to simulate trees and data to generate these specific null
-models.
+Harmon 2013). These methods rely on comparing patterns in a phylogenetic
+context to understand biological mechanisms or concepts (Harmon 2019).
+These comparisons can be done between observed patterns under different
+conditions or against null, neutral or baseline models (see Bausman
+(2018) for distinctions) suggesting different processes or mechanisms.
+For example different traits distribution for species with different
+diets (Deepak, Gower, and Cooper 2023) or habitats (Pinto-Ledezma et al.
+2017). Or by comparing some observed pattern to one simulated under null
+or base conditions (Miller et al. 2022). In theory, workers can follow
+the following research pipeline: thinking of a specific mechanism
+(e.g.~mass extinction allowing the surviving species to acquire new
+morphologies), collecting some data to test this mechanism (e.g.~some
+traits of species across and extinction event) and then comparing these
+patterns to some simulated under no specific conditions (e.g.~a null
+model where the traits evolve randomly regardless of an extinction event
+Puttick, Guillerme, and Wills (2020)). Workers might thus need to
+simulate a great diversity of evolutionary scenarios to test their
+specific question. To do so, we need statistical and software solutions
+to simulate trees and data to generate many specific null models.
 
 In practice, these evolutionary simulations can be done relatively
 easily on computers using a birth-death process (Feller 1939; Stadler
 2010; FitzJohn 2012). A birth-death process is a continuous time Markov
 process that had been routinely implemented in \texttt{R} (R Core Team
-2023) to simulate biological phylogenies (e.g.~(Paradis and Schliep
-2019), (FitzJohn 2012)). These algorithm to generate phylogenetic trees
-can be coupled with other Markov processes to also generate traits, for
-example using a Brownian Motion process (BM; Cavalli-Sforza and Edwards
-(1967)) or an Ornstein Uhlenbeck (OU; Lande (1976); see Cooper et al.
-(2016) for a distinction between both). In \texttt{R}, this can be done
-with several already well used and well documented packages. For example
-if you want to simulate diversity through time, you can use
-\texttt{TreeSim} (Stadler 2011) to simulate diversity under a set of
-specific parameters (e.g.~speciation and extinction) with some events
-disrupting the simulations (e.g.~mass extinctions). One can even improve
-on generating these patterns using \texttt{FossilSim} (Barido-Sottani et
-al. 2019) to generate a pattern that will take into account
-fossilization processes. Or use \texttt{paleobuddy} (Rosario Petrucci,
+2023) to simulate realistic phylogenies (e.g.~(Paradis and Schliep
+2019), (FitzJohn 2012)). This general algorithm to generate phylogenetic
+trees can be coupled with other Markov processes to also generate
+traits, for example using a Brownian Motion process (BM; Cavalli-Sforza
+and Edwards (1967)) or an Ornstein Uhlenbeck (OU; Lande (1976); see
+Cooper et al. (2016) for a distinction between both). In \texttt{R},
+this can be done with several already well used and well documented
+packages. For example if you want to simulate diversity through time,
+you can use \texttt{TreeSim} (Stadler 2011) to simulate diversity under
+a set of specific parameters (e.g.~speciation and extinction) with some
+events disrupting the simulations (e.g.~mass extinctions). You can even
+improve on generating these patterns using \texttt{FossilSim}
+(Barido-Sottani et al. 2019) to take into account fossilization
+processes. You can also use \texttt{paleobuddy} (Rosario Petrucci,
 Januario, and Quental 2022) or \texttt{paleotree} (Bapst 2012) to
 generate palaeontology specific data. On the other hand, if you need to
 simulate both diversity and traits through time, this can be done with
-specific parameters in \texttt{RPANDA} (Morlon et al. 2016) or in
-\texttt{PETER} (Puttick, Guillerme, and Wills 2020) where the traits are
-generated stochasticaly through time (given some process) during the
-birth-death process.
+specific parameters in \texttt{RPANDA} (Morlon et al. 2016),
+\texttt{diversitree} (FitzJohn 2012) or \texttt{PETER} (Puttick,
+Guillerme, and Wills 2020) where the traits are generated stochasticaly
+through time (given some process) during the birth-death process.
 
 Although the packages mentioned above are excellent and routinely used
 with fast and reliable algorithms and associated documentation, they are
@@ -211,18 +211,18 @@ all designed for specific tasks and don't allow much modification beyond
 the input parameters designed by the authors. For example,
 \texttt{TreeSim} can simulate a birth-death tree with some extinction
 event but is not designed to simulated one with an extinction event that
-leads to the birth-death process to be not diversity dependent anymore
-(e.g.~simulating a release in selection pressure after the extinction
-process that leads to a different process dominating speciation). Or
+leads to the birth-death process to be not diversity dependent anymore,
+simulating a release in selection pressure after the extinction event
+that leads to a different process dominating speciation. Or
 \texttt{PETER} is not designed to simulate a complex set of traits (say
 three correlated BM traits and two independent OU ones). This absence of
-modularity has hampered the use of complex and question tailored
-simulations evolutionary biology, although I acknowledge this was not
-the primary aim of the authors of the packages mentioned above. This has
-led workers to often develop their own tools to answer specific
-questions (e.g.~Puttick, Guillerme, and Wills (2020)). Therefore, we
-propose \texttt{treats} a modular \texttt{R} package to simulate both
-diversity and disparity through time.
+modularity has hampered the use of complex and question-driven
+simulations, although I acknowledge this was not the primary aim of the
+authors of the excellent packages mentioned above. This has led workers
+to often develop their own tools to answer specific questions
+(e.g.~Puttick, Guillerme, and Wills (2020)). Therefore, I propose
+\texttt{treats} a modular \texttt{R} package to simulate both trees and
+traits through time.
 
 \hypertarget{description}{%
 \section{Description}\label{description}}
@@ -244,9 +244,10 @@ traits for each node and tips in the following manner:
   speciates (becomes a node).
 \end{enumerate}
 
-These four steps are repeated until the tree reaches the desired age or
-number of species. If traits are simulated during the process, a fourth
-step is added:
+These three steps are repeated until the tree reaches the desired age or
+number of species (the algorithm's implementation is heavily inspired
+and based on FitzJohn (2012)). If traits are simulated during the
+process, a fourth step is added:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -264,13 +265,15 @@ objects called \texttt{"modifiers"} or \texttt{"traits"} (Fig.
 \texttt{"phylo"} and a associated table of traits - \texttt{"matrix"})
 that can be visualised using the \texttt{plot.treats} function. A third
 class of object called \texttt{"events"} can be added to the simulations
-to modify it under certain conditions (e.g.~simulating a mass
-extinction). Each element in the algorithm described above can be
-modified by the user using the implemented functions
+to modify the entire simulation under certain conditions
+(e.g.~simulating a mass extinction). Each element in the algorithm can
+be modified by the user using the implemented functions
 \texttt{make.bd.params} to set the birth-death parameters,
 \texttt{make.traits} to set the trait(s), \texttt{make.modifiers} to set
 the birth-death algorithm and \texttt{make.events} to eventually add one
-or more events.
+or more events. Users can replace any step in the algorithm by their own
+specific functions suiting their needs or, for less advanced users, by
+using already implemented functions.
 
 \begin{figure}
 \hypertarget{figure1}{%
@@ -292,10 +295,8 @@ after reaching a specific time).}\label{figure1}
 \hypertarget{brief-applied-example}{%
 \subsection{Brief applied example}\label{brief-applied-example}}
 
-The modularity structure of the \texttt{treats} packages allows users to
-design complex simulation scenarios to fit their specific question and
-data. To illustrate this we will look whether it is possible to detect
-changes in disparity (i.e.~diversity of traits) in a subset of the data
+To illustrate this we will look whether it is possible to detect changes
+in disparity (i.e.~diversity of traits) in a subset of the data
 published from Beck and Lee (2014) implemented in Guillerme (2018). This
 dataset contains the ordinated traits for 50 mammalian species across
 the cretaceous-palaeogene extinction event (K-Pg, 66 Mya; Fig. 2).
@@ -325,8 +326,9 @@ the cretaceous-palaeogene extinction event (K-Pg, 66 Mya; Fig. 2).
 \centering
 \includegraphics{treats_paper_files/figure-latex/prepdata-1.pdf}
 \caption{Figure 2: Observed phylogeny (A) and disparity through time (B)
-in the subset of Beck and Lee (2014)'s dataset. For this specific data,
-is it possible to detect potential changes of disparity due to a mass
+in the subset of Beck and Lee (2014)'s dataset. Is this change in
+disparity related to the K-Pg mass extinction? Or, more generally, is it
+even possible to detect potential changes of disparity due to a mass
 extinction event?}
 \end{figure}
 
@@ -345,7 +347,7 @@ similar properties than the observed one. To do so, we need to use some
 speciate (\emph{aka} ``birth'' or ``\(\lambda\)'') and an
 \textbf{extinction} parameter indicating the rate at which they go
 extinct (\emph{aka} ``death'' or ``\(\mu\)''). These two parameters can
-be crudely calculated from a give tree by counting the number of
+be crudely calculated from a given tree by counting the number of
 speciations and extinctions through time (but see better methods,
 e.g.~\texttt{ape::birthdeath}; Lawton, May, and Raup (1995); Paradis and
 Schliep (2019)). We also need a stopping rule for when to stop the
@@ -421,9 +423,9 @@ function \texttt{make.events}. The first one will simulate a random
 extinction event after reaching half of the simulations (15 time units)
 and then making three quarter (0.75) of the taxa go extinct. The second
 one will simulate a random extinction but based on trait values: after
-reaching time 20, all the species with positive trait values will go
+reaching time 15, all the species with positive trait values will go
 extinct. Both scenarios thus illustrate two different types of mass
-extinction (selective and random Puttick, Guillerme, and Wills (2020)).
+extinction (random and selective; Puttick, Guillerme, and Wills (2020)).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -468,7 +470,7 @@ extinct. The red line marks the extinction event.}
 \end{figure}
 
 Once we have simulated a distribution of trees and traits with the two
-extinction scenarios, we can measure disparity as in Fig. 1 for all the
+extinction scenarios, we can measure disparity as in Fig. 2 for all the
 simulated data and compare it to the observed disparity.
 
 \begin{figure}
@@ -482,15 +484,15 @@ median value).}
 
 From these results we can draw some preliminary conclusions: the
 observed change in disparity is more likely due to a random mass
-extinction rather than a selective one. This is of course a crude way of
-testing this, a more rigorous approach is likely needed to answer the
-question (i.e.~more and better quality data, and more thorough methods,
-e.g.~using a rank envelope test Murrell (2018)).
+extinction rather than a selective one. This is of course a very crude
+way of testing this, a more rigorous approach is needed to answer the
+question: more and better quality data, and more thorough methods
+(e.g.~using a rank envelope test Murrell (2018)).
 
 \hypertarget{major-functionalities}{%
 \subsection{Major functionalities}\label{major-functionalities}}
 
-The following sections provide an overview of the three main functions
+The following sections provides an overview of the three main functions
 displayed in Figure 1 (\texttt{make.traits}, \texttt{make.modifiers} and
 \texttt{make.events}).
 
@@ -510,7 +512,7 @@ from \texttt{x0}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\#\# Functionalising the previous example of a Brownian Motion process}
+\CommentTok{\#\# Brownian Motion process}
 \NormalTok{my.bm.process \textless{}{-}}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x0, edge.length) \{}
     \KeywordTok{rnorm}\NormalTok{(}\DataTypeTok{n =} \DecValTok{1}\NormalTok{, }\DataTypeTok{mean =}\NormalTok{ x0, }\DataTypeTok{sd =}\NormalTok{ edge.length)}
 \NormalTok{\} }
@@ -521,8 +523,8 @@ from \texttt{x0}:
 
 Of course biological data can be much more complex and often
 multivariate (Adams and Collyer 2019) requiring the users to develop
-more complex function to cater their specific needs. However, the
-\texttt{treats} package contains a list of pre-built processes that are
+more complex function to cater their specific needs. The \texttt{treats}
+package contains a list of pre-built processes that are
 ``ready-to-use'':
 
 \begin{itemize}
@@ -533,8 +535,7 @@ more complex function to cater their specific needs. However, the
   (including possible correlation);
 \item
   \texttt{multi.peak.process}: a generalised Ornstein-Uhlenbeck process
-  (uni- or multi-dimensional) which allows for multiple peaks (usually
-  called the ``alpha'' parameters; Lande (1976));
+  (uni- or multi-dimensional) which allows for multiple peaks;
 \item
   \texttt{repulsion.process}: a unidimensional process generating trait
   values that don't overlap with previously generated trait values;
@@ -606,7 +607,7 @@ the algorithm uses the following algorithms:
 \setcounter{enumi}{2}
 \tightlist
 \item
-  C\textbf{hoosing whether that lineage goes extinct (becomes a tip) or
+  \textbf{Choosing whether that lineage goes extinct (becomes a tip) or
   speciates (becomes a node)} by drawing a random number between 0 and 1
   and comparing it to the ratio of speciation and turnover (speciation +
   extinction). If the random number is smaller than the ratio of
@@ -622,7 +623,7 @@ the algorithm uses the following algorithms:
 
 The function \texttt{make.modifiers} allows to specifically change any
 of these components by providing a different function for each part of
-the algorithm. For example, we could modify the three functions above so
+the algorithm. For example, one can modify the three functions above so
 that the branch length is not dependent on the number of lineages, the
 sampling is always the first species available and the extinction is
 drawn from a normal distribution. Note that these function need a
@@ -781,15 +782,15 @@ methods development and usage (Cooper, Thomas, and FitzJohn 2016).
 \subsection{Further directions}\label{further-directions}}
 
 This paper describes the first version of the \texttt{treats} package.
-However, I intend, either personally or through collaborations to
-continuously develop this package. For example future planned versions
-will include: lineage specific simulations; abiotic events; time
-dependent simulations and; a better integration with the
-\texttt{dispRity} package. This will be done while keeping track change
-(through \texttt{NEWS} file), continuous integration and unit testing.
-Furthermore, I am planning to develop the GitHub page associated with
-the package to encourage users to share their simulation templates and
-build library from them to facilitate the work for future users.
+However, I intend to continuously develop this package. For example
+future planned versions will include: lineage specific simulations;
+abiotic events; time dependent simulations and; a better integration
+with the \texttt{dispRity} package. This will be done while keeping
+track change (through \texttt{NEWS} file), continuous integration and
+unit testing. Furthermore, I am planning to develop the GitHub page
+associated with the package to encourage users to share their simulation
+templates and build library from them to facilitate the work for future
+users.
 
 \hypertarget{repeatability-and-reproducibility}{%
 \subsection{Repeatability and
@@ -823,12 +824,12 @@ associated
 \hypertarget{acknowledgments}{%
 \subsection{Acknowledgments}\label{acknowledgments}}
 
-Thanks to Mark Puttick for inspiring to develop the package through
-previous collaborations. Thanks to Andrew Beckerman, Ian Brennan,
-Gustavo Burin, Christopher Cooney, Natalie Cooper, Alex Cranston,
-Jasmine Hardie, Tom Lansley, Clement Prieul, Joe Rees, James Rule,
-Sophie Ryan and Gavin Thomas, for support and useful comments on late
-stages of the development of this package. This work was funded by
+Many thanks to Mark Puttick for inspiring the development the package
+through previous collaborations. Thanks to Andrew Beckerman, Ian
+Brennan, Gustavo Burin, Christopher Cooney, Natalie Cooper, Alex
+Cranston, Jasmine Hardie, Tom Lansley, Clement Prieul, Joe Rees, James
+Rule, Sophie Ryan and Gavin Thomas, for support and useful comments on
+late stages of the development of this package. This work was funded by
 UKRI-NERC Grant NE/T000139/1.
 
 \hypertarget{references}{%
