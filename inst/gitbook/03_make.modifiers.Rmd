@@ -362,7 +362,7 @@ It is however, possible to code the `"modifiers"` so that they can be affected b
 To do so, you can formally declare conditions (`condition`) and modifications (`modify`) as internal functions that can then be modified by an `"events"` object.
 `condition` and `modify` are hard coded in the `branch.length` function that they concern, i.e. they are variables (functions) within the function.
 
-For example in the `speciation` part of a modifier, the default is to trigger an event from a uniform distribution and then check if that value is smaller than ($$speciation/(speciation + extinction)$$):
+For example in the `speciation` part of a modifier, the default is to trigger an event from a uniform distribution and then check if that value is smaller than ($speciation/(speciation + extinction)$):
 
 ```{r}
 ## The default speciation algorithm
