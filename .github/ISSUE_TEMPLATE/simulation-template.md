@@ -7,6 +7,7 @@ assignees: ''
 
 ---
 
+<!-- Templates are all shared under the same open license as the package (GPLv3) -->
 <!-- Please edit the sections below to share your simulation template -->
 <!-- Don't worry if you don't fill all the sections, you can edit them later or the community can help you filling them -->
 
@@ -76,3 +77,12 @@ my_simulation <- treats(stop.rule = my_stop.rule,
                         modifiers = my_modifiers,
                         events    = my_events)
 ```
+
+## Reference 
+
+<!-- You are more than welcome to share your paper here if you want users to cite your awesome work! -->
+
+If you use this template in a publication, please cite:
+
+ * `treats`
+ * `R`

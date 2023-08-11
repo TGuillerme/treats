@@ -54,6 +54,13 @@ The detailed manual is available [here](http://tguillerme.github.io/treats.html)
 
 Patch notes can be seen [here](https://github.com/TGuillerme/treats/blob/master/NEWS.md).
 
+## Simulation templates
+
+If you need some inspiration, you can browse through this gallery of [simulation templates](https://github.com/TGuillerme/treats/issues?q=is%3Aopen+is%3Aissue+label%3A%22simulation+template%22).
+
+If you want to help your fellow or future `treats` users, please share your template as an issue []()
+
+
 Authors and contributors
 -------
 

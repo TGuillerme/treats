@@ -1,5 +1,12 @@
 # TODO list: finish package!
 
+ - [ ] reviewers comments
+ - [ ] add Simulation template issues and catalogue
+     - [ ] add references to template
+     - [ ] add README guidelines
+ - [ ] CRAN it!
+
+
 ## TODO: whishlist
  - [ ] Add lineage tracking mechanism (i.e. allow `traits`, `modifiers` or `events` to be applied to specific lineages); also allow giving prefixes to the names of tips and nodes in the lineage.
  - [ ] allow events per clade (see TreeSim)
