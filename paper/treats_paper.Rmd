@@ -44,7 +44,7 @@ These methods rely on comparing patterns in a phylogenetic context to understand
 These comparisons can be done between observed patterns under different conditions or against null, neutral or baseline models (see @bausman2018neutral for distinctions) suggesting different processes or mechanisms.
 For example different traits distribution for species with different diets [@deepak2023diet] or habitats [@pinto2017geographical].
 Or by comparing some observed pattern to one simulated under null or base conditions [@miller2022alternating].
-In theory, workers can follow the following research pipeline: thinking of a specific mechanism (e.g. mass extinction allowing the surviving species to acquire new morphologies), collecting some data to test this mechanism (e.g. some traits of species across and extinction event) and then comparing these patterns to some simulated under no specific conditions (e.g. a null model where the traits evolve randomly regardless of an extinction event @puttick2020complex).
+In theory, workers can follow the following research pipeline: 1) thinking of a specific mechanism (e.g. mass extinction allowing the surviving species to acquire new morphologies), 2) collecting some data to test this mechanism (e.g. some traits of species across and extinction event) and then 3) comparing these patterns to some simulated under no specific conditions (e.g. a null model where the traits evolve randomly regardless of an extinction event @puttick2020complex).
 Workers might thus need to simulate a great diversity of evolutionary scenarios to test their specific question.
 To do so, we need statistical and software solutions to simulate trees and data to generate many specific null models.
 
@@ -76,7 +76,7 @@ The base birth-death algorithm "grows" a phylogenetic tree and generates traits 
 These three steps are repeated until the tree reaches the desired age or number of species (the algorithm's implementation is heavily inspired and based on @diversitree).
 If traits are simulated during the process, a fourth step is added:
 
-4. Generating some trait(s) value(s) for the selected lineage (no either a tip or a node).
+4. Generating some trait(s) value(s) for the selected lineage (either a tip or a node).
 
 In `treats`, these three or four steps are implemented as modular functions that the user can easily change using an internal class of objects called `"modifiers"` or `"traits"` (Fig. \ref{Fig:workflow}).
 The simulation then outputs a tree (of class `"phylo"` and a associated table of traits - `"matrix"`) that can be visualised using the `plot.treats` function.
@@ -89,7 +89,7 @@ Users can replace any step in the algorithm by their own specific functions suit
 ## Brief applied example
 
 To illustrate this we will look whether it is possible to detect changes in disparity (i.e. diversity of traits) in a subset of the data published from @beck2014ancient implemented in @dispRity.
-This dataset contains the ordinated traits for 50 mammalian species across the cretaceous-palaeogene extinction event (K-Pg, 66 Mya; Fig. 2).
+This dataset contains the ordinated traits for 50 mammalian species across the Cretaceous-Palaeogene extinction event (K-Pg, 66 Mya; Fig. 2).
 
 ```{r, message = FALSE}
 ## Loading the data and packages
@@ -110,7 +110,7 @@ observed_disparity <- dispRity(boot.matrix(time_slices),
                                dimensions = c(1,2))
 ```
 
-```{r prepdata, echo = FALSE, fig.cap="Figure 2: Observed phylogeny (A) and disparity through time (B) in the subset of @beck2014ancient's dataset. Is this change in disparity related to the K-Pg mass extinction? Or, more generally, is it even possible to detect potential changes of disparity due to a mass extinction event?", fig.width = 18, fig.height = 8}
+```{r prepdata, echo = FALSE, fig.cap="Figure 2: Observed phylogeny (A) and disparity through time (B) in the subset of @beck2014ancient's dataset. The red line represents the K-Pg boundary. Is this change in disparity related to the K-Pg mass extinction? Or, more generally, is it even possible to detect potential changes of disparity due to a mass extinction event?", fig.width = 18, fig.height = 8}
 ## Plotting the tree and the disparity through time
 par(mfrow = c(1,2))
 plot(BeckLee_tree, show.tip.label = FALSE)
@@ -189,6 +189,7 @@ To do so, we can create two different `"events"` object with the function `make.
 The first one will simulate a random extinction event after reaching half of the simulations (15 time units) and then making three quarter (0.75) of the taxa go extinct.
 The second one will simulate a random extinction but based on trait values: after reaching time 15, all the species with positive trait values will go extinct.
 Both scenarios thus illustrate two different types of mass extinction (random and selective; @puttick2020complex).
+Because of the stochasticity of the simulations, we will repeat them 50 times (using `replicates = 50`) to generate a distribution of possible simulated scenarios as opposed to a random single one that could be idiosyncratic.
 
 ```{r, message = FALSE}
 ## Creating a random mass extinction
@@ -212,7 +213,7 @@ sim_rand_extinction <- treats(
                    null.error = 100,
                    replicates = 50)
 
-## Simulate the tree and traits with a random extinction event
+## Simulate the tree and traits with a selective extinction event
 sim_trait_extinction <- treats(
                    traits     = my_traits,
                    bd.params  = my_bd_params,
@@ -294,7 +295,7 @@ The following sections provides an overview of the three main functions displaye
 
 Traits are simulated via the `make.traits` function given one or more processes, number of dimensions per process and some starting value(s).
 Essentially, the generation of new trait values is based on a process (a `function`) modifying a trait value (`x0`) relative to some branch length (`edge.length`).
-For example, a simple Brownian Motion process could be generated by the function `rnorm` where the it modifies the trait value `x0` relative to the branch length (`edge.length`).
+For example, a simple Brownian Motion process could be generated by the function `rnorm` where it modifies the trait value `x0` relative to the branch length (`edge.length`).
 The longer the branch length, the more likely the new trait value will be different from `x0`:
 
 ```{r, eval = FALSE}
@@ -403,7 +404,7 @@ Briefly though, this is how the mass extinction events are designed in the examp
 positive_extinction <- make.events(
     target       = "taxa",
     condition    = time.condition(15),
-    modification = random.extinction(0.75))
+    modification = trait.extinction(x = 0, condition = `>=`))
 ```
 
 For this event, the target is the number of taxa in the simulations.
@@ -452,9 +453,9 @@ These functions can also be used to visualise trees and traits together from non
 
 # Additional information
 
-## Manuals and vignette
+## Manuals and vignettes
 
-The `treats` package comes with internal documentation (e.g. `?treats`) but also with a thorough and extended vignette in a gitbook format: the [`treats` manual](http://tguillerme.github.io/treats.html).
+The `treats` package comes with internal documentation (e.g. `?treats`) but also with a thorough and extended vignette in a gitbook format: the [`treats` manual](http://tguillerme.github.io/treats.html) ([http://tguillerme.github.io/treats.html](http://tguillerme.github.io/treats.html).
 This manual is designed so that it can be regularly updated and enhanced through the lifetime of the package facilitating the interface between methods development and usage [@cooper2016dark].
 
 ## Further directions
