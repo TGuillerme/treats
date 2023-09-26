@@ -76,7 +76,7 @@ The base birth-death algorithm "grows" a phylogenetic tree and generates traits 
 These three steps are repeated until the tree reaches the desired age or number of species (the algorithm's implementation is heavily inspired and based on @diversitree).
 If traits are simulated during the process, a fourth step is added:
 
-4. Generating some trait(s) value(s) for the selected lineage (either a tip or a node).
+4. Generating some trait(s) value(s) for the selected lineage (either a tip or a node - but see the "Simulating traits section" below to generate trait values along edges).
 
 In `treats`, these three or four steps are implemented as modular functions that the user can easily change using an internal class of objects called `"modifiers"` or `"traits"` (Fig. \ref{Fig:workflow}).
 The simulation then outputs a tree (of class `"phylo"` and a associated table of traits - `"matrix"`) that can be visualised using the `plot.treats` function.
@@ -315,6 +315,10 @@ The `treats` package contains a list of pre-built processes that are "ready-to-u
  * `repulsion.process`: a unidimensional process generating trait values that don't overlap with previously generated trait values;
  * `discrete.process`: generates discrete trait values;
  * `no.process`: ignores the branch length (i.e. a time independent process);
+
+Traits are always generated (and stored) only for tips or nodes and not along edges.
+However, it is possible so generate trait values at specific or regular time intervals by using the option `save.steps` in the `treats` function.
+This will generate singleton nodes (i.e. nodes with only one descendant) with associated trait values.
 
 Note that the `treats` package primary aim is to generate both a tree and some traits at the same time.
 However, it is possible to also just generate traits with a given topology.
