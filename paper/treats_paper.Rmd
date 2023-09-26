@@ -203,7 +203,7 @@ positive_extinction <- make.events(
     condition = time.condition(15),
     modification = trait.extinction(x = 0, condition = `>=`))
 
-set.seed(2)
+set.seed(1)
 ## Simulate the tree and traits with a random extinction event
 sim_rand_extinction <- treats(
                    traits     = my_traits,

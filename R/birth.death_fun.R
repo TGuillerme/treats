@@ -88,10 +88,10 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     ############
     ## Initialising
     #############
-    # warning("DEBUG in birth.death_fun.R::birth.death.tree.traits: snapshot")
+    # warning("DEBUG in birth.death_fun.R::birth.death.tree.traits: update trait extinction")
     # bd.params <- make.bd.params(speciation = 1, extinction = 0)
     # stop.rule <- list(max.living = Inf, max.time = Inf, max.taxa = 100)
-    # traits <- make.traits(process = BM.process, background = make.traits())
+    # traits <- make.traits(process = BM.process)
     # constant.brlen <- function() {
     #     return(as.numeric(1))
     # }
@@ -105,11 +105,14 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     #     return(as.integer(sample(lineage$livings, size = 1, prob = abs(trait.values[as.character(lineage$parents[lineage$livings]), ])+1 )))
     # }
     # modifiers <- make.modifiers(selection = select.scale.to.absolute.trait.value)
-    # events <- NULL
+    # events <- make.events(target = "taxa",
+    #                       condition = time.condition(1),
+    #                       modification = trait.extinction(0))
+
     # null.error <- FALSE
     # check.results <- TRUE
     # save.steps = NULL
-    # set.seed(2)
+    # set.seed(7)
 
     ## Set up the traits, modifiers and events simulation
     do_traits    <- ifelse(is.null(traits), FALSE, TRUE)
@@ -260,7 +263,6 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
         ## Saving steps during the tree growing
         if(!is.null(save.steps)) {
 
-            ## Something like:
             while(!is.na(current.save.steps[1]) && first_waiting_time + current.save.steps[1] <= time) {
                 ## Creating a time slice
                 time.slice <- first_waiting_time + current.save.steps[1]
@@ -369,6 +371,14 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
 
                 ## Selecting the first triggerable event
                 selected_event <- which(triggers)[1]
+
+                ## Create trait snapshot at the time of the event
+                time.slice   <- time
+                lineage      <- update.single.nodes(lineage)
+                edge_lengths <- update.single.edges(time, time.slice, lineage, edge_lengths)
+                if(do_traits) {
+                    trait_values <- update.single.traits(trait_values, traits$main, lineage, edge_lengths)
+                }
 
                 ## Trigger the event
                 switch(events[[selected_event]]$target,

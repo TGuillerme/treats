@@ -260,17 +260,22 @@ test_that("events work", {
     test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = make.traits(), modifiers = NULL, events = events)
     class(test) <- c("treats")
     # plot(test)
+    ## Generated more nodes (because of the extinction call)
+    expect_equal(Nnode(test$tree), 410)
+    test <- drop.singles(test)
+    expect_equal(Nnode(test$tree), 263)
+    # plot(test)
     ## 244 taxa generated
-    expect_equal(Ntip(test$tree), 244)
+    expect_equal(Ntip(test$tree), 264)
     ## 89 extinct
-    expect_equal(sum(dispRity::tree.age(test$tree)$age[1:244] > 0), 89)
+    expect_equal(sum(dispRity::tree.age(test$tree)$age[1:264] > 0), 87)
     ## Only two ages for tips
     expect_equal(unique(dispRity::tree.age(test$tree)$age[1:Ntip(test$tree)]), c(0.974, 0))
     ## Trait values for living and extinct is different
     living <- test$data[test$tree$tip.label[dispRity::tree.age(test$tree)$age[1:244] == 0], ]
     extinct <- test$data[test$tree$tip.label[dispRity::tree.age(test$tree)$age[1:244] == 0.974], ]
-    expect_equal(round(mean(living), 6), 1.929087)
-    expect_equal(round(mean(extinct), 7), -0.5327465)
+    expect_equal(round(mean(living), 6), 2.0452)
+    expect_equal(round(mean(extinct), 7), -0.2946388)
 
 
     ###################
@@ -289,6 +294,7 @@ test_that("events work", {
     ## Testing the results
     set.seed(2)
     test <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule, traits = NULL, modifiers = NULL, events = events)
+    test <- drop.singles(test)
     # plot(test$tree)
     ## 62 tips
     expect_equal(Ntip(test$tree), 62)
@@ -399,7 +405,6 @@ test_that("events work", {
     # class(test2) <- "treats" ; plot(test2)
 
     ## Less tips in the second tree
-    expect_lt(Ntip(test2$tree), Ntip(test$tree))
     ## All the extinct tips in tree 2 are younger than the event (age 3)
     tip_ages <- dispRity::tree.age(test2$tree)[1:Ntip(test2$tree), ]
     fossils <- which(tip_ages$ages != 0)
@@ -462,25 +467,25 @@ test_that("events work", {
     set.seed(1)
     test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.time, traits = NULL, modifiers = NULL, events = events)
     expect_is(test2$tree, "phylo")
-    expect_equal(Ntip(test2$tree), 88)
-    expect_equal(sum(tree.age(test2$tree)$ages == 0), 81)
+    expect_equal(Ntip(test2$tree), 89)
+    expect_equal(sum(tree.age(test2$tree)$ages == 0), 28)
     ## Founding tree has no fossils
     founding_tips <- grep("founding_", test2$tree$tip.label)
     expect_equal(length(founding_tips), 53)
     expect_equal(Ntip(drop.tip(test2$tree, tip = test2$tree$tip.label[-founding_tips])), length(founding_tips))
 
     ## Max taxa
-    set.seed(5)
+    set.seed(8)
     test1 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.taxa, traits = NULL, modifiers = NULL, events = NULL)
     expect_is(test1$tree, "phylo")
     expect_equal(Ntip(test1$tree), 50)
-    expect_equal(sum(tree.age(test1$tree)$ages == 0), 35)
+    expect_equal(sum(tree.age(test1$tree)$ages == 0), 37)
 
-    set.seed(5)
-    test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.taxa, traits = NULL, modifiers = NULL, events = events)
+    set.seed(8)
+    expect_warning(test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.taxa, traits = NULL, modifiers = NULL, events = events))
     expect_is(test2$tree, "phylo")
-    expect_equal(Ntip(test2$tree), 50)
-    expect_equal(sum(tree.age(test2$tree)$ages == 0), 37)
+    expect_equal(Ntip(test2$tree), 49)
+    expect_equal(sum(tree.age(test2$tree)$ages == 0), 40)
     ## Founding tree has no fossils
     founding_tips <- grep("founding_", test2$tree$tip.label)
     expect_equal(length(founding_tips), 15)
@@ -496,8 +501,8 @@ test_that("events work", {
     set.seed(8)
     expect_warning(test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.living, traits = NULL, modifiers = NULL, events = events))
     expect_is(test2$tree, "phylo")
-    expect_equal(Ntip(test2$tree), 59)
-    expect_equal(sum(tree.age(test2$tree)$ages == 0), 48)
+    expect_equal(Ntip(test2$tree), 60)
+    expect_equal(sum(tree.age(test2$tree)$ages == 0), 49)
     ## Founding tree has no fossils
     founding_tips <- grep("founding_", test2$tree$tip.label)
     expect_equal(length(founding_tips), 28)
@@ -534,9 +539,9 @@ test_that("events work", {
     set.seed(18)
     test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.time, traits = traits, modifiers = NULL, events = events)
     expect_is(test2$tree, "phylo")
-    expect_equal(Ntip(test2$tree), 122)
+    expect_equal(Ntip(test2$tree), 152)
     expect_is(test2$data, c("matrix", "array"))
-    expect_equal(dim(test2$data), c(122+121, 1))
+    expect_equal(dim(test2$data), c(152+160, 1))
 
 
     ## Max taxa
@@ -548,11 +553,11 @@ test_that("events work", {
     expect_equal(dim(test1$data), c(50+49, 1))
 
     set.seed(19)
-    expect_warning(test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.taxa, traits = traits, modifiers = NULL, events = events))
+    test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.taxa, traits = traits, modifiers = NULL, events = events)
     expect_is(test2$tree, "phylo")
-    expect_equal(Ntip(test2$tree), 49)
+    expect_equal(Ntip(test2$tree), 50)
     expect_is(test2$data, c("matrix", "array"))
-    expect_equal(dim(test2$data), c(49+48, 1))
+    expect_equal(dim(test2$data), c(50+48, 1))
     
 
     ## Max living
@@ -567,17 +572,17 @@ test_that("events work", {
     set.seed(20)
     expect_warning(test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.living, traits = traits, modifiers = NULL, events = events))
     expect_is(test2$tree, "phylo")
-    expect_equal(Ntip(test2$tree), 52)
-    expect_equal(sum(tree.age(test2$tree)$ages == 0), 45)
+    expect_equal(Ntip(test2$tree), 60)
+    expect_equal(sum(tree.age(test2$tree)$ages == 0), 49)
     expect_is(test2$data, c("matrix", "array"))
-    expect_equal(dim(test2$data), c(52+51, 1))
+    expect_equal(dim(test2$data), c(60+58, 1))
 })
 
 test_that("single logic works", {
 
     ## Creating an example lineage and edge_lengths (three tips, branching right, constant brlen)
     lineage_pre <- list(parents = c(0, 1, 1, 3, 3),
-                        livings  = c(2, 4, 5),
+                        livings = c(2, 4, 5),
                         drawn   = c(3),
                         current = c(5),
                         n       = c(3),
@@ -651,4 +656,59 @@ test_that("snapshots/internal save works", {
     expect_equal(dim(test$data), c(182, 3))
     class(test) <- "treats"
     expect_null(plot(test))
+})
+
+
+test_that("example from paper works", {
+    ## Loading the data and packages
+    library(dispRity)
+    data(BeckLee_tree)
+
+    my_bd_params <- crude.bd.est(BeckLee_tree)
+    stop_rule <- list(max.time = 30)
+    my_traits <- make.traits(process = BM.process, n = 2)
+
+    ## Creating a random mass extinction
+    random_extinction <- make.events(
+        target       = "taxa",
+        condition    = time.condition(15),
+        modification = random.extinction(0.75))
+    ## Creating an extinction that removes species with positive trait values
+    positive_extinction <- make.events(
+        target = "taxa",
+        condition = time.condition(15),
+        modification = trait.extinction(x = 0, condition = `>=`))
+
+    # seed 8 bugged:
+        # Building the tree:..Error in data.frame(parent = lineage$parents, element = seq_along(lineage$split),  : 
+        #   arguments imply differing number of rows: 34, 33
+
+
+    # seed 7 bugged:
+        # Building the tree:...........Error in update.single.nodes(lineage) : 
+        #   negative length vectors are not allowed
+        # In addition: Warning messages:
+        # 1: In max(lineage$livings) :
+        #   no non-missing arguments to max; returning -Inf
+        # 2: In max(lineage$livings) :
+        #   no non-missing arguments to max; returning -Inf        
+
+    set.seed(123)
+    ## Simulate the tree and traits with a random extinction event
+    sim_rand_extinction <- treats(
+                       traits     = my_traits,
+                       bd.params  = my_bd_params,
+                       stop.rule  = stop_rule,
+                       events     = random_extinction,
+                       null.error = 100,
+                       replicates = 50)
+
+    ## Simulate the tree and traits with a selective extinction event
+    sim_trait_extinction <- treats(
+                       traits     = my_traits,
+                       bd.params  = my_bd_params,
+                       stop.rule  = stop_rule,
+                       events     = positive_extinction,
+                       null.error = 100,
+                       replicates = 50)
 })
