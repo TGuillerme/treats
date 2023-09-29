@@ -34,7 +34,17 @@ trigger.events <- function(one_event, bd.params, lineage, trait.values, time) {
 update.single.nodes <- function(lineage) {
     new_lineage <- lineage
     new_lineage$parents <- c(lineage$parents, lineage$livings)
-    new_lineage$livings <- (max(lineage$livings)+1):(max(lineage$livings)+lineage$n)
+    ## Corner case with only one cherry and one of the descendants is extinct
+    if(length(unique(lineage$parents[c(length(lineage$parents)-1, length(lineage$parents))])) == 1 && length(lineage$livings) == 1) {
+        ## Livings is max + 2 (skipping the neigbhouring fossil)
+        new_lineage$livings <- max(lineage$livings)+2
+    } else {
+        new_lineage$livings <- (max(lineage$livings)+1):(max(lineage$livings)+lineage$n)
+    }
+    ## Corner case with only one cherry and one of the descendants is extinct (but fossil was drawn)
+    if(is.na(new_lineage$livings[lineage$drawn])) {
+        lineage$drawn <- new_lineage$drawn <- sample(1:length(new_lineage$livings), 1)
+    }
     new_lineage$current <- new_lineage$livings[lineage$drawn]
     ## The new nodes lead to non-splitting branches
     new_lineage$split   <- c(lineage$split, rep(FALSE, length(lineage$livings)))
@@ -84,7 +94,9 @@ update.single.traits <- function(trait_values, traits, lineage, edge_lengths) {
 # }
 ## Run a birth death process to generate both tree and traits
 birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE, save.steps = NULL) {
-  
+
+    # bd.debug <- function(seed) {
+
     ############
     ## Initialising
     #############
@@ -112,7 +124,19 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     # null.error <- FALSE
     # check.results <- TRUE
     # save.steps = NULL
-    # set.seed(7)
+    # warning("DEBUG: bith.death_fun.R")
+    # modifiers  = make.modifiers()
+    # traits     = my_traits
+    # bd.params  = my_bd_params
+    # stop.rule  = stop_rule
+    # stop.rule$max.living = Inf
+    # stop.rule$max.taxa = Inf
+    # events     = random_extinction
+    # save.steps = NULL
+    # null.error = FALSE
+    # check.results = TRUE
+    # seed = 117
+    # set.seed(seed)
 
     ## Set up the traits, modifiers and events simulation
     do_traits    <- ifelse(is.null(traits), FALSE, TRUE)
@@ -227,10 +251,6 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     ## Build the rest of the tree
     while(lineage$n > 0 && lineage$n <= stop.rule$max.living && sum(!lineage$split) <= stop.rule$max.taxa) {
         
-        # warning("DEBUG birth.death_fun.R") ; counter <- counter+1
-        # warning("DEBUG birth.death_fun.R") ; print(counter)
-        # warning("DEBUG birth.death_fun.R") ; if(counter == 123) break 
-
         ## Pick a lineage for the event to happen to:
         lineage$drawn <- modifiers$selecting$fun(
                             bd.params    = sample.from(bd.params),
@@ -331,7 +351,6 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                                     trait.values = trait_values,
                                     modify.fun   = modifiers$speciating$internal))
         {
-            
             ## Speciating:
             if(lineage$n == stop.rule$max.living) {
                 ## Don't add this one
@@ -368,12 +387,27 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
             if(any(triggers)) {
 
                 # warning("DEBUG birth.death_fun: event triggered"); break
+                # # lineage_bkp <- lineage ; edge_lengths_bkp <- edge_lengths ; trait_values_bkp <- trait_values
+                # lineage_bkp -> lineage ; edge_lengths_bkp -> edge_lengths ; trait_values_bkp -> trait_values
+
+                # topo.convert.lineage(lineage, edge_lengths)
 
                 ## Selecting the first triggerable event
                 selected_event <- which(triggers)[1]
 
+                ## If the current lineage got extinct, redraw one
+                if(is.na(lineage$livings[lineage$drawn])) {
+                    ## Select a new current lineage
+                    lineage$drawn <- modifiers$selecting$fun(
+                                        bd.params    = sample.from(bd.params),
+                                        lineage      = lineage,
+                                        trait.values = trait_values,
+                                        modify.fun   = modifiers$selecting$internal)
+                    lineage$current <- lineage$livings[lineage$drawn]
+                }
+
                 ## Create trait snapshot at the time of the event
-                time.slice   <- time
+                time.slice   <- time #TG: Check here if time-first_waiting_time is needed OR, if time condition, the proper extinction time is needed
                 lineage      <- update.single.nodes(lineage)
                 edge_lengths <- update.single.edges(time, time.slice, lineage, edge_lengths)
                 if(do_traits) {

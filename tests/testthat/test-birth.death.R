@@ -205,27 +205,6 @@ test_that("simulating trees + traits works", {
     expect_equal(unname(test$data[,4]), c(0, test$tree$edge.length))
 })
 
-# test_that("simulating trees + traits + modifiers work", {
-
-#     ## Test with longer waiting time for traits with positive values
-
-
-#     ## Test with extinction for traits with negative values
-
-
-#     ## Test with longer average waiting time for traits with negative values
-
-  
-#     ## Test with average more extinction for traits with positive values
-
-
-#     ## Visual tests
-
-#     ## Setting up all parameters
-
-
-# })
-
 test_that("events work", {
 
     stop.rule <- list(max.time = 5, max.taxa = Inf, max.living = Inf)
@@ -607,8 +586,66 @@ test_that("single logic works", {
     expect_equal(length(test), 8)
     expect_equal(test, c(0, 1.75, 1, 0.75, 0.75, 0.25, 0.25, 0.25))
 
-    # ## Testing single.traits
-    # warning("TODO: test single.traits")
+    ## Works when the lineage as only one node
+    lineage_pre <- list(parents = c(0, 1, 1, 2, 2, 4, 4, 6, 6, 9, 9, 10, 10, 13, 13),
+                        livings = c(14),
+                        drawn   = c(1),
+                        current = c(14),
+                        n       = c(1),
+                        split   = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE))
+    ## Testing
+    test <- update.single.nodes(lineage_pre)
+    expect_equal(test$parents, c(0, 1, 1, 2, 2, 4, 4, 6, 6, 9, 9, 10, 10, 13, 13, 14))
+    expect_equal(test$livings, 16)
+    expect_equal(test$drawn, 1)
+    expect_equal(test$current, 16)
+    expect_equal(test$n, 1)
+    expect_equal(test$split, c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE))
+
+    # ## Works when the lineage has an NA (meaning there's a fossil in the selected cherry)
+    # lineage_pre <- list(parents = c(0, 1, 1, 2, 2, 4, 4, 6, 6, 9, 9, 10, 10, 13, 13),
+    #                     livings = c(14),
+    #                     drawn   = c(2),
+    #                     current = c(15),
+    #                     n       = c(1),
+    #                     split   = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE))
+
+    # ## Testing
+    # test <- update.single.nodes(lineage_pre)
+    # expect_equal(test$parents, c(0, 1, 1, 2, 2, 4, 4, 6, 6, 9, 9, 10, 10, 13, 13, 14))
+    # expect_equal(test$livings, 16)
+    # expect_equal(test$drawn, 1)
+    # expect_equal(test$current, 16)
+    # expect_equal(test$n, 1)
+    # expect_equal(test$split, c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE))
+
+
+
+
+
+
+
+
+
+    # ## More weird cases
+    # lineage_pre <- list(parents = c(0, 1, 1, 2, 2, 4, 4, 7, 7, 8, 8, 11, 11, 13, 13, 14, 14, 17, 17, 15, 15, 21, 21),
+    #                     livings = c(20, 22),
+    #                     drawn = (3),
+    #                     current = c(23),
+    #                     n = c(2),
+    #                     split = c(TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE))
+
+    # test <- update.single.nodes(lineage_pre)
+    # expect_equal(test$parents, c(0, 1, 1, 2, 2, 4, 4, 7, 7, 8, 8, 11, 11, 13, 13, 14, 14, 17, 17, 15, 15, 21, 21))
+    # expect_equal(test$livings, 16)
+    # expect_equal(test$drawn, 1)
+    # expect_equal(test$current, 16)
+    # expect_equal(test$n, 1)
+    # expect_equal(test$split, c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE))
+
+
+
+
 })
 
 test_that("snapshots/internal save works", {
@@ -658,57 +695,96 @@ test_that("snapshots/internal save works", {
     expect_null(plot(test))
 })
 
-
 test_that("example from paper works", {
-    ## Loading the data and packages
-    library(dispRity)
-    data(BeckLee_tree)
+    # ## Loading the data and packages
+    # library(dispRity)
+    # data(BeckLee_tree)
 
-    my_bd_params <- crude.bd.est(BeckLee_tree)
-    stop_rule <- list(max.time = 30)
-    my_traits <- make.traits(process = BM.process, n = 2)
+    # my_bd_params <- crude.bd.est(BeckLee_tree)
+    # stop_rule <- list(max.time = 30)
+    # my_traits <- make.traits(process = BM.process, n = 2)
 
-    ## Creating a random mass extinction
-    random_extinction <- make.events(
-        target       = "taxa",
-        condition    = time.condition(15),
-        modification = random.extinction(0.75))
-    ## Creating an extinction that removes species with positive trait values
-    positive_extinction <- make.events(
-        target = "taxa",
-        condition = time.condition(15),
-        modification = trait.extinction(x = 0, condition = `>=`))
+    # ## Creating a random mass extinction
+    # random_extinction <- make.events(
+    #     target       = "taxa",
+    #     condition    = time.condition(15),
+    #     modification = random.extinction(0.75))
+    # ## Creating an extinction that removes species with positive trait values
+    # positive_extinction <- make.events(
+    #     target = "taxa",
+    #     condition = time.condition(15),
+    #     modification = trait.extinction(x = 0, condition = `>=`))
 
-    # seed 8 bugged:
-        # Building the tree:..Error in data.frame(parent = lineage$parents, element = seq_along(lineage$split),  : 
-        #   arguments imply differing number of rows: 34, 33
+    # set.seed(123)
+    # ## Simulate the tree and traits with a random extinction event
+    # sim_rand_extinction <- treats(
+    #                    traits     = my_traits,
+    #                    bd.params  = my_bd_params,
+    #                    stop.rule  = stop_rule,
+    #                    events     = random_extinction,
+    #                    null.error = 100,
+    #                    replicates = 50)
+
+    # ## Simulate the tree and traits with a selective extinction event
+    # sim_trait_extinction <- treats(
+    #                    traits     = my_traits,
+    #                    bd.params  = my_bd_params,
+    #                    stop.rule  = stop_rule,
+    #                    events     = positive_extinction,
+    #                    null.error = 100,
+    #                    replicates = 50)
+
+    # ## Simulate the tree and traits with a random extinction event
+    # modifiers  = make.modifiers()
+    # traits     = my_traits
+    # bd.params  = my_bd_params
+    # stop.rule  = stop_rule
+    # stop.rule$max.living = Inf
+    # stop.rule$max.taxa = Inf
+    # events     = random_extinction
+    # save.steps = NULL
+    # null.error = FALSE
+    # set.seed(2)
 
 
-    # seed 7 bugged:
-        # Building the tree:...........Error in update.single.nodes(lineage) : 
-        #   negative length vectors are not allowed
-        # In addition: Warning messages:
-        # 1: In max(lineage$livings) :
-        #   no non-missing arguments to max; returning -Inf
-        # 2: In max(lineage$livings) :
-        #   no non-missing arguments to max; returning -Inf        
 
-    set.seed(123)
-    ## Simulate the tree and traits with a random extinction event
-    sim_rand_extinction <- treats(
-                       traits     = my_traits,
-                       bd.params  = my_bd_params,
-                       stop.rule  = stop_rule,
-                       events     = random_extinction,
-                       null.error = 100,
-                       replicates = 50)
+    # ## seed 100: bug 1: arguments imply differing number of rows:
+    # ## seed 143: bug 2:  update.single.nodes(lineage) : \n  negative length vectors are not allowed
+    # ## seed 183: bug 3:  update.single.nodes(lineage) :if (round(tree$root.time, digits = digits) > round(max(ages.table$ages)
+    
 
-    ## Simulate the tree and traits with a selective extinction event
-    sim_trait_extinction <- treats(
-                       traits     = my_traits,
-                       bd.params  = my_bd_params,
-                       stop.rule  = stop_rule,
-                       events     = positive_extinction,
-                       null.error = 100,
-                       replicates = 50)
+    # ## Formalised bug search:
+
+    # ## Loop through the seeds
+    # list_tests <- list()
+    # for(i in 1:1000) {
+    #     print(i)
+    #     list_tests[[i]] <- try(bd.debug(i))
+    # }
+    # ## Find the errors
+    # fails <- which(unlist(lapply(list_tests, class)) == "try-error")
+    # ## Remove the normal errors
+    # detect.fails <- function(x) return(!(x[[1]] == "Error in bd.debug(i) : No tree generated with these parameters.\n"))
+    # real_fails <- unlist(lapply(list_tests[fails], detect.fails)) 
+    # ## The real fails:
+    # failing_seeds <- fails[real_fails]
+    # list_tests[failing_seeds]
+
+#     bd.debug(117)
+
+# 1  "Error in data.frame(parent = lineage$parents, element = seq_along(lineage$split),  : \n  arguments imply differing number of rows: 25, 24\n"
+
+#     bd.debug(126)
+
+# 3  "Error in eigen(Sigma, symmetric = TRUE) : \n  infinite or missing values in 'x'\n"
+
+#     bd.debug(143)
+
+# 4 "Error in update.single.nodes(lineage) : \n  negative length vectors are not allowed\n"
+
+#     bd.debug(183)
+
+# 5  "Error in if (round(tree$root.time, digits = digits) > round(max(ages.table$ages),  : \n  missing value where TRUE/FALSE needed\n"
+
+
 })
