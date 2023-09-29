@@ -7,7 +7,7 @@
 # @param edge_lengths  Optional, the edge_lengths
 # @param element.names logical, whether to display the elements as named in lineage (TRUE) or as named in the output tree (FALSE)
 # @param plot logical, also plots the tree (TRUE) or not (FALSE)
-topo.convert.lineage <- function(lineage, edge_lengths, element.names = TRUE, plot = TRUE) {
+plot.lineage <- function(lineage, edge_lengths, element.names = TRUE, plot = TRUE) {
 
     ## Missing edge lenghts
     if(missing(edge_lengths)) {
@@ -57,16 +57,16 @@ topo.convert.lineage <- function(lineage, edge_lengths, element.names = TRUE, pl
         plot(tree)
         axisPhylo()
         nodelabels(tree$node.label)
-        ## Highlight the current
-        current <- rep(NA, n_tips)
-        current[which(tip_labels_IDs == lineage$current)] <- 0
-        tiplabels(pch = current, bg = NULL, col = "black", cex = 2.2, adj = 0.9)
         ## Highlight the livings
         livings <- rep(NA, n_tips)
         livings[tip_labels_IDs %in% lineage$livings] <- 1
-        tiplabels(pch = livings, bg = NULL, col = "black", cex = 2.5, adj = 0.9)
+        tiplabels(pch = livings, bg = NULL, col = "black")
+        ## Highlight the current
+        current <- rep(NA, n_tips)
+        current[which(tip_labels_IDs == lineage$livings[lineage$drawn])] <- 19
+        tiplabels(pch = current, bg = NULL, col = "red")
         ## Legend
-        legend("bottomleft", pch = c(0,1), legend = c("current", "living"))
+        legend("bottomleft", pch = c(19,1), col = c("red", "black"), legend = c("current", "living"))
     }
     return(tree)
 }
