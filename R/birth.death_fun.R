@@ -406,7 +406,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                 }
 
                 ## Create trait snapshot at the time of the event
-                time.slice   <- time-first_waiting_time #TG: Check here if time-first_waiting_time is needed OR, if time condition, the proper extinction time is needed
+                time.slice   <- time#-first_waiting_time #TG: Check here if time-first_waiting_time is needed OR, if time condition, the proper extinction time is needed
                 lineage      <- update.single.nodes(lineage)
                 edge_lengths <- update.single.edges(time, time.slice, lineage, edge_lengths)
                 if(do_traits) {
