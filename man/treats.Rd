@@ -12,7 +12,8 @@ treats(
   events = NULL,
   save.steps = NULL,
   null.error = FALSE,
-  replicates
+  replicates,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ treats(
 \item{null.error}{Logical, whether to return an error when the birth-death parameters fails to build a tree (\code{FALSE}; default and highly recommended) or whether to return \code{NULL} (\code{TRUE}). Can also be set to an integer value for the numbers of trials (see details).}
 
 \item{replicates}{Optional, the number of replicates for the simulation.}
+
+\item{verbose}{Logical, whether to be verbose (\code{TRUE}; default) or not (\code{FALSE}).}
 }
 \description{
 Simulating phylogenetic trees and traits. See full manual here: https://github.com/TGuillerme/treats

@@ -10,7 +10,8 @@
 #' @param save.steps Optional, \code{"numeric"} value to save the simulations at specific internal points (this can slow down the algorithm significantly for large trees). 
 #' @param null.error Logical, whether to return an error when the birth-death parameters fails to build a tree (\code{FALSE}; default and highly recommended) or whether to return \code{NULL} (\code{TRUE}). Can also be set to an integer value for the numbers of trials (see details).
 #' @param replicates Optional, the number of replicates for the simulation.
-#' 
+#' @param verbose Logical, whether to be verbose (\code{TRUE}; default) or not (\code{FALSE}). 
+#'
 #' @details
 #' \code{stop.rule}: The rule(s) for when to stop the simulation. When multiple rules are given, the simulation stops when any rule is broken. The allowed rules are:
 #' \itemize{
@@ -89,12 +90,15 @@
 #' @author Thomas Guillerme
 #' @export
 
-treats <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events = NULL, save.steps = NULL, null.error = FALSE, replicates) {
+treats <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events = NULL, save.steps = NULL, null.error = FALSE, replicates, verbose = TRUE) {
+
+    ## verbose
+    check.class(verbose, "logical")
 
     ## Replicates
     if(!missing(replicates)) {
         check.class(replicates, c("integer", "numeric"))
-        return(replicate(replicates, treats(stop.rule, bd.params, traits, modifiers, events, save.steps, null.error), simplify = FALSE))
+        return(replicate(replicates, treats(stop.rule, bd.params, traits, modifiers, events, save.steps, null.error, verbose), simplify = FALSE))
     }
 
     ## Sanitizing
@@ -188,7 +192,7 @@ treats <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events
         check.class(save.steps, "numeric")    
     }
 
-    if(max.counter > 1) message("Building the tree:", appendLF = FALSE)
+    if(max.counter > 1 && verbose) message("Building the tree:", appendLF = FALSE)
     while(is.null(output) && counter < max.counter) {
         ## Simulating the traits and tree
         output <- birth.death.tree.traits(stop.rule, bd.params = bd.params, traits = traits, modifiers = modifiers, events = events, save.steps = save.steps, null.error = null.error)
@@ -196,9 +200,9 @@ treats <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events
         ## Update the counter
         counter <- counter + 1
         ## 
-        if(max.counter > 1) message(".", appendLF = FALSE)
+        if(max.counter > 1 && verbose) message(".", appendLF = FALSE)
     }
-    if(max.counter > 1) message("Done.")
+    if(max.counter > 1 && verbose) message("Done.")
 
     if(is.null(output)) {
         ## Should only fire if null.error = TRUE

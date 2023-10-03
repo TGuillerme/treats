@@ -1,10 +1,18 @@
-treats v0.2 (2023-05-25) *CRAN friendly pre-release*
+treats v0.3 (2023-10-02) 
 =========================
 
-### BUG FIXES
+### MINOR IMPROVEMENTS
 
- * Corrected the `BM.process` and `OU.process` to now be exact (thanks to Rachel Warnock and Louie Rombaut for spotting that one).
- * Fixed `bd.params` print display when inputs are numeric.
+ * `events` now generates singleton nodes (and associated trait values if needed) at the time of the event before applying the modification.
+ * added `verbose` option to `treats` for when using the option `null.error = integer()`.
+
+## BUG FIXES
+ 
+ * Fixed many simulation corner cases (mainly ones for special trees with always only one node, one living and one fossil).
+<!-- Fixed printing issues with S3 `"treats"` sub-classes. TODO: round digits in printing speciation and extinction for print.treats -->
+
+treats v0.2 (2023-05-25) *CRAN friendly pre-release*
+=========================
 
 ### NEW FEATURES
 
@@ -31,6 +39,10 @@ treats v0.2 (2023-05-25) *CRAN friendly pre-release*
 
  * Many clarifications and rewording to the manual.
 
+### BUG FIXES
+
+ * Corrected the `BM.process` and `OU.process` to now be exact (thanks to Rachel Warnock and Louie Rombaut for spotting that one).
+ * Fixed `bd.params` print display when inputs are numeric.
 
 treats v0.1.0 (2020-11-13) *first release*
 =========================

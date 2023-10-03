@@ -73,17 +73,53 @@ test_that("treats works for trees + traits", {
     expect_equal(dim(test$data), c(19, 5))
 })
 
+test_that("paper example works", {
+    ## Loading the data and packages
+    library(dispRity)
+    data(BeckLee_tree)
 
-#test_that("treats works for trees + modifiers", {
-#})
+    my_bd_params <- crude.bd.est(BeckLee_tree)
+    stop_rule <- list(max.time = 30)
+    my_traits <- make.traits(process = BM.process, n = 2)
 
-#test_that("treats works for trees + events", {
-#})
+    ## Creating a random mass extinction
+    random_extinction <- make.events(
+        target       = "taxa",
+        condition    = time.condition(15),
+        modification = random.extinction(0.75))
+    ## Creating an extinction that removes species with positive trait values
+    positive_extinction <- make.events(
+        target = "taxa",
+        condition = time.condition(15),
+        modification = trait.extinction(x = 0, condition = `>=`))
 
-#test_that("treats works for trees + traits + modifiers + events", {
-#})
+    set.seed(123)
+    ## Simulate the tree and traits with a random extinction event
+    sim_rand_extinction <- treats(
+                       traits     = my_traits,
+                       bd.params  = my_bd_params,
+                       stop.rule  = stop_rule,
+                       events     = random_extinction,
+                       null.error = 100,
+                       replicates = 10,
+                       verbose    = FALSE)
 
+    expect_is(sim_trait_extinction, "list")
+    expect_equal(length(sim_trait_extinction), 10)
 
+    ## Simulate the tree and traits with a selective extinction event
+    sim_trait_extinction <- treats(
+                       traits     = my_traits,
+                       bd.params  = my_bd_params,
+                       stop.rule  = stop_rule,
+                       events     = positive_extinction,
+                       null.error = 100,
+                       replicates = 10,
+                       verbose    = FALSE)
+
+    expect_is(sim_trait_extinction, "list")
+    expect_equal(length(sim_trait_extinction), 10)
+})
 
 
 

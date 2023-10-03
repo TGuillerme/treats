@@ -1,5 +1,9 @@
 ## Simulating traits for one element
 sim.element.trait <- function(one.trait, parent.trait, edge.length) {
+    ## Don't simulate the trait value if edge.length is 0
+    # if(edge.length == 0) {
+    #     return(parent.trait[one.trait$trait_id])
+    # }
     ## Set the simulation arguments
     trait_args <- one.trait
     ## Remove the process and the n argument
@@ -36,15 +40,12 @@ update.single.nodes <- function(lineage) {
     new_lineage <- lineage
     ## Adding the living species as new parents
     new_lineage$parents <- c(lineage$parents, lineage$livings)
+    ## Get the last lineage generated
+    last_lineage <- length(lineage$split)
     ## Updating the new species (descending of the parents)
-    if(!is.na(lineage$livings[lineage$drawn])) {
-        new_lineage$livings <- (max(lineage$livings)+1):(max(lineage$livings)+lineage$n)
-    } else {
-        ## Get the last lineage generated
-        last_lineage <- length(lineage$split)
-        ## If the current species was an extinct one, update the parents ID (+1)
-        new_lineage$livings <- (last_lineage+1):(last_lineage+lineage$n)
-        ## Resample the drawn lineage so that it can't be a fossil
+    new_lineage$livings <- (last_lineage+1):(last_lineage+lineage$n)
+    ## If drawn is missing, resample the drawn lineage so that it can't be a fossil
+    if(is.na(lineage$livings[lineage$drawn])) {
         lineage$drawn <- new_lineage$drawn <- sample(1:length(new_lineage$livings), 1)
     }
     ## Re-select the sampled lineage
@@ -140,7 +141,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     # save.steps = NULL
     # null.error = FALSE
     # check.results = TRUE
-    # # seed = 217 ; warning("FUCKING INTERNAL SEED!")
+    # # seed = 143 ; warning("FUCKING INTERNAL SEED!")
     # set.seed(seed)
 
     ## Set up the traits, modifiers and events simulation
@@ -378,6 +379,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
             lineage$n <- lineage$n - 1L
         }
 
+        # plot.lineage(lineage, edge_lengths) ; warning("DEBUG")
         # warning("DEBUG"); reached_event <- TRUE
 
         ## Trigger events
@@ -389,7 +391,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                                     trait.values = trait_values,
                                     time         = time - first_waiting_time))
 
-            if(any(triggers)) {
+            if(any(triggers) && length(lineage$livings) != 0) {
 
                 # warning("DEBUG birth.death_fun: event triggered"); break
                 # lineage_bkp <- lineage ; edge_lengths_bkp <- edge_lengths ; trait_values_bkp <- trait_values

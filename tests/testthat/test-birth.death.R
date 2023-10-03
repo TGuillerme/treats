@@ -596,9 +596,9 @@ test_that("single logic works", {
     ## Testing
     test <- update.single.nodes(lineage_pre)
     expect_equal(test$parents, c(0, 1, 1, 2, 2, 4, 4, 6, 6, 9, 9, 10, 10, 13, 13, 14))
-    expect_equal(test$livings, 15)
+    expect_equal(test$livings, 16)
     expect_equal(test$drawn, 1)
-    expect_equal(test$current, 15)
+    expect_equal(test$current, 16)
     expect_equal(test$n, 1)
     expect_equal(test$split, c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE))
 
@@ -663,9 +663,9 @@ test_that("single logic works", {
     set.seed(1)
     test <- update.single.nodes(lineage_pre)
     expect_equal(test$parents, c(0, 1, 1, 3, 3, 5, 5, 6, 6, 7, 7, 10, 10, 11, 11, 15, 15, 17, 17, 13, 13, 20, 20, 23, 23, 25, 25, 26, 26, 28, 28, 12, 30))
-    expect_equal(test$livings, c(31, 32))
+    expect_equal(test$livings, c(32, 33))
     expect_equal(test$drawn, 2)
-    expect_equal(test$current, 32)
+    expect_equal(test$current, 33)
     expect_equal(test$n, 2)
 })
 
@@ -714,46 +714,4 @@ test_that("snapshots/internal save works", {
     expect_equal(dim(test$data), c(182, 3))
     class(test) <- "treats"
     expect_null(plot(test))
-})
-
-test_that("example from paper works", {
-    ## Loading the data and packages
-    library(dispRity)
-    data(BeckLee_tree)
-
-    my_bd_params <- crude.bd.est(BeckLee_tree)
-    stop_rule <- list(max.time = 30)
-    my_traits <- make.traits(process = BM.process, n = 2)
-
-    ## Creating a random mass extinction
-    random_extinction <- make.events(
-        target       = "taxa",
-        condition    = time.condition(15),
-        modification = random.extinction(0.75))
-    ## Creating an extinction that removes species with positive trait values
-    positive_extinction <- make.events(
-        target = "taxa",
-        condition = time.condition(15),
-        modification = trait.extinction(x = 0, condition = `>=`))
-
-    # set.seed(123)
-    # ## Simulate the tree and traits with a random extinction event
-    # sim_rand_extinction <- treats(
-    #                    traits     = my_traits,
-    #                    bd.params  = my_bd_params,
-    #                    stop.rule  = stop_rule,
-    #                    events     = random_extinction,
-    #                    null.error = 100,
-    #                    replicates = 50)
-
-    # ## Simulate the tree and traits with a selective extinction event
-    # sim_trait_extinction <- treats(
-    #                    traits     = my_traits,
-    #                    bd.params  = my_bd_params,
-    #                    stop.rule  = stop_rule,
-    #                    events     = positive_extinction,
-    #                    null.error = 100,
-    #                    replicates = 50)
-
-    ## Next errors comes probably from zero branch lengths from new lineage generation
 })
