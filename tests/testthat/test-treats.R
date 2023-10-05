@@ -104,8 +104,8 @@ test_that("paper example works", {
                        replicates = 10,
                        verbose    = FALSE)
 
-    expect_is(sim_trait_extinction, "list")
-    expect_equal(length(sim_trait_extinction), 10)
+    expect_is(sim_rand_extinction, "list")
+    expect_equal(length(sim_rand_extinction), 10)
 
     ## Simulate the tree and traits with a selective extinction event
     sim_trait_extinction <- treats(
