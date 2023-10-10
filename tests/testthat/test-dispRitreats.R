@@ -1,16 +1,64 @@
 test_that("dispRitreats works", {
 
     ## Simulate the tree and traits
+    set.seed(1)
     sim_data <- treats(traits     = make.traits(n = 10),
-                        bd.params  = make.bd.params(speciation = 1),
-                        stop.rule  = list(max.taxa = 50),
-                        replicates = 5)
+                       bd.params  = make.bd.params(speciation = 1),
+                       stop.rule  = list(max.taxa = 50),
+                       replicates = 5)
 
-    ## Generates the data correctly
-    test <- dispRitreats(sim_data)
-    expect_is(test, c("dispRity", "treats"))
-    expect_is(test$data[[1]], "matrix")
-    expect_is(test$tree[[1]], "phylo")
-    expect_is(test$tree, "multiPhylo")
-    expect_equal(length(test$data), 5)
+    ## ONLY ONE SIMULATION:
+    ## Simple test: just metric
+    test <- dispRitreats(sim_data[[1]], metric = c(mean, centroids))
+    expect_is(test, "dispRity")
+    expect_equal(dim(summary(test)), c(1,3))
+    expect_equal(round(summary(test)[1,3], 2), 4.56)
+
+    ## Metric + optional args
+    test <- dispRitreats(sim_data[[1]], metric = c(mean, centroids), centroid = 100)
+    expect_is(test, "dispRity")
+    expect_equal(dim(summary(test)), c(1,3))
+    expect_equal(round(summary(test)[1,3], 2), 316.3)
+
+    ## Metric + bootstrap + optional args
+    test <- dispRitreats(sim_data[[1]], metric = c(mean, centroids), centroid = 100, bootstraps = 100)
+    expect_is(test, "dispRity")
+    expect_equal(dim(summary(test)), c(1,8))
+    expect_equal(round(summary(test)[1,3], 2), 316.3)
+
+    ## Metric + chrono.subsets
+    test <- dispRitreats(sim_data[[1]], metric = c(mean, centroids), time = 5, method = "continuous", model = "acctran")
+    expect_is(test, "dispRity")
+    expect_equal(dim(summary(test)), c(5,3))
+    expect_equal(round(summary(test)[1,3], 2)[[1]], 2.82)
+
+    ## Metric + custom.subsets
+    test <- dispRitreats(sim_data[[1]], metric = c(mean, centroids), group = list("A" = c("t1", "t2", "t3"), "B" = c("t1", "t3", "t4")))
+    expect_is(test, "dispRity")
+    expect_equal(dim(summary(test)), c(2,3))
+    expect_equal(round(summary(test)[1,3], 2)[[1]], 3.71)
+
+    ## Verbose
+    tust <- capture_output(test <- dispRitreats(sim_data, metric = c(mean, centroids), centroid = 100, bootstraps = 10, time = 5, method = "continuous", model = "acctran", verbose = TRUE))
+    expect_equal(tust, "Calculating disparity:.....Done.")  
+
+    # ## MULTIPLE SIMULATIONS:
+    # ## Simple test: just metric
+    # test <- dispRitreats(sim_data[[1]], metric = c(mean, centroids))
+
+    # ## Metric + optional args
+    # test <- dispRitreats(sim_data[[1]], metric = c(mean, centroids), centroid = 100)
+
+    # ## Metric + bootstrap + optional args
+    # test <- dispRitreats(sim_data[[1]], metric = c(mean, centroids), centroid = 100, bootstraps = 100)
+
+    # ## Metric + chrono.subsets
+    # test <- dispRitreats(sim_data[[1]], metric = c(mean, centroids), time = 5, method = "continuous")
+
+    # ## Metric + custom.subsets
+    # test <- dispRitreats(sim_data[[1]], metric = c(mean, centroids), group = list("A" = c("t1", "t2", "t3"), "B" = c("t1", "t3", "t4")))
+
+
+
 })
+

@@ -2,21 +2,23 @@
 % Please edit documentation in R/dispRitreats.R
 \name{dispRitreats}
 \alias{dispRitreats}
-\title{dispRity to treats}
+\title{dispRity interface for treats objects}
 \usage{
-dispRitreats(data, scale.tree = TRUE)
+dispRitreats(data, ...)
 }
 \arguments{
 \item{data}{an output from \code{treats} containing tree and traits data.}
 
-\item{scale.tree}{logical, whether to scale the trees between 1 and 0 (\code{TRUE}; default) or not (\code{FALSE})}
+\item{...}{any other arguments to be passed to \code{\link[dispRity]{dispRity}}, \code{\link[dispRity]{chrono.subsets}}, \code{\link[dispRity]{custom.subsets}}, and \code{\link[dispRity]{boot.matrix}}.}
+}
+\value{
+Outputs a \code{"dispRity"} object that can be plotted, summarised or manipulated with the \code{dispRity} package.
 }
 \description{
-Converts \code{treats} data output to be passed to \code{\link[dispRity]{dispRity}}
+Pass a \code{treats} object to the \code{dispRity} function.
 }
 \details{
-The tree and data parts can be passed to the \code{dispRity} package functions \link[dispRity]{dispRity}, \code{\link[dispRity]{chrono.subsets}} or \link[dispRity]{custom.subsets} as the \code{data} argument (if needed, the \code{tree} argument is automatically recycled).
-The \code{scale.tree} function is highly recommended if trees have various root ages.
+This function applies the \code{dispRity} package pipeline to the \code{treats} output. If multiple simulations are input, the data is scaled for all the simulations.
 }
 \examples{
 ## Simulate a random tree with a 10 dimensional Brownian Motion trait
@@ -24,23 +26,34 @@ my_treats <- treats(stop.rule = list("max.taxa" = 20),
                     traits    = make.traits(BM.process, n = 10),
                     bd.params = make.bd.params(speciation = 1))
 
-## Converting the treats object to be used for a dispRity function
-my_dispRity <- dispRitreats(my_treats)
+## Calculating disparity as the sum of variances
+disparity <- dispRitreats(my_treats, metric = c(sum, variances))
+summary(disparity)
 
-## Creating 5 time slices (dispRity)
-time_slices <- dispRity::chrono.subsets(data      = my_dispRity$data,
-                                        tree      = my_dispRity$tree,
-                                        method    = "continuous",
-                                        model     = "acctran",
-                                        time      = 5,
-                                        inc.nodes = TRUE)
+## Calculating disparity as the mean distance from the centroid of
+## coordinates 42 (metric = c(mean, centroids), centroid = 42)
+## using 100 bootstrap replicates (bootstrap = 100) and 
+## chrono.subsets (method = "continuous", model = "acctran", time = 5)
+disparity <- dispRitreats(my_treats,
+                          metric = c(mean, centroids), centroid = 42,
+                          bootstraps = 100,
+                          method = "continuous", model = "acctran", time = 5)
+plot(disparity)
 
-## Calculating the sum of variances for these slices
-dispRity::dispRity(time_slices, metric = c(sum, variances))
+## Simulate 20 random trees with a 10 dimensional Brownian Motion trait
+my_treats <- treats(stop.rule = list("max.taxa" = 20),
+                    traits    = make.traits(BM.process, n = 10),
+                    bd.params = make.bd.params(speciation = 1))
+
+## Calculating disparity on all these trees as the sum of variance
+## on 5 continuous proximity time subsets
+disparity <- dispRitreats(my_treats, metric = c(sum, variances)
+                          method = "continuous", model = "proximity", time = 5)
+plot(disparity)
 
 }
 \seealso{
-\code{\link{treats}} \code{\link[dispRity]{dispRity}} \code{\link[dispRity]{chrono.subsets}} \code{\link[dispRity]{custom.subsets}}
+\code{\link{treats}} \code{\link[dispRity]{dispRity}} \code{\link[dispRity]{chrono.subsets}} \code{\link[dispRity]{custom.subsets}} \code{\link[dispRity]{boot.matrix}} \code{\link[dispRity]{plot.dispRity}} \code{\link[dispRity]{summary.dispRity}}
 }
 \author{
 Thomas Guillerme

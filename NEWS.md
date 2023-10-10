@@ -1,9 +1,9 @@
 treats v0.4 (2023-10-10) 
 =========================
 
-<!-- ### NEW FEATURES
+### NEW FEATURES
 
- * Completely reworked `dispRitreats` to now work as `dispRity` on `treats` objects. -->
+ * Completely reworked `dispRitreats` to now work just like the `dispRity` function on `treats` objects.
 
 ### MINOR IMPROVEMENTS
 
