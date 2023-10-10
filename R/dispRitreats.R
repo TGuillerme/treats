@@ -38,7 +38,7 @@
 #'
 #' ## Calculating disparity on all these trees as the sum of variance
 #' ## on 5 continuous proximity time subsets
-#' disparity <- dispRitreats(my_treats, metric = c(sum, variances)
+#' disparity <- dispRitreats(my_treats, metric = c(sum, variances),
 #'                           method = "continuous", model = "proximity", time = 5)
 #' plot(disparity)
 #'
@@ -130,7 +130,7 @@ dispRitreats <- function(data, ...) {
 
     ## Apply the function for each dataset
     if(verbose) cat("Calculating disparity:")
-    disparity_list <- lapply(data, apply.dispRity, group_type, subset_args, do_bootstrap, boot_args, dispRity_args, metric_args, verbose)
+    disparity_list <- lapply(data, apply.dispRity, group_type, subset_args, do_bootstrap, boot_args, dispRity_args, verbose)
     if(verbose) cat("Done.")
 
     if(length(disparity_list) == 1) {
@@ -145,7 +145,7 @@ dispRitreats <- function(data, ...) {
     ## 3- Combine all the trees
     ## 4- Combine the disparity results
     ## 5- Update the call (metric + dispRitreats hybrid)
-     
+
 
     ## Get the metric name
     # data$call$disparity$metrics$name <- c(data$call$disparity$metrics$name, match_call$metric)
@@ -162,7 +162,7 @@ dispRitreats <- function(data, ...) {
 }
 
 ## Wrapper function for measuring disparity across the datasets
-apply.dispRity <- function(one_simulation, group_type, subset_args, do_bootstrap, boot_args, dispRity_args, metric_args, verbose) {
+apply.dispRity <- function(one_simulation, group_type, subset_args, do_bootstrap, boot_args, dispRity_args, verbose) {
 
     ## Subsets
     if(group_type != "none") {

@@ -47,7 +47,7 @@ my_treats <- treats(stop.rule = list("max.taxa" = 20),
 
 ## Calculating disparity on all these trees as the sum of variance
 ## on 5 continuous proximity time subsets
-disparity <- dispRitreats(my_treats, metric = c(sum, variances)
+disparity <- dispRitreats(my_treats, metric = c(sum, variances),
                           method = "continuous", model = "proximity", time = 5)
 plot(disparity)
 
