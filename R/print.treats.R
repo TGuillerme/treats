@@ -60,7 +60,15 @@ print.treats <- function(x, all = FALSE, ...) {
         }
 
         ## Normal class treats objects (tree + traits)
-        cat(" ---- treats object ---- \n")
+        ## Check if it's a list of replicates
+        if(is(x[[1]], "treats")) {
+            cat(paste0(" ---- treats object with ", length(x), " replicates ---- \n"))
+            cat(paste0("You can access individual replicates by extracting them, e.g. using x[[1]]\n"))
+            x <- x[[1]]
+        } else {
+            cat(" ---- treats object ---- \n")
+        }
+
         ## Print the modifiers and/or events
         if(!is.null(x$modifiers) || !is.null(x$events)) {
             cat(paste0(

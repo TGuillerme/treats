@@ -98,7 +98,7 @@ treats <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events
     ## Replicates
     if(!missing(replicates)) {
         check.class(replicates, c("integer", "numeric"))
-        return(replicate(replicates, treats(stop.rule  = stop.rule,
+        outputs <- replicate(replicates, treats(stop.rule  = stop.rule,
                                             bd.params  = bd.params,
                                             traits     = traits,
                                             modifiers  = modifiers,
@@ -106,7 +106,9 @@ treats <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events
                                             save.steps = save.steps,
                                             null.error = null.error,
                                             verbose    = verbose),
-                        simplify = FALSE))
+                        simplify = FALSE)
+        class(outputs) <- "treats"
+        return(outputs)
     }
 
     ## Sanitizing

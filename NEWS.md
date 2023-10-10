@@ -1,10 +1,15 @@
-treats v0.3 (2023-10-02) 
+treats v0.4 (2023-10-10) 
 =========================
+
+<!-- ### NEW FEATURES
+
+ * Completely reworked `dispRitreats` to now work as `dispRity` on `treats` objects. -->
 
 ### MINOR IMPROVEMENTS
 
  * `events` now generates singleton nodes (and associated trait values if needed) at the time of the event before applying the modification.
  * added `verbose` option to `treats` for when using the option `null.error = integer()`.
+ * printing now works for `treats` outputs with `replicates = <integer>`.
 
 ## BUG FIXES
  

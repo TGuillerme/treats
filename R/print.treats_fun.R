@@ -126,10 +126,14 @@ print.bd.params.info <- function(x) {
     } else {
         if(length(did_grep <- grep("c", x$call$speciation)) > 0 &&  did_grep == 1) {
             ## Remove the "c(" from the expression
-            cat(paste0(paste(x$call$speciation[-1], collapse = ", ")))
+            call_val <- x$call$speciation[-1]
         } else {
-            cat(paste0(paste(x$call$speciation, collapse = ", ")))
+            call_val <- x$call$speciation
+        }
+        if(is(call_val, "numeric")) {
+            call_val <- round(call_val, digits = 3)
         } 
+        cat(paste0(paste(call_val, collapse = ", ")))
     }
     if(!is.null(x$call$speciation.args)) {
         cat(" (with optional arguments)")
@@ -143,10 +147,14 @@ print.bd.params.info <- function(x) {
     } else {
         if(length(did_grep <- grep("c", x$call$extinction)) > 0 &&  did_grep == 1) {
             ## Remove the "c(" from the expression
-            cat(paste0(paste(x$call$extinction[-1], collapse = ", ")))
+            call_val <- x$call$extinction[-1]
         } else {
-            cat(paste0(paste(x$call$extinction, collapse = ", ")))
+            call_val <- x$call$extinction
         }
+        if(is(call_val, "numeric")) {
+            call_val <- round(call_val, digits = 3)
+        } 
+        cat(paste0(paste(call_val, collapse = ", ")))
     }
     if(!is.null(x$call$extinction.args)) {
         cat(" (with optional arguments)")

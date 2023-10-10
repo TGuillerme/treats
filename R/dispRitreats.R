@@ -39,7 +39,11 @@ dispRitreats <- function(data, scale.tree = TRUE) {
     ## Sanitizing
     is_list <- check.class(data, c("list", "treats"))
     if(is_list != "list") {
-        data <- list(data)
+        if(is(data[[1]], "treats")) {
+            class(data) <- "list"
+        } else {
+            data <- list(data)
+        }
     }
     if(!all(unlist(lapply(data, function(x) all(c("data", "tree") %in% names(x)))))) {
         stop("data must be a list of \"treats\" objects or a \"treats\" object containing a tree and traits data.")
