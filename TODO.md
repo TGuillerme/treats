@@ -5,7 +5,7 @@
      - [ ] add references to template
      - [ ] add README guidelines
  - [ ] CRAN it!
-
+ - [ ] Move paper reproducible to `inst/paper.Rmd`
 
 ## TODO: whishlist
  - [ ] Add lineage tracking mechanism (i.e. allow `traits`, `modifiers` or `events` to be applied to specific lineages); also allow giving prefixes to the names of tips and nodes in the lineage.
