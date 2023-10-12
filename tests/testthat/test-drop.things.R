@@ -11,19 +11,19 @@ test_that("drop.fossils and drop.livings works", {
     expect_is(test, "phylo")
     expect_equal(Ntip(test), 7)
 
-        ## Create a simple bd tree + traits
-        set.seed(12)
-        phy <- treats(bd.params = list(extinction = 1/3), stop.rule = list(max.living = 20), traits = make.traits())
-        expect_gt(Ntip(phy$tree), 20)
-        expect_gt(nrow(phy$data), 39)
-        test <- drop.fossils(phy)
-        expect_is(test, "treats")
-        expect_equal(Ntip(test$tree), 20)
-        expect_equal(nrow(test$data), 42)
-        test <- drop.livings(phy)
-        expect_is(test, "treats")
-        expect_equal(Ntip(test$tree), 3)
-        expect_equal(nrow(test$data), 12)
+    ## Create a simple bd tree + traits
+    set.seed(12)
+    phy <- treats(bd.params = list(extinction = 1/3), stop.rule = list(max.living = 20), traits = make.traits())
+    expect_gt(Ntip(phy$tree), 20)
+    expect_gt(nrow(phy$data), 39)
+    test <- drop.fossils(phy)
+    expect_is(test, "treats")
+    expect_equal(Ntip(test$tree), 20)
+    expect_equal(nrow(test$data), 42)
+    test <- drop.livings(phy)
+    expect_is(test, "treats")
+    expect_equal(Ntip(test$tree), 3)
+    expect_equal(nrow(test$data), 12)
 })
 
 test_that("drop.singles works", {
@@ -50,7 +50,6 @@ test_that("drop.singles works", {
     expect_is(tast, "treats")
     expect_equal(Nnode(tast$tree), 43)
     expect_equal(nrow(tast$data), 43+44)
-
 })
 
 test_that("drop.things works", {
@@ -71,4 +70,36 @@ test_that("drop.things works", {
     expect_equal(Nnode(drop.things(test, what = "livings")$tree), 45)
     expect_equal(Ntip(drop.things(test, what = "singles")$tree), 44)
     expect_equal(Nnode(drop.things(test, what = "singles")$tree), 43)
+})
+
+test_that("multiples works", {
+
+    ## Simulate the tree and traits
+    sim_trees <- treats(#traits     = make.traits(n = 10),
+                        bd.params  = make.bd.params(speciation = 1),
+                        stop.rule  = list(max.taxa = 50),
+                        replicates = 5)
+    sim_datas <- treats(traits     = make.traits(n = 10),
+                        bd.params  = make.bd.params(speciation = 1),
+                        stop.rule  = list(max.taxa = 50),
+                        replicates = 5)
+    sim_tree <- treats(#traits     = make.traits(n = 10),
+                        bd.params  = make.bd.params(speciation = 1),
+                        stop.rule  = list(max.taxa = 50))
+    sim_data <- treats(traits     = make.traits(n = 10),
+                        bd.params  = make.bd.params(speciation = 1),
+                        stop.rule  = list(max.taxa = 50))
+
+    ## Testing is.replicates
+    expect_equal(is.replicates(sim_data), "no")
+    expect_equal(is.replicates(sim_tree), "no")
+    expect_equal(is.replicates(sim_datas), "treats")
+    expect_equal(is.replicates(sim_trees), "multiPhylo")
+    expect_equal(is.replicates("whatevs"), "no")
+
+    ## Drop multiples
+    expect_is(drop.singles(sim_trees), "multiPhylo")
+    expect_is(drop.singles(sim_datas), "treats")
+    expect_is(drop.tips(sim_trees, living = FALSE), "multiPhylo")
+    expect_is(drop.tips(sim_datas, living = FALSE), "treats")
 })

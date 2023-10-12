@@ -107,7 +107,12 @@ treats <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events
                                             null.error = null.error,
                                             verbose    = verbose),
                         simplify = FALSE)
-        class(outputs) <- "treats"
+        ## If outputs are treats
+        if(is(outputs[[1]], "treats")) {
+            class(outputs) <- "treats"
+        } else {
+            class(outputs) <- "multiPhylo"
+        }
         return(outputs)
     }
 

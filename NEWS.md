@@ -10,6 +10,7 @@ treats v0.4 (2023-10-10)
  * `events` now generates singleton nodes (and associated trait values if needed) at the time of the event before applying the modification.
  * added `verbose` option to `treats` for when using the option `null.error = integer()`.
  * printing now works for `treats` outputs with `replicates = <integer>`.
+ * `drop.things` now works with replicated `treats` objects (or `multiPhylo`)
 
 ## BUG FIXES
  

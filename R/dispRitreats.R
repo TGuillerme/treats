@@ -170,7 +170,7 @@ dispRitreats <- function(data, ..., scale.trees = TRUE) {
     ## Combine all the trees
     all_trees <- lapply(lapply(disparity_list, `[[`, "tree"), `[[`, 1)
     class(all_trees) <- "multiPhylo"
-    disparity_out$tree <- all_trees    
+    disparity_out$tree <- all_trees
 
     ## Combine the disparity results
     all_disparity <- lapply(disparity_list, `[[`, "disparity")

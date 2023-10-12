@@ -45,8 +45,15 @@
 #' 
 #' @author Thomas Guillerme
 #' @export
-
 drop.singles <- function(treats) {
+
+    ## Check if treats has replicates
+    if((class_out <- is.replicates(treats)) != "no") {
+        output <- lapply(treats, drop.singles)
+        class(output) <- class_out
+        return(output)
+    }
+
     if(is(treats, "phylo")) {
         ## Add a dummy tip
         dummy_tree <- treats + rtree(1, tip.label = "internal:drop.singles:dummy_tip_to_remove")
@@ -62,7 +69,16 @@ drop.singles <- function(treats) {
         return(treats)
     }
 }
+
 drop.tips <- function(treats, living) {
+
+    ## Check if treats has replicates
+    if((class_out <- is.replicates(treats)) != "no") {
+        output <- lapply(treats, drop.tips, living)
+        class(output) <- class_out
+        return(output)
+    }
+
     ## Find the tips
     tree_ages <- if(is(treats, "phylo")) {tree.age(treats)} else {tree.age(treats$tree)}
     ntips <- ifelse(is(treats, "phylo"), Ntip(treats), Ntip(treats$tree))
@@ -94,7 +110,7 @@ drop.livings <- function(treats) {
     return(drop.tips(treats, living = TRUE))
 }
 drop.things <- function(treats, what) {
-    check.class(treats, c("phylo", "treats"))
+    check.class(treats, c("multiPhylo", "phylo", "treats"))
     check.class(what, "character")
     check.method(what, c("fossils", "livings", "singles"))
     switch(what,
@@ -102,4 +118,30 @@ drop.things <- function(treats, what) {
         "livings" = return(drop.livings(treats)),
         "singles" = return(drop.singles(treats))
     )
+}
+
+## Checking treats replicates
+is.replicates <- function(treats) {
+    ## Check it's a treats
+    if(is(treats, "treats")) {
+        ## Check if it's a list of treats or just a treats
+        classes <- unique(unlist(lapply(treats, class)))
+        if(length(classes) == 1 && classes == "treats") {
+            ## It's a replicate containing treats
+            return("treats")
+        } else {
+            ## It's a single treats
+            return("no")
+        }
+    } else {
+        if(is(treats, "phylo")) {
+            ## It's a single treats
+            return("no")
+        } else {
+            if(is(treats, "multiPhylo")) {
+                return("multiPhylo")
+            }
+        }
+    }
+    return("no")
 }

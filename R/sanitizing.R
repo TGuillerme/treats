@@ -131,4 +131,3 @@ check.args <- function(fun, fun_name, required_args) {
 
     return(fun)
 }
-
