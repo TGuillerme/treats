@@ -4,12 +4,26 @@
 #'
 #' @param data an output from \code{treats} containing tree and traits data.
 #' @param ... any other arguments to be passed to \code{\link[dispRity]{dispRity}}, \code{\link[dispRity]{chrono.subsets}}, \code{\link[dispRity]{custom.subsets}}, and \code{\link[dispRity]{boot.matrix}}.
+#' @param scale.trees logical, whether to scale the tree ages in all simulations (\code{TRUE}; default) or not (\code{FALSE}).
 #' 
 #' @details
 #' This function applies the \code{dispRity} package pipeline to the \code{treats} output. If multiple simulations are input, the data is scaled for all the simulations.
 #'
+#' The \code{scale.trees} option allows the trees to have the same depth and root age. This option is recommended if \code{\link[dispRity]{chrono.subsets}} options are called to make the output results comparable.
+#' 
+#' Common optional arguments for the following arguments include the following (refer the the specific function for the arguments details):
+#' \itemize{
+#'  \item code{\link[dispRity]{custom.subsets}}: \code{group} for the list of elements to be attributed to specific groups;
+#'  \item code{\link[dispRity]{chrono.subsets}}: \code{method} for selecting the time binning or slicing method; \code{time} for the number of time bins/slices or their specific ages; \code{model} for the time slicing method; or \code{inc.nodes} for whether to include nodes or not in the time subsets;
+#'  \item code{\link[dispRity]{boot.matrix}}: \code{bootstraps} for the number of bootstrap replicates; \code{rarefaction} for the number of elements to include in each bootstrap replicate; or \code{boot.type} for the bootstrap algorithm;
+#'  \item code{\link[dispRity]{dispRity}}: \code{metric} for the disparity, dissimilarity or spatial occupancy metric to apply to the data; or \code{dimensions} for the number of dimensions to consider.
+#' }
+#'
 #' @return
 #' Outputs a \code{"dispRity"} object that can be plotted, summarised or manipulated with the \code{dispRity} package.
+
+# Note that because the variance in the simulations, the function \code{\link[dispRity]{summary.dispRity}} displays the average number of per subset. TODO:fix
+
 #' 
 #' @examples
 #' ## Simulate a random tree with a 10 dimensional Brownian Motion trait
@@ -47,7 +61,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-dispRitreats <- function(data, ...) {
+dispRitreats <- function(data, ..., scale.trees = TRUE) {
 
     match_call <- match.call()
 
@@ -62,6 +76,12 @@ dispRitreats <- function(data, ...) {
     }
     if(!all(unlist(lapply(data, function(x) all(c("data", "tree") %in% names(x)))))) {
         stop("data must be a list of \"treats\" objects or a \"treats\" object containing a tree and traits data.")
+    }
+
+    ## Scaling the trees
+    check.class(scale.trees, "logical")
+    if(scale.trees) {
+        data <- lapply(data, scale.tree.fun)
     }
 
     ## Check all the optional arguments
@@ -133,6 +153,7 @@ dispRitreats <- function(data, ...) {
     disparity_list <- lapply(data, apply.dispRity, group_type, subset_args, do_bootstrap, boot_args, dispRity_args, verbose)
     if(verbose) cat("Done.")
 
+    ## Single simulation
     if(length(disparity_list) == 1) {
         ## Update the metric call
         disparity_list[[1]]$call$disparity$metrics$name <- match_call$metric
@@ -140,25 +161,27 @@ dispRitreats <- function(data, ...) {
     }
 
     ## Combine the outputs into a dispRity object for summary, print and test
-    ## 1- Take the first output
-    ## 2- Combine all the matrices
-    ## 3- Combine all the trees
-    ## 4- Combine the disparity results
-    ## 5- Update the call (metric + dispRitreats hybrid)
+    ## Use the first one as a template
+    disparity_out <- disparity_list[[1]]
 
+    ## Combine all the matrices
+    disparity_out$matrix <- lapply(lapply(disparity_list, `[[`, "matrix"), `[[`, 1)
 
-    ## Get the metric name
-    # data$call$disparity$metrics$name <- c(data$call$disparity$metrics$name, match_call$metric)
-    # if(!is.null(data$call$disparity$metrics$fun)) {
-    #     data$call$disparity$metrics$fun <- list(unlist(data$call$disparity$metrics$fun, recursive = FALSE), metric)
-    # } else {
-    #     data$call$disparity$metrics$fun <- metric
-    # }
+    ## Combine all the trees
+    all_trees <- lapply(lapply(disparity_list, `[[`, "tree"), `[[`, 1)
+    class(all_trees) <- "multiPhylo"
+    disparity_out$tree <- all_trees    
 
-    # ## Adding the between groups
-    # data$call$disparity$metrics$between.groups <- ifelse(is_between.groups, TRUE, FALSE)
+    ## Combine the disparity results
+    all_disparity <- lapply(disparity_list, `[[`, "disparity")
+    disparity_out$disparity <- merge.disparity(all_disparity)
 
-    # return(NULL)
+    ## Update the metric call
+    disparity_out$call$disparity$metrics$name <- match_call$metric
+    ## Toggle the dispRitreats hybrid call
+    disparity_out$call$dispRitreats <- TRUE
+
+    return(disparity_out)
 }
 
 ## Wrapper function for measuring disparity across the datasets
@@ -193,7 +216,22 @@ apply.dispRity <- function(one_simulation, group_type, subset_args, do_bootstrap
     return(disparity_data)
 }
 
-## Scaling the trees (not used for now)
+## Merging disparity results
+merge.disparity <- function(all_disparity) {
+    merge.subset.pair <- function(subset1, subset2) {
+        return(mapply(FUN = function(x,y)return(matrix(c(x, y), nrow = dim(x)[1])), x = subset1, y = subset2, SIMPLIFY = FALSE))
+    }
+    while(length(all_disparity) != 1) {
+        ## Merge all subsets
+        all_disparity[[1]] <- mapply(merge.subset.pair, all_disparity[[1]], all_disparity[[2]], SIMPLIFY = FALSE)
+        ## Removed merged set
+        all_disparity[[2]] <- NULL
+    }
+    return(unlist(all_disparity, recursive = FALSE))
+}
+
+
+## Scaling the trees
 scale.tree.fun <- function(tree) {
     ## Scale the tree
     tree$edge.length <- tree$edge.length/tree$root.time

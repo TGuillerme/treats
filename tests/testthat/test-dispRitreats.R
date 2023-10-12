@@ -42,22 +42,38 @@ test_that("dispRitreats works", {
     tust <- capture_output(test <- dispRitreats(sim_data, metric = c(mean, centroids), centroid = 100, bootstraps = 10, time = 5, method = "continuous", model = "acctran", verbose = TRUE))
     expect_equal(tust, "Calculating disparity:.....Done.")  
 
-    # ## MULTIPLE SIMULATIONS:
-    # ## Simple test: just metric
-    # test <- dispRitreats(sim_data[[1]], metric = c(mean, centroids))
+    ## MULTIPLE SIMULATIONS:
+    ## Simple test: just metric
+    test <- dispRitreats(sim_data, metric = c(mean, centroids))
+    expect_is(test, "dispRity")
+    expect_equal(dim(summary(test)), c(1,7))
+    expect_equal(round(summary(test)[1,3], 2)[[1]], 4.56)
 
-    # ## Metric + optional args
-    # test <- dispRitreats(sim_data[[1]], metric = c(mean, centroids), centroid = 100)
+    ## Metric + optional args
+    test <- dispRitreats(sim_data, metric = c(mean, centroids), centroid = 100)
+    expect_is(test, "dispRity")
+    expect_equal(dim(summary(test)), c(1,7))
+    expect_equal(round(summary(test)[1,3], 2)[[1]], 316.3)
 
-    # ## Metric + bootstrap + optional args
-    # test <- dispRitreats(sim_data[[1]], metric = c(mean, centroids), centroid = 100, bootstraps = 100)
+    ## Metric + bootstrap + optional args
+    test <- dispRitreats(sim_data, metric = c(mean, centroids), centroid = 100, bootstraps = 100)
+    expect_is(test, "dispRity")
+    expect_equal(dim(summary(test)), c(1,8))
+    expect_equal(round(summary(test)[1,3], 2)[[1]], 316.3)
 
-    # ## Metric + chrono.subsets
-    # test <- dispRitreats(sim_data[[1]], metric = c(mean, centroids), time = 5, method = "continuous")
+    ## Metric + chrono.subsets
+    # all_args <- list(metric = c(mean, centroids), time = 5, method = "continuous", model = "proximity", inc.nodes = TRUE)
+    test <- dispRitreats(sim_data, metric = c(mean, centroids), time = 5, method = "continuous", model = "proximity", inc.nodes = TRUE)
+    expect_is(test, "dispRity")
+    expect_equal(dim(summary(test)), c(5,7))
+    expect_equal(round(summary(test)[1,3], 2)[[1]], 0.36)
+    expect_null(plot(test))
 
-    # ## Metric + custom.subsets
-    # test <- dispRitreats(sim_data[[1]], metric = c(mean, centroids), group = list("A" = c("t1", "t2", "t3"), "B" = c("t1", "t3", "t4")))
-
+    ## Metric + custom.subsets
+    test <- dispRitreats(sim_data, metric = c(mean, centroids), group = list("A" = c("t1", "t2", "t3"), "B" = c("t1", "t3", "t4")))
+    expect_equal(dim(summary(test)), c(2,7))
+    expect_equal(round(summary(test)[1,3], 2)[[1]], 4.86)
+    expect_null(plot(test))
 
 
 })

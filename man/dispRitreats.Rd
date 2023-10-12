@@ -4,12 +4,14 @@
 \alias{dispRitreats}
 \title{dispRity interface for treats objects}
 \usage{
-dispRitreats(data, ...)
+dispRitreats(data, ..., scale.trees = TRUE)
 }
 \arguments{
 \item{data}{an output from \code{treats} containing tree and traits data.}
 
 \item{...}{any other arguments to be passed to \code{\link[dispRity]{dispRity}}, \code{\link[dispRity]{chrono.subsets}}, \code{\link[dispRity]{custom.subsets}}, and \code{\link[dispRity]{boot.matrix}}.}
+
+\item{scale.trees}{logical, whether to scale the tree ages in all simulations (\code{TRUE}; default) or not (\code{FALSE}).}
 }
 \value{
 Outputs a \code{"dispRity"} object that can be plotted, summarised or manipulated with the \code{dispRity} package.
@@ -19,6 +21,16 @@ Pass a \code{treats} object to the \code{dispRity} function.
 }
 \details{
 This function applies the \code{dispRity} package pipeline to the \code{treats} output. If multiple simulations are input, the data is scaled for all the simulations.
+
+The \code{scale.trees} option allows the trees to have the same depth and root age. This option is recommended if \code{\link[dispRity]{chrono.subsets}} options are called to make the output results comparable.
+
+Common optional arguments for the following arguments include the following (refer the the specific function for the arguments details):
+\itemize{
+ \item code{\link[dispRity]{custom.subsets}}: \code{group} for the list of elements to be attributed to specific groups;
+ \item code{\link[dispRity]{chrono.subsets}}: \code{method} for selecting the time binning or slicing method; \code{time} for the number of time bins/slices or their specific ages; \code{model} for the time slicing method; or \code{inc.nodes} for whether to include nodes or not in the time subsets;
+ \item code{\link[dispRity]{boot.matrix}}: \code{bootstraps} for the number of bootstrap replicates; \code{rarefaction} for the number of elements to include in each bootstrap replicate; or \code{boot.type} for the bootstrap algorithm;
+ \item code{\link[dispRity]{dispRity}}: \code{metric} for the disparity, dissimilarity or spatial occupancy metric to apply to the data; or \code{dimensions} for the number of dimensions to consider.
+}
 }
 \examples{
 ## Simulate a random tree with a 10 dimensional Brownian Motion trait
