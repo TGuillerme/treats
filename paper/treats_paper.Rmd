@@ -63,6 +63,7 @@ Or `PETER` is not designed to simulate a complex set of traits (say three correl
 This absence of modularity has hampered the use of complex and question-driven simulations, although I acknowledge this was not the primary aim of the authors of the excellent packages mentioned above.
 This has led workers to often develop their own tools to answer specific questions (e.g. @puttick2020complex).
 Therefore, I propose `treats` a modular `R` package to simulate both trees and traits through time.
+Note that although `treats` is modular and thus allows to be used as go to tool for simulating and trees and traits, it lacks the ready-to-use implemented methods featured in other packages such as fossilisation and sampling [@fossilsim, @treesim, @paleobuddy] or specific macroevolutionary simulations [@RPANDA, @puttick2020complex].
 
 # Description
 
@@ -84,208 +85,7 @@ A third class of object called `"events"` can be added to the simulations to mod
 Each element in the algorithm can be modified by the user using the implemented functions `make.bd.params` to set the birth-death parameters, `make.traits` to set the trait(s), `make.modifiers` to set the birth-death algorithm and `make.events` to eventually add one or more events.
 Users can replace any step in the algorithm by their own specific functions suiting their needs or, for less advanced users, by using already implemented functions.
 
-![Figure 1: `treats` package workflow: the `treats` algorithm generates a tree and traits using inbuilt `"traits"` objects that contain the instructions on how to generate the trait data (e.g. which process? how many dimensions?); `"modifiers"` objects that contains instructions on how to "grow" the tree (e.g. by linking speciation to trait values, or to the current number of species); and `"events"` objects that can modify the tree structure, `"modifiers"` or `"traits"` depending on specific conditions (e.g. 80% of species with positive trait values go extinct after reaching a specific time).](../inst/gitbook/treats_structure.png){#figure1} 
-
-## Brief applied example
-
-To illustrate this we will look whether it is possible to detect changes in disparity (i.e. diversity of traits) in a subset of the data published from @beck2014ancient implemented in @dispRity.
-This dataset contains the ordinated traits for 50 mammalian species across the Cretaceous-Palaeogene extinction event (K-Pg, 66 Mya; Fig. 2).
-
-```{r, message = FALSE}
-## Loading the data and packages
-library(treats)
-library(dispRity)
-data(BeckLee_tree)
-data(BeckLee_mat99)
-
-## Creating the time slices
-time_slices <- chrono.subsets(BeckLee_mat99, BeckLee_tree,
-                              method = "continuous",
-                              model  = "acctran",
-                              time   = seq(from = 96, to = 36, by = -10))
-
-## Calculating disparity on the two first dimensions only
-observed_disparity <- dispRity(boot.matrix(time_slices),
-                               metric = c(sum, variances),
-                               dimensions = c(1,2))
-```
-
-```{r prepdata, echo = FALSE, fig.cap="Figure 2: Observed phylogeny (A) and disparity through time (B) in the subset of @beck2014ancient's dataset. The red line represents the K-Pg boundary. Is this change in disparity related to the K-Pg mass extinction? Or, more generally, is it even possible to detect potential changes of disparity due to a mass extinction event?", fig.width = 18, fig.height = 8}
-## Plotting the tree and the disparity through time
-par(mfrow = c(1,2))
-plot(BeckLee_tree, show.tip.label = FALSE)
-axisPhylo()
-abline(v = BeckLee_tree$root.time - 66, col = "red")
-legend("topleft", pch = NULL, legend = "A", bty = "n", cex = 2)
-par(bty = "n")
-plot(observed_disparity, ylab = "Sum of variances")
-abline(v = 4, col = "red")
-legend("topleft", pch = NULL, legend = "B", bty = "n", cex = 2)
-```
-
-Using this example dataset, one might be interested in testing whether the K-Pg extinction had an effect on disparity through time.
-But can such effect be detected in the first place?
-We can test this by simulating some datasets with similar properties as the observed data and measure changes in disparity in these simulated datasets.
-
-### Simulating trees
-
-The first and simplest way is to simulate tree topologies that have similar properties than the observed one.
-To do so, we need to use some **speciation** parameter indicating the rate at which lineages speciate (_aka_ "birth" or "$\lambda$") and an **extinction** parameter indicating the rate at which they go extinct (_aka_ "death" or "$\mu$").
-These two parameters can be crudely calculated from a given tree by counting the number of speciations and extinctions through time (but see better methods, e.g. `ape::birthdeath`; @lawton1995extinction; @ape).
-We also need a stopping rule for when to stop the simulations (in our case when reaching 30 time units).
-This will produce a single random tree using the input parameters (Fig. 3).
-Note that I will not discuss the options here in great details.
-Much more information can be found in the [`treats` manual](http://tguillerme.github.io/treats.html).
-
-```{r, message = FALSE}
-## Using the birth-death parameters from the observed tree
-my_bd_params <- crude.bd.est(BeckLee_tree)
-## Setting the stopping rule (stop after 30 time units)
-stop_rule <- list(max.time = 30)
-
-## Simulate the tree
-set.seed(1)
-sim_tree <- treats(bd.params  = my_bd_params,
-                   stop.rule  = stop_rule,
-                   null.error = 100)
-```
-```{r simtree, echo = FALSE, fig.cap="Figure 3: A randomly simulated tree with similar properties as the observed one. Note that the time here is expressed in arbitrary units.", fig.width = 6, fig.height = 6}
-## Plotting the resulting tree
-plot(sim_tree, show.tip.label = FALSE)
-## Adding the phylogenetic axis
-axisPhylo()
-```
-
-### Simulating trees and traits
-
-For our specific question, we will also need to simulate some traits associated with each node and tip.
-For simplicity we will simulate a two dimensional Brownian Motion trait.
-To do so, we can create a `"traits"` object with the function `make.traits`.
-This results in a 2 dimensional trait space for all the simulated species and their nodes (Fig. 4).
-
-```{r, message = FALSE}
-## Creating a trait in 2 dimensions.
-my_traits <- make.traits(process = BM.process, n = 2)
-
-## Simulate the tree and traits
-set.seed(1)
-sim_data <- treats(traits     = my_traits,
-                   bd.params  = my_bd_params,
-                   stop.rule  = stop_rule,
-                   null.error = 100)
-```
-```{r simtreetraits, echo = FALSE, fig.cap="Figure 4: A randomly simulated tree with a 2 dimensional random Brownian Motion trait. Orange, light blue and dark blue dots respectively represent nodes, fossils and living species.", fig.width = 16, fig.height = 8}
-par(mfrow = c(1,2))
-## Plotting one trait through time
-plot(sim_data, ylab = "Trait 1", las = 1, main = "Trait 1 through time")
-## Plotting the two dimensions against each other
-plot(sim_data, trait = c(2,1), ylab = "Trait 1", xlab = "Trait 2", las = 1, main = "Traits 1 and 2")
-```
-
-### Simulating a trees and traits with events
-
-To answer our question, we also want to simulate an extinction event.
-To do so, we can create two different `"events"` object with the function `make.events`.
-The first one will simulate a random extinction event after reaching half of the simulations (15 time units) and then making three quarter (0.75) of the taxa go extinct.
-The second one will simulate a random extinction but based on trait values: after reaching time 15, all the species with positive trait values will go extinct.
-Both scenarios thus illustrate two different types of mass extinction (random and selective; @puttick2020complex).
-Because of the stochasticity of the simulations, we will repeat them 50 times (using `replicates = 50`) to generate a distribution of possible simulated scenarios as opposed to a random single one that could be idiosyncratic.
-
-```{r, message = FALSE}
-## Creating a random mass extinction
-random_extinction <- make.events(
-    target       = "taxa",
-    condition    = time.condition(15),
-    modification = random.extinction(0.75))
-## Creating an extinction that removes species with positive trait values
-positive_extinction <- make.events(
-    target = "taxa",
-    condition = time.condition(15),
-    modification = trait.extinction(x = 0, condition = `>=`))
-
-set.seed(1)
-## Simulate the tree and traits with a random extinction event
-sim_rand_extinction <- treats(
-                   traits     = my_traits,
-                   bd.params  = my_bd_params,
-                   stop.rule  = stop_rule,
-                   events     = random_extinction,
-                   null.error = 100,
-                   replicates = 50)
-
-## Simulate the tree and traits with a selective extinction event
-sim_trait_extinction <- treats(
-                   traits     = my_traits,
-                   bd.params  = my_bd_params,
-                   stop.rule  = stop_rule,
-                   events     = positive_extinction,
-                   null.error = 100,
-                   replicates = 50)
-```
-```{r simtreetraitsevents, echo = FALSE, fig.cap="Figure 5: Two different mass extinction events: (A) 75% of species go extinct; (B) all species with positive trait values go extinct. The red line marks the extinction event.", fig.width = 16, fig.height = 8}
-par(mfrow = c(1,2))
-## Visualising the difference between both scenarios
-plot(sim_rand_extinction[[11]], main = "Random extinction")
-abline(v = 15, col = "red")
-legend("topleft", pch = NULL, legend = "A", bty = "n", cex = 2)
-plot(sim_trait_extinction[[10]], main = "Positive extinction")
-legend("topleft", pch = NULL, legend = "B", bty = "n", cex = 2)
-abline(v = 15, col = "red")
-```
-
-Once we have simulated a distribution of trees and traits with the two extinction scenarios, we can measure disparity as in Fig. 2 for all the simulated data and compare it to the observed disparity.
-
-
-```{r simdisparity, warning = FALSE, echo = FALSE, fig.cap="Figure 6: Comparison of the observed sum of variances (dashed line) to the simulated one (ligth and dark grey polygons and black line representing respectively the 95% and 50% confidence interval and the median value).", fig.width = 16, fig.height = 8}
-## Wrapper function for measuring disparity across the datasets
-measure.disparity <- function(one_simulation) {
-    ## transform the data
-    sim <- dispRitreats(one_simulation, scale.tree = FALSE)
-    ## Calculate disparity
-    disparity <- dispRity(
-             chrono.subsets(data = sim$data, tree = sim$tree,
-                            method = "continuous", model = "acctran",
-                            time = seq(from = 30, to = 0, by = -5)),
-                            metric = c(sum, variances))
-    ## Scale the disparity
-    disparity <- unlist(get.disparity(disparity))
-    return(disparity/max(disparity))
-}
-
-## Measuring disparities
-random_extinction_disparity <- do.call(rbind, lapply(sim_rand_extinction, measure.disparity))
-selective_extinction_disparity <- do.call(rbind, lapply(sim_trait_extinction, measure.disparity))
-
-## Get the observed disparity
-observed_disparity <- rescale.dispRity(observed_disparity)
-observed_disparity <- unlist(get.disparity(observed_disparity))
-
-## Plotting the results
-polygon.plot <- function(disparity_results, main = "") {
-    ## Get the quantiles
-    quantiles <- apply(disparity_results, 2, quantile, probs = c(0.025, 0.25, 0.5, 0.75, 0.975), na.rm = TRUE)
-
-    plot(NULL, xlim = c(1, ncol(quantiles)), ylim = range(quantiles), ylab = "scaled sum of ranges", xlab = "Relative time", main = main )
-    polygon(x = c(1:ncol(quantiles), ncol(quantiles):1),
-            y = c(quantiles[1, ], rev(quantiles[5, ])),
-            col = "lightgrey", border = FALSE)
-    polygon(x = c(1:ncol(quantiles), ncol(quantiles):1),
-            y = c(quantiles[2, ], rev(quantiles[4, ])),
-            col = "grey", border = FALSE)
-    lines(x = c(1:ncol(quantiles)), y = quantiles[3, ])
-}
-
-par(mfrow = c(1,2))
-polygon.plot(random_extinction_disparity, main = "Random extinction")
-abline(v = 4, col = "red")
-lines(x = 1:7, y = observed_disparity, lty = 2, lwd = 2)
-polygon.plot(selective_extinction_disparity, main = "Selective extinction")
-abline(v = 4, col = "red")
-lines(x = 1:7, y = observed_disparity, lty = 2, lwd = 2)
-```
-
-From these results we can draw some preliminary conclusions: the observed change in disparity is more likely due to a random mass extinction rather than a selective one.
-This is of course a very crude way of testing this, a more rigorous approach is needed to answer the question: more and better quality data, and more thorough methods (e.g. using a rank envelope test @murrell2018global).
+![`treats` package workflow: the `treats` algorithm generates a tree and traits using inbuilt `"traits"` objects that contain the instructions on how to generate the trait data (e.g. which process? how many dimensions?); `"modifiers"` objects that contains instructions on how to "grow" the tree (e.g. by linking speciation to trait values, or to the current number of species); and `"events"` objects that can modify the tree structure, `"modifiers"` or `"traits"` depending on specific conditions (e.g. 80% of species with positive trait values go extinct after reaching a specific time).](../inst/gitbook/treats_structure.png){#figure1} 
 
 ## Major functionalities
 
@@ -455,6 +255,207 @@ The `treats` package also comes with tools to visualise trees and traits togethe
 This can be done through the generic S3 `plot` function (calling `plot.treats`) and allows to display up to three traits or two traits and time (in 3D) as displayed in Figures 4 and 5.
 These functions can also be used to visualise trees and traits together from non `"treats"` objects by using the `make.treats` function to transform them into `"treats"` objects.
 
+
+# Brief applied example
+
+To illustrate this we will look whether it is possible to detect changes in disparity (i.e. diversity of traits) in a subset of the data published from @beck2014ancient implemented in @dispRity.
+This dataset contains the ordinated traits for 50 mammalian species across the Cretaceous-Palaeogene extinction event (K-Pg, 66 Mya; Fig. 2).
+
+```{r, message = FALSE}
+## Loading the package and data
+library(treats)
+data(BeckLee_tree)
+data(BeckLee_mat99)
+
+## Creating the time slices
+time_slices <- chrono.subsets(BeckLee_mat99, BeckLee_tree,
+                              method = "continuous",
+                              model  = "proximity",
+                              time   = seq(from = 96, to = 36, by = -10))
+
+## Calculating disparity on the two first dimensions only
+observed_disparity <- dispRity(boot.matrix(time_slices),
+                               metric = c(sum, variances),
+                               dimensions = c(1,2))
+```
+
+```{r prepdata, echo = TRUE, fig.cap="Observed phylogeny (A) and disparity through time (B) in the subset of @beck2014ancient's dataset. The red line represents the K-Pg boundary. Is this change in disparity related to the K-Pg mass extinction? Or, more generally, is it even possible to detect potential changes of disparity due to a mass extinction event?", fig.width = 18, fig.height = 8}
+## Plotting the tree and the disparity through time
+par(mfrow = c(1,2), bty = "null")
+## Thre tree
+plot(BeckLee_tree, show.tip.label = FALSE)
+axisPhylo()
+abline(v = BeckLee_tree$root.time - 66, col = "red")
+legend("topleft", pch = NULL, legend = "A", bty = "n", cex = 2)
+
+## The disparity
+plot(observed_disparity, ylab = "Sum of variances")
+abline(v = 4, col = "red")
+legend("topleft", pch = NULL, legend = "B", bty = "n", cex = 2)
+```
+
+Using this example dataset, one might be interested in testing whether the K-Pg extinction had an effect on disparity through time.
+But can such effect be detected in the first place?
+We can test this by simulating some datasets with similar properties as the observed data and measure changes in disparity in these simulated datasets.
+
+### Simulating trees
+
+The first and simplest way is to simulate tree topologies that have similar properties than the observed one.
+To do so, we need to use some **speciation** parameter indicating the rate at which lineages speciate (_aka_ "birth" or "$\lambda$") and an **extinction** parameter indicating the rate at which they go extinct (_aka_ "death" or "$\mu$").
+These two parameters can be crudely calculated from a given tree by counting the number of speciations and extinctions through time (but see better methods, e.g. `ape::birthdeath`; @lawton1995extinction; @ape).
+We also need a stopping rule for when to stop the simulations (in our case when reaching 30 time units).
+This will produce a single random tree using the input parameters (Fig. 3).
+The number of time units in `treats` is arbitrary and is not equivalent to millions of years.
+Using 30 time units here allows to simulate number of tips in a similar order of magnitude as the ones in the observed data.
+Note that I will not discuss the options here in great details.
+Much more information can be found in the [`treats` manual](http://tguillerme.github.io/treats.html).
+
+```{r, message = FALSE}
+## Using the birth-death parameters from the observed tree
+my_bd_params <- crude.bd.est(BeckLee_tree)
+## Setting the stopping rule (stop after 30 time units)
+stop_rule <- list(max.time = 30)
+
+## Simulate the tree
+set.seed(1)
+sim_tree <- treats(bd.params  = my_bd_params,
+                   stop.rule  = stop_rule,
+                   null.error = 100,
+                   verbose    = FALSE)
+```
+```{r simtree, echo = FALSE, fig.cap="A randomly simulated tree with similar properties as the observed one. Note that the time here is expressed in arbitrary units.", fig.width = 6, fig.height = 6}
+## Plotting the resulting tree
+plot(sim_tree, show.tip.label = FALSE)
+## Adding the phylogenetic axis
+axisPhylo()
+```
+
+### Simulating trees and traits
+
+For our specific question, we will also need to simulate some traits associated with each node and tip.
+For simplicity we will simulate a two dimensional Brownian Motion trait.
+To do so, we can create a `"traits"` object with the function `make.traits`.
+This results in a 2 dimensional trait space for all the simulated species and their nodes (Fig. 4).
+
+```{r, message = FALSE}
+## Creating a trait in 2 dimensions.
+my_traits <- make.traits(process = BM.process, n = 2)
+
+## Simulate the tree and traits
+set.seed(1)
+sim_data <- treats(traits     = my_traits,
+                   bd.params  = my_bd_params,
+                   stop.rule  = stop_rule,
+                   null.error = 100,
+                   verbose    = FALSE)
+```
+```{r simtreetraits, echo = TRUE, fig.cap="A randomly simulated tree with a 2 dimensional random Brownian Motion trait. Orange, light blue and dark blue dots respectively represent nodes, fossils and living species.", fig.width = 16, fig.height = 8}
+par(mfrow = c(1,2))
+## Plotting one trait through time
+plot(sim_data, ylab = "Trait 1", las = 1, main = "Trait 1 through time")
+
+## Plotting the two dimensions against each other
+plot(sim_data, trait = c(2,1), ylab = "Trait 1", xlab = "Trait 2", las = 1, main = "Traits 1 and 2")
+```
+
+### Simulating a trees and traits with events
+
+To answer our question, we also want to simulate an extinction event.
+To do so, we can create two different `"events"` object with the function `make.events`.
+The first one will simulate a random extinction event after reaching half of the simulations (15 time units) and then making three quarter (0.75) of the taxa go extinct.
+The second one will simulate a random extinction but based on trait values: after reaching time 15, all the species with positive trait values will go extinct.
+Both scenarios illustrate two different types of mass extinctions but they are not equivalent: because of the ancestral trait value starting at 0, we expect the second scenario to remove on average only 50% of the species (i.e. half the species are expected to evolve a trait value above 0).
+For more details on simulating the effect of mass extinction and the difficulties to simulate an unambiguous effect of a mass extinction, see @puttick2020complex.
+Because of this stochasticity of the simulations, we will repeat them 50 times (using `replicates = 50`) to generate a distribution of possible simulated scenarios as opposed to a random single one that could be idiosyncratic (Fig. 5).
+
+```{r, message = FALSE}
+## Creating a random mass extinction
+random_extinction <- make.events(
+    target       = "taxa",
+    condition    = time.condition(15),
+    modification = random.extinction(0.75))
+## Creating an extinction that removes species with positive trait values
+positive_extinction <- make.events(
+    target = "taxa",
+    condition = time.condition(15),
+    modification = trait.extinction(x = 0, condition = `>=`))
+
+set.seed(1)
+## Simulate the tree and traits with a random extinction event
+sim_rand_extinction <- treats(
+                   traits     = my_traits,
+                   bd.params  = my_bd_params,
+                   stop.rule  = stop_rule,
+                   events     = random_extinction,
+                   null.error = 100,
+                   replicates = 50)
+
+## Simulate the tree and traits with a selective extinction event
+sim_trait_extinction <- treats(
+                   traits     = my_traits,
+                   bd.params  = my_bd_params,
+                   stop.rule  = stop_rule,
+                   events     = positive_extinction,
+                   null.error = 100,
+                   replicates = 50)
+```
+```{r simtreetraitsevents, echo = FALSE, fig.cap="Two different mass extinction events: (A) 75% of species go extinct; (B) all species with positive trait values go extinct. The red line marks the extinction event.", fig.width = 16, fig.height = 8}
+par(mfrow = c(1,2))
+## Visualising the difference between both scenarios
+## Random extinction
+plot(drop.singles(sim_rand_extinction[[31]]), main = "Random extinction")
+abline(v = 15, col = "red")
+abline(h = 0, col = "grey")
+legend("topleft", pch = NULL, legend = "A", bty = "n", cex = 2)
+
+## Selective extinction
+plot(drop.singles(sim_trait_extinction[[41]]), main = "Positive extinction")
+abline(v = 15, col = "red")
+abline(h = 0, col = "grey")
+legend("topleft", pch = NULL, legend = "B", bty = "n", cex = 2)
+```
+
+Once we have simulated a distribution of trees and traits with the two extinction scenarios, we can measure disparity as in Fig. 2 for all the simulated data and compare it to the observed disparity.
+
+
+```{r simdisparity, echo = TRUE, warning = FALSE, message = FALSE, fig.cap="Comparison of the observed sum of variances (dashed line) to the simulated one (ligth and dark grey polygons and black line representing respectively the 95% and 50% confidence interval and the median value).", fig.width = 16, fig.height = 8}
+## Remove single nodes simulated at the extinction
+sim_rand_extinction <- drop.singles(sim_rand_extinction)
+sim_trait_extinction <- drop.singles(sim_trait_extinction)
+
+## Calculate the dispRity for all the simulations
+random_extinction_disparity <- dispRitreats(sim_rand_extinction,
+                                            method = "continuous",
+                                            model  = "proximity",
+                                            time   = seq(from = 25, to = 0, by = -5),
+                                            metric = c(sum, variances),
+                                            scale.trees = FALSE)
+selective_extinction_disparity <- dispRitreats(sim_trait_extinction,
+                                            method = "continuous",
+                                            model  = "proximity",
+                                            time   = seq(from = 25, to = 0, by = -5),
+                                            metric = c(sum, variances),
+                                            scale.trees = FALSE)
+
+## Scale the disparity results (to compare to the observed ones)
+random_extinction_disparity <- rescale.dispRity(random_extinction_disparity)
+selective_extinction_disparity <- rescale.dispRity(selective_extinction_disparity)
+observed_disparity <- unlist(get.disparity(rescale.dispRity(observed_disparity)))
+
+## Plotting the results with the observed disparity
+par(mfrow = c(1,2))
+plot(random_extinction_disparity, main = "Random extinction", ylab = "Scaled sum of variances")
+abline(v = 3, col = "red")
+lines(x = 1:7, y = observed_disparity, lty = 2, lwd = 2)
+plot(selective_extinction_disparity, main = "Selective extinction", ylab = "")
+abline(v = 3, col = "red")
+lines(x = 1:7, y = observed_disparity, lty = 2, lwd = 2)
+```
+
+
+From these results we can draw some preliminary conclusions: the observed change in disparity is more likely due to a selective mass extinction rather than a random one (Fig. 6).
+This is of course a very crude way of testing this, a more rigorous approach is needed to answer the question: more and better quality data, and more thorough methods (e.g. using a rank envelope test @murrell2018global).
+
 # Additional information
 
 ## Manuals and vignettes
@@ -466,12 +467,12 @@ This manual is designed so that it can be regularly updated and enhanced through
 
 This paper describes the first version of the `treats` package.
 However, I intend to continuously develop this package.
-For example future planned versions will include: lineage specific simulations; abiotic events; time dependent simulations and; a better integration with the `dispRity` package.
+For example future planned versions will include abiotic events and a better integration with the `dispRity` package.
 This will be done while keeping track change (through `NEWS` file), continuous integration and unit testing. 
 Furthermore, I am planning to develop the GitHub page associated with the package to encourage users to share their simulation templates and build library from them to facilitate the work for future users.
 
 ## Repeatability and reproducibility
-This paper is entirely reproducible from an Rmarkdown document available on [GitHub](https://github.com/TGuillerme/treats/paper/).
+This paper is entirely reproducible from an Rmarkdown document available on [GitHub](https://github.com/TGuillerme/treats/inst/paper.Rmd).
 The data used for the example above [@beck2014ancient] is available from the `dispRity` package [@dispRity].
 
 # Conclusion
