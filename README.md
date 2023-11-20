@@ -58,7 +58,7 @@ Patch notes can be seen [here](https://github.com/TGuillerme/treats/blob/master/
 
 If you need some inspiration, you can browse through this gallery of [simulation templates](https://github.com/TGuillerme/treats/issues?q=is%3Aopen+is%3Aissue+label%3A%22simulation+template%22).
 
-If you want to help your fellow or future `treats` users, please share your template as an issue []()
+If you want to help your fellow or future `treats` users, please share your template as a [simulation template issue](https://github.com/TGuillerme/treats/issues/new?assignees=&labels=simulation+template&projects=&template=simulation-template.md&title=Simulate+something). Don't worry about typos, language or format. The important part is that you're happy to share your template and that 
 
 
 Authors and contributors
