@@ -50,7 +50,7 @@ my_traits <- make.traits()
 Describe the customised `modifier` object
 
 ```
-my_traits <- make.modifier()
+my_modifiers <- make.modifier()
 ```
 
 ### `events`
@@ -58,7 +58,7 @@ my_traits <- make.modifier()
 Describe the customised `modifier` object
 
 ```
-my_traits <- make.events()
+my_events <- make.events()
 ```
 
 ## A running example
