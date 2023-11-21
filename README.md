@@ -1,5 +1,5 @@
 [![R-CMD-check](https://github.com/TGuillerme/treats/workflows/R-CMD-check/badge.svg)](https://github.com/TGuillerme/treats/actions)
-[![codecov](https://codecov.io/gh/TGuillerme/treats/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/treats)
+[![codecov](https://app.codecov.io/gh/TGuillerme/treats/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/treats)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![develVersion](https://img.shields.io/badge/devel%20version-0.2-green.svg?style=flat)](https://github.com/TGuillerme/treats/tree/master)
 [![DOI](https://zenodo.org/badge/299272555.svg)](https://zenodo.org/badge/latestdoi/299272555)
@@ -10,7 +10,7 @@
 ### What is `treats`?
 
 With `treats` you can simulate phylogenetic trees and traits at the same time.
-This has can be done with other great packages such as [`FossilSim`](https://cran.r-project.org/web/packages/FossilSim/index.html), [`PETER`](https://github.com/PuttickMacroevolution/PETER), [`RPANDA`](https://cran.r-project.org/web/packages/RPANDA/index.html), [`TreeSim`](https://cran.r-project.org/web/packages/TreeSim/index.html) but `treats` is designed to be super modular so you can simulate trees and traits **the way _you_ want**!
+This has can be done with other great packages such as [`FossilSim`](https://cran.r-project.org/package=FossilSim), [`PETER`](https://github.com/PuttickMacroevolution/PETER), [`RPANDA`](https://cran.r-project.org/package=RPANDA), [`TreeSim`](https://cran.r-project.org/package=TreeSim) but `treats` is designed to be super modular so you can simulate trees and traits **the way _you_ want**!
 Basically you can simulate a tree depending on the traits of the tip taxa, or not, or something else!
 And you can also add events to your simulations that can modify either the tree, the traits or both (or the way they influence each other).
 This can be useful for simulating mass extinctions, species competition, traitspace saturation or whatever you can think of.
