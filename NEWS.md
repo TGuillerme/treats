@@ -1,9 +1,10 @@
-treats v0.4 (2023-11-20) 
+treats v1.0 (2023-11-21) 
 =========================
 
 ### NEW FEATURES
 
  * Completely reworked `dispRitreats` to now work just like the `dispRity` function on `treats` objects.
+ * The package is now released on CRAN!
 
 ### MINOR IMPROVEMENTS
 
