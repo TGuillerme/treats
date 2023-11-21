@@ -113,7 +113,7 @@
 
 \title{treats manual}
 \author{Thomas Guillerme (\href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}})}
-\date{2023-05-25}
+\date{2023-11-21}
 
 \begin{document}
 \maketitle
@@ -289,6 +289,13 @@ Then go to step 5.
 
 \begin{verbatim}
 ## Loading required package: dispRity
+\end{verbatim}
+
+\begin{verbatim}
+##        --- dispRity package ---
+## This is the CRAN release version (1.7.0) of the package.
+## For news, vignettes and future releases,
+## visit https://github.com/TGuillerme/dispRity
 \end{verbatim}
 
 \hypertarget{gettingstarted}{%
@@ -515,6 +522,13 @@ You can then extract the components you need for your specific analysis like so:
 
 You can find much more about how to design trait objects in the \protect\hyperlink{maketraits}{\texttt{make.traits} section}.
 
+\hypertarget{treats-objects}{%
+\subsection{\texorpdfstring{\texttt{"treats"} objects}{"treats" objects}}\label{treats-objects}}
+
+\texttt{treats} will output either just a tree (class \texttt{"phylo"}) if no traits were generated or a \texttt{"treats"} object that contains both a \texttt{\$tree} (\texttt{"phylo"}) and a \texttt{\$data} (\texttt{"matrix"}) component.
+Note that this \texttt{"treats"} class is generalised to most outputs of the package functions.
+This allows for a smoother handeling of the objects outputs such as summarising the content of a \texttt{make.bd.params} output or visualising a trait output from \texttt{make.traits}.
+
 \hypertarget{slightly-more-complex-again-simulating-linked-disparity-and-diversity}{%
 \section{Slightly more complex again: simulating linked disparity and diversity}\label{slightly-more-complex-again-simulating-linked-disparity-and-diversity}}
 
@@ -580,7 +594,6 @@ This will not do anything to our simulations compared to the previous trait and 
 ## speciation: 1.
 ## extinction: 0.2.
 ## No modifiers applied to the branch length, selection and speciation processes (default).
-## 
 ## Simulated phylogenetic tree (x$tree):
 ## 
 ## Phylogenetic tree with 24 tips and 23 internal nodes.
@@ -597,13 +610,17 @@ This will not do anything to our simulations compared to the previous trait and 
 \end{verbatim}
 
 Note however, that the printing information is now updated to state that you've added a \texttt{"modifiers"} object (even though it's the same as the default).
+In this specific case the \texttt{modifiers} object is not necessary as it is doing nothing different than when using the default one (i.e.~when no \texttt{modifiers} is provided).
 
 For more interesting simulations however, you can provide modifiers that actually modify the birth-death process.
 We can create one for example that makes species go extinct if their ancestor has a negative trait value.
 For that we need to create a \texttt{"modifiers"} object that modifies the \texttt{speciation} process with a specific condition and a specific modification when that condition is met.
 For a speciation to occur (and a species to not go extinct), the algorithm draws a random value \emph{x} between 0 and 1 and if the value is smaller than the speciation parameter divided by the speciation + extinction parameter, the lineage speciates (\(x < (\lambda \ (\lambda + \mu))\)), else it goes extinct.
+\emph{x} is a random value that simulates some stochasticity in the evolutionary simulation.
+At every step of the simulation, a different random value \emph{x} is drawn making sure that the resulting speciation or extinction is not predictable.
 
-Here we can create a modifier forcing the lineage to go extinct every time a specific condition is met, e.g.~if the lineage trait value is negative.
+However, we can create a modifier that introduces less randomness (or a different level of randomness) by forcing the lineage to go extinct every time a specific condition is met, e.g.~if the lineage trait value is negative.
+This can be done for example by not randomly generating the value \emph{x} but giving it a fixed value of say 1 so that the estimation of the speciation function \(x < (\lambda \ (\lambda + \mu))\) is always met.
 In other words, if the lineage's trait value is negative, make sure that \emph{x} is equal to 1, so that the speciation condition \(x < (\lambda \ (\lambda + \mu))\) is never met.
 
 First we need to create a \texttt{condition} function to trigger this (non) speciation event.
@@ -634,6 +651,7 @@ This function must take the argument \texttt{x} and, in our case, returns the sa
 \end{Highlighting}
 \end{Shaded}
 
+This \texttt{going.extinct} function is to be contrasted with the normal modifier for selecting the value \texttt{x} which is \texttt{runif(1)} (drawing a random value between 0 and 1).
 We can then provide these two functions (the condition \texttt{negative.ancestor} and how to modify the speciation event when this condition is met \texttt{going.extinct}).
 If you are an advances \texttt{treats} user, you can design your own \texttt{speciation} function but if you just want to use a normal \texttt{speciation} function, you can use the default one from \texttt{treats} called \texttt{speciation}.
 
@@ -684,7 +702,6 @@ We can now simulate our tree and traits with our modifier: species will go extin
 ## Default branch length process.
 ## Default selection process.
 ## Speciation process is set to speciation with a condition (negative.ancestor) and a modifier (going.extinct).
-## 
 ## Simulated phylogenetic tree (x$tree):
 ## 
 ## Phylogenetic tree with 22 tips and 21 internal nodes.
@@ -799,8 +816,8 @@ We can do that by using crude parameters from the observed tree:
 
 \begin{verbatim}
 ##  ---- treats birth-death parameters object ---- 
-## speciation: 0.352330414024189.
-## extinction: 0.287616664509542.
+## speciation: 0.352.
+## extinction: 0.288.
 \end{verbatim}
 
 \begin{Shaded}
@@ -897,22 +914,17 @@ Of course, here we want to simulate a distribution of trees and traits:
 \end{Shaded}
 
 Et voila! We now have a distribution of 50 trees and 50 datasets from which we can calculate disparity.
-We can convert this list into \texttt{dispRity} using the \texttt{treats.dispRity} function.
+We can directly pass the results to the \texttt{dispRity} package pipeline using the \texttt{dispRitreats} function:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\#\# Converting the data to be passed to dispRity functions}
-\NormalTok{dispRity\_data \textless{}{-}}\StringTok{ }\KeywordTok{dispRitreats}\NormalTok{(sim\_data)}
-
-\CommentTok{\#\# Creating the time series (by default dispRitreats scales the trees to be 1 unit of times old)}
-\NormalTok{time\_series \textless{}{-}}\StringTok{ }\KeywordTok{chrono.subsets}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ dispRity\_data}\OperatorTok{$}\NormalTok{data,}
-                              \DataTypeTok{tree =}\NormalTok{ dispRity\_data}\OperatorTok{$}\NormalTok{tree,}
-                              \DataTypeTok{time =} \KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \FloatTok{0.9}\NormalTok{, }\DataTypeTok{to =} \DecValTok{0}\NormalTok{, }\DataTypeTok{by =} \FloatTok{{-}0.1}\NormalTok{),}
-                              \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{model =} \StringTok{"proximity"}\NormalTok{)}
-
-\CommentTok{\#\# Calculating the disparity from the simulated data}
-\NormalTok{simulated\_disparity \textless{}{-}}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(time\_series, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(sum, variances),}
-                                \DataTypeTok{verbose =} \OtherTok{TRUE}\NormalTok{)}
+\CommentTok{\#\# Calculate the dispRity for all the simulations}
+\NormalTok{simulated\_disparity \textless{}{-}}\StringTok{ }\KeywordTok{dispRitreats}\NormalTok{(sim\_data,}
+                                    \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{,}
+                                    \DataTypeTok{model  =} \StringTok{"proximity"}\NormalTok{,}
+                                    \DataTypeTok{time   =} \DecValTok{10}\NormalTok{,}
+                                    \DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(sum, variances),}
+                                    \DataTypeTok{scale.trees =} \OtherTok{TRUE}\NormalTok{)}
 \KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
 \KeywordTok{plot}\NormalTok{(simulated\_disparity, }\DataTypeTok{main =} \StringTok{"simulated disparity"}\NormalTok{)}
 \KeywordTok{plot}\NormalTok{(change\_in\_size, }\DataTypeTok{main =} \StringTok{"observed disparity"}\NormalTok{)}
@@ -938,7 +950,7 @@ To do so, we need to create two mass extinction \texttt{"event"} objects:
 \NormalTok{random\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}\DataTypeTok{target =} \StringTok{"taxa"}\NormalTok{,}
                                  \DataTypeTok{condition =} \KeywordTok{taxa.condition}\NormalTok{(}\DecValTok{25}\NormalTok{, }\DataTypeTok{condition =} \StringTok{\textasciigrave{}}\DataTypeTok{\textgreater{}=}\StringTok{\textasciigrave{}}\NormalTok{),}
                                  \DataTypeTok{modification =} \KeywordTok{random.extinction}\NormalTok{(}\FloatTok{0.75}\NormalTok{))}
-\CommentTok{\#\# Creating an extrinction that removes species with negative trait values}
+\CommentTok{\#\# Creating an extinction that removes species with negative trait values}
 \NormalTok{negative\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}\DataTypeTok{target =} \StringTok{"taxa"}\NormalTok{,}
                                    \DataTypeTok{condition =} \KeywordTok{taxa.condition}\NormalTok{(}\DecValTok{25}\NormalTok{, }\DataTypeTok{condition =} \StringTok{\textasciigrave{}}\DataTypeTok{\textgreater{}=}\StringTok{\textasciigrave{}}\NormalTok{),}
                                    \DataTypeTok{modification =} \KeywordTok{trait.extinction}\NormalTok{(}\DataTypeTok{x =} \DecValTok{0}\NormalTok{, }\DataTypeTok{condition =} \StringTok{\textasciigrave{}}\DataTypeTok{\textgreater{}=}\StringTok{\textasciigrave{}}\NormalTok{))}
@@ -980,55 +992,148 @@ We can then measure the disparity from these scenarios and compare them to our o
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\#\# Converting the data to be passed to dispRity functions}
-\NormalTok{rand\_ext\_data \textless{}{-}}\StringTok{ }\KeywordTok{dispRitreats}\NormalTok{(sim\_rand\_extinction)}
-\NormalTok{trait\_ext\_data \textless{}{-}}\StringTok{ }\KeywordTok{dispRitreats}\NormalTok{(sim\_trait\_extinction)}
-
-\CommentTok{\#\# Creating the time series}
-\NormalTok{rand\_ext\_time\_series \textless{}{-}}\StringTok{ }\KeywordTok{chrono.subsets}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ rand\_ext\_data}\OperatorTok{$}\NormalTok{data,}
-                                       \DataTypeTok{tree =}\NormalTok{ rand\_ext\_data}\OperatorTok{$}\NormalTok{tree,}
-                                       \DataTypeTok{time =} \KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \FloatTok{0.9}\NormalTok{, }\DataTypeTok{to =} \DecValTok{0}\NormalTok{, }\DataTypeTok{by =} \FloatTok{{-}0.1}\NormalTok{),}
-                                       \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{model =} \StringTok{"proximity"}\NormalTok{)}
-\NormalTok{trait\_ext\_time\_series \textless{}{-}}\StringTok{ }\KeywordTok{chrono.subsets}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ trait\_ext\_data}\OperatorTok{$}\NormalTok{data,}
-                                        \DataTypeTok{tree =}\NormalTok{ trait\_ext\_data}\OperatorTok{$}\NormalTok{tree,}
-                                        \DataTypeTok{time =} \KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \FloatTok{0.9}\NormalTok{, }\DataTypeTok{to =} \DecValTok{0}\NormalTok{, }\DataTypeTok{by =} \FloatTok{{-}0.1}\NormalTok{),}
-                                        \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{model =} \StringTok{"proximity"}\NormalTok{)}
-
-
-\CommentTok{\#\# Calculating the disparity from the simulated data}
-\NormalTok{sim\_rand\_ext\_disp \textless{}{-}}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(rand\_ext\_time\_series, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(sum, variances),}
-                              \DataTypeTok{verbose =} \OtherTok{TRUE}\NormalTok{)}
+\CommentTok{\#\# Simulate the tree and traits with a random extinction event}
+\NormalTok{sim\_rand\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}
+                   \DataTypeTok{traits     =}\NormalTok{ my\_traits,}
+                   \DataTypeTok{bd.params  =}\NormalTok{ est\_params,}
+                   \DataTypeTok{stop.rule  =}\NormalTok{ stop\_rule,}
+                   \DataTypeTok{events     =}\NormalTok{ random\_extinction,}
+                   \DataTypeTok{null.error =} \DecValTok{100}\NormalTok{,}
+                   \DataTypeTok{replicates =} \DecValTok{50}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## Calculating disparity..........Done.
+## Building the tree:....Done.
+## Building the tree:.......Done.
+## Building the tree:...Done.
+## Building the tree:......Done.
+## Building the tree:..Done.
+## Building the tree:..Done.
+## Building the tree:.Done.
+## Building the tree:........Done.
+## Building the tree:..Done.
+## Building the tree:.....Done.
+## Building the tree:....Done.
+## Building the tree:....Done.
+## Building the tree:..Done.
+## Building the tree:.................Done.
+## Building the tree:....Done.
+## Building the tree:....Done.
+## Building the tree:..Done.
+## Building the tree:......Done.
+## Building the tree:.......Done.
+## Building the tree:.Done.
+## Building the tree:.Done.
+## Building the tree:..Done.
+## Building the tree:......Done.
+## Building the tree:...........Done.
+## Building the tree:......Done.
+## Building the tree:....Done.
+## Building the tree:.Done.
+## Building the tree:..................Done.
+## Building the tree:....Done.
+## Building the tree:...............Done.
+## Building the tree:....Done.
+## Building the tree:..Done.
+## Building the tree:........Done.
+## Building the tree:....Done.
+## Building the tree:........Done.
+## Building the tree:...Done.
+## Building the tree:...Done.
+## Building the tree:.Done.
+## Building the tree:...Done.
+## Building the tree:..............Done.
+## Building the tree:...Done.
+## Building the tree:.Done.
+## Building the tree:..Done.
+## Building the tree:....Done.
+## Building the tree:..Done.
+## Building the tree:..Done.
+## Building the tree:.Done.
+## Building the tree:.Done.
+## Building the tree:....Done.
+## Building the tree:..........Done.
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{sim\_trait\_ext\_disp \textless{}{-}}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(trait\_ext\_time\_series, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(sum, variances),}
-                               \DataTypeTok{verbose =} \OtherTok{TRUE}\NormalTok{)}
+\CommentTok{\#\# Simulate the tree and traits with a random extinction event}
+\NormalTok{sim\_trait\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}
+                   \DataTypeTok{traits     =}\NormalTok{ my\_traits,}
+                   \DataTypeTok{bd.params  =}\NormalTok{ est\_params,}
+                   \DataTypeTok{stop.rule  =}\NormalTok{ stop\_rule,}
+                   \DataTypeTok{events     =}\NormalTok{ negative\_extinction,}
+                   \DataTypeTok{null.error =} \DecValTok{100}\NormalTok{,}
+                   \DataTypeTok{replicates =} \DecValTok{50}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## Calculating disparity..........Done.
+## Building the tree:.....................Done.
+## Building the tree:...................Done.
+## Building the tree:.....Done.
+## Building the tree:.Done.
+## Building the tree:....Done.
+## Building the tree:..Done.
+## Building the tree:..Done.
+## Building the tree:......................Done.
+## Building the tree:..Done.
+## Building the tree:..Done.
+## Building the tree:...Done.
+## Building the tree:.Done.
+## Building the tree:..Done.
+## Building the tree:......Done.
+## Building the tree:.Done.
+## Building the tree:......Done.
+## Building the tree:..Done.
+## Building the tree:.Done.
+## Building the tree:....Done.
+## Building the tree:...Done.
+## Building the tree:..Done.
+## Building the tree:......Done.
+## Building the tree:....................Done.
+## Building the tree:...Done.
+## Building the tree:.........Done.
+## Building the tree:.Done.
+## Building the tree:...Done.
+## Building the tree:.Done.
+## Building the tree:.........Done.
+## Building the tree:.Done.
+## Building the tree:.............Done.
+## Building the tree:..............Done.
+## Building the tree:......Done.
+## Building the tree:.Done.
+## Building the tree:.......Done.
+## Building the tree:...Done.
+## Building the tree:..Done.
+## Building the tree:......Done.
+## Building the tree:.Done.
+## Building the tree:..Done.
+## Building the tree:............Done.
+## Building the tree:.....Done.
+## Building the tree:......Done.
+## Building the tree:.Done.
+## Building the tree:.Done.
+## Building the tree:..............Done.
+## Building the tree:........Done.
+## Building the tree:..............Done.
+## Building the tree:.Done.
+## Building the tree:..Done.
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{))}
-\KeywordTok{plot}\NormalTok{(change\_in\_size, }\DataTypeTok{main =} \StringTok{"observed disparity"}\NormalTok{)}
-\KeywordTok{plot}\NormalTok{(simulated\_disparity, }\DataTypeTok{main =} \StringTok{"simulated disparity"}\NormalTok{)}
-\KeywordTok{plot}\NormalTok{(sim\_rand\_ext\_disp, }\DataTypeTok{main =} \StringTok{"simulated disparity}\CharTok{\textbackslash{}n}\StringTok{(mass extinction)"}\NormalTok{)}
-\KeywordTok{plot}\NormalTok{(simulated\_disparity, }\DataTypeTok{main =} \StringTok{"simulated disparity}\CharTok{\textbackslash{}n}\StringTok{(trait extinction)"}\NormalTok{)}
+\CommentTok{\#\# Visualising the difference between both scenarios}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(sim\_rand\_extinction[[}\DecValTok{1}\NormalTok{]], }\DataTypeTok{main =} \StringTok{"Random extinction"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(sim\_trait\_extinction[[}\DecValTok{1}\NormalTok{]], }\DataTypeTok{main =} \StringTok{"Negative extinction"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \includegraphics{treats_manual_files/figure-latex/unnamed-chunk-33-1.pdf}
 
-Interestingly, with all our parameters used here and our specific disparity metric we cannot detcet the effect of a mass extinction.
+Interestingly, with all our parameters used here and our specific disparity metric we cannot detect the effect of a mass extinction.
 
 \hypertarget{maketraits}{%
 \chapter{Simulating traits}\label{maketraits}}
@@ -1043,6 +1148,144 @@ For example, it can be a uni-dimensional variable uncorrelated to other traits o
 \includegraphics{make.traits.png}
 \caption{\texttt{make.traits}: The main inputs are (1) the \texttt{process}, one or more functions to describe the trait(s) as a function of previous state (\texttt{x0}) and the branch length (\texttt{edge.length}), (2) \texttt{n} the number of dimensions of the trait and (3) the starting value \texttt{start}.}
 \end{figure}
+
+\hypertarget{quick-overview}{%
+\subsection{Quick overview}\label{quick-overview}}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.19\columnwidth}\raggedright
+function\strut
+\end{minipage} & \begin{minipage}[b]{0.23\columnwidth}\raggedright
+arguments\strut
+\end{minipage} & \begin{minipage}[b]{0.14\columnwidth}\raggedright
+input\strut
+\end{minipage} & \begin{minipage}[b]{0.33\columnwidth}\raggedright
+what does it do\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+\texttt{make.traits}\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+process*\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+a function\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+simulates the trait (see below)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+n\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a numeric value\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+the number of dimensions\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+start\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+one or more numeric values\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+the starting values for each dimensions\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+process.args\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+\ldots{}\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+anything to be passed to \texttt{process} (see below)\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+trait.names\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a character string\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+the name(s) of the trait(s)\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+add\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a \texttt{treats} object\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+another trait generated by \texttt{make.traits}\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+update\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a \texttt{treats} object\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+another trait generated by \texttt{make.traits}\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+test\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+logical\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+whether to test the validity of the trait\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+background\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a \texttt{treats} object\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+another trait generated by \texttt{make.traits} (to run in the background)\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+---------\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+-----------\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+-------\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+----------------\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+\texttt{process}\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+x0\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+a numeric value\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+the value of the previous trait\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+edge.length\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a numeric value\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+the branch length value\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+\ldots{}\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+\ldots{}\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+any other argument to be handled by the process\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+* non-optional arguments
 
 \hypertarget{the-process-process}{%
 \section{\texorpdfstring{The process (\texttt{process})}{The process (process)}}\label{the-process-process}}
@@ -1166,7 +1409,7 @@ Note that you can see the multiple options for plotting the trait process by loo
 ##     return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = Sigma * edge.length, 
 ##         ...)))
 ## }
-## <bytecode: 0x55b3b2541d88>
+## <bytecode: 0x5647036c6610>
 ## <environment: namespace:treats>
 ## 
 ## $main$A$start
@@ -1763,6 +2006,133 @@ However, contrary to \texttt{"traits"}, you cannot plot \texttt{"modifiers"}.
 \caption{\texttt{make.modifiers}: The three main inputs to make modifiers are functions to modify the \texttt{branch.length} (waiting) process controlling the ``growth'' of the tree; the \texttt{selection} (selecting) process controlling the selection of the tip on which to apply speciation or extinction; and the \texttt{speciation} (speciating) process controlling whether the select tip goes extinct or speciates. The allowed arguments are detailed \protect\hyperlink{allowarguments}{here}.}
 \end{figure}
 
+\hypertarget{quick-overview-1}{%
+\subsection{Quick overview}\label{quick-overview-1}}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.19\columnwidth}\raggedright
+function\strut
+\end{minipage} & \begin{minipage}[b]{0.23\columnwidth}\raggedright
+arguments\strut
+\end{minipage} & \begin{minipage}[b]{0.14\columnwidth}\raggedright
+input\strut
+\end{minipage} & \begin{minipage}[b]{0.33\columnwidth}\raggedright
+what does it do\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+\texttt{make.modifiers}\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+branch.length\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+a function\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+generating branch length (see below)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+selection\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a function\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+selecting a lineage (see below)\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+speciation\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a function\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+choosing between speciation and extinction (see below)\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+condition\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a function\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+a function that affects the condition of when to trigger the functions above (see below)\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+modify\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a function\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+a function that modifies the value of the trigger value generated when the \texttt{condition} is met (see below)\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+add\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a \texttt{treats} object\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+another modifier generated by \texttt{make.modifiers}\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+update\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a \texttt{treats} object\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+another modifier generated by \texttt{make.modifiers}\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+test\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+logical\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+whether to test the validity of the modifier\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+---------\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+-----------\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+-------\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+----------------\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+\texttt{branch.length}, \texttt{selection}, \texttt{speciation}, \texttt{condition}\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+bd.params\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+a \texttt{treats} object generated by \texttt{make.bd.params}\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+usually handled internally (contains the either the birth-death values or their distribution)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+lineage\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a named ``lineage'' list\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+usually handled internally (contains the current state of the simulations)\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+trait.values\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a matrix\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+usually handled internally (contains the current generated traits of the simulations)\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
 \hypertarget{the-default-modifier-how-the-process-is-working}{%
 \section{The default modifier (how the process is working)}\label{the-default-modifier-how-the-process-is-working}}
 
@@ -1783,7 +2153,7 @@ By default, the birth-death process in \texttt{treats} uses this modifier:
 ## {
 ##     return(rexp(1, sum(lineage$n * (bd.params$speciation + bd.params$extinction))))
 ## }
-## <bytecode: 0x55b3b0f93c78>
+## <bytecode: 0x564707510428>
 ## <environment: namespace:treats>
 ## 
 ## $waiting$internal
@@ -1796,7 +2166,7 @@ By default, the birth-death process in \texttt{treats} uses this modifier:
 ## {
 ##     return(sample(lineage$n, 1))
 ## }
-## <bytecode: 0x55b3b0f9bdc8>
+## <bytecode: 0x5647075127a8>
 ## <environment: namespace:treats>
 ## 
 ## $selecting$internal
@@ -1807,10 +2177,10 @@ By default, the birth-death process in \texttt{treats} uses this modifier:
 ## $speciating$fun
 ## function (bd.params, lineage = NULL, trait.values = NULL, modify.fun = NULL) 
 ## {
-##     return(runif(1) < (bd.params$speciation/(bd.params$speciation + 
+##     return(runif(1) <= (bd.params$speciation/(bd.params$speciation + 
 ##         bd.params$extinction)))
 ## }
-## <bytecode: 0x55b3b0f9b498>
+## <bytecode: 0x56470751e620>
 ## <environment: namespace:treats>
 ## 
 ## $speciating$internal
@@ -2259,7 +2629,7 @@ It is however, possible to code the \texttt{"modifiers"} so that they can be aff
 To do so, you can formally declare conditions (\texttt{condition}) and modifications (\texttt{modify}) as internal functions that can then be modified by an \texttt{"events"} object.
 \texttt{condition} and \texttt{modify} are hard coded in the \texttt{branch.length} function that they concern, i.e.~they are variables (functions) within the function.
 
-For example in the \texttt{speciation} part of a modifier, the default is to trigger an event from a uniform distribution and then check if that value is smaller than (\[speciation/(speciation + extinction)\]):
+For example in the \texttt{speciation} part of a modifier, the default is to trigger an event from a uniform distribution and then check if that value is smaller than (\(speciation/(speciation + extinction)\)):
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2350,6 +2720,225 @@ First let's focus on these three main arguments:
 \includegraphics{make.events.png}
 \caption{\texttt{make.events}: events are encoded using three main arguments: the \texttt{target}, specifying \emph{what} the event is modifying, the \texttt{condition} specifying \emph{when} to trigger the event, and \texttt{modification}, specifying \emph{how} the event modifies the simulations.}
 \end{figure}
+
+\hypertarget{quick-overview-2}{%
+\subsection{Quick overview}\label{quick-overview-2}}
+
+condition,
+modification,
+add,
+test = TRUE,
+event.name,
+replications = 0,
+additional.args
+)
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.19\columnwidth}\raggedright
+function\strut
+\end{minipage} & \begin{minipage}[b]{0.23\columnwidth}\raggedright
+arguments\strut
+\end{minipage} & \begin{minipage}[b]{0.14\columnwidth}\raggedright
+input\strut
+\end{minipage} & \begin{minipage}[b]{0.33\columnwidth}\raggedright
+what does it do\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+\texttt{make.events}\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+target*\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+any of the following: ``taxa'', ``bd.params'', ``traits'', ``modifiers'' or ``founding''\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+what aspect of the simulation should the event target\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+condition*\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a function\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+a function that affects the condition of when to trigger the event (see below)\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+modification*\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a function\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+a function that applies the modification to the target if the condition is triggered (see below)\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+add\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a \texttt{treats} object\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+another event generated by \texttt{make.events}\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+test\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+logical\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+whether to test the validity of the event\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+event.name\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a character string\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+the name of the event\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+replications\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a number\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+if possible how many times is the event allowing to be repeated\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+additional.args\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+\ldots{}\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+any additional arguments to be passed to the event\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+Here is a list of implemented \texttt{conditions} (see \texttt{?events.conditions}):
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.19\columnwidth}\raggedright
+function\strut
+\end{minipage} & \begin{minipage}[b]{0.23\columnwidth}\raggedright
+arguments\strut
+\end{minipage} & \begin{minipage}[b]{0.14\columnwidth}\raggedright
+input\strut
+\end{minipage} & \begin{minipage}[b]{0.33\columnwidth}\raggedright
+what does it do\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+\texttt{time.condition}, \texttt{taxa.condition}, \texttt{trait.condition}\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+x\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+the value to check the target against\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+e.g.~time = x, taxa = x or trait = x (see below)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+condition\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a relational operator\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+e.g.~\texttt{==}, \texttt{\textgreater{}}, \texttt{!=}, etc. for asking for example \texttt{time\ ==\ x}\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+\ldots{}\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+any additional arguments to be passed to the event\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+Here is a list of implemented \texttt{modifications} (see \texttt{?events.modifications}):
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.19\columnwidth}\raggedright
+function\strut
+\end{minipage} & \begin{minipage}[b]{0.23\columnwidth}\raggedright
+arguments\strut
+\end{minipage} & \begin{minipage}[b]{0.14\columnwidth}\raggedright
+input\strut
+\end{minipage} & \begin{minipage}[b]{0.33\columnwidth}\raggedright
+what does it do\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+random.extinction\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+x\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+a numeric value\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+the proportion of species to make extinct\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+trait.extinction\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+x\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+a numeric value\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+the trait value when to trigger the extinction\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+condition\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+a relational operator\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+the relation to the trait value (e.g.~\texttt{x\ =\ 1} and \texttt{condition\ =\ \ \textgreater{}} makes species that have a trait value \textgreater{} 1 go extinct)\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+bd.params.update\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+\ldots{}\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+any argument to be passed to \texttt{make.bd.params}\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+traits.update\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+\ldots{}\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+any argument to be passed to \texttt{make.traits}\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+modifiers.update\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright
+\ldots{}\strut
+\end{minipage} & \begin{minipage}[t]{0.14\columnwidth}\raggedright
+any argument to be passed to \texttt{make.modifiers}\strut
+\end{minipage} & \begin{minipage}[t]{0.33\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+* non-optional arguments
 
 \hypertarget{target}{%
 \section{Target}\label{target}}
@@ -3085,7 +3674,7 @@ If two traits are provided, the 3rd dimension is going to be time by default:
 ## snapshots
 \end{verbatim}
 
-\includegraphics[width=6.5in]{../../../../../../tmp/RtmpXnwk90/fileb7e05f6d37cf}
+\includegraphics[width=6.5in]{../../../../../../tmp/RtmptzertD/file14f8c6a285c1a}
 
 If three traits are provide, you can set up a fourth coloured dimension as time (similarly to the 2D plots with the colour gradients).
 This uses the \texttt{rgl} functions, namely \texttt{lines3d}, \texttt{points3d} (if \texttt{type\ =\ "p"}; default) or \texttt{sphere3d} (if \texttt{type\ =\ "s"}).
@@ -3111,7 +3700,7 @@ The additional arguments \texttt{...} are directly handled and attributed to the
 ## snapshots
 \end{verbatim}
 
-\includegraphics[width=6.5in]{../../../../../../tmp/RtmpXnwk90/fileb7e060df376f}
+\includegraphics[width=6.5in]{../../../../../../tmp/RtmptzertD/file14f8c301a0acb}
 
 \hypertarget{specific-examples}{%
 \chapter{Specific examples}\label{specific-examples}}
@@ -3577,10 +4166,10 @@ And we can visualise this change through time:
 ## snapshots
 \end{verbatim}
 
-\includegraphics[width=6.5in]{../../../../../../tmp/RtmpXnwk90/fileb7e0d32ccc1}
+\includegraphics[width=6.5in]{../../../../../../tmp/RtmptzertD/file14f8c465f7d38}
 
 \hypertarget{EG_change_modif}{%
-\section{Event for changing a modifier: speciation event increase for species with negative values}\label{EG_change_modif}}
+\section{Event for changing a modifier: extinction event increase for species with negative values}\label{EG_change_modif}}
 
 For this scenario, we want to generate a pure birth tree with a one dimensional Brownian Motion trait for 4 time units.
 After 3 time units, we want the speciation rule to increase for species which ancestors have a negative trait value.

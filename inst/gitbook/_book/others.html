@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>6 Other functionalities | treats manual</title>
   <meta name="description" content="treats R package manual" />
-  <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.36 and GitBook 2.6.7" />
 
   <meta property="og:title" content="6 Other functionalities | treats manual" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie)" />
 
 
-<meta name="date" content="2023-05-25" />
+<meta name="date" content="2023-11-21" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -54,27 +54,27 @@
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 <script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
-<script src="libs/rglWebGL-binding-1.1.3/rglWebGL.js"></script>
-<link href="libs/rglwidgetClass-1.1.3/rgl.css" rel="stylesheet" />
-<script src="libs/rglwidgetClass-1.1.3/rglClass.src.js"></script>
-<script src="libs/rglwidgetClass-1.1.3/utils.src.js"></script>
-<script src="libs/rglwidgetClass-1.1.3/buffer.src.js"></script>
-<script src="libs/rglwidgetClass-1.1.3/subscenes.src.js"></script>
-<script src="libs/rglwidgetClass-1.1.3/shaders.src.js"></script>
-<script src="libs/rglwidgetClass-1.1.3/shadersrc.src.js"></script>
-<script src="libs/rglwidgetClass-1.1.3/textures.src.js"></script>
-<script src="libs/rglwidgetClass-1.1.3/projection.src.js"></script>
-<script src="libs/rglwidgetClass-1.1.3/mouse.src.js"></script>
-<script src="libs/rglwidgetClass-1.1.3/init.src.js"></script>
-<script src="libs/rglwidgetClass-1.1.3/pieces.src.js"></script>
-<script src="libs/rglwidgetClass-1.1.3/draw.src.js"></script>
-<script src="libs/rglwidgetClass-1.1.3/controls.src.js"></script>
-<script src="libs/rglwidgetClass-1.1.3/selection.src.js"></script>
-<script src="libs/rglwidgetClass-1.1.3/rglTimer.src.js"></script>
-<script src="libs/rglwidgetClass-1.1.3/pretty.src.js"></script>
-<script src="libs/rglwidgetClass-1.1.3/axes.src.js"></script>
-<script src="libs/rglwidgetClass-1.1.3/animation.src.js"></script>
-<script src="libs/CanvasMatrix4-1.1.3/CanvasMatrix.src.js"></script>
+<script src="libs/rglWebGL-binding-1.2.1/rglWebGL.js"></script>
+<link href="libs/rglwidgetClass-1.2.1/rgl.css" rel="stylesheet" />
+<script src="libs/rglwidgetClass-1.2.1/rglClass.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/utils.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/buffer.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/subscenes.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/shaders.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/shadersrc.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/textures.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/projection.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/mouse.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/init.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/pieces.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/draw.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/controls.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/selection.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/rglTimer.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/pretty.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/axes.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/animation.src.js"></script>
+<script src="libs/CanvasMatrix4-1.2.1/CanvasMatrix.src.js"></script>
 
 
 <style type="text/css">
@@ -141,6 +141,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -176,7 +180,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="2.1.1" data-path="gettingstarted.html"><a href="gettingstarted.html#changing-the-birth-death-parameters"><i class="fa fa-check"></i><b>2.1.1</b> Changing the birth-death parameters</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2" data-path="gettingstarted.html"><a href="gettingstarted.html#slightly-more-complex-simulating-disparity-and-diversity"><i class="fa fa-check"></i><b>2.2</b> Slightly more complex: simulating disparity and diversity</a></li>
+<li class="chapter" data-level="2.2" data-path="gettingstarted.html"><a href="gettingstarted.html#slightly-more-complex-simulating-disparity-and-diversity"><i class="fa fa-check"></i><b>2.2</b> Slightly more complex: simulating disparity and diversity</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="gettingstarted.html"><a href="gettingstarted.html#treats-objects"><i class="fa fa-check"></i><b>2.2.1</b> <code>"treats"</code> objects</a></li>
+</ul></li>
 <li class="chapter" data-level="2.3" data-path="gettingstarted.html"><a href="gettingstarted.html#slightly-more-complex-again-simulating-linked-disparity-and-diversity"><i class="fa fa-check"></i><b>2.3</b> Slightly more complex again: simulating linked disparity and diversity</a></li>
 <li class="chapter" data-level="2.4" data-path="gettingstarted.html"><a href="gettingstarted.html#kpgexample"><i class="fa fa-check"></i><b>2.4</b> An illustrative example: mammals disparity through the K-Pg extinction</a>
 <ul>
@@ -185,6 +192,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="3" data-path="maketraits.html"><a href="maketraits.html"><i class="fa fa-check"></i><b>3</b> Simulating traits</a>
 <ul>
+<li class="chapter" data-level="3.0.1" data-path="maketraits.html"><a href="maketraits.html#quick-overview"><i class="fa fa-check"></i><b>3.0.1</b> Quick overview</a></li>
 <li class="chapter" data-level="3.1" data-path="maketraits.html"><a href="maketraits.html#the-process-process"><i class="fa fa-check"></i><b>3.1</b> The process (<code>process</code>)</a>
 <ul>
 <li class="chapter" data-level="3.1.1" data-path="maketraits.html"><a href="maketraits.html#the-syntax-how-to-code-a-process"><i class="fa fa-check"></i><b>3.1.1</b> The syntax (how to code a process?)</a></li>
@@ -211,6 +219,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="4" data-path="makemodifiers.html"><a href="makemodifiers.html"><i class="fa fa-check"></i><b>4</b> Modifying the birth-death process</a>
 <ul>
+<li class="chapter" data-level="4.0.1" data-path="makemodifiers.html"><a href="makemodifiers.html#quick-overview-1"><i class="fa fa-check"></i><b>4.0.1</b> Quick overview</a></li>
 <li class="chapter" data-level="4.1" data-path="makemodifiers.html"><a href="makemodifiers.html#the-default-modifier-how-the-process-is-working"><i class="fa fa-check"></i><b>4.1</b> The default modifier (how the process is working)</a></li>
 <li class="chapter" data-level="4.2" data-path="makemodifiers.html"><a href="makemodifiers.html#the-branch-length-function-branch.length"><i class="fa fa-check"></i><b>4.2</b> The branch length function (<code>branch.length</code>)</a>
 <ul>
@@ -223,6 +232,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5" data-path="makeevents.html"><a href="makeevents.html"><i class="fa fa-check"></i><b>5</b> Adding events to simulations</a>
 <ul>
+<li class="chapter" data-level="5.0.1" data-path="makeevents.html"><a href="makeevents.html#quick-overview-2"><i class="fa fa-check"></i><b>5.0.1</b> Quick overview</a></li>
 <li class="chapter" data-level="5.1" data-path="makeevents.html"><a href="makeevents.html#target"><i class="fa fa-check"></i><b>5.1</b> Target</a></li>
 <li class="chapter" data-level="5.2" data-path="makeevents.html"><a href="makeevents.html#conditions"><i class="fa fa-check"></i><b>5.2</b> Conditions</a></li>
 <li class="chapter" data-level="5.3" data-path="makeevents.html"><a href="makeevents.html#modifications"><i class="fa fa-check"></i><b>5.3</b> Modifications</a></li>
@@ -251,7 +261,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.4" data-path="specific-examples.html"><a href="specific-examples.html#EGred_spec"><i class="fa fa-check"></i><b>8.4</b> Reducing speciation rate after a certain time</a></li>
 <li class="chapter" data-level="8.5" data-path="specific-examples.html"><a href="specific-examples.html#EG_change_trait"><i class="fa fa-check"></i><b>8.5</b> Changing the trait process after some time</a></li>
 <li class="chapter" data-level="8.6" data-path="specific-examples.html"><a href="specific-examples.html#EG_change_correlation"><i class="fa fa-check"></i><b>8.6</b> Changing trait correlation after reaching a trait value</a></li>
-<li class="chapter" data-level="8.7" data-path="specific-examples.html"><a href="specific-examples.html#EG_change_modif"><i class="fa fa-check"></i><b>8.7</b> Event for changing a modifier: speciation event increase for species with negative values</a></li>
+<li class="chapter" data-level="8.7" data-path="specific-examples.html"><a href="specific-examples.html#EG_change_modif"><i class="fa fa-check"></i><b>8.7</b> Event for changing a modifier: extinction event increase for species with negative values</a></li>
 <li class="chapter" data-level="8.8" data-path="specific-examples.html"><a href="specific-examples.html#EG_modify_brlen"><i class="fa fa-check"></i><b>8.8</b> Changing branch length when reaching n taxa</a></li>
 <li class="chapter" data-level="8.9" data-path="specific-examples.html"><a href="specific-examples.html#EG_founding_purebirth"><i class="fa fa-check"></i><b>8.9</b> Founding event: generating a subtree with no fossils</a></li>
 <li class="chapter" data-level="8.10" data-path="specific-examples.html"><a href="specific-examples.html#EG_founding_traits"><i class="fa fa-check"></i><b>8.10</b> Founding event: generating a subtree a different process</a></li>
@@ -283,43 +293,43 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>In most examples above, birth-death parameters were set as fixed values, i.e. a speciation rate of <span class="math inline">\(\lambda\)</span> and an extinction rate of <span class="math inline">\(\mu\)</span> throughout the simulations (with maybe some events modifying these rates).
 However, it is possible to set these rates as specific or changing distributions.
 You can do this using the <code>make.bd.params</code> function to provide either a <code>vector</code> of values:</p>
-<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb144-1"><a href="others.html#cb144-1" aria-hidden="true"></a><span class="co">## An example where the speciation is randomly sampled among three values</span></span>
-<span id="cb144-2"><a href="others.html#cb144-2" aria-hidden="true"></a>my_bd_params &lt;-<span class="st"> </span><span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> <span class="kw">c</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">3</span>,<span class="dv">42</span>))</span>
-<span id="cb144-3"><a href="others.html#cb144-3" aria-hidden="true"></a></span>
-<span id="cb144-4"><a href="others.html#cb144-4" aria-hidden="true"></a><span class="co">## Building a tree using this set of parameters</span></span>
-<span id="cb144-5"><a href="others.html#cb144-5" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb144-6"><a href="others.html#cb144-6" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">treats</span>(<span class="dt">stop.rule =</span> <span class="kw">list</span>(<span class="dt">max.taxa =</span> <span class="dv">50</span>), <span class="dt">bd.params =</span> my_bd_params))</span></code></pre></div>
+<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb145-1"><a href="others.html#cb145-1" aria-hidden="true"></a><span class="co">## An example where the speciation is randomly sampled among three values</span></span>
+<span id="cb145-2"><a href="others.html#cb145-2" aria-hidden="true"></a>my_bd_params &lt;-<span class="st"> </span><span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> <span class="kw">c</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">3</span>,<span class="dv">42</span>))</span>
+<span id="cb145-3"><a href="others.html#cb145-3" aria-hidden="true"></a></span>
+<span id="cb145-4"><a href="others.html#cb145-4" aria-hidden="true"></a><span class="co">## Building a tree using this set of parameters</span></span>
+<span id="cb145-5"><a href="others.html#cb145-5" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb145-6"><a href="others.html#cb145-6" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">treats</span>(<span class="dt">stop.rule =</span> <span class="kw">list</span>(<span class="dt">max.taxa =</span> <span class="dv">50</span>), <span class="dt">bd.params =</span> my_bd_params))</span></code></pre></div>
 <p><img src="treats_manual_files/figure-html/unnamed-chunk-94-1.png" width="672" /></p>
-<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb145-1"><a href="others.html#cb145-1" aria-hidden="true"></a><span class="co">## Note the regions in the tree with short branches</span></span>
-<span id="cb145-2"><a href="others.html#cb145-2" aria-hidden="true"></a><span class="co">## (that&#39;s the speciation being 1/3 while the others are speciation = 42) </span></span></code></pre></div>
+<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="others.html#cb146-1" aria-hidden="true"></a><span class="co">## Note the regions in the tree with short branches</span></span>
+<span id="cb146-2"><a href="others.html#cb146-2" aria-hidden="true"></a><span class="co">## (that&#39;s the speciation being 1/3 while the others are speciation = 42) </span></span></code></pre></div>
 <p>Or to directly provide a function from which to sample:</p>
-<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="others.html#cb146-1" aria-hidden="true"></a><span class="co">## Another example where speciation is drawn from the interval (0, 1)</span></span>
-<span id="cb146-2"><a href="others.html#cb146-2" aria-hidden="true"></a><span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> runif)</span></code></pre></div>
+<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb147-1"><a href="others.html#cb147-1" aria-hidden="true"></a><span class="co">## Another example where speciation is drawn from the interval (0, 1)</span></span>
+<span id="cb147-2"><a href="others.html#cb147-2" aria-hidden="true"></a><span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> runif)</span></code></pre></div>
 <pre><code>##  ---- treats birth-death parameters object ---- 
 ## speciation: runif.
 ## extinction: 0.</code></pre>
 <p>In this example, the <code>"bd.params"</code> object passed to the <code>treats</code> function will allow the birth-death process to sample the speciation parameter each time it is called (e.g. during the speciation/extinction step, the branch length step, etc.).
 If using a function, you can fine tune the arguments to be passed to that function using the <code>speciation.args</code> or the <code>extinction.args</code> arguments (as a named list matching the function’s arguments):</p>
-<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="others.html#cb148-1" aria-hidden="true"></a><span class="co">## Speciation is drawn from the interval (0.5, 1.5)</span></span>
-<span id="cb148-2"><a href="others.html#cb148-2" aria-hidden="true"></a><span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> runif,</span>
-<span id="cb148-3"><a href="others.html#cb148-3" aria-hidden="true"></a>               <span class="dt">speciation.args =</span> <span class="kw">list</span>(<span class="dt">min =</span> <span class="fl">0.5</span>, <span class="dt">max =</span> <span class="fl">1.5</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb149-1"><a href="others.html#cb149-1" aria-hidden="true"></a><span class="co">## Speciation is drawn from the interval (0.5, 1.5)</span></span>
+<span id="cb149-2"><a href="others.html#cb149-2" aria-hidden="true"></a><span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> runif,</span>
+<span id="cb149-3"><a href="others.html#cb149-3" aria-hidden="true"></a>               <span class="dt">speciation.args =</span> <span class="kw">list</span>(<span class="dt">min =</span> <span class="fl">0.5</span>, <span class="dt">max =</span> <span class="fl">1.5</span>))</span></code></pre></div>
 <pre><code>##  ---- treats birth-death parameters object ---- 
 ## speciation: runif (with optional arguments).
 ## extinction: 0.</code></pre>
 <p>When using distributions for both the speciation and extinction parameters, you can run into the (usually) undesired problem of having an extinction rate that is higher than your speciation rate and thus all the taxa in your tree dying out.
 You can avoid this problem by using the <code>joint</code> distribution argument.
 This will ensure that the sampling of the extinction rate is always lower or equal to the speciation rate.</p>
-<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="others.html#cb150-1" aria-hidden="true"></a><span class="co">## Joint speciation and extinction sampled from uniform distribution </span></span>
-<span id="cb150-2"><a href="others.html#cb150-2" aria-hidden="true"></a><span class="co">## with speciation always &gt;= to extinction</span></span>
-<span id="cb150-3"><a href="others.html#cb150-3" aria-hidden="true"></a><span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> runif, <span class="dt">extinction =</span> runif, <span class="dt">joint =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb151-1"><a href="others.html#cb151-1" aria-hidden="true"></a><span class="co">## Joint speciation and extinction sampled from uniform distribution </span></span>
+<span id="cb151-2"><a href="others.html#cb151-2" aria-hidden="true"></a><span class="co">## with speciation always &gt;= to extinction</span></span>
+<span id="cb151-3"><a href="others.html#cb151-3" aria-hidden="true"></a><span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> runif, <span class="dt">extinction =</span> runif, <span class="dt">joint =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <pre><code>##  ---- treats birth-death parameters object ---- 
 ## joint sampling for:
 ## speciation: runif.
 ## extinction: runif.</code></pre>
 <p>Finally to avoid negative sampling values, you can use the argument <code>absolute</code> that will make all the sampled values positive.
 This argument is set to <code>TRUE</code> by default so you shouldn’t have to worry about it most of the time unless you specifically need negative sampled values for your parameters.</p>
-<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="others.html#cb152-1" aria-hidden="true"></a><span class="co">## Making the speciation sampling always positive</span></span>
-<span id="cb152-2"><a href="others.html#cb152-2" aria-hidden="true"></a><span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> rnorm, <span class="dt">absolute =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb153-1"><a href="others.html#cb153-1" aria-hidden="true"></a><span class="co">## Making the speciation sampling always positive</span></span>
+<span id="cb153-2"><a href="others.html#cb153-2" aria-hidden="true"></a><span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> rnorm, <span class="dt">absolute =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <pre><code>##  ---- treats birth-death parameters object ---- 
 ## speciation: rnorm.
 ## extinction: 0.
@@ -327,34 +337,34 @@ This argument is set to <code>TRUE</code> by default so you shouldn’t have to 
 <p>The two other possible arguments for this function are <code>test</code> and <code>update</code> that work the same way as <a href="maketraits.html#maketraits"><code>make.traits</code></a> or <a href="makemodifiers.html#makemodifiers"><code>make.modifiers</code></a></p>
 <p>If you are a visual person and your <code>bd.params</code> objects are getting a bit too complicated to remember, you can always quickly plot them.
 The function will sample from the <code>bd.params</code> object and show the results:</p>
-<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb154-1"><a href="others.html#cb154-1" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>))</span>
-<span id="cb154-2"><a href="others.html#cb154-2" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">make.bd.params</span>(), <span class="dt">main =</span> <span class="st">&quot;Default birth-death parameters&quot;</span>)</span>
-<span id="cb154-3"><a href="others.html#cb154-3" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> runif,</span>
-<span id="cb154-4"><a href="others.html#cb154-4" aria-hidden="true"></a>               <span class="dt">speciation.args =</span> <span class="kw">list</span>(<span class="dt">min =</span> <span class="fl">0.5</span>, <span class="dt">max =</span> <span class="fl">1.5</span>)),</span>
-<span id="cb154-5"><a href="others.html#cb154-5" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;Uniform speciation between 0.5 and 1.5</span><span class="ch">\n</span><span class="st">(no extinction)&quot;</span>)</span>
-<span id="cb154-6"><a href="others.html#cb154-6" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> runif,</span>
-<span id="cb154-7"><a href="others.html#cb154-7" aria-hidden="true"></a>                    <span class="dt">speciation.args =</span> <span class="kw">list</span>(<span class="dt">min =</span> <span class="fl">0.5</span>, <span class="dt">max =</span> <span class="fl">1.5</span>)),</span>
-<span id="cb154-8"><a href="others.html#cb154-8" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;Uniform speciation between 0.5 and 1.5</span><span class="ch">\n</span><span class="st">(no extinction)&quot;</span>)</span>
-<span id="cb154-9"><a href="others.html#cb154-9" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> runif, <span class="dt">extinction =</span> runif, <span class="dt">joint =</span> <span class="ot">TRUE</span>),</span>
-<span id="cb154-10"><a href="others.html#cb154-10" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;Joint uniform speciation and extinction&quot;</span>)</span>
-<span id="cb154-11"><a href="others.html#cb154-11" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> rnorm, <span class="dt">extinction =</span> runif,</span>
-<span id="cb154-12"><a href="others.html#cb154-12" aria-hidden="true"></a>                    <span class="dt">joint =</span> <span class="ot">FALSE</span>, <span class="dt">abs =</span> <span class="ot">FALSE</span>),</span>
-<span id="cb154-13"><a href="others.html#cb154-13" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;Disjoint normal speciation and uniform extinction&quot;</span>)</span>
-<span id="cb154-14"><a href="others.html#cb154-14" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb155-1"><a href="others.html#cb155-1" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>))</span>
+<span id="cb155-2"><a href="others.html#cb155-2" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">make.bd.params</span>(), <span class="dt">main =</span> <span class="st">&quot;Default birth-death parameters&quot;</span>)</span>
+<span id="cb155-3"><a href="others.html#cb155-3" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> runif,</span>
+<span id="cb155-4"><a href="others.html#cb155-4" aria-hidden="true"></a>               <span class="dt">speciation.args =</span> <span class="kw">list</span>(<span class="dt">min =</span> <span class="fl">0.5</span>, <span class="dt">max =</span> <span class="fl">1.5</span>)),</span>
+<span id="cb155-5"><a href="others.html#cb155-5" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;Uniform speciation between 0.5 and 1.5</span><span class="ch">\n</span><span class="st">(no extinction)&quot;</span>)</span>
+<span id="cb155-6"><a href="others.html#cb155-6" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> runif,</span>
+<span id="cb155-7"><a href="others.html#cb155-7" aria-hidden="true"></a>                    <span class="dt">speciation.args =</span> <span class="kw">list</span>(<span class="dt">min =</span> <span class="fl">0.5</span>, <span class="dt">max =</span> <span class="fl">1.5</span>)),</span>
+<span id="cb155-8"><a href="others.html#cb155-8" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;Uniform speciation between 0.5 and 1.5</span><span class="ch">\n</span><span class="st">(no extinction)&quot;</span>)</span>
+<span id="cb155-9"><a href="others.html#cb155-9" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> runif, <span class="dt">extinction =</span> runif, <span class="dt">joint =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb155-10"><a href="others.html#cb155-10" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;Joint uniform speciation and extinction&quot;</span>)</span>
+<span id="cb155-11"><a href="others.html#cb155-11" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> rnorm, <span class="dt">extinction =</span> runif,</span>
+<span id="cb155-12"><a href="others.html#cb155-12" aria-hidden="true"></a>                    <span class="dt">joint =</span> <span class="ot">FALSE</span>, <span class="dt">abs =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb155-13"><a href="others.html#cb155-13" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;Disjoint normal speciation and uniform extinction&quot;</span>)</span>
+<span id="cb155-14"><a href="others.html#cb155-14" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code></pre></div>
 <p><img src="treats_manual_files/figure-html/unnamed-chunk-99-1.png" width="672" /></p>
 </div>
 <div id="dropthings" class="section level2 hasAnchor" number="6.2">
 <h2><span class="header-section-number">6.2</span> <code>drop.things</code><a href="others.html#dropthings" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>You can use the function <code>drop.things</code> to drop specific elements of the tree and data at the same time by providing the argument <code>what = "fossils"</code> for tips that went extinct, or <code>what = "livings"</code> for tips that where alive at the end of the simulation or <code>what = "singles"</code> to drop internal singleton nodes.
 Alternatively you can use the function aliases <code>drop.fossils</code>, <code>drop.livings</code> or <code>drop.singles</code> for the exact same results:</p>
-<div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb155-1"><a href="others.html#cb155-1" aria-hidden="true"></a><span class="co">## A random tree with fossils and traits and internal nodes every 0.5 times</span></span>
-<span id="cb155-2"><a href="others.html#cb155-2" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">3</span>)</span>
-<span id="cb155-3"><a href="others.html#cb155-3" aria-hidden="true"></a>my_data &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">stop.rule =</span> <span class="kw">list</span>(<span class="dt">max.taxa =</span> <span class="dv">20</span>),</span>
-<span id="cb155-4"><a href="others.html#cb155-4" aria-hidden="true"></a>                <span class="dt">bd.params =</span> <span class="kw">list</span>(<span class="dt">speciation =</span> <span class="dv">1</span>, <span class="dt">extinction =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">3</span>),</span>
-<span id="cb155-5"><a href="others.html#cb155-5" aria-hidden="true"></a>                <span class="dt">traits    =</span> <span class="kw">make.traits</span>(), <span class="dt">save.steps =</span> <span class="fl">0.5</span>)</span>
-<span id="cb155-6"><a href="others.html#cb155-6" aria-hidden="true"></a></span>
-<span id="cb155-7"><a href="others.html#cb155-7" aria-hidden="true"></a><span class="co">## A tree with 20 tips and 54 nodes</span></span>
-<span id="cb155-8"><a href="others.html#cb155-8" aria-hidden="true"></a>my_data<span class="op">$</span>tree</span></code></pre></div>
+<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="others.html#cb156-1" aria-hidden="true"></a><span class="co">## A random tree with fossils and traits and internal nodes every 0.5 times</span></span>
+<span id="cb156-2"><a href="others.html#cb156-2" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">3</span>)</span>
+<span id="cb156-3"><a href="others.html#cb156-3" aria-hidden="true"></a>my_data &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">stop.rule =</span> <span class="kw">list</span>(<span class="dt">max.taxa =</span> <span class="dv">20</span>),</span>
+<span id="cb156-4"><a href="others.html#cb156-4" aria-hidden="true"></a>                <span class="dt">bd.params =</span> <span class="kw">list</span>(<span class="dt">speciation =</span> <span class="dv">1</span>, <span class="dt">extinction =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">3</span>),</span>
+<span id="cb156-5"><a href="others.html#cb156-5" aria-hidden="true"></a>                <span class="dt">traits    =</span> <span class="kw">make.traits</span>(), <span class="dt">save.steps =</span> <span class="fl">0.5</span>)</span>
+<span id="cb156-6"><a href="others.html#cb156-6" aria-hidden="true"></a></span>
+<span id="cb156-7"><a href="others.html#cb156-7" aria-hidden="true"></a><span class="co">## A tree with 20 tips and 54 nodes</span></span>
+<span id="cb156-8"><a href="others.html#cb156-8" aria-hidden="true"></a>my_data<span class="op">$</span>tree</span></code></pre></div>
 <pre><code>## 
 ## Phylogenetic tree with 20 tips and 54 internal nodes.
 ## 
@@ -364,11 +374,11 @@ Alternatively you can use the function aliases <code>drop.fossils</code>, <code>
 ##   n1, n2, n3, n4, n5, n6, ...
 ## 
 ## Rooted; includes branch lengths.</code></pre>
-<div class="sourceCode" id="cb157"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb157-1"><a href="others.html#cb157-1" aria-hidden="true"></a><span class="co">## And a dataset with 74 rows</span></span>
-<span id="cb157-2"><a href="others.html#cb157-2" aria-hidden="true"></a><span class="kw">dim</span>(my_data<span class="op">$</span>data)</span></code></pre></div>
+<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="others.html#cb158-1" aria-hidden="true"></a><span class="co">## And a dataset with 74 rows</span></span>
+<span id="cb158-2"><a href="others.html#cb158-2" aria-hidden="true"></a><span class="kw">dim</span>(my_data<span class="op">$</span>data)</span></code></pre></div>
 <pre><code>## [1] 74  1</code></pre>
-<div class="sourceCode" id="cb159"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb159-1"><a href="others.html#cb159-1" aria-hidden="true"></a><span class="co">## Removing the fossil species</span></span>
-<span id="cb159-2"><a href="others.html#cb159-2" aria-hidden="true"></a><span class="kw">drop.things</span>(my_data, <span class="dt">what =</span> <span class="st">&quot;fossils&quot;</span>)<span class="op">$</span>tree</span></code></pre></div>
+<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="others.html#cb160-1" aria-hidden="true"></a><span class="co">## Removing the fossil species</span></span>
+<span id="cb160-2"><a href="others.html#cb160-2" aria-hidden="true"></a><span class="kw">drop.things</span>(my_data, <span class="dt">what =</span> <span class="st">&quot;fossils&quot;</span>)<span class="op">$</span>tree</span></code></pre></div>
 <pre><code>## 
 ## Phylogenetic tree with 8 tips and 31 internal nodes.
 ## 
@@ -378,10 +388,10 @@ Alternatively you can use the function aliases <code>drop.fossils</code>, <code>
 ##   n1, n2, n7, n10, n11, n13, ...
 ## 
 ## Rooted; includes branch lengths.</code></pre>
-<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="others.html#cb161-1" aria-hidden="true"></a><span class="kw">dim</span>(<span class="kw">drop.fossils</span>(my_data)<span class="op">$</span>data)</span></code></pre></div>
+<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb162-1"><a href="others.html#cb162-1" aria-hidden="true"></a><span class="kw">dim</span>(<span class="kw">drop.fossils</span>(my_data)<span class="op">$</span>data)</span></code></pre></div>
 <pre><code>## [1] 39  1</code></pre>
-<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb163-1"><a href="others.html#cb163-1" aria-hidden="true"></a><span class="co">## Removing the living species</span></span>
-<span id="cb163-2"><a href="others.html#cb163-2" aria-hidden="true"></a><span class="kw">drop.things</span>(my_data, <span class="dt">what =</span> <span class="st">&quot;livings&quot;</span>)<span class="op">$</span>tree</span></code></pre></div>
+<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="others.html#cb164-1" aria-hidden="true"></a><span class="co">## Removing the living species</span></span>
+<span id="cb164-2"><a href="others.html#cb164-2" aria-hidden="true"></a><span class="kw">drop.things</span>(my_data, <span class="dt">what =</span> <span class="st">&quot;livings&quot;</span>)<span class="op">$</span>tree</span></code></pre></div>
 <pre><code>## 
 ## Phylogenetic tree with 12 tips and 37 internal nodes.
 ## 
@@ -391,10 +401,10 @@ Alternatively you can use the function aliases <code>drop.fossils</code>, <code>
 ##   n1, n2, n3, n4, n5, n6, ...
 ## 
 ## Rooted; includes branch lengths.</code></pre>
-<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb165-1"><a href="others.html#cb165-1" aria-hidden="true"></a><span class="kw">dim</span>(<span class="kw">drop.livings</span>(my_data)<span class="op">$</span>data)</span></code></pre></div>
+<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="others.html#cb166-1" aria-hidden="true"></a><span class="kw">dim</span>(<span class="kw">drop.livings</span>(my_data)<span class="op">$</span>data)</span></code></pre></div>
 <pre><code>## [1] 49  1</code></pre>
-<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="others.html#cb167-1" aria-hidden="true"></a><span class="co">## Removing the internal nodes</span></span>
-<span id="cb167-2"><a href="others.html#cb167-2" aria-hidden="true"></a><span class="kw">drop.things</span>(my_data, <span class="dt">what =</span> <span class="st">&quot;singles&quot;</span>)<span class="op">$</span>tree</span></code></pre></div>
+<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="others.html#cb168-1" aria-hidden="true"></a><span class="co">## Removing the internal nodes</span></span>
+<span id="cb168-2"><a href="others.html#cb168-2" aria-hidden="true"></a><span class="kw">drop.things</span>(my_data, <span class="dt">what =</span> <span class="st">&quot;singles&quot;</span>)<span class="op">$</span>tree</span></code></pre></div>
 <pre><code>## 
 ## Phylogenetic tree with 20 tips and 19 internal nodes.
 ## 
@@ -404,10 +414,10 @@ Alternatively you can use the function aliases <code>drop.fossils</code>, <code>
 ##   n1, n7, n33, n39, n54, n40, ...
 ## 
 ## Rooted; includes branch lengths.</code></pre>
-<div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="others.html#cb169-1" aria-hidden="true"></a><span class="kw">dim</span>(<span class="kw">drop.singles</span>(my_data)<span class="op">$</span>data)</span></code></pre></div>
+<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb170-1"><a href="others.html#cb170-1" aria-hidden="true"></a><span class="kw">dim</span>(<span class="kw">drop.singles</span>(my_data)<span class="op">$</span>data)</span></code></pre></div>
 <pre><code>## [1] 39  1</code></pre>
-<div class="sourceCode" id="cb171"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb171-1"><a href="others.html#cb171-1" aria-hidden="true"></a><span class="co">## Removing the internal nodes AND the fossils</span></span>
-<span id="cb171-2"><a href="others.html#cb171-2" aria-hidden="true"></a><span class="kw">drop.singles</span>(<span class="kw">drop.fossils</span>(my_data))</span></code></pre></div>
+<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb172-1"><a href="others.html#cb172-1" aria-hidden="true"></a><span class="co">## Removing the internal nodes AND the fossils</span></span>
+<span id="cb172-2"><a href="others.html#cb172-2" aria-hidden="true"></a><span class="kw">drop.singles</span>(<span class="kw">drop.fossils</span>(my_data))</span></code></pre></div>
 <pre><code>##  ---- treats object ---- 
 ## Simulated phylogenetic tree (x$tree):
 ## 
@@ -534,7 +544,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

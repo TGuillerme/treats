@@ -383,25 +383,21 @@ sim_data <- treats(traits     = my_traits,
 ```
 
 Et voila! We now have a distribution of 50 trees and 50 datasets from which we can calculate disparity.
-We can convert this list into `dispRity` using the `treats.dispRity` function.
+We can directly pass the results to the `dispRity` package pipeline using the `dispRitreats` function:
 
-```{r, message = FALSE}
-## Converting the data to be passed to dispRity functions
-dispRity_data <- dispRitreats(sim_data)
-
-## Creating the time series (by default dispRitreats scales the trees to be 1 unit of times old)
-time_series <- chrono.subsets(data = dispRity_data$data,
-                              tree = dispRity_data$tree,
-                              time = seq(from = 0.9, to = 0, by = -0.1),
-                              method = "continuous", model = "proximity")
-
-## Calculating the disparity from the simulated data
-simulated_disparity <- dispRity(time_series, metric = c(sum, variances),
-                                verbose = TRUE)
+```{r, message = FALSE, warning=FALSE}
+## Calculate the dispRity for all the simulations
+simulated_disparity <- dispRitreats(sim_data,
+                                    method = "continuous",
+                                    model  = "proximity",
+                                    time   = 10,
+                                    metric = c(sum, variances),
+                                    scale.trees = TRUE)
 par(mfrow = c(1,2))
 plot(simulated_disparity, main = "simulated disparity")
 plot(change_in_size, main = "observed disparity")
 ```
+
 
 We can see that both simulated and observed disparity curves are different.
 From there one could already reasonably propose that the observe disparity does not entirely follows our parametrised scenario (constant speciation and extinction and BM trait evolution).
@@ -455,35 +451,31 @@ plot(sim_trait_extinction[[1]], main = "Negative extinction")
 We can then measure the disparity from these scenarios and compare them to our observed ones
 
 ```{r}
-## Converting the data to be passed to dispRity functions
-rand_ext_data <- dispRitreats(sim_rand_extinction)
-trait_ext_data <- dispRitreats(sim_trait_extinction)
+## Simulate the tree and traits with a random extinction event
+sim_rand_extinction <- treats(
+                   traits     = my_traits,
+                   bd.params  = est_params,
+                   stop.rule  = stop_rule,
+                   events     = random_extinction,
+                   null.error = 100,
+                   replicates = 50)
 
-## Creating the time series
-rand_ext_time_series <- chrono.subsets(data = rand_ext_data$data,
-                                       tree = rand_ext_data$tree,
-                                       time = seq(from = 0.9, to = 0, by = -0.1),
-                                       method = "continuous", model = "proximity")
-trait_ext_time_series <- chrono.subsets(data = trait_ext_data$data,
-                                        tree = trait_ext_data$tree,
-                                        time = seq(from = 0.9, to = 0, by = -0.1),
-                                        method = "continuous", model = "proximity")
+## Simulate the tree and traits with a random extinction event
+sim_trait_extinction <- treats(
+                   traits     = my_traits,
+                   bd.params  = est_params,
+                   stop.rule  = stop_rule,
+                   events     = negative_extinction,
+                   null.error = 100,
+                   replicates = 50)
 
-
-## Calculating the disparity from the simulated data
-sim_rand_ext_disp <- dispRity(rand_ext_time_series, metric = c(sum, variances),
-                              verbose = TRUE)
-sim_trait_ext_disp <- dispRity(trait_ext_time_series, metric = c(sum, variances),
-                               verbose = TRUE)
-
-par(mfrow = c(2,2))
-plot(change_in_size, main = "observed disparity")
-plot(simulated_disparity, main = "simulated disparity")
-plot(sim_rand_ext_disp, main = "simulated disparity\n(mass extinction)")
-plot(simulated_disparity, main = "simulated disparity\n(trait extinction)")
+## Visualising the difference between both scenarios
+par(mfrow = c(1,2))
+plot(sim_rand_extinction[[1]], main = "Random extinction")
+plot(sim_trait_extinction[[1]], main = "Negative extinction")
 ```
 
-Interestingly, with all our parameters used here and our specific disparity metric we cannot detcet the effect of a mass extinction.
+Interestingly, with all our parameters used here and our specific disparity metric we cannot detect the effect of a mass extinction.
 
 
 
