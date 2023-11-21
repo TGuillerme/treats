@@ -29,7 +29,9 @@
 #' 
 #' If \code{null.error} is set to a numeric value, the function will run multiple times until a correct tree is generated. Using this option can greatly increase computational time!
 #' 
-#' 
+#' @return
+#' This function outputs either a \code{"phylo"} object if no traits where generated or a \code{treats} object that is a list of at least two elements: \code{$tree}, a \code{"phylo"} object and \code{$data}, a code{"matrix"} of the trait values.
+#'
 #' @examples
 #' ## Setting pure birth tree (no extinction) parameters
 #' my_bd_params <- list(speciation = 1)

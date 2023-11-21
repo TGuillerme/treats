@@ -35,6 +35,9 @@ treats(
 
 \item{verbose}{Logical, whether to be verbose (\code{TRUE}; default) or not (\code{FALSE}).}
 }
+\value{
+This function outputs either a \code{"phylo"} object if no traits where generated or a \code{treats} object that is a list of at least two elements: \code{$tree}, a \code{"phylo"} object and \code{$data}, a code{"matrix"} of the trait values.
+}
 \description{
 Simulating phylogenetic trees and traits. See full manual here: https://github.com/TGuillerme/treats
 }

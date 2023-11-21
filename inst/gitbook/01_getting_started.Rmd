@@ -134,6 +134,12 @@ class(the_generated_data)
 
 You can find much more about how to design trait objects in the [`make.traits` section](#maketraits).
 
+### `"treats"` objects
+
+`treats` will output either just a tree (class `"phylo"`) if no traits were generated or a `"treats"` object that contains both a `$tree` (`"phylo"`) and a `$data` (`"matrix"`) component.
+Note that this `"treats"` class is generalised to most outputs of the package functions.
+This allows for a smoother handeling of the objects outputs such as summarising the content of a `make.bd.params` output or visualising a trait output from `make.traits`.
+
 ## Slightly more complex again: simulating linked disparity and diversity 
 
 The example above is still pretty simple and easily done through a variety of `R` packages: here the trait and the tree are simulated at the same time but only the tree is simulating the trait (i.e. the trait value at a tip is affected by its ancestor and the branch length leading to it) but not the other way around (the trait value does not affect the tree).

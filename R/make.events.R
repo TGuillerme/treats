@@ -20,8 +20,10 @@
 #' \code{modification} must be a function that intakes a first argument named \code{"x"} an returns any specific type of class that can be handled internally by treats. For example, if \code{target = "bd.params"} the \code{modification} function should typically return an updated \code{bd.params} object (see \code{\link{make.bd.params}}). See \code{\link{events.modifications}} for examples.
 #' 
 #' 
+#' @return
+#' This function outputs a \code{treats} object that is a named list of elements handled internally by the \code{\link{treats}} function.
+#'
 #' @examples
-
 #' ## Generating a mass extinction
 #' ## 80% mass extinction at time 4
 #' mass_extinction <- make.events(

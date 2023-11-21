@@ -14,7 +14,8 @@
 #' @details
 #' When using \code{update}, the provided arguments (to \code{make.bd.params}) will be the ones updated in the \code{"bd.params"} object.
 
-
+#' @return
+#' This function outputs a \code{treats} object that is a named list of elements handled internally by the \code{\link{treats}} function.
 #' 
 #' @examples
 #' ## A default set of birth death parameters

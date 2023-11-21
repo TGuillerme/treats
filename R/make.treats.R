@@ -6,6 +6,9 @@
 #' @param data a dataset of traits, either a \code{matrix} with column names or a named \code{vector}.
 # @param ... additional \code{treats} objects to add (e.g. \code{traits}).
 #'
+#' @return
+#' This function outputs a \code{treats} object that is a list of at least two elements: \code{$tree}, a \code{"phylo"} object and \code{$data}, a code{"matrix"} of the trait values.
+#'
 #' @examples
 #' ## Creating a random tree
 #' my_tree <- rtree(5)

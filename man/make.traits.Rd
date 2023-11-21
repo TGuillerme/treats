@@ -35,6 +35,9 @@ make.traits(
 
 \item{background}{Optional, another \code{"treats"} \code{"traits"} object to simulate background trait evolution (see details).}
 }
+\value{
+This function outputs a \code{treats} object that is a named list of elements handled internally by the \code{\link{treats}} function.
+}
 \description{
 Making traits objects for treats
 }

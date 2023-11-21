@@ -32,6 +32,9 @@ make.bd.params(
 
 \item{update}{Optional, another previous \code{"treats"} \code{"bd.params"} object to update (see details).}
 }
+\value{
+This function outputs a \code{treats} object that is a named list of elements handled internally by the \code{\link{treats}} function.
+}
 \description{
 Making bd.params objects for treats.
 }

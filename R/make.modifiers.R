@@ -48,7 +48,10 @@
 #' If the \code{"modifiers"} object contains multiple modifiers (\code{branch.length}, \code{selection} or \code{speciation}), only the called arguments will be updated (e.g. \code{make.modifiers(update = previous_modifiers, speciation = new_speciation)} will only update the speciation process).
 #' 
 #' More details about the \code{modifiers} functions is explained in the \code{treats} manual: \url{http://tguillerme.github.io/treats}.
-#' 
+#'
+#' @return
+#' This function outputs a \code{treats} object that is a named list of elements handled internally by the \code{\link{treats}} function.
+#'
 #' @examples
 #' ## These functions should be fed to the make.modifiers function to create
 #' ## modifiers for treats objects. For example, the following sets specifies that

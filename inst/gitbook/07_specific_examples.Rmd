@@ -338,7 +338,7 @@ plot(change_correlation, trait = c(1:2), use.3D = TRUE)
 rglwidget()
 ```
 
-## Event for changing a modifier: speciation event increase for species with negative values {#EG_change_modif}
+## Event for changing a modifier: extinction event increase for species with negative values {#EG_change_modif}
 
 For this scenario, we want to generate a pure birth tree with a one dimensional Brownian Motion trait for 4 time units.
 After 3 time units, we want the speciation rule to increase for species which ancestors have a negative trait value.

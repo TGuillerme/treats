@@ -1,4 +1,4 @@
-treats v0.4 (2023-10-10) 
+treats v0.4 (2023-11-20) 
 =========================
 
 ### NEW FEATURES
@@ -15,7 +15,7 @@ treats v0.4 (2023-10-10)
 ## BUG FIXES
  
  * Fixed many simulation corner cases (mainly ones for special trees with always only one node, one living and one fossil).
-<!-- Fixed printing issues with S3 `"treats"` sub-classes. TODO: round digits in printing speciation and extinction for print.treats -->
+ * Fixed printing issues with S3 `"treats"` sub-classes
 
 treats v0.2 (2023-05-25) *CRAN friendly pre-release*
 =========================

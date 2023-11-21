@@ -22,6 +22,9 @@
 #' 
 #' More details about the \code{"treats"} \code{"traits"} objects is explained in the \code{treats} manual: \url{http://tguillerme.github.io/treats}.
 #' 
+#' @return
+#' This function outputs a \code{treats} object that is a named list of elements handled internally by the \code{\link{treats}} function.
+#'
 #' @examples
 #' ## A simple Brownian motion trait (default)
 #' make.traits()

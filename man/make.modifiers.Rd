@@ -32,6 +32,9 @@ make.modifiers(
 
 \item{test}{Logical whether to test if the modifiers object will work (default is TRUE).}
 }
+\value{
+This function outputs a \code{treats} object that is a named list of elements handled internally by the \code{\link{treats}} function.
+}
 \description{
 Making modifiers objects for treats based on an ancestor's (parent) trait.
 }

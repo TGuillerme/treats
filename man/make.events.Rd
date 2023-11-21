@@ -32,6 +32,9 @@ make.events(
 
 \item{additional.args}{Optional, a named \code{list} of additional arguments to be used in the event.}
 }
+\value{
+This function outputs a \code{treats} object that is a named list of elements handled internally by the \code{\link{treats}} function.
+}
 \description{
 Making events objects for treats
 }
