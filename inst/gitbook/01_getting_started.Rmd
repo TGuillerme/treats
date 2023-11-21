@@ -185,13 +185,17 @@ default_data
 ```
 
 Note however, that the printing information is now updated to state that you've added a `"modifiers"` object (even though it's the same as the default).
+In this specific case the `modifiers` object is not necessary as it is doing nothing different than when using the default one (i.e. when no `modifiers` is provided).
 
 For more interesting simulations however, you can provide modifiers that actually modify the birth-death process.
 We can create one for example that makes species go extinct if their ancestor has a negative trait value.
 For that we need to create a `"modifiers"` object that modifies the `speciation` process with a specific condition and a specific modification when that condition is met.
 For a speciation to occur (and a species to not go extinct), the algorithm draws a random value _x_ between 0 and 1 and if the value is smaller than the speciation parameter divided by the speciation + extinction parameter, the lineage speciates ($x < (\lambda \ (\lambda + \mu))$), else it goes extinct.
+_x_ is a random value that simulates some stochasticity in the evolutionary simulation.
+At every step of the simulation, a different random value _x_ is drawn making sure that the resulting speciation or extinction is not predictable. 
 
-Here we can create a modifier forcing the lineage to go extinct every time a specific condition is met, e.g. if the lineage trait value is negative.
+However, we can create a modifier that introduces less randomness (or a different level of randomness) by forcing the lineage to go extinct every time a specific condition is met, e.g. if the lineage trait value is negative.
+This can be done for example by not randomly generating the value _x_ but giving it a fixed value of say 1 so that the estimation of the speciation function $x < (\lambda \ (\lambda + \mu))$ is always met.
 In other words, if the lineage's trait value is negative, make sure that _x_ is equal to 1, so that the speciation condition $x < (\lambda \ (\lambda + \mu))$ is never met.
 
 First we need to create a `condition` function to trigger this (non) speciation event.
@@ -216,6 +220,7 @@ This function must take the argument `x` and, in our case, returns the same valu
 going.extinct <- function(x) return(1)
 ```
 
+This `going.extinct` function is to be contrasted with the normal modifier for selecting the value `x` which is `runif(1)` (drawing a random value between 0 and 1).
 We can then provide these two functions (the condition `negative.ancestor` and how to modify the speciation event when this condition is met `going.extinct`).
 If you are an advances `treats` user, you can design your own `speciation` function but if you just want to use a normal `speciation` function, you can use the default one from `treats` called `speciation`.
 
@@ -257,7 +262,6 @@ plot(modified_data, main = "results with the modifier")
 ```
 
 You can find much more about how to design modifiers in the [`make.modifiers` section](#makemodifiers).
-
 
 
 ## An illustrative example: mammals disparity through the K-Pg extinction {#kpgexample}
