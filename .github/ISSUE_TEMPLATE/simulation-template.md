@@ -50,12 +50,12 @@ my_traits <- make.traits()
 Describe the customised `modifier` object
 
 ```
-my_modifiers <- make.modifier()
+my_modifiers <- make.modifiers()
 ```
 
 ### `events`
 
-Describe the customised `modifier` object
+Describe the customised `events` object
 
 ```
 my_events <- make.events()
@@ -65,7 +65,7 @@ my_events <- make.events()
 
 ```
 ## My favorite seed
-set.seet(42)
+set.seed(42)
 
 ## Some stopping rules
 my_stop.rule <- list(max.taxa = 50, max.living = 50, max.time = 5)
@@ -76,6 +76,8 @@ my_simulation <- treats(stop.rule = my_stop.rule,
                         traits    = my_traits,
                         modifiers = my_modifiers,
                         events    = my_events)
+
+plot(my_simulation)
 ```
 
 ## Reference 
