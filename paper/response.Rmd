@@ -18,6 +18,7 @@ Dear Editor,
 I am grateful for the associate editor and the two reviewers time and very encouraging comments that I totally believe have improved the package, the manual and this manuscript.
 Please find my response to the reviewers comments in the following document.
 I've highlight <span style="color:blue">the Associate Editor and both reviewers comments in blue</span> and my response black.
+I'm also sorry for the delay in dealing with the reviewers comments: I was unemployed until November so didn't work on it until then.
 
 Best regards,
 Thomas
@@ -84,17 +85,10 @@ I've also removed the mention of the future time-dependent and lineage-dependent
 
 * <span style="color:blue">I would also have liked some information on the performance of the package compared to existing simulation tools. It seems likely that the flexibility offered by treats comes at the cost of some computational performance, so it would be nice to know how much time would be needed to simulate a reasonable dataset (for instance the 50 replicates used to test the positive extinction vs random extinction).</span>
 
-
-
-
-> TODO: make a table comparing the package to other ones in terms of computing times.
-
-I tried (now in tests/) but I'm not convinced how useful it is.
+I tried (and saved the tests in `tests/test-benchmarking.R` for people to explore) but I'm not convinced how useful it is.
 First I feel it's confrontational to the other authors since none of them had the same objectives in mind.
 Second I will be biased in making treats look better (when possible) because I know how it works in much more details.
 Third I don't think it's something I want to put forward as a reason of why to use the package, e.g. it's slower than TreeSim but faster than diversitree (under certain parameters) but that's not the reason while one should use treats over diversitree and TreeSim (the point I am trying to sell is the modularity, i.e. if you want to simulate something specific, treats is good, otherwise, go with what other people have used before).
-
-
 
 * <span style="color:blue">I didn't understand why the example shown in the manuscript only simulated trees up to 30 time units, when the tree used as a basis for the comparison is 140 My old (figure 2).</span>
 
@@ -105,15 +99,10 @@ Using 30 time units here allows to simulate number of tips in a similar order of
 
 * <span style="color:blue">I really like the idea of having a library of premade simulation templates (l202) and I believe it will be a huge help in making the package accessible. Making the examples shown in the manual (section 8) available as scripts would be a good start for such a library.</span>
 
-
-
-
-
-> TODO: implement that in issues on the GitHub page with a link to all the possibilities
-
-
-
-
+I am happy that both reviewers are enthusiastic about the templates library. 
+Unfortunately I'm not totally sure how to implement it and make it easier to use and browse by users.
+So for now I've set up a templated category of issues on github called [simulation templates](https://github.com/TGuillerme/treats/issues?q=is%3Aopen+is%3Aissue+label%3A%22simulation+template%22).
+I've updated the README file with some indications on how to save and share such a template. 
 
 ### Minor comments:
 
@@ -145,37 +134,21 @@ This one is just generated as such from the `mee.csl` reference style.
 
 * <span style="color:blue">The main thing the manual is missing in my opinion is a quick reference table of the different functions, for people who have understood the concepts of the package but need to quickly check what format their custom speciation function needs to follow for instance. At the moment that information is incomplete (the table in section 4.5 shows the output types but not what these outputs are) and spread out in different places (the description of the function inputs is in section 4.2.1 whereas the list of functions is in 4.1).</span>
 
-
-
-
-> TODO: make a cheat sheet page with all core functions, their arguments and what they do.
-
-
-
-
+I've now added a cheat sheet to the github page that shows the key arguments and their inputs/outputs [here](https://github.com/TGuillerme/treats/blob/master/inst/gitbook/treats_cheat_sheet.pdf).
+This cheat sheet is rather minimal for now but I'm planning on expanding on it and making it more interactive (with mouse over menus, etc.) in the future.
+Furthermore I've tidied up the summarising of functions in the manual as suggested by the reviewer.
 
 * <span style="color:blue">The use of conditions and modifications was quite confusing to me. Some of the examples use the modify and condition argument to change the birth-death process (section 2.3) whereas some examples simply replace the function with a modified version (section 4.4), and I could not figure out if these methods were equivalent or if one should be preferred to the other. I think the modifications section also needs more details about what exactly is being modified, and what the expected inputs and outputs of the modification function should be. For instance, in the example section 2.3 I don't understand what is the "x" argument in "going.extinct", or why this function returns a number instead of a logical. The interface for the conditions in 5.2 appears to be clearer, but it doesn't match with the example in section 2.3 where the "negative.ancestor" uses different arguments, or with the example in 4.6 where the "half.the.time" condition takes no arguments. </span>
 
-
-
-
-
-> TODO: specify this in the manual and the documentation: `modification` = modify the bd-algorithm; `events` (conditions and stuff) = modify the flow of the algorithm (but can also introduce a `modification`!)
-
-
-
+I have now added clarifications of what the `"modifiers"` are and how they should be used. Both in the section 2.3 as a simple explanation and in the section 4 dedicated to `"modifiers"`.
 
 * <span style="color:blue">Finally, I also could not find a full description of the treats output object either in the manual or in the package documentation.</span>
 
+I've added a `@return` section to the `treats`, `make.treats`, `make.bd.params`, `make.traits`, `make.modifiers` and `make.events` documentations as well as the following section in the manual "Getting started" section:
 
-
-
-
-> TODO: add in the documentation a brief description of the outputs of the `make.*` functions and of `treats`. Additionally, add a detailed `.md` with the developer level content of each output (`dispRity` style).
-
-
-
-
+*`treats` will output either just a tree (class `"phylo"`) if no traits were generated or a `"treats"` object that contains both a `$tree` (`"phylo"`) and a `$data` (`"matrix"`) component.
+Note that this `"treats"` class is generalised to most outputs of the package functions.
+This allows for a smoother handeling of the objects outputs such as summarising the content of a `make.bd.params` output or visualising a trait output from `make.traits`.*
 
 # Reviewer: 2
 
@@ -228,15 +201,7 @@ I've added the URL spelt out. [Commit 5f7fb23](https://github.com/TGuillerme/tre
 
 * <span style="color:blue">Lines 202-203: Just wanted to note that I really love this idea! I think collecting a library of modules will be very useful to users!</span>
 
-
-
-
-
-> TODO: implement this as issues.
-
-
-
-
+As mentioned before, I was not sure how to effectively implement that so I made a [simulation templates](https://github.com/TGuillerme/treats/issues?q=is%3Aopen+is%3Aissue+label%3A%22simulation+template%22) issues category on github for now.
 
 * <span style="color:blue">Line 205: This embedded link does not work. I think it should be something like: https://github.com/TGuillerme/treats/tree/master/paper.</span>
 
