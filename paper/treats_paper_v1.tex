@@ -109,7 +109,7 @@
 \title{\texttt{treats}: a modular \texttt{R} package for simulating
 trees and traits.}
 \author{Thomas Guillerme\(^1\)}
-\date{2023-11-22}
+\date{2023-06-09}
 
 \begin{document}
 \maketitle
@@ -168,13 +168,13 @@ For example different traits distribution for species with different
 diets (Deepak, Gower, and Cooper 2023) or habitats (Pinto-Ledezma et al.
 2017). Or by comparing some observed pattern to one simulated under null
 or base conditions (Miller et al. 2022). In theory, workers can follow
-the following research pipeline: 1) thinking of a specific mechanism
+the following research pipeline: thinking of a specific mechanism
 (e.g.~mass extinction allowing the surviving species to acquire new
-morphologies), 2) collecting some data to test this mechanism (e.g.~some
-traits of species across and extinction event) and then 3) comparing
-these patterns to some simulated under no specific conditions (e.g.~a
-null model where the traits evolve randomly regardless of an extinction
-event Puttick, Guillerme, and Wills (2020)). Workers might thus need to
+morphologies), collecting some data to test this mechanism (e.g.~some
+traits of species across and extinction event) and then comparing these
+patterns to some simulated under no specific conditions (e.g.~a null
+model where the traits evolve randomly regardless of an extinction event
+Puttick, Guillerme, and Wills (2020)). Workers might thus need to
 simulate a great diversity of evolutionary scenarios to test their
 specific question. To do so, we need statistical and software solutions
 to simulate trees and data to generate many specific null models.
@@ -222,13 +222,7 @@ authors of the excellent packages mentioned above. This has led workers
 to often develop their own tools to answer specific questions
 (e.g.~Puttick, Guillerme, and Wills (2020)). Therefore, I propose
 \texttt{treats} a modular \texttt{R} package to simulate both trees and
-traits through time. Note that although \texttt{treats} is modular and
-thus allows to be used as go to tool for simulating and trees and
-traits, it lacks the ready-to-use implemented methods featured in other
-packages such as fossilisation and sampling (Barido-Sottani et al. 2019;
-Stadler 2011; Rosario Petrucci, Januario, and Quental 2022) or specific
-macroevolutionary simulations (Morlon et al. 2016; Puttick, Guillerme,
-and Wills 2020).
+traits through time.
 
 \hypertarget{description}{%
 \section{Description}\label{description}}
@@ -260,37 +254,36 @@ process, a fourth step is added:
 \setcounter{enumi}{3}
 \tightlist
 \item
-  Generating some trait(s) value(s) for the selected lineage (either a
-  tip or a node - but see the ``Simulating traits section'' below to
-  generate trait values along edges).
+  Generating some trait(s) value(s) for the selected lineage (no either
+  a tip or a node).
 \end{enumerate}
 
 In \texttt{treats}, these three or four steps are implemented as modular
 functions that the user can easily change using an internal class of
-objects called \texttt{"modifiers"} or \texttt{"traits"} (Fig. 1). The
-simulation then outputs a tree (of class \texttt{"phylo"} and a
-associated table of traits - \texttt{"matrix"}) that can be visualised
-using the \texttt{plot.treats} function. A third class of object called
-\texttt{"events"} can be added to the simulations to modify the entire
-simulation under certain conditions (e.g.~simulating a mass extinction).
-Each element in the algorithm can be modified by the user using the
-implemented functions \texttt{make.bd.params} to set the birth-death
-parameters, \texttt{make.traits} to set the trait(s),
-\texttt{make.modifiers} to set the birth-death algorithm and
-\texttt{make.events} to eventually add one or more events. Users can
-replace any step in the algorithm by their own specific functions
-suiting their needs or, for less advanced users, by using already
-implemented functions.
+objects called \texttt{"modifiers"} or \texttt{"traits"} (Fig.
+\ref{Fig:workflow}). The simulation then outputs a tree (of class
+\texttt{"phylo"} and a associated table of traits - \texttt{"matrix"})
+that can be visualised using the \texttt{plot.treats} function. A third
+class of object called \texttt{"events"} can be added to the simulations
+to modify the entire simulation under certain conditions
+(e.g.~simulating a mass extinction). Each element in the algorithm can
+be modified by the user using the implemented functions
+\texttt{make.bd.params} to set the birth-death parameters,
+\texttt{make.traits} to set the trait(s), \texttt{make.modifiers} to set
+the birth-death algorithm and \texttt{make.events} to eventually add one
+or more events. Users can replace any step in the algorithm by their own
+specific functions suiting their needs or, for less advanced users, by
+using already implemented functions.
 
 \begin{figure}
 \hypertarget{figure1}{%
 \centering
 \includegraphics{../inst/gitbook/treats_structure.png}
-\caption{\texttt{treats} package workflow: the \texttt{treats} algorithm
-generates a tree and traits using inbuilt \texttt{"traits"} objects that
-contain the instructions on how to generate the trait data (e.g.~which
-process? how many dimensions?); \texttt{"modifiers"} objects that
-contains instructions on how to ``grow'' the tree (e.g.~by linking
+\caption{Figure 1: \texttt{treats} package workflow: the \texttt{treats}
+algorithm generates a tree and traits using inbuilt \texttt{"traits"}
+objects that contain the instructions on how to generate the trait data
+(e.g.~which process? how many dimensions?); \texttt{"modifiers"} objects
+that contains instructions on how to ``grow'' the tree (e.g.~by linking
 speciation to trait values, or to the current number of species); and
 \texttt{"events"} objects that can modify the tree structure,
 \texttt{"modifiers"} or \texttt{"traits"} depending on specific
@@ -298,6 +291,203 @@ conditions (e.g.~80\% of species with positive trait values go extinct
 after reaching a specific time).}\label{figure1}
 }
 \end{figure}
+
+\hypertarget{brief-applied-example}{%
+\subsection{Brief applied example}\label{brief-applied-example}}
+
+To illustrate this we will look whether it is possible to detect changes
+in disparity (i.e.~diversity of traits) in a subset of the data
+published from Beck and Lee (2014) implemented in Guillerme (2018). This
+dataset contains the ordinated traits for 50 mammalian species across
+the cretaceous-palaeogene extinction event (K-Pg, 66 Mya; Fig. 2).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# Loading the data and packages}
+\KeywordTok{library}\NormalTok{(treats)}
+\KeywordTok{library}\NormalTok{(dispRity)}
+\KeywordTok{data}\NormalTok{(BeckLee\_tree)}
+\KeywordTok{data}\NormalTok{(BeckLee\_mat99)}
+
+\CommentTok{\#\# Creating the time slices}
+\NormalTok{time\_slices \textless{}{-}}\StringTok{ }\KeywordTok{chrono.subsets}\NormalTok{(BeckLee\_mat99, BeckLee\_tree,}
+                              \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{,}
+                              \DataTypeTok{model  =} \StringTok{"acctran"}\NormalTok{,}
+                              \DataTypeTok{time   =} \KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \DecValTok{96}\NormalTok{, }\DataTypeTok{to =} \DecValTok{36}\NormalTok{, }\DataTypeTok{by =} \DecValTok{{-}10}\NormalTok{))}
+
+\CommentTok{\#\# Calculating disparity on the two first dimensions only}
+\NormalTok{observed\_disparity \textless{}{-}}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(}\KeywordTok{boot.matrix}\NormalTok{(time\_slices),}
+                               \DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(sum, variances),}
+                               \DataTypeTok{dimensions =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{treats_paper_files/figure-latex/prepdata-1.pdf}
+\caption{Figure 2: Observed phylogeny (A) and disparity through time (B)
+in the subset of Beck and Lee (2014)'s dataset. Is this change in
+disparity related to the K-Pg mass extinction? Or, more generally, is it
+even possible to detect potential changes of disparity due to a mass
+extinction event?}
+\end{figure}
+
+Using this example dataset, one might be interested in testing whether
+the K-Pg extinction had an effect on disparity through time. But can
+such effect be detected in the first place? We can test this by
+simulating some datasets with similar properties as the observed data
+and measure changes in disparity in these simulated datasets.
+
+\hypertarget{simulating-trees}{%
+\subsubsection{Simulating trees}\label{simulating-trees}}
+
+The first and simplest way is to simulate tree topologies that have
+similar properties than the observed one. To do so, we need to use some
+\textbf{speciation} parameter indicating the rate at which lineages
+speciate (\emph{aka} ``birth'' or ``\(\lambda\)'') and an
+\textbf{extinction} parameter indicating the rate at which they go
+extinct (\emph{aka} ``death'' or ``\(\mu\)''). These two parameters can
+be crudely calculated from a given tree by counting the number of
+speciations and extinctions through time (but see better methods,
+e.g.~\texttt{ape::birthdeath}; Lawton, May, and Raup (1995); Paradis and
+Schliep (2019)). We also need a stopping rule for when to stop the
+simulations (in our case when reaching 30 time units). This will produce
+a single random tree using the input parameters (Fig. 3). Note that I
+will not discuss the options here in great details. Much more
+information can be found in the
+\href{http://tguillerme.github.io/treats.html}{\texttt{treats} manual}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# Using the birth{-}death parameters from the observed tree}
+\NormalTok{my\_bd\_params \textless{}{-}}\StringTok{ }\KeywordTok{crude.bd.est}\NormalTok{(BeckLee\_tree)}
+\CommentTok{\#\# Setting the stopping rule (stop after 30 time units)}
+\NormalTok{stop\_rule \textless{}{-}}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{max.time =} \DecValTok{30}\NormalTok{)}
+
+\CommentTok{\#\# Simulate the tree}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{sim\_tree \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{bd.params  =}\NormalTok{ my\_bd\_params,}
+                   \DataTypeTok{stop.rule  =}\NormalTok{ stop\_rule,}
+                   \DataTypeTok{null.error =} \DecValTok{100}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{treats_paper_files/figure-latex/simtree-1.pdf}
+\caption{Figure 3: A randomly simulated tree with similar properties as
+the observed one. Note that the time here is expressed in arbitrary
+units.}
+\end{figure}
+
+\hypertarget{simulating-trees-and-traits}{%
+\subsubsection{Simulating trees and
+traits}\label{simulating-trees-and-traits}}
+
+For our specific question, we will also need to simulate some traits
+associated with each node and tip. For simplicity we will simulate a two
+dimensional Brownian Motion trait. To do so, we can create a
+\texttt{"traits"} object with the function \texttt{make.traits}. This
+results in a 2 dimensional trait space for all the simulated species and
+their nodes (Fig. 4).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# Creating a trait in 2 dimensions.}
+\NormalTok{my\_traits \textless{}{-}}\StringTok{ }\KeywordTok{make.traits}\NormalTok{(}\DataTypeTok{process =}\NormalTok{ BM.process, }\DataTypeTok{n =} \DecValTok{2}\NormalTok{)}
+
+\CommentTok{\#\# Simulate the tree and traits}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{sim\_data \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{traits     =}\NormalTok{ my\_traits,}
+                   \DataTypeTok{bd.params  =}\NormalTok{ my\_bd\_params,}
+                   \DataTypeTok{stop.rule  =}\NormalTok{ stop\_rule,}
+                   \DataTypeTok{null.error =} \DecValTok{100}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{treats_paper_files/figure-latex/simtreetraits-1.pdf}
+\caption{Figure 4: A randomly simulated tree with a 2 dimensional random
+Brownian Motion trait. Orange, light blue and dark blue dots
+respectively represent nodes, fossils and living species.}
+\end{figure}
+
+\hypertarget{simulating-a-trees-and-traits-with-events}{%
+\subsubsection{Simulating a trees and traits with
+events}\label{simulating-a-trees-and-traits-with-events}}
+
+To answer our question, we also want to simulate an extinction event. To
+do so, we can create two different \texttt{"events"} object with the
+function \texttt{make.events}. The first one will simulate a random
+extinction event after reaching half of the simulations (15 time units)
+and then making three quarter (0.75) of the taxa go extinct. The second
+one will simulate a random extinction but based on trait values: after
+reaching time 15, all the species with positive trait values will go
+extinct. Both scenarios thus illustrate two different types of mass
+extinction (random and selective; Puttick, Guillerme, and Wills (2020)).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# Creating a random mass extinction}
+\NormalTok{random\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
+    \DataTypeTok{target       =} \StringTok{"taxa"}\NormalTok{,}
+    \DataTypeTok{condition    =} \KeywordTok{time.condition}\NormalTok{(}\DecValTok{15}\NormalTok{),}
+    \DataTypeTok{modification =} \KeywordTok{random.extinction}\NormalTok{(}\FloatTok{0.75}\NormalTok{))}
+\CommentTok{\#\# Creating an extinction that removes species with positive trait values}
+\NormalTok{positive\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
+    \DataTypeTok{target =} \StringTok{"taxa"}\NormalTok{,}
+    \DataTypeTok{condition =} \KeywordTok{time.condition}\NormalTok{(}\DecValTok{15}\NormalTok{),}
+    \DataTypeTok{modification =} \KeywordTok{trait.extinction}\NormalTok{(}\DataTypeTok{x =} \DecValTok{0}\NormalTok{, }\DataTypeTok{condition =} \StringTok{\textasciigrave{}}\DataTypeTok{\textgreater{}=}\StringTok{\textasciigrave{}}\NormalTok{))}
+
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{2}\NormalTok{)}
+\CommentTok{\#\# Simulate the tree and traits with a random extinction event}
+\NormalTok{sim\_rand\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}
+                   \DataTypeTok{traits     =}\NormalTok{ my\_traits,}
+                   \DataTypeTok{bd.params  =}\NormalTok{ my\_bd\_params,}
+                   \DataTypeTok{stop.rule  =}\NormalTok{ stop\_rule,}
+                   \DataTypeTok{events     =}\NormalTok{ random\_extinction,}
+                   \DataTypeTok{null.error =} \DecValTok{100}\NormalTok{,}
+                   \DataTypeTok{replicates =} \DecValTok{50}\NormalTok{)}
+
+\CommentTok{\#\# Simulate the tree and traits with a random extinction event}
+\NormalTok{sim\_trait\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}
+                   \DataTypeTok{traits     =}\NormalTok{ my\_traits,}
+                   \DataTypeTok{bd.params  =}\NormalTok{ my\_bd\_params,}
+                   \DataTypeTok{stop.rule  =}\NormalTok{ stop\_rule,}
+                   \DataTypeTok{events     =}\NormalTok{ positive\_extinction,}
+                   \DataTypeTok{null.error =} \DecValTok{100}\NormalTok{,}
+                   \DataTypeTok{replicates =} \DecValTok{50}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{treats_paper_files/figure-latex/simtreetraitsevents-1.pdf}
+\caption{Figure 5: Two different mass extinction events: (A) 75\% of
+species go extinct; (B) all species with positive trait values go
+extinct. The red line marks the extinction event.}
+\end{figure}
+
+Once we have simulated a distribution of trees and traits with the two
+extinction scenarios, we can measure disparity as in Fig. 2 for all the
+simulated data and compare it to the observed disparity.
+
+\begin{figure}
+\centering
+\includegraphics{treats_paper_files/figure-latex/simdisparity-1.pdf}
+\caption{Figure 6: Comparison of the observed sum of variances (dashed
+line) to the simulated one (ligth and dark grey polygons and black line
+representing respectively the 95\% and 50\% confidence interval and the
+median value).}
+\end{figure}
+
+From these results we can draw some preliminary conclusions: the
+observed change in disparity is more likely due to a random mass
+extinction rather than a selective one. This is of course a very crude
+way of testing this, a more rigorous approach is needed to answer the
+question: more and better quality data, and more thorough methods
+(e.g.~using a rank envelope test Murrell (2018)).
 
 \hypertarget{major-functionalities}{%
 \subsection{Major functionalities}\label{major-functionalities}}
@@ -315,9 +505,10 @@ value(s). Essentially, the generation of new trait values is based on a
 process (a \texttt{function}) modifying a trait value (\texttt{x0})
 relative to some branch length (\texttt{edge.length}). For example, a
 simple Brownian Motion process could be generated by the function
-\texttt{rnorm} where it modifies the trait value \texttt{x0} relative to
-the branch length (\texttt{edge.length}). The longer the branch length,
-the more likely the new trait value will be different from \texttt{x0}:
+\texttt{rnorm} where the it modifies the trait value \texttt{x0}
+relative to the branch length (\texttt{edge.length}). The longer the
+branch length, the more likely the new trait value will be different
+from \texttt{x0}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -354,13 +545,6 @@ package contains a list of pre-built processes that are
   \texttt{no.process}: ignores the branch length (i.e.~a time
   independent process);
 \end{itemize}
-
-Traits are always generated (and stored) only for tips or nodes and not
-along edges. However, it is possible so generate trait values at
-specific or regular time intervals by using the option
-\texttt{save.steps} in the \texttt{treats} function. This will generate
-singleton nodes (i.e.~nodes with only one descendant) with associated
-trait values.
 
 Note that the \texttt{treats} package primary aim is to generate both a
 tree and some traits at the same time. However, it is possible to also
@@ -514,7 +698,7 @@ mass extinction events are designed in the example above.
 \NormalTok{positive\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
     \DataTypeTok{target       =} \StringTok{"taxa"}\NormalTok{,}
     \DataTypeTok{condition    =} \KeywordTok{time.condition}\NormalTok{(}\DecValTok{15}\NormalTok{),}
-    \DataTypeTok{modification =} \KeywordTok{trait.extinction}\NormalTok{(}\DataTypeTok{x =} \DecValTok{0}\NormalTok{, }\DataTypeTok{condition =} \StringTok{\textasciigrave{}}\DataTypeTok{\textgreater{}=}\StringTok{\textasciigrave{}}\NormalTok{))}
+    \DataTypeTok{modification =} \KeywordTok{random.extinction}\NormalTok{(}\FloatTok{0.75}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -580,315 +764,42 @@ and traits together from non \texttt{"treats"} objects by using the
 \texttt{make.treats} function to transform them into \texttt{"treats"}
 objects.
 
-\hypertarget{brief-applied-example}{%
-\section{Brief applied example}\label{brief-applied-example}}
-
-To illustrate this we will look whether it is possible to detect changes
-in disparity (i.e.~diversity of traits) in a subset of the data
-published from Beck and Lee (2014) implemented in Guillerme (2018). This
-dataset contains the ordinated traits for 50 mammalian species across
-the Cretaceous-Palaeogene extinction event (K-Pg, 66 Mya; Fig. 2).
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#\# Loading the package and data}
-\KeywordTok{library}\NormalTok{(treats)}
-\KeywordTok{data}\NormalTok{(BeckLee\_tree)}
-\KeywordTok{data}\NormalTok{(BeckLee\_mat99)}
-
-\CommentTok{\#\# Creating the time slices}
-\NormalTok{time\_slices \textless{}{-}}\StringTok{ }\KeywordTok{chrono.subsets}\NormalTok{(BeckLee\_mat99, BeckLee\_tree,}
-                              \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{,}
-                              \DataTypeTok{model  =} \StringTok{"proximity"}\NormalTok{,}
-                              \DataTypeTok{time   =} \KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \DecValTok{96}\NormalTok{, }\DataTypeTok{to =} \DecValTok{36}\NormalTok{, }\DataTypeTok{by =} \DecValTok{{-}10}\NormalTok{))}
-
-\CommentTok{\#\# Calculating disparity on the two first dimensions only}
-\NormalTok{observed\_disparity \textless{}{-}}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(}\KeywordTok{boot.matrix}\NormalTok{(time\_slices),}
-                               \DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(sum, variances),}
-                               \DataTypeTok{dimensions =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#\# Plotting the tree and the disparity through time}
-\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), }\DataTypeTok{bty =} \StringTok{"null"}\NormalTok{)}
-\CommentTok{\#\# Thre tree}
-\KeywordTok{plot}\NormalTok{(BeckLee\_tree, }\DataTypeTok{show.tip.label =} \OtherTok{FALSE}\NormalTok{)}
-\KeywordTok{axisPhylo}\NormalTok{()}
-\KeywordTok{abline}\NormalTok{(}\DataTypeTok{v =}\NormalTok{ BeckLee\_tree}\OperatorTok{$}\NormalTok{root.time }\OperatorTok{{-}}\StringTok{ }\DecValTok{66}\NormalTok{, }\DataTypeTok{col =} \StringTok{"red"}\NormalTok{)}
-\KeywordTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\DataTypeTok{pch =} \OtherTok{NULL}\NormalTok{, }\DataTypeTok{legend =} \StringTok{"A"}\NormalTok{, }\DataTypeTok{bty =} \StringTok{"n"}\NormalTok{, }\DataTypeTok{cex =} \DecValTok{2}\NormalTok{)}
-
-\CommentTok{\#\# The disparity}
-\KeywordTok{plot}\NormalTok{(observed\_disparity, }\DataTypeTok{ylab =} \StringTok{"Sum of variances"}\NormalTok{)}
-\KeywordTok{abline}\NormalTok{(}\DataTypeTok{v =} \DecValTok{4}\NormalTok{, }\DataTypeTok{col =} \StringTok{"red"}\NormalTok{)}
-\KeywordTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\DataTypeTok{pch =} \OtherTok{NULL}\NormalTok{, }\DataTypeTok{legend =} \StringTok{"B"}\NormalTok{, }\DataTypeTok{bty =} \StringTok{"n"}\NormalTok{, }\DataTypeTok{cex =} \DecValTok{2}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}
-\centering
-\includegraphics{treats_paper_files/figure-latex/prepdata-1.pdf}
-\caption{Observed phylogeny (A) and disparity through time (B) in the
-subset of Beck and Lee (2014)'s dataset. The red line represents the
-K-Pg boundary. Is this change in disparity related to the K-Pg mass
-extinction? Or, more generally, is it even possible to detect potential
-changes of disparity due to a mass extinction event?}
-\end{figure}
-
-Using this example dataset, one might be interested in testing whether
-the K-Pg extinction had an effect on disparity through time. But can
-such effect be detected in the first place? We can test this by
-simulating some datasets with similar properties as the observed data
-and measure changes in disparity in these simulated datasets.
-
-\hypertarget{simulating-trees}{%
-\subsubsection{Simulating trees}\label{simulating-trees}}
-
-The first and simplest way is to simulate tree topologies that have
-similar properties than the observed one. To do so, we need to use some
-\textbf{speciation} parameter indicating the rate at which lineages
-speciate (\emph{aka} ``birth'' or ``\(\lambda\)'') and an
-\textbf{extinction} parameter indicating the rate at which they go
-extinct (\emph{aka} ``death'' or ``\(\mu\)''). These two parameters can
-be crudely calculated from a given tree by counting the number of
-speciations and extinctions through time (but see better methods,
-e.g.~\texttt{ape::birthdeath}; Lawton, May, and Raup (1995); Paradis and
-Schliep (2019)). We also need a stopping rule for when to stop the
-simulations (in our case when reaching 30 time units). This will produce
-a single random tree using the input parameters (Fig. 3). The number of
-time units in \texttt{treats} is arbitrary and is not equivalent to
-millions of years. Using 30 time units here allows to simulate number of
-tips in a similar order of magnitude as the ones in the observed data.
-Note that I will not discuss the options here in great details. Much
-more information can be found in the
-\href{http://tguillerme.github.io/treats.html}{\texttt{treats} manual}.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#\# Using the birth{-}death parameters from the observed tree}
-\NormalTok{my\_bd\_params \textless{}{-}}\StringTok{ }\KeywordTok{crude.bd.est}\NormalTok{(BeckLee\_tree)}
-\CommentTok{\#\# Setting the stopping rule (stop after 30 time units)}
-\NormalTok{stop\_rule \textless{}{-}}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{max.time =} \DecValTok{30}\NormalTok{)}
-
-\CommentTok{\#\# Simulate the tree}
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
-\NormalTok{sim\_tree \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{bd.params  =}\NormalTok{ my\_bd\_params,}
-                   \DataTypeTok{stop.rule  =}\NormalTok{ stop\_rule,}
-                   \DataTypeTok{null.error =} \DecValTok{100}\NormalTok{,}
-                   \DataTypeTok{verbose    =} \OtherTok{FALSE}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}
-\centering
-\includegraphics{treats_paper_files/figure-latex/simtree-1.pdf}
-\caption{A randomly simulated tree with similar properties as the
-observed one. Note that the time here is expressed in arbitrary units.}
-\end{figure}
-
-\hypertarget{simulating-trees-and-traits}{%
-\subsubsection{Simulating trees and
-traits}\label{simulating-trees-and-traits}}
-
-For our specific question, we will also need to simulate some traits
-associated with each node and tip. For simplicity we will simulate a two
-dimensional Brownian Motion trait. To do so, we can create a
-\texttt{"traits"} object with the function \texttt{make.traits}. This
-results in a 2 dimensional trait space for all the simulated species and
-their nodes (Fig. 4).
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#\# Creating a trait in 2 dimensions.}
-\NormalTok{my\_traits \textless{}{-}}\StringTok{ }\KeywordTok{make.traits}\NormalTok{(}\DataTypeTok{process =}\NormalTok{ BM.process, }\DataTypeTok{n =} \DecValTok{2}\NormalTok{)}
-
-\CommentTok{\#\# Simulate the tree and traits}
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
-\NormalTok{sim\_data \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{traits     =}\NormalTok{ my\_traits,}
-                   \DataTypeTok{bd.params  =}\NormalTok{ my\_bd\_params,}
-                   \DataTypeTok{stop.rule  =}\NormalTok{ stop\_rule,}
-                   \DataTypeTok{null.error =} \DecValTok{100}\NormalTok{,}
-                   \DataTypeTok{verbose    =} \OtherTok{FALSE}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
-\CommentTok{\#\# Plotting one trait through time}
-\KeywordTok{plot}\NormalTok{(sim\_data, }\DataTypeTok{ylab =} \StringTok{"Trait 1"}\NormalTok{, }\DataTypeTok{las =} \DecValTok{1}\NormalTok{, }\DataTypeTok{main =} \StringTok{"Trait 1 through time"}\NormalTok{)}
-
-\CommentTok{\#\# Plotting the two dimensions against each other}
-\KeywordTok{plot}\NormalTok{(sim\_data, }\DataTypeTok{trait =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{), }\DataTypeTok{ylab =} \StringTok{"Trait 1"}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{"Trait 2"}\NormalTok{, }\DataTypeTok{las =} \DecValTok{1}\NormalTok{, }\DataTypeTok{main =} \StringTok{"Traits 1 and 2"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}
-\centering
-\includegraphics{treats_paper_files/figure-latex/simtreetraits-1.pdf}
-\caption{A randomly simulated tree with a 2 dimensional random Brownian
-Motion trait. Orange, light blue and dark blue dots respectively
-represent nodes, fossils and living species.}
-\end{figure}
-
-\hypertarget{simulating-a-trees-and-traits-with-events}{%
-\subsubsection{Simulating a trees and traits with
-events}\label{simulating-a-trees-and-traits-with-events}}
-
-To answer our question, we also want to simulate an extinction event. To
-do so, we can create two different \texttt{"events"} object with the
-function \texttt{make.events}. The first one will simulate a random
-extinction event after reaching half of the simulations (15 time units)
-and then making three quarter (0.75) of the taxa go extinct. The second
-one will simulate a random extinction but based on trait values: after
-reaching time 15, all the species with positive trait values will go
-extinct. Both scenarios illustrate two different types of mass
-extinctions but they are not equivalent: because of the ancestral trait
-value starting at 0, we expect the second scenario to remove on average
-only 50\% of the species (i.e.~half the species are expected to evolve a
-trait value above 0). For more details on simulating the effect of mass
-extinction and the difficulties to simulate an unambiguous effect of a
-mass extinction, see Puttick, Guillerme, and Wills (2020). Because of
-this stochasticity of the simulations, we will repeat them 50 times
-(using \texttt{replicates\ =\ 50}) to generate a distribution of
-possible simulated scenarios as opposed to a random single one that
-could be idiosyncratic (Fig. 5).
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#\# Creating a random mass extinction}
-\NormalTok{random\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
-    \DataTypeTok{target       =} \StringTok{"taxa"}\NormalTok{,}
-    \DataTypeTok{condition    =} \KeywordTok{time.condition}\NormalTok{(}\DecValTok{15}\NormalTok{),}
-    \DataTypeTok{modification =} \KeywordTok{random.extinction}\NormalTok{(}\FloatTok{0.75}\NormalTok{))}
-\CommentTok{\#\# Creating an extinction that removes species with positive trait values}
-\NormalTok{positive\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
-    \DataTypeTok{target =} \StringTok{"taxa"}\NormalTok{,}
-    \DataTypeTok{condition =} \KeywordTok{time.condition}\NormalTok{(}\DecValTok{15}\NormalTok{),}
-    \DataTypeTok{modification =} \KeywordTok{trait.extinction}\NormalTok{(}\DataTypeTok{x =} \DecValTok{0}\NormalTok{, }\DataTypeTok{condition =} \StringTok{\textasciigrave{}}\DataTypeTok{\textgreater{}=}\StringTok{\textasciigrave{}}\NormalTok{))}
-
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
-\CommentTok{\#\# Simulate the tree and traits with a random extinction event}
-\NormalTok{sim\_rand\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}
-                   \DataTypeTok{traits     =}\NormalTok{ my\_traits,}
-                   \DataTypeTok{bd.params  =}\NormalTok{ my\_bd\_params,}
-                   \DataTypeTok{stop.rule  =}\NormalTok{ stop\_rule,}
-                   \DataTypeTok{events     =}\NormalTok{ random\_extinction,}
-                   \DataTypeTok{null.error =} \DecValTok{100}\NormalTok{,}
-                   \DataTypeTok{replicates =} \DecValTok{50}\NormalTok{)}
-
-\CommentTok{\#\# Simulate the tree and traits with a selective extinction event}
-\NormalTok{sim\_trait\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}
-                   \DataTypeTok{traits     =}\NormalTok{ my\_traits,}
-                   \DataTypeTok{bd.params  =}\NormalTok{ my\_bd\_params,}
-                   \DataTypeTok{stop.rule  =}\NormalTok{ stop\_rule,}
-                   \DataTypeTok{events     =}\NormalTok{ positive\_extinction,}
-                   \DataTypeTok{null.error =} \DecValTok{100}\NormalTok{,}
-                   \DataTypeTok{replicates =} \DecValTok{50}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}
-\centering
-\includegraphics{treats_paper_files/figure-latex/simtreetraitsevents-1.pdf}
-\caption{Two different mass extinction events: (A) 75\% of species go
-extinct; (B) all species with positive trait values go extinct. The red
-line marks the extinction event.}
-\end{figure}
-
-Once we have simulated a distribution of trees and traits with the two
-extinction scenarios, we can measure disparity as in Fig. 2 for all the
-simulated data and compare it to the observed disparity.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#\# Remove single nodes simulated at the extinction}
-\NormalTok{sim\_rand\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{drop.singles}\NormalTok{(sim\_rand\_extinction)}
-\NormalTok{sim\_trait\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{drop.singles}\NormalTok{(sim\_trait\_extinction)}
-
-\CommentTok{\#\# Calculate the dispRity for all the simulations}
-\NormalTok{random\_extinction\_disparity \textless{}{-}}\StringTok{ }\KeywordTok{dispRitreats}\NormalTok{(sim\_rand\_extinction,}
-                                            \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{,}
-                                            \DataTypeTok{model  =} \StringTok{"proximity"}\NormalTok{,}
-                                            \DataTypeTok{time   =} \KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \DecValTok{25}\NormalTok{, }\DataTypeTok{to =} \DecValTok{0}\NormalTok{, }\DataTypeTok{by =} \DecValTok{{-}5}\NormalTok{),}
-                                            \DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(sum, variances),}
-                                            \DataTypeTok{scale.trees =} \OtherTok{FALSE}\NormalTok{)}
-\NormalTok{selective\_extinction\_disparity \textless{}{-}}\StringTok{ }\KeywordTok{dispRitreats}\NormalTok{(sim\_trait\_extinction,}
-                                            \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{,}
-                                            \DataTypeTok{model  =} \StringTok{"proximity"}\NormalTok{,}
-                                            \DataTypeTok{time   =} \KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \DecValTok{25}\NormalTok{, }\DataTypeTok{to =} \DecValTok{0}\NormalTok{, }\DataTypeTok{by =} \DecValTok{{-}5}\NormalTok{),}
-                                            \DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(sum, variances),}
-                                            \DataTypeTok{scale.trees =} \OtherTok{FALSE}\NormalTok{)}
-
-\CommentTok{\#\# Scale the disparity results (to compare to the observed ones)}
-\NormalTok{random\_extinction\_disparity \textless{}{-}}\StringTok{ }\KeywordTok{rescale.dispRity}\NormalTok{(random\_extinction\_disparity)}
-\NormalTok{selective\_extinction\_disparity \textless{}{-}}\StringTok{ }\KeywordTok{rescale.dispRity}\NormalTok{(selective\_extinction\_disparity)}
-\NormalTok{observed\_disparity \textless{}{-}}\StringTok{ }\KeywordTok{unlist}\NormalTok{(}\KeywordTok{get.disparity}\NormalTok{(}\KeywordTok{rescale.dispRity}\NormalTok{(observed\_disparity)))}
-
-\CommentTok{\#\# Plotting the results with the observed disparity}
-\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
-\KeywordTok{plot}\NormalTok{(random\_extinction\_disparity, }\DataTypeTok{main =} \StringTok{"Random extinction"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{"Scaled sum of variances"}\NormalTok{)}
-\KeywordTok{abline}\NormalTok{(}\DataTypeTok{v =} \DecValTok{3}\NormalTok{, }\DataTypeTok{col =} \StringTok{"red"}\NormalTok{)}
-\KeywordTok{lines}\NormalTok{(}\DataTypeTok{x =} \DecValTok{1}\OperatorTok{:}\DecValTok{7}\NormalTok{, }\DataTypeTok{y =}\NormalTok{ observed\_disparity, }\DataTypeTok{lty =} \DecValTok{2}\NormalTok{, }\DataTypeTok{lwd =} \DecValTok{2}\NormalTok{)}
-\KeywordTok{plot}\NormalTok{(selective\_extinction\_disparity, }\DataTypeTok{main =} \StringTok{"Selective extinction"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{""}\NormalTok{)}
-\KeywordTok{abline}\NormalTok{(}\DataTypeTok{v =} \DecValTok{3}\NormalTok{, }\DataTypeTok{col =} \StringTok{"red"}\NormalTok{)}
-\KeywordTok{lines}\NormalTok{(}\DataTypeTok{x =} \DecValTok{1}\OperatorTok{:}\DecValTok{7}\NormalTok{, }\DataTypeTok{y =}\NormalTok{ observed\_disparity, }\DataTypeTok{lty =} \DecValTok{2}\NormalTok{, }\DataTypeTok{lwd =} \DecValTok{2}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}
-\centering
-\includegraphics{treats_paper_files/figure-latex/simdisparity-1.pdf}
-\caption{Comparison of the observed sum of variances (dashed line) to
-the simulated one (ligth and dark grey polygons and black line
-representing respectively the 95\% and 50\% confidence interval and the
-median value).}
-\end{figure}
-
-From these results we can draw some preliminary conclusions: the
-observed change in disparity is more likely due to a selective mass
-extinction rather than a random one (Fig. 6). This is of course a very
-crude way of testing this, a more rigorous approach is needed to answer
-the question: more and better quality data, and more thorough methods
-(e.g.~using a rank envelope test Murrell (2018)).
-
 \hypertarget{additional-information}{%
 \section{Additional information}\label{additional-information}}
 
-\hypertarget{manuals-and-vignettes}{%
-\subsection{Manuals and vignettes}\label{manuals-and-vignettes}}
+\hypertarget{manuals-and-vignette}{%
+\subsection{Manuals and vignette}\label{manuals-and-vignette}}
 
 The \texttt{treats} package comes with internal documentation
 (e.g.~\texttt{?treats}) but also with a thorough and extended vignette
 in a gitbook format: the
-\href{http://tguillerme.github.io/treats.html}{\texttt{treats} manual}
-(\url{http://tguillerme.github.io/treats.html}. This manual is designed
-so that it can be regularly updated and enhanced through the lifetime of
-the package facilitating the interface between methods development and
-usage (Cooper, Thomas, and FitzJohn 2016).
+\href{http://tguillerme.github.io/treats.html}{\texttt{treats} manual}.
+This manual is designed so that it can be regularly updated and enhanced
+through the lifetime of the package facilitating the interface between
+methods development and usage (Cooper, Thomas, and FitzJohn 2016).
 
 \hypertarget{further-directions}{%
 \subsection{Further directions}\label{further-directions}}
 
 This paper describes the first version of the \texttt{treats} package.
 However, I intend to continuously develop this package. For example
-future planned versions will include abiotic events and a better
-integration with the \texttt{dispRity} package. This will be done while
-keeping track change (through \texttt{NEWS} file), continuous
-integration and unit testing. Furthermore, I am planning to develop the
-GitHub page associated with the package to encourage users to share
-their simulation templates and build library from them to facilitate the
-work for future users.
+future planned versions will include: lineage specific simulations;
+abiotic events; time dependent simulations and; a better integration
+with the \texttt{dispRity} package. This will be done while keeping
+track change (through \texttt{NEWS} file), continuous integration and
+unit testing. Furthermore, I am planning to develop the GitHub page
+associated with the package to encourage users to share their simulation
+templates and build library from them to facilitate the work for future
+users.
 
 \hypertarget{repeatability-and-reproducibility}{%
 \subsection{Repeatability and
 reproducibility}\label{repeatability-and-reproducibility}}
 
 This paper is entirely reproducible from an Rmarkdown document available
-on \href{https://github.com/TGuillerme/treats/inst/paper.Rmd}{GitHub}.
-The data used for the example above (Beck and Lee 2014) is available
-from the \texttt{dispRity} package (Guillerme 2018).
+on \href{https://github.com/TGuillerme/treats/paper/}{GitHub}. The data
+used for the example above (Beck and Lee 2014) is available from the
+\texttt{dispRity} package (Guillerme 2018).
 
 \hypertarget{conclusion}{%
 \section{Conclusion}\label{conclusion}}
@@ -918,10 +829,8 @@ through previous collaborations. Thanks to Andrew Beckerman, Ian
 Brennan, Gustavo Burin, Christopher Cooney, Natalie Cooper, Alex
 Cranston, Jasmine Hardie, Tom Lansley, Clement Prieul, Joe Rees, James
 Rule, Sophie Ryan and Gavin Thomas, for support and useful comments on
-late stages of the development of this package. Thanks to William
-Gearty, one anonymous reviewer and one anonymous associate editor for
-their very useful suggestions. This work was funded by UKRI-NERC Grant
-NE/T000139/1 awarded to Gavin Thomas.
+late stages of the development of this package. This work was funded by
+UKRI-NERC Grant NE/T000139/1.
 
 \hypertarget{references}{%
 \section*{References}\label{references}}

@@ -15,7 +15,7 @@ output:
 
 $^1$ School of Biosciences, University of Sheffield, Sheffield, S10 2TN, United Kingdom. guillert@tcd.ie
 
-Running head:
+Running head: 
 `treats`: TREes And Traits Simulations
 
 # Abstract
@@ -63,7 +63,7 @@ Or `PETER` is not designed to simulate a complex set of traits (say three correl
 This absence of modularity has hampered the use of complex and question-driven simulations, although I acknowledge this was not the primary aim of the authors of the excellent packages mentioned above.
 This has led workers to often develop their own tools to answer specific questions (e.g. @puttick2020complex).
 Therefore, I propose `treats` a modular `R` package to simulate both trees and traits through time.
-Note that although `treats` is modular and thus allows to be used as go to tool for simulating and trees and traits, it lacks the ready-to-use implemented methods featured in other packages such as fossilisation and sampling [@fossilsim, @treesim, @paleobuddy] or specific macroevolutionary simulations [@RPANDA, @puttick2020complex].
+Note that although `treats` is modular and thus allows to be used as go to tool for simulating and trees and traits, it lacks the ready-to-use implemented methods featured in other packages such as fossilisation and sampling [@fossilsim; @treesim; @paleobuddy] or specific macroevolutionary simulations [@rpanda; @puttick2020complex].
 
 # Description
 
@@ -79,7 +79,7 @@ If traits are simulated during the process, a fourth step is added:
 
 4. Generating some trait(s) value(s) for the selected lineage (either a tip or a node - but see the "Simulating traits section" below to generate trait values along edges).
 
-In `treats`, these three or four steps are implemented as modular functions that the user can easily change using an internal class of objects called `"modifiers"` or `"traits"` (Fig. \ref{Fig:workflow}).
+In `treats`, these three or four steps are implemented as modular functions that the user can easily change using an internal class of objects called `"modifiers"` or `"traits"` (Fig. 1).
 The simulation then outputs a tree (of class `"phylo"` and a associated table of traits - `"matrix"`) that can be visualised using the `plot.treats` function.
 A third class of object called `"events"` can be added to the simulations to modify the entire simulation under certain conditions (e.g. simulating a mass extinction).
 Each element in the algorithm can be modified by the user using the implemented functions `make.bd.params` to set the birth-death parameters, `make.traits` to set the trait(s), `make.modifiers` to set the birth-death algorithm and `make.events` to eventually add one or more events.
@@ -486,6 +486,6 @@ on [GitHub](https://github.com/TGuillerme/treats) with more associated informati
 All the versions of the package are archived on ZENODO with associated [DOI:10.5281/zenodo.7970384](https://doi.org/10.5281/zenodo.7970384).
 
 ## Acknowledgments
-Many thanks to Mark Puttick for inspiring the development the package through previous collaborations. Thanks to Andrew Beckerman, Ian Brennan, Gustavo Burin, Christopher Cooney, Natalie Cooper, Alex Cranston, Jasmine Hardie, Tom Lansley, Clement Prieul, Joe Rees, James Rule, Sophie Ryan and Gavin Thomas, for support and useful comments on late stages of the development of this package. This work was funded by UKRI-NERC Grant NE/T000139/1.
+Many thanks to Mark Puttick for inspiring the development the package through previous collaborations. Thanks to Andrew Beckerman, Ian Brennan, Gustavo Burin, Christopher Cooney, Natalie Cooper, Alex Cranston, Jasmine Hardie, Tom Lansley, Clement Prieul, Joe Rees, James Rule, Sophie Ryan and Gavin Thomas, for support and useful comments on late stages of the development of this package. Thanks to William Gearty, one anonymous reviewer and one anonymous associate editor for their very useful suggestions. This work was funded by UKRI-NERC Grant NE/T000139/1 awarded to Gavin Thomas.
 
 # References

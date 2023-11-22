@@ -1,0 +1,696 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Response to reviewers},
+  pdfauthor={Thomas Guillerme},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newenvironment{cslreferences}%
+  {\setlength{\parindent}{0pt}%
+  \everypar{\setlength{\hangindent}{\cslhangindent}}\ignorespaces}%
+  {\par}
+
+\title{Response to reviewers}
+\author{Thomas Guillerme}
+\date{2023-11-22}
+
+\begin{document}
+\maketitle
+
+Dear Editor,
+
+I am grateful for the associate editor and the two reviewers time and
+very encouraging comments that I totally believe have improved the
+package, the manual and this manuscript. Please find my response to the
+reviewers comments in the following document. I've highlight \textcolor{blue}{the
+Associate Editor and both reviewers comments in blue} and my response
+black. I'm also sorry for the delay in dealing with the reviewers
+comments: I was unemployed until November so didn't work on it until
+then.
+
+Best regards,
+
+Thomas
+
+\hypertarget{associate-editor-comments-to-author}{%
+\section{Associate Editor Comments to
+Author:}\label{associate-editor-comments-to-author}}
+
+\textcolor{blue}{As both reviewers, I really liked the idea of the package, but also
+found the manuscript itself a bit hard to follow, which, at least to me,
+made it hard to fully appreciate what ``treats'' can currently do and
+what are the future additions that might be easily implemented (either
+by the developer, or by users). Reading the online manual, I got a
+better idea, and hence I think there is still room (metaphorically and I
+suspect also physically) for improvement. Sure, the online material has
+no space limit constraints, but I do think the manuscript text could be
+improved and both reviewers offered some nice suggestions. Apart from
+the really good suggestions given by both reviewers I would add the
+following suggestions/comments:}
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{1- Are the trait values ``stored'' only at the node and tip (extant
+  or extinct), or does it store (e.g.~assuming some small-time
+  intervals) the trait values throughout the branch length of each
+  lineage? Based on lines 63 to 65 (and 71) I think only at nodes and
+  tips, but it might be worth explicitly saying that. Perhaps add the
+  word ``only'' in that line. Also, in line 71 is there an extra ``no''
+  within the parenthesis?}
+\end{itemize}
+
+The trait data in \texttt{treats} is only stored at nodes and tips due
+to the code architecture. However, using the argument
+\texttt{save.steps} allows to create singleton nodes (nodes with one
+ancestor and only one descendant) that can be generated at some
+specified or regular time intervals thus effectively saving trait values
+as the simulation goes. I've now specified this in the main text (and
+removed the typo):
+
+\emph{4. Generating some trait(s) value(s) for the selected lineage
+(either a tip or a node - but see the ``Simulating traits section''
+below to generate trait values along edges).} line 78-79.
+
+and:
+
+\emph{``Traits are always generated (and stored) only for tips or nodes
+and not along edges. However, it is possible so generate trait values at
+specific or regular time intervals by using the option
+\texttt{save.steps} in the \texttt{treats} function. This will generate
+singleton nodes (i.e.~nodes with only one descendant) with associated
+trait values.''} line 110-112.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{2- Regarding the ``storage'' of trait value, if it only stores the
+  values at nodes and tips, does it also mean that it only uses trait
+  values at those time points to direct the simulation? Does that
+  matter? What made me wonder about that was figure 5, and its
+  respective intended selective extinction simulation scenario. If I got
+  it right, the selective extinction scenario would remove all species
+  with positive trait values at the mass extinction event at 15 Mya.
+  Looking at the right panel, all species whose direct ancestral node
+  had a positive trait value seemed to be removed, but some of those
+  with ancestral negative values likely crossed the red line having a
+  positive value (even if the ``true trait trajectory'' is not a
+  straight as represented, for simplicity I guess, in the figure) and
+  were not removed. This might not be always relevant, and I understand
+  that some simplifications are necessary, but it might be worth
+  explicitly discussing if this is relevant and when. For example, if
+  speciation and background extinction rates are small, species are
+  likely to have long branches and the trait value it might have at a
+  given time point between its ancestral node and its tip value or next
+  speciation node might be very different from the value it had at the
+  ancestral node (or tip value for that matter). Or is the decision to
+  remove the species in the selective mass extinction event one where
+  both the ancestral and tip value have to be positive. I guess some
+  extra information on how it chooses the species based on the trait
+  value (is it the ancestral node value, the tip value, both?) in the
+  selective mass extinction regime would also be helpful. I guess the
+  issue seems that the trait value is not measured at short time
+  intervals (only at the nodes and tips) but a selective extinction
+  regime such as this one presented here is a point in time event. }
+\end{itemize}
+
+This is an excellent suggestion. I've now reworked \texttt{events} to
+now always generates singleton nodes (and associated trait values if
+needed) at the time of the event before applying the modification. This
+way it will generate extinction based at the trait value of the
+extinction time rather than the latest node as it should be the case. It
+is then possible to remove the generated singleton nodes to clean up the
+tree (to have just data for bifurcating nodes and tips). This is now
+updated in the example.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{3- I have to say that looking at figure 5 it was not trivial to see
+  the difference between the two scenarios (I guess that happened
+  because most, if not all, species with positive values went extinct in
+  the left random panel as well). I know those are realizations of a
+  stochastic process and there is nothing wrong here, my concern regards
+  simply the visualization. I wonder if choosing another seed might
+  result in a set of simulations that are more clearly different, making
+  the comparison easier for the eye to pick it up. For example, in the
+  online manual, some examples comparing random to selective simulations
+  showed a much more disparate pattern.}
+\end{itemize}
+
+I've changed the seeds for the plotted random/non-random extinctions
+that illustrates the selectivity more. I've also added a horizontal line
+at the value 0 to show the positivity of the extinction event for the
+non-random one.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{4- Code box on page 7: the commentary on the second simulation
+  scenario reads ``\#Simulate the tree and traits with a random
+  extinction event'' and hence is equal to the comment in the first
+  simulation scenario in the same box. Perhaps change it to something
+  like: ``\#Simulate the tree and traits with a random extinction event
+  but based on trait value''}
+\end{itemize}
+
+I've changed the comment to
+\texttt{\#\#\ Simulate\ the\ tree\ and\ traits\ with\ a\ selective\ extinction\ event}.
+code block after line 203.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{5- I could be wrong but it seems that figure 6 is not cited in the
+  text. Please double check and if this is true, please cite this
+  figure. }
+\end{itemize}
+
+I've added references to figures 5 and 6 in the text on lines 203 and
+207.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{6- All figure captions have some repetition like ``Figure 1: Figure
+  1:\ldots.''}
+\end{itemize}
+
+I've removed the repetitions.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{7- Figure 6: I could be wrong, but my intuition was that a selective
+  mass extinction event would decrease the disparity more strongly than
+  a random extinction mass extinction event. That does not seem to be
+  the case. Is it because the ``rule'' for the second extinction
+  scenario was that only positive species will go extinct, hence on
+  average 50\% of the species (if you start with a value of zero)
+  instead of 75\% went extinct? That would make sense, I guess. Or is
+  the second extinction scenario one where you also create a 75\% loss
+  of species but guarantee that all species with positive values will go
+  extinct? Maybe a few words to better explain this would be helpful.
+  Perhaps add on lines 109 to 110 something like: ``note that in the
+  second scenario, because the ancestral state is zero and we do not set
+  the percentage of species to be removed, we expect only 50\% of the
+  species to go extinct''. Just an idea.}
+\end{itemize}
+
+The results seems a bit different now having chosen a different seed.
+However, I have added the Associate Editor's judicious comment to the
+main text:
+
+\emph{``Both scenarios illustrate two different types of mass
+extinctions but they are not equivalent: because of the ancestral trait
+value starting at 0, we expect the second scenario to remove on average
+only 50\% of the species (i.e.~half the species are expected to evolve a
+trait value above 0). For more details on simulating the effect of mass
+extinction and the difficulties to simulate an unambiguous effect of a
+mass extinction, see Puttick, Guillerme, and Wills (2020).''} lines
+195-199.
+
+\hypertarget{reviewer-1}{%
+\section{Reviewer: 1}\label{reviewer-1}}
+
+\textcolor{blue}{This article by Guillerme introduces a new R package treats, which
+implements a flexible framework for simulating phylogenies and
+associated trait values. Overall, I really like the concept of the
+package, and I think it can be very useful for more advanced users who
+run many simulations and change their setup often. My comments are
+mostly about clarifying the presentation of the different functions. I
+also reviewed the manual.}
+
+\hypertarget{comments-on-the-manuscript}{%
+\subsection{Comments on the
+manuscript}\label{comments-on-the-manuscript}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{I had trouble understanding what treats could and could not do from
+  the manuscript alone. The introduction discusses several packages
+  related to fossil data (FossilSim, paleotree and paleobuddy) which
+  gave me the impression that treats could replace them, but it doesn't
+  seem that fossilization processes are currently included ? I was also
+  a bit confused by the inclusion of time-dependent and
+  lineage-dependent simulations in future features, as it seems that the
+  current framework should be able to handle these, at least within the
+  birth-death process. Overall, having a clearer list of what is
+  currently possible or not in treats would be helpful.}
+\end{itemize}
+
+I've now clarified what \texttt{treats} does and doesn't in the
+introduction:
+
+\emph{``Note that although \texttt{treats} is modular and thus allows to
+be used as go to tool for simulating and trees and traits, it lacks the
+ready-to-use implemented methods featured in other packages such as
+fossilisation and sampling (Barido-Sottani et al. 2019; Stadler 2011;
+Rosario Petrucci, Januario, and Quental 2022) or specific
+macroevolutionary simulations (Morlon et al. 2016; Puttick, Guillerme,
+and Wills 2020).''}. line 63-67
+
+I've also removed the mention of the future time-dependent and
+lineage-dependent simulations: these are meant to be internal
+implementations allowing the algorithm to track time and lineage IDs
+across each edges which will allow even more modularity in the future
+but is out of the scope of this paper.
+
+\emph{``For example future planned versions will include abiotic events
+and a better integration with the \texttt{dispRity} package.''}. line
+218-219
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{I would also have liked some information on the performance of the
+  package compared to existing simulation tools. It seems likely that
+  the flexibility offered by treats comes at the cost of some
+  computational performance, so it would be nice to know how much time
+  would be needed to simulate a reasonable dataset (for instance the 50
+  replicates used to test the positive extinction vs random
+  extinction).}
+\end{itemize}
+
+I tried (and saved the tests in \texttt{tests/test-benchmarking.R} for
+people to explore) but I'm not convinced how useful it is. First I feel
+it's confrontational to the other authors since none of them had the
+same objectives in mind. Second I will be biased in making treats look
+better (when possible) because I know how it works in much more details.
+Third I don't think it's something I want to put forward as a reason of
+why to use the package, e.g.~it's slower than TreeSim but faster than
+diversitree (under certain parameters) but that's not the reason while
+one should use treats over diversitree and TreeSim (the point I am
+trying to sell is the modularity, i.e.~if you want to simulate something
+specific, treats is good, otherwise, go with what other people have used
+before).
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{I didn't understand why the example shown in the manuscript only
+  simulated trees up to 30 time units, when the tree used as a basis for
+  the comparison is 140 My old (figure 2).}
+\end{itemize}
+
+I've now added the following precision:
+
+\emph{``The number of time units in \texttt{treats} is arbitrary and is
+not equivalent to millions of years. Using 30 time units here allows to
+simulate number of tips in a similar order of magnitude as the ones in
+the observed data.''} lines 181-183.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{I really like the idea of having a library of premade simulation
+  templates (l202) and I believe it will be a huge help in making the
+  package accessible. Making the examples shown in the manual (section
+  8) available as scripts would be a good start for such a library.}
+\end{itemize}
+
+I am happy that both reviewers are enthusiastic about the templates
+library. Unfortunately I'm not totally sure how to implement it and make
+it easier to use and browse by users. So for now I've set up a templated
+category of issues on github called
+\href{https://github.com/TGuillerme/treats/issues?q=is\%3Aopen+is\%3Aissue+label\%3A\%22simulation+template\%22}{simulation
+templates}. I've updated the README file with some indications on how to
+save and share such a template.
+
+\hypertarget{minor-comments}{%
+\subsubsection{Minor comments:}\label{minor-comments}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{ - l71 ``no either'' }
+\end{itemize}
+
+Fixed.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{ - l125 ``where the it''}
+\end{itemize}
+
+Fixed.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{ - l111 the comment in the second example is mismatched with the code
+  (random extinction instead of positive extinction)}
+\end{itemize}
+
+Fixed.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{ - l175 the comment in the example is mismatched with the code
+  (positive extinction instead of random extinction)}
+\end{itemize}
+
+Fixed.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{ - l178 the text mentions the function trait.extinction but it's not
+  used in the code}
+\end{itemize}
+
+Fixed.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{ - l282 missing authors in the reference}
+\end{itemize}
+
+This one is just generated as such from the \texttt{mee.csl} reference
+style.
+
+\hypertarget{comments-on-the-manual}{%
+\subsection{Comments on the manual}\label{comments-on-the-manual}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{The main thing the manual is missing in my opinion is a quick
+  reference table of the different functions, for people who have
+  understood the concepts of the package but need to quickly check what
+  format their custom speciation function needs to follow for instance.
+  At the moment that information is incomplete (the table in section 4.5
+  shows the output types but not what these outputs are) and spread out
+  in different places (the description of the function inputs is in
+  section 4.2.1 whereas the list of functions is in 4.1).}
+\end{itemize}
+
+I've now added a cheat sheet to the github page that shows the key
+arguments and their inputs/outputs
+\href{https://github.com/TGuillerme/treats/blob/master/inst/gitbook/treats_cheat_sheet.pdf}{here}.
+This cheat sheet is rather minimal for now but I'm planning on expanding
+on it and making it more interactive (with mouse over menus, etc.) in
+the future. Furthermore I've tidied up the summarising of functions in
+the manual as suggested by the reviewer.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{The use of conditions and modifications was quite confusing to me.
+  Some of the examples use the modify and condition argument to change
+  the birth-death process (section 2.3) whereas some examples simply
+  replace the function with a modified version (section 4.4), and I
+  could not figure out if these methods were equivalent or if one should
+  be preferred to the other. I think the modifications section also
+  needs more details about what exactly is being modified, and what the
+  expected inputs and outputs of the modification function should be.
+  For instance, in the example section 2.3 I don't understand what is
+  the ``x'' argument in ``going.extinct'', or why this function returns
+  a number instead of a logical. The interface for the conditions in 5.2
+  appears to be clearer, but it doesn't match with the example in
+  section 2.3 where the ``negative.ancestor'' uses different arguments,
+  or with the example in 4.6 where the ``half.the.time'' condition takes
+  no arguments. }
+\end{itemize}
+
+I have now added clarifications of what the \texttt{"modifiers"} are and
+how they should be used. Both in the section 2.3 as a simple explanation
+and in the section 4 dedicated to \texttt{"modifiers"}.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{Finally, I also could not find a full description of the treats
+  output object either in the manual or in the package documentation.}
+\end{itemize}
+
+I've added a \texttt{@return} section to the \texttt{treats},
+\texttt{make.treats}, \texttt{make.bd.params}, \texttt{make.traits},
+\texttt{make.modifiers} and \texttt{make.events} documentations as well
+as the following section in the manual ``Getting started'' section:
+
+\emph{\texttt{treats} will output either just a tree (class
+\texttt{"phylo"}) if no traits were generated or a \texttt{"treats"}
+object that contains both a \texttt{\$tree} (\texttt{"phylo"}) and a
+\texttt{\$data} (\texttt{"matrix"}) component. Note that this
+\texttt{"treats"} class is generalised to most outputs of the package
+functions. This allows for a smoother handeling of the objects outputs
+such as summarising the content of a \texttt{make.bd.params} output or
+visualising a trait output from \texttt{make.traits}.}
+
+\hypertarget{reviewer-2}{%
+\section{Reviewer: 2}\label{reviewer-2}}
+
+\textcolor{blue}{Thank you for the opportunity to review this manuscript, titled
+``treats: a modular R package for simulating trees and traits''. This
+manuscript describes and showcases a new R package that provides users
+with an extensive toolbox to jointly simulate phylogenies and evolving
+traits. While the example provided within the manuscript gives readers a
+small taste of the flexibility of this toolbox, the online manual
+(\url{http://tguillerme.github.io/treats.html}) showcases the true
+extent of how useful this package will be for evolutionary biologists
+far and wide. I really enjoyed reading the manuscript, and I believe it
+will be suitable for publication in Methods in Ecology \& Evolution once
+my concerns have been addressed.}
+
+\textcolor{blue}{For context, for this review I read the supplied manuscript, tested the
+functionality of the R package, and browsed the built-in documentation
+and the online supplemental manual. I was unable to review the
+functional code of the R package in time for the due date of this
+review, but it appears to work properly from my testing. I have one
+major concern and a handful of minor concerns. The major concern is that
+the overall flow of the manuscript seems a little off. I think this
+mostly stems from the worked example preceding the detailed overview of
+the package's functions. I think if these two sections were swapped the
+manuscript would flow much better. My minor concerns are included at the
+end of this review in order of their appearance in the manuscript. I
+look forward to reviewing a revised version of this manuscript, if
+necessary.}
+
+I have now changed the order of the structure of the manuscript with the
+description coming first and the example coming second.
+
+\textcolor{blue}{Best,}
+
+\textcolor{blue}{William Gearty}
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{Lines 27-31: I would enumerate this list.}
+\end{itemize}
+
+Done.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{Line 84: Geological time period names should be capitalized.}
+\end{itemize}
+
+Fixed.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{Figures 2-6: If possible, I think it would be valuable to show what
+  code was used to produce these figures in the code snippets. As far as
+  I can tell, the plotting is mostly done using functions from the
+  package, so this would also be an opportunity to showcase this
+  functionality.}
+\end{itemize}
+
+Done with the now new inclusion of the \texttt{dispRitreats} code that
+streamlines the analysis.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{Figure 2: The caption should identify what the red line represents
+  (the K-Pg boundary?).}
+\end{itemize}
+
+Done.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{Line 111: This may be personal preference, but when I ran this code
+  chunk it output a whole bunch of text to the console. It appears to be
+  a separate line of text for each replicate in the treats function. I
+  believe the intent here is to show the user how much progress has been
+  made? Perhaps some sort of progress bar would be more appropriate?}
+\end{itemize}
+
+I've now added a \texttt{verbose} option to the \texttt{treats} function
+allowing to display the progress or not. Unfortunately the progress bar
+suggestion, although comfortable to most users is not feasible
+effectively with stochastic data: here the output indicates every re-ran
+tree for each replicate. And because the number of runs varies depending
+on the random seed, tracking the progress in terms of percentage will
+require more computational time (i.e.~estimating how many re-run are
+expected for the current seed before increase the progress bar).
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{Lines 106-111: I think you should mention somewhere in this paragraph
+  why you are running multiple replicates here (as opposed to the single
+  replicate performed earlier in the worked example).}
+\end{itemize}
+
+I've added the following sentence at the end of the paragraph:
+``\emph{Because of the stochasticity of the simulations, we will repeat
+them 50 times (using \texttt{replicates\ =\ 50}) to generate a
+distribution of possible simulated scenarios as opposed to a random
+single one that could be idiosyncratic.}'' lines 200-203
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{Line 111: I used the same seed as you, but I was unable to reproduce
+  Figure 5 (looking at the R markdown file, I see that you use indices
+  11 and 10 to make the plots). I think showing the exact code that is
+  used here to make Figure 5 would be useful for readers that might be
+  ``playing along at home''.}
+\end{itemize}
+
+I have streamlined and display the code to allow the users to test the
+package while reading the paper.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{Lines 112-113: You should refer to Figure 6 somewhere in this
+  paragraph. It might also be useful to include the code to perform this
+  comparison, especially if the functionality is all contained within
+  the treats package.}
+\end{itemize}
+
+Done. line 207.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{Line 194: This reference to the manual should have a link to the
+  online manual (looks like the link is embedded, but you should also
+  have it typed out). I also noticed that the documentation for the
+  treats function lists the wrong URL for the online manual.}
+\end{itemize}
+
+I've added the URL spelt out.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{Lines 202-203: Just wanted to note that I really love this idea! I
+  think collecting a library of modules will be very useful to users!}
+\end{itemize}
+
+As mentioned before, I was not sure how to effectively implement that so
+I made a
+\href{https://github.com/TGuillerme/treats/issues?q=is\%3Aopen+is\%3Aissue+label\%3A\%22simulation+template\%22}{simulation
+templates} issues category on github for now.
+
+\begin{itemize}
+\tightlist
+\item
+  \textcolor{blue}{Line 205: This embedded link does not work. I think it should be
+  something like:
+  \url{https://github.com/TGuillerme/treats/tree/master/paper}.}
+\end{itemize}
+
+Fixed.
+
+\hypertarget{refs}{}
+\begin{cslreferences}
+\leavevmode\hypertarget{ref-fossilsim}{}%
+Barido-Sottani, Joëlle, Walker Pett, Joseph E O'Reilly, and Rachel CM
+Warnock. 2019. ``FossilSim: An R Package for Simulating Fossil
+Occurrence Data Under Mechanistic Models of Preservation and Recovery.''
+\emph{Methods in Ecology and Evolution} 10 (6): 835--40.
+
+\leavevmode\hypertarget{ref-rpanda}{}%
+Morlon, Hélène, Eric Lewitus, Fabien L Condamine, Marc Manceau, Julien
+Clavel, and Jonathan Drury. 2016. ``RPANDA: An R Package for
+Macroevolutionary Analyses on Phylogenetic Trees.'' \emph{Methods in
+Ecology and Evolution} 7 (5): 589--97.
+
+\leavevmode\hypertarget{ref-puttick2020complex}{}%
+Puttick, Mark N, Thomas Guillerme, and Matthew A Wills. 2020. ``The
+Complex Effects of Mass Extinctions on Morphological Disparity.''
+\emph{Evolution} 74 (10): 2207--20.
+
+\leavevmode\hypertarget{ref-paleobuddy}{}%
+Rosario Petrucci, Bruno do, Matheus Januario, and Tiago Quental. 2022.
+``Paleobuddy: An R Package for Flexible Simulations of Diversification
+and Fossil Sampling.'' \emph{Methods in Ecology and Evolution} 13 (12):
+2692--8.
+
+\leavevmode\hypertarget{ref-treesim}{}%
+Stadler, Tanja. 2011. ``Simulating Trees with a Fixed Number of Extant
+Species.'' \emph{Systematic Biology} 60 (5): 676--84.
+\end{cslreferences}
+
+\end{document}

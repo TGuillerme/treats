@@ -31,16 +31,16 @@ Thomas
 
 The trait data in `treats` is only stored at nodes and tips due to the code architecture. However, using the argument `save.steps` allows to create singleton nodes (nodes with one ancestor and only one descendant) that can be generated at some specified or regular time intervals thus effectively saving trait values as the simulation goes. I've now specified this in the main text (and removed the typo):
 
-*4. Generating some trait(s) value(s) for the selected lineage (either a tip or a node - but see the "Simulating traits section" below to generate trait values along edges).* line @@@
+*4. Generating some trait(s) value(s) for the selected lineage (either a tip or a node - but see the "Simulating traits section" below to generate trait values along edges).* line 78-79.
 
 and:
 
-*"Traits are always generated (and stored) only for tips or nodes and not along edges. However, it is possible so generate trait values at specific or regular time intervals by using the option `save.steps` in the `treats` function. This will generate singleton nodes (i.e. nodes with only one descendant) with associated trait values."* line @@@
+*"Traits are always generated (and stored) only for tips or nodes and not along edges. However, it is possible so generate trait values at specific or regular time intervals by using the option `save.steps` in the `treats` function. This will generate singleton nodes (i.e. nodes with only one descendant) with associated trait values."* line 110-112.
 
 
 * <span style="color:blue">2- Regarding the “storage” of trait value, if it only stores the values at nodes and tips, does it also mean that it only uses trait values at those time points to direct the simulation? Does that matter? What made me wonder about that was figure 5, and its respective intended selective extinction simulation scenario. If I got it right, the selective extinction scenario would remove all species with positive trait values at the mass extinction event at 15 Mya. Looking at the right panel, all species whose direct ancestral node had a positive trait value seemed to be removed, but some of those with ancestral negative values likely crossed the red line having a positive value (even if the “true trait trajectory” is not a straight as represented, for simplicity I guess, in the figure) and were not removed. This might not be always relevant, and I understand that some simplifications are necessary, but it might be worth explicitly discussing if this is relevant and when. For example, if speciation and background extinction rates are small, species are likely to have long branches and the trait value it might have at a given time point between its ancestral node and its tip value or next speciation node might be very different from the value it had at the ancestral node (or tip value for that matter). Or is the decision to remove the species in the selective mass extinction event one where both the ancestral and tip value have to be positive. I guess some extra information on how it chooses the species based on the trait value (is it the ancestral node value, the tip value, both?) in the selective mass extinction regime would also be helpful. I guess the issue seems that the trait value is not measured at short time intervals (only at the nodes and tips) but a selective extinction regime such as this one presented here is a point in time event. </span>
 
-This is an excellent suggestion. I've now reworked `events` to now always generates singleton nodes (and associated trait values if needed) at the time of the event before applying the modification. This way it will generate extinction based at the trait value of the extinction time rather than the latest node as it should be the case. It is then possible to remove the generated singleton nodes to clean up the tree (to have just data for bifurcating nodes and tips). This is now updated in the example. I've updated the examples on lines @@@ to include these changes.
+This is an excellent suggestion. I've now reworked `events` to now always generates singleton nodes (and associated trait values if needed) at the time of the event before applying the modification. This way it will generate extinction based at the trait value of the extinction time rather than the latest node as it should be the case. It is then possible to remove the generated singleton nodes to clean up the tree (to have just data for bifurcating nodes and tips). This is now updated in the example.
 
 * <span style="color:blue">3- I have to say that looking at figure 5 it was not trivial to see the difference between the two scenarios (I guess that happened because most, if not all, species with positive values went extinct in the left random panel as well). I know those are realizations of a stochastic process and there is nothing wrong here, my concern regards simply the visualization. I wonder if choosing another seed might result in a set of simulations that are more clearly different, making the comparison easier for the eye to pick it up. For example, in the online manual, some examples comparing random to selective simulations showed a much more disparate pattern.</span>
 
@@ -48,11 +48,11 @@ I've changed the seeds for the plotted random/non-random extinctions that illust
 
 * <span style="color:blue">4- Code box on page 7: the commentary on the second simulation scenario reads “#Simulate the tree and traits with a random extinction event” and hence is equal to the comment in the first simulation scenario in the same box. Perhaps change it to something like: “#Simulate the tree and traits with a random extinction event but based on trait value”</span>
 
-I've changed the comment to `## Simulate the tree and traits with a selective extinction event`. line @@@
+I've changed the comment to `## Simulate the tree and traits with a selective extinction event`. code block after line 203.
 
 * <span style="color:blue">5- I could be wrong but it seems that figure 6 is not cited in the text. Please double check and if this is true, please cite this figure. </span>
 
-I've added references to figures 5 and 6 in the text on lines @@@ and @@@.
+I've added references to figures 5 and 6 in the text on lines 203 and 207.
 
 * <span style="color:blue">6- All figure captions have some repetition like “Figure 1: Figure 1:….”</span>
 
@@ -63,7 +63,7 @@ I've removed the repetitions.
 The results seems a bit different now having chosen a different seed. However, I have added the Associate Editor's judicious comment to the main text:
 
 *"Both scenarios illustrate two different types of mass extinctions but they are not equivalent: because of the ancestral trait value starting at 0, we expect the second scenario to remove on average only 50% of the species (i.e. half the species are expected to evolve a trait value above 0).
-For more details on simulating the effect of mass extinction and the difficulties to simulate an unambiguous effect of a mass extinction, see @puttick2020complex."* lines @@@
+For more details on simulating the effect of mass extinction and the difficulties to simulate an unambiguous effect of a mass extinction, see Puttick, Guillerme, and Wills (2020)."* lines 195-199.
 
 # Reviewer: 1
 
@@ -75,13 +75,13 @@ For more details on simulating the effect of mass extinction and the difficultie
 
 I've now clarified what `treats` does and doesn't in the introduction:
 
-*"Note that although `treats` is modular and thus allows to be used as go to tool for simulating and trees and traits, it lacks the ready-to-use implemented methods featured in other packages such as fossilisation and sampling [@fossilsim, @treesim, @paleobuddy] or specific macroevolutionary simulations [@RPANDA, @puttick2020complex].
-"*. line @@@
+*"Note that although `treats` is modular and thus allows to be used as go to tool for simulating and trees and traits, it lacks the ready-to-use implemented methods featured in other packages such as fossilisation and sampling [@fossilsim; @treesim; @paleobuddy] or specific macroevolutionary simulations [@rpanda; @puttick2020complex].
+"*. line 63-67
 
 I've also removed the mention of the future time-dependent and lineage-dependent simulations: these are meant to be internal implementations allowing the algorithm to track time and lineage IDs across each edges which will allow even more modularity in the future but is out of the scope of this paper. 
 
 *"For example future planned versions will include abiotic events and a better integration with the `dispRity` package.
-"*. line @@@
+"*. line 218-219
 
 * <span style="color:blue">I would also have liked some information on the performance of the package compared to existing simulation tools. It seems likely that the flexibility offered by treats comes at the cost of some computational performance, so it would be nice to know how much time would be needed to simulate a reasonable dataset (for instance the 50 replicates used to test the positive extinction vs random extinction).</span>
 
@@ -95,7 +95,7 @@ Third I don't think it's something I want to put forward as a reason of why to u
 I've now added the following precision:
 
 *"The number of time units in `treats` is arbitrary and is not equivalent to millions of years.
-Using 30 time units here allows to simulate number of tips in a similar order of magnitude as the ones in the observed data."* lines @@@
+Using 30 time units here allows to simulate number of tips in a similar order of magnitude as the ones in the observed data."* lines 181-183.
 
 * <span style="color:blue">I really like the idea of having a library of premade simulation templates (l202) and I believe it will be a huge help in making the package accessible. Making the examples shown in the manual (section 8) available as scripts would be a good start for such a library.</span>
 
@@ -108,23 +108,23 @@ I've updated the README file with some indications on how to save and share such
 
 * <span style="color:blue"> - l71 "no either" </span>
 
-Fixed. [Commit 5f7fb23](https://github.com/TGuillerme/treats/commit/5f7fb235e0b56a097b9d888790028ad41f86c33b)
+Fixed.
 
 * <span style="color:blue"> - l125 "where the it"</span>
 
-Fixed. [Commit 5f7fb23](https://github.com/TGuillerme/treats/commit/5f7fb235e0b56a097b9d888790028ad41f86c33b)
+Fixed.
 
 * <span style="color:blue"> - l111 the comment in the second example is mismatched with the code (random extinction instead of positive extinction)</span>
 
-Fixed. [Commit 5f7fb23](https://github.com/TGuillerme/treats/commit/5f7fb235e0b56a097b9d888790028ad41f86c33b)
+Fixed.
 
 * <span style="color:blue"> - l175 the comment in the example is mismatched with the code (positive extinction instead of random extinction)</span>
 
-Fixed. [Commit 5f7fb23](https://github.com/TGuillerme/treats/commit/5f7fb235e0b56a097b9d888790028ad41f86c33b)
+Fixed.
 
 * <span style="color:blue"> - l178 the text mentions the function trait.extinction but it's not used in the code</span>
 
-Fixed. [Commit 5f7fb23](https://github.com/TGuillerme/treats/commit/5f7fb235e0b56a097b9d888790028ad41f86c33b)
+Fixed.
 
 * <span style="color:blue"> - l282 missing authors in the reference</span>
 
@@ -164,11 +164,11 @@ I have now changed the order of the structure of the manuscript with the descrip
 
 * <span style="color:blue">Lines 27-31: I would enumerate this list.</span>
 
-Done. [Commit 5f7fb23](https://github.com/TGuillerme/treats/commit/5f7fb235e0b56a097b9d888790028ad41f86c33b)
+Done.
 
 * <span style="color:blue">Line 84: Geological time period names should be capitalized.</span>
 
-Fixed. [Commit 5f7fb23](https://github.com/TGuillerme/treats/commit/5f7fb235e0b56a097b9d888790028ad41f86c33b)
+Fixed.
 
 * <span style="color:blue">Figures 2-6: If possible, I think it would be valuable to show what code was used to produce these figures in the code snippets. As far as I can tell, the plotting is mostly done using functions from the package, so this would also be an opportunity to showcase this functionality.</span>
 
@@ -176,7 +176,7 @@ Done with the now new inclusion of the `dispRitreats` code that streamlines the 
 
 * <span style="color:blue">Figure 2: The caption should identify what the red line represents (the K-Pg boundary?).</span>
 
-Done. [Commit 5f7fb23](https://github.com/TGuillerme/treats/commit/5f7fb235e0b56a097b9d888790028ad41f86c33b)
+Done.
 
 * <span style="color:blue">Line 111: This may be personal preference, but when I ran this code chunk it output a whole bunch of text to the console. It appears to be a separate line of text for each replicate in the treats function. I believe the intent here is to show the user how much progress has been made? Perhaps some sort of progress bar would be more appropriate?</span>
 
@@ -185,7 +185,7 @@ I've now added a `verbose` option to the `treats` function allowing to display t
 * <span style="color:blue">Lines 106-111: I think you should mention somewhere in this paragraph why you are running multiple replicates here (as opposed to the single replicate performed earlier in the worked example).</span>
 
 I've added the following sentence at the end of the paragraph:
-"*Because of the stochasticity of the simulations, we will repeat them 50 times (using `replicates = 50`) to generate a distribution of possible simulated scenarios as opposed to a random single one that could be idiosyncratic.*" [Commit 5f7fb23](https://github.com/TGuillerme/treats/commit/5f7fb235e0b56a097b9d888790028ad41f86c33b)
+"*Because of the stochasticity of the simulations, we will repeat them 50 times (using `replicates = 50`) to generate a distribution of possible simulated scenarios as opposed to a random single one that could be idiosyncratic.*" lines 200-203
 
 * <span style="color:blue">Line 111: I used the same seed as you, but I was unable to reproduce Figure 5 (looking at the R markdown file, I see that you use indices 11 and 10 to make the plots). I think showing the exact code that is used here to make Figure 5 would be useful for readers that might be “playing along at home”.</span>
 
@@ -193,10 +193,11 @@ I have streamlined and display the code to allow the users to test the package w
 
 * <span style="color:blue">Lines 112-113: You should refer to Figure 6 somewhere in this paragraph. It might also be useful to include the code to perform this comparison, especially if the functionality is all contained within the treats package.</span>
 
-Done. line @@@
+Done. line 207.
 
 * <span style="color:blue">Line 194: This reference to the manual should have a link to the online manual (looks like the link is embedded, but you should also have it typed out). I also noticed that the documentation for the treats function lists the wrong URL for the online manual.</span>
-I've added the URL spelt out. [Commit 5f7fb23](https://github.com/TGuillerme/treats/commit/5f7fb235e0b56a097b9d888790028ad41f86c33b).
+
+I've added the URL spelt out.
 
 
 * <span style="color:blue">Lines 202-203: Just wanted to note that I really love this idea! I think collecting a library of modules will be very useful to users!</span>
