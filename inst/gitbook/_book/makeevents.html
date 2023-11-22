@@ -23,7 +23,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie)" />
 
 
-<meta name="date" content="2023-11-21" />
+<meta name="date" content="2023-11-22" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -397,7 +397,7 @@ additional.args
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>time.condition</code>, <code>taxa.condition</code>, <code>trait.condition</code></td>
+<td><code>age.condition</code>, <code>taxa.condition</code>, <code>trait.condition</code></td>
 <td>x</td>
 <td>the value to check the target against</td>
 <td>e.g. time = x, taxa = x or trait = x (see below)</td>
@@ -493,7 +493,7 @@ The targets that are currently available are:</p>
 <p>Currently there are three conditions functions implemented in <code>treats</code> but you can easily come up with your own version of them.</p>
 <p>All <code>condition</code> functions in <code>treats</code> take at least two arguments: <code>x</code> for the variable of interest (e.g. time, number of taxa, trait value, etc.) and <code>condition</code>, the relational operator to evaluate. A relational operator is the proper (fancy) term designating all the comparisons you’re regularly using in <code>R</code> like <code>==</code> (is equal?) <code>&lt;</code> (is smaller?) <code>&gt;=</code> (is bigger or equal?). You can get the full list in the R base manual (using <code>?Comparison</code> or any of the relational operator in a function form). For more details on how functions <em>really</em> work in R see the <a href="https://adv-r.hadley.nz/functions.html">Advanced <code>R</code> book</a>!</p>
 <ul>
-<li><code>time.condition</code> will trigger the <code>event</code> once a certain time is reached in the simulations and is the simplest/most basic condition with no arguments other than the time required. For example <code>time.condition(4, condition = `==`)</code> will trigger the <code>event</code> once the simulations reaches 4 time units. Easy.</li>
+<li><code>age.condition</code> will trigger the <code>event</code> once a certain time is reached in the simulations and is the simplest/most basic condition with no arguments other than the time required. For example <code>age.condition(4, condition = `==`)</code> will trigger the <code>event</code> once the simulations reaches 4 time units. Easy.</li>
 <li><code>taxa.condition</code> will trigger the <code>event</code> once a certain number of taxa are reached. This can be considered including or excluding fossil species. For example <code>taxa.condition(42, condition = `&gt;=`, living = TRUE)</code> will trigger the <code>event</code> if there are at least 42 living taxa.</li>
 <li><code>trait.condition</code> will trigger the <code>event</code> once a certain trait value is reached. This function allows to say which trait(s) to target (by default, the first one using <code>trait = 1</code>), what value of the trait to target (by default <code>what = max</code>) and whether to use and absolute trait value or not (<code>absolute = TRUE</code>). For example <code>trait.condition(1/3, condition = `&gt;`, trait = 1, what = sd)</code> will trigger the condition after the standard deviation of the first trait reaches 1/3.</li>
 </ul>
@@ -513,19 +513,19 @@ Depending on the target you can modify the following:</p>
 </ul>
 <p>The most straightforward example is for <code>modifications</code> on <code>bd.params</code>, <code>traits</code> or <code>modifiers</code> objects because they use the same syntax as for their generic <code>make.X</code> function.
 For example, for <code>make.traits</code>, you can update a <code>trait</code> using the <code>update</code> argument as follows:</p>
-<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb136-1"><a href="makeevents.html#cb136-1" aria-hidden="true"></a><span class="co">## A BM trait in two dimensions</span></span>
-<span id="cb136-2"><a href="makeevents.html#cb136-2" aria-hidden="true"></a>(BM_2D &lt;-<span class="st"> </span><span class="kw">make.traits</span>(<span class="dt">n =</span> <span class="dv">2</span>, <span class="dt">process =</span> BM.process))</span></code></pre></div>
+<div class="sourceCode" id="cb135"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb135-1"><a href="makeevents.html#cb135-1" aria-hidden="true"></a><span class="co">## A BM trait in two dimensions</span></span>
+<span id="cb135-2"><a href="makeevents.html#cb135-2" aria-hidden="true"></a>(BM_2D &lt;-<span class="st"> </span><span class="kw">make.traits</span>(<span class="dt">n =</span> <span class="dv">2</span>, <span class="dt">process =</span> BM.process))</span></code></pre></div>
 <pre><code>##  ---- treats traits object ---- 
 ## 2 traits for 1 process (A:2) with one starting value (0).</code></pre>
-<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb138-1"><a href="makeevents.html#cb138-1" aria-hidden="true"></a><span class="co">## Updating the 2D BM into a 2D OU</span></span>
-<span id="cb138-2"><a href="makeevents.html#cb138-2" aria-hidden="true"></a>(OU_2D &lt;-<span class="st"> </span><span class="kw">make.traits</span>(<span class="dt">update =</span> BM_2D, <span class="dt">process =</span> OU.process))</span></code></pre></div>
+<div class="sourceCode" id="cb137"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb137-1"><a href="makeevents.html#cb137-1" aria-hidden="true"></a><span class="co">## Updating the 2D BM into a 2D OU</span></span>
+<span id="cb137-2"><a href="makeevents.html#cb137-2" aria-hidden="true"></a>(OU_2D &lt;-<span class="st"> </span><span class="kw">make.traits</span>(<span class="dt">update =</span> BM_2D, <span class="dt">process =</span> OU.process))</span></code></pre></div>
 <pre><code>##  ---- treats traits object ---- 
 ## 2 traits for 1 process (A:2) with one starting value (0).</code></pre>
 <p>So the function <code>update.X</code> applies the update to the object <code>X</code> when the event happens.
 The following <code>event</code> updates the <code>bd.params</code> object by setting the extinction parameter to 1/3 when reaching a 10 species:</p>
-<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb140-1"><a href="makeevents.html#cb140-1" aria-hidden="true"></a><span class="kw">make.events</span>(<span class="dt">target =</span> <span class="st">&quot;bd.params&quot;</span>,</span>
-<span id="cb140-2"><a href="makeevents.html#cb140-2" aria-hidden="true"></a>            <span class="dt">condition =</span> <span class="kw">taxa.condition</span>(<span class="dv">10</span>, <span class="dt">condition =</span> <span class="st">`</span><span class="dt">&gt;=</span><span class="st">`</span>),</span>
-<span id="cb140-3"><a href="makeevents.html#cb140-3" aria-hidden="true"></a>            <span class="dt">modification =</span> <span class="kw">bd.params.update</span>(<span class="dt">extinction =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">3</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb139-1"><a href="makeevents.html#cb139-1" aria-hidden="true"></a><span class="kw">make.events</span>(<span class="dt">target =</span> <span class="st">&quot;bd.params&quot;</span>,</span>
+<span id="cb139-2"><a href="makeevents.html#cb139-2" aria-hidden="true"></a>            <span class="dt">condition =</span> <span class="kw">taxa.condition</span>(<span class="dv">10</span>, <span class="dt">condition =</span> <span class="st">`</span><span class="dt">&gt;=</span><span class="st">`</span>),</span>
+<span id="cb139-3"><a href="makeevents.html#cb139-3" aria-hidden="true"></a>            <span class="dt">modification =</span> <span class="kw">bd.params.update</span>(<span class="dt">extinction =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">3</span>))</span></code></pre></div>
 <blockquote>
 <p>Note that by default events are triggered only once across the whole simulation, so although the example above states that the condition is reaching at least 10 taxa, it will not trigger every time it reaches more than 10 taxa, only the first time. You can change the number of times the events can be triggered using the argument <code>replications</code> (by default it’s set to <code>replications = 0</code> for triggering the event only once).</p>
 </blockquote>
@@ -534,58 +534,58 @@ The following <code>event</code> updates the <code>bd.params</code> object by se
 <h2><span class="header-section-number">5.4</span> Examples<a href="makeevents.html#examples" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Here are some examples illustrating how to generate events.
 For a simple example, we can create a extinction event that will remove 80% of species after reaching time 4:</p>
-<div class="sourceCode" id="cb141"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb141-1"><a href="makeevents.html#cb141-1" aria-hidden="true"></a><span class="co">## 80% mass extinction at time 4</span></span>
-<span id="cb141-2"><a href="makeevents.html#cb141-2" aria-hidden="true"></a>mass_extinction &lt;-<span class="st"> </span><span class="kw">make.events</span>(</span>
-<span id="cb141-3"><a href="makeevents.html#cb141-3" aria-hidden="true"></a>                      <span class="dt">target =</span> <span class="st">&quot;taxa&quot;</span>,</span>
-<span id="cb141-4"><a href="makeevents.html#cb141-4" aria-hidden="true"></a>                      <span class="dt">condition =</span> <span class="kw">time.condition</span>(<span class="dv">4</span>),</span>
-<span id="cb141-5"><a href="makeevents.html#cb141-5" aria-hidden="true"></a>                      <span class="dt">modification =</span> <span class="kw">random.extinction</span>(<span class="fl">0.8</span>))</span>
-<span id="cb141-6"><a href="makeevents.html#cb141-6" aria-hidden="true"></a></span>
-<span id="cb141-7"><a href="makeevents.html#cb141-7" aria-hidden="true"></a><span class="co">## Simulation parameters</span></span>
-<span id="cb141-8"><a href="makeevents.html#cb141-8" aria-hidden="true"></a>stop.rule &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">max.time =</span> <span class="dv">5</span>)</span>
-<span id="cb141-9"><a href="makeevents.html#cb141-9" aria-hidden="true"></a>bd.params &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">extinction =</span> <span class="dv">0</span>, <span class="dt">speciation =</span> <span class="dv">1</span>)</span>
-<span id="cb141-10"><a href="makeevents.html#cb141-10" aria-hidden="true"></a></span>
-<span id="cb141-11"><a href="makeevents.html#cb141-11" aria-hidden="true"></a><span class="co">## Running the simulations</span></span>
-<span id="cb141-12"><a href="makeevents.html#cb141-12" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb141-13"><a href="makeevents.html#cb141-13" aria-hidden="true"></a>results &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd.params,</span>
-<span id="cb141-14"><a href="makeevents.html#cb141-14" aria-hidden="true"></a>                <span class="dt">stop.rule =</span> stop.rule,</span>
-<span id="cb141-15"><a href="makeevents.html#cb141-15" aria-hidden="true"></a>                <span class="dt">events =</span> mass_extinction)</span>
-<span id="cb141-16"><a href="makeevents.html#cb141-16" aria-hidden="true"></a><span class="co">## Plotting the results</span></span>
-<span id="cb141-17"><a href="makeevents.html#cb141-17" aria-hidden="true"></a><span class="kw">plot</span>(results, <span class="dt">show.tip.label =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb141-18"><a href="makeevents.html#cb141-18" aria-hidden="true"></a><span class="kw">axisPhylo</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb140-1"><a href="makeevents.html#cb140-1" aria-hidden="true"></a><span class="co">## 80% mass extinction at time 4</span></span>
+<span id="cb140-2"><a href="makeevents.html#cb140-2" aria-hidden="true"></a>mass_extinction &lt;-<span class="st"> </span><span class="kw">make.events</span>(</span>
+<span id="cb140-3"><a href="makeevents.html#cb140-3" aria-hidden="true"></a>                      <span class="dt">target =</span> <span class="st">&quot;taxa&quot;</span>,</span>
+<span id="cb140-4"><a href="makeevents.html#cb140-4" aria-hidden="true"></a>                      <span class="dt">condition =</span> <span class="kw">age.condition</span>(<span class="dv">4</span>),</span>
+<span id="cb140-5"><a href="makeevents.html#cb140-5" aria-hidden="true"></a>                      <span class="dt">modification =</span> <span class="kw">random.extinction</span>(<span class="fl">0.8</span>))</span>
+<span id="cb140-6"><a href="makeevents.html#cb140-6" aria-hidden="true"></a></span>
+<span id="cb140-7"><a href="makeevents.html#cb140-7" aria-hidden="true"></a><span class="co">## Simulation parameters</span></span>
+<span id="cb140-8"><a href="makeevents.html#cb140-8" aria-hidden="true"></a>stop.rule &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">max.time =</span> <span class="dv">5</span>)</span>
+<span id="cb140-9"><a href="makeevents.html#cb140-9" aria-hidden="true"></a>bd.params &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">extinction =</span> <span class="dv">0</span>, <span class="dt">speciation =</span> <span class="dv">1</span>)</span>
+<span id="cb140-10"><a href="makeevents.html#cb140-10" aria-hidden="true"></a></span>
+<span id="cb140-11"><a href="makeevents.html#cb140-11" aria-hidden="true"></a><span class="co">## Running the simulations</span></span>
+<span id="cb140-12"><a href="makeevents.html#cb140-12" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb140-13"><a href="makeevents.html#cb140-13" aria-hidden="true"></a>results &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd.params,</span>
+<span id="cb140-14"><a href="makeevents.html#cb140-14" aria-hidden="true"></a>                <span class="dt">stop.rule =</span> stop.rule,</span>
+<span id="cb140-15"><a href="makeevents.html#cb140-15" aria-hidden="true"></a>                <span class="dt">events =</span> mass_extinction)</span>
+<span id="cb140-16"><a href="makeevents.html#cb140-16" aria-hidden="true"></a><span class="co">## Plotting the results</span></span>
+<span id="cb140-17"><a href="makeevents.html#cb140-17" aria-hidden="true"></a><span class="kw">plot</span>(results, <span class="dt">show.tip.label =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb140-18"><a href="makeevents.html#cb140-18" aria-hidden="true"></a><span class="kw">axisPhylo</span>()</span></code></pre></div>
 <p><img src="treats_manual_files/figure-html/unnamed-chunk-90-1.png" width="672" /></p>
 <p>Or for a slightly more complex example, we can can change the trait process from a BM to an OU when the trait values reaches an upper 95% quantile value above 2:</p>
-<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb142-1"><a href="makeevents.html#cb142-1" aria-hidden="true"></a><span class="co">## The 95% upper quantile value of a distribution</span></span>
-<span id="cb142-2"><a href="makeevents.html#cb142-2" aria-hidden="true"></a>upper<span class="fl">.95</span> &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</span>
-<span id="cb142-3"><a href="makeevents.html#cb142-3" aria-hidden="true"></a>    <span class="kw">return</span>(<span class="kw">quantile</span>(x, <span class="dt">prob =</span> <span class="fl">0.95</span>))</span>
-<span id="cb142-4"><a href="makeevents.html#cb142-4" aria-hidden="true"></a>} </span>
-<span id="cb142-5"><a href="makeevents.html#cb142-5" aria-hidden="true"></a><span class="co">## Create an event to change the trait process</span></span>
-<span id="cb142-6"><a href="makeevents.html#cb142-6" aria-hidden="true"></a>change_process &lt;-<span class="st"> </span><span class="kw">make.events</span>(</span>
-<span id="cb142-7"><a href="makeevents.html#cb142-7" aria-hidden="true"></a>                  <span class="dt">target =</span> <span class="st">&quot;traits&quot;</span>,</span>
-<span id="cb142-8"><a href="makeevents.html#cb142-8" aria-hidden="true"></a>                  <span class="co">## condition is triggered if(upper.95(x) &gt; 3)</span></span>
-<span id="cb142-9"><a href="makeevents.html#cb142-9" aria-hidden="true"></a>                  <span class="dt">condition =</span> <span class="kw">trait.condition</span>(<span class="dv">3</span>, <span class="dt">condition =</span> <span class="st">`</span><span class="dt">&gt;</span><span class="st">`</span>, <span class="dt">what =</span> upper<span class="fl">.95</span>),</span>
-<span id="cb142-10"><a href="makeevents.html#cb142-10" aria-hidden="true"></a>                  <span class="dt">modification =</span> <span class="kw">traits.update</span>(<span class="dt">process =</span> OU.process))</span>
-<span id="cb142-11"><a href="makeevents.html#cb142-11" aria-hidden="true"></a></span>
-<span id="cb142-12"><a href="makeevents.html#cb142-12" aria-hidden="true"></a><span class="co">## Set the simulation parameters</span></span>
-<span id="cb142-13"><a href="makeevents.html#cb142-13" aria-hidden="true"></a>bd.params &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">extinction =</span> <span class="dv">0</span>, <span class="dt">speciation =</span> <span class="dv">1</span>)</span>
-<span id="cb142-14"><a href="makeevents.html#cb142-14" aria-hidden="true"></a>stop.rule &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">max.time =</span> <span class="dv">6</span>)</span>
-<span id="cb142-15"><a href="makeevents.html#cb142-15" aria-hidden="true"></a>traits    &lt;-<span class="st"> </span><span class="kw">make.traits</span>()</span>
-<span id="cb142-16"><a href="makeevents.html#cb142-16" aria-hidden="true"></a></span>
-<span id="cb142-17"><a href="makeevents.html#cb142-17" aria-hidden="true"></a><span class="co">## Run the simulations</span></span>
-<span id="cb142-18"><a href="makeevents.html#cb142-18" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb142-19"><a href="makeevents.html#cb142-19" aria-hidden="true"></a>no_change &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd.params,</span>
-<span id="cb142-20"><a href="makeevents.html#cb142-20" aria-hidden="true"></a>                  <span class="dt">stop.rule =</span> stop.rule,</span>
-<span id="cb142-21"><a href="makeevents.html#cb142-21" aria-hidden="true"></a>                  <span class="dt">traits =</span> traits)</span>
-<span id="cb142-22"><a href="makeevents.html#cb142-22" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb142-23"><a href="makeevents.html#cb142-23" aria-hidden="true"></a>process_change &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd.params,</span>
-<span id="cb142-24"><a href="makeevents.html#cb142-24" aria-hidden="true"></a>                       <span class="dt">stop.rule =</span> stop.rule,</span>
-<span id="cb142-25"><a href="makeevents.html#cb142-25" aria-hidden="true"></a>                       <span class="dt">traits =</span> traits,</span>
-<span id="cb142-26"><a href="makeevents.html#cb142-26" aria-hidden="true"></a>                       <span class="dt">events =</span> change_process)</span>
-<span id="cb142-27"><a href="makeevents.html#cb142-27" aria-hidden="true"></a><span class="co">## Plot the results</span></span>
-<span id="cb142-28"><a href="makeevents.html#cb142-28" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
-<span id="cb142-29"><a href="makeevents.html#cb142-29" aria-hidden="true"></a><span class="kw">plot</span>(no_change, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">7</span>, <span class="dv">7</span>))</span>
-<span id="cb142-30"><a href="makeevents.html#cb142-30" aria-hidden="true"></a><span class="kw">plot</span>(process_change, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">7</span>, <span class="dv">7</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb141"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb141-1"><a href="makeevents.html#cb141-1" aria-hidden="true"></a><span class="co">## The 95% upper quantile value of a distribution</span></span>
+<span id="cb141-2"><a href="makeevents.html#cb141-2" aria-hidden="true"></a>upper<span class="fl">.95</span> &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</span>
+<span id="cb141-3"><a href="makeevents.html#cb141-3" aria-hidden="true"></a>    <span class="kw">return</span>(<span class="kw">quantile</span>(x, <span class="dt">prob =</span> <span class="fl">0.95</span>))</span>
+<span id="cb141-4"><a href="makeevents.html#cb141-4" aria-hidden="true"></a>} </span>
+<span id="cb141-5"><a href="makeevents.html#cb141-5" aria-hidden="true"></a><span class="co">## Create an event to change the trait process</span></span>
+<span id="cb141-6"><a href="makeevents.html#cb141-6" aria-hidden="true"></a>change_process &lt;-<span class="st"> </span><span class="kw">make.events</span>(</span>
+<span id="cb141-7"><a href="makeevents.html#cb141-7" aria-hidden="true"></a>                  <span class="dt">target =</span> <span class="st">&quot;traits&quot;</span>,</span>
+<span id="cb141-8"><a href="makeevents.html#cb141-8" aria-hidden="true"></a>                  <span class="co">## condition is triggered if(upper.95(x) &gt; 3)</span></span>
+<span id="cb141-9"><a href="makeevents.html#cb141-9" aria-hidden="true"></a>                  <span class="dt">condition =</span> <span class="kw">trait.condition</span>(<span class="dv">3</span>, <span class="dt">condition =</span> <span class="st">`</span><span class="dt">&gt;</span><span class="st">`</span>, <span class="dt">what =</span> upper<span class="fl">.95</span>),</span>
+<span id="cb141-10"><a href="makeevents.html#cb141-10" aria-hidden="true"></a>                  <span class="dt">modification =</span> <span class="kw">traits.update</span>(<span class="dt">process =</span> OU.process))</span>
+<span id="cb141-11"><a href="makeevents.html#cb141-11" aria-hidden="true"></a></span>
+<span id="cb141-12"><a href="makeevents.html#cb141-12" aria-hidden="true"></a><span class="co">## Set the simulation parameters</span></span>
+<span id="cb141-13"><a href="makeevents.html#cb141-13" aria-hidden="true"></a>bd.params &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">extinction =</span> <span class="dv">0</span>, <span class="dt">speciation =</span> <span class="dv">1</span>)</span>
+<span id="cb141-14"><a href="makeevents.html#cb141-14" aria-hidden="true"></a>stop.rule &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">max.time =</span> <span class="dv">6</span>)</span>
+<span id="cb141-15"><a href="makeevents.html#cb141-15" aria-hidden="true"></a>traits    &lt;-<span class="st"> </span><span class="kw">make.traits</span>()</span>
+<span id="cb141-16"><a href="makeevents.html#cb141-16" aria-hidden="true"></a></span>
+<span id="cb141-17"><a href="makeevents.html#cb141-17" aria-hidden="true"></a><span class="co">## Run the simulations</span></span>
+<span id="cb141-18"><a href="makeevents.html#cb141-18" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb141-19"><a href="makeevents.html#cb141-19" aria-hidden="true"></a>no_change &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd.params,</span>
+<span id="cb141-20"><a href="makeevents.html#cb141-20" aria-hidden="true"></a>                  <span class="dt">stop.rule =</span> stop.rule,</span>
+<span id="cb141-21"><a href="makeevents.html#cb141-21" aria-hidden="true"></a>                  <span class="dt">traits =</span> traits)</span>
+<span id="cb141-22"><a href="makeevents.html#cb141-22" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb141-23"><a href="makeevents.html#cb141-23" aria-hidden="true"></a>process_change &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd.params,</span>
+<span id="cb141-24"><a href="makeevents.html#cb141-24" aria-hidden="true"></a>                       <span class="dt">stop.rule =</span> stop.rule,</span>
+<span id="cb141-25"><a href="makeevents.html#cb141-25" aria-hidden="true"></a>                       <span class="dt">traits =</span> traits,</span>
+<span id="cb141-26"><a href="makeevents.html#cb141-26" aria-hidden="true"></a>                       <span class="dt">events =</span> change_process)</span>
+<span id="cb141-27"><a href="makeevents.html#cb141-27" aria-hidden="true"></a><span class="co">## Plot the results</span></span>
+<span id="cb141-28"><a href="makeevents.html#cb141-28" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb141-29"><a href="makeevents.html#cb141-29" aria-hidden="true"></a><span class="kw">plot</span>(no_change, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">7</span>, <span class="dv">7</span>))</span>
+<span id="cb141-30"><a href="makeevents.html#cb141-30" aria-hidden="true"></a><span class="kw">plot</span>(process_change, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">7</span>, <span class="dv">7</span>))</span></code></pre></div>
 <p><img src="treats_manual_files/figure-html/unnamed-chunk-91-1.png" width="672" /></p>
-<div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb143-1"><a href="makeevents.html#cb143-1" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb142-1"><a href="makeevents.html#cb142-1" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code></pre></div>
 </div>
 <div id="founding" class="section level2 hasAnchor" number="5.5">
 <h2><span class="header-section-number">5.5</span> Founding events<a href="makeevents.html#founding" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -597,25 +597,25 @@ It will then branch this sub-tree onto the rest of the simulation that continued
 You can specify the founding event using the inbuilt <code>founding.event</code> modification event.
 This function takes the exact same arguments as <code>treats</code> to simulate the sub-tree with its own parameters.
 Additionally, we will use the <code>additional.args</code> argument from <code>make.events</code> to specify a prefix for the founding tree tips (to make them easier to distinguish).</p>
-<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb144-1"><a href="makeevents.html#cb144-1" aria-hidden="true"></a><span class="co">## Set up parameters</span></span>
-<span id="cb144-2"><a href="makeevents.html#cb144-2" aria-hidden="true"></a>stop.rule &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">max.time =</span> <span class="dv">4</span>)</span>
-<span id="cb144-3"><a href="makeevents.html#cb144-3" aria-hidden="true"></a>bd.params &lt;-<span class="st"> </span><span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> <span class="dv">1</span>, <span class="dt">extinction =</span> <span class="fl">0.3</span>)</span>
-<span id="cb144-4"><a href="makeevents.html#cb144-4" aria-hidden="true"></a></span>
-<span id="cb144-5"><a href="makeevents.html#cb144-5" aria-hidden="true"></a><span class="co">## Events that generate a new process (founding tree - with no extinction)</span></span>
-<span id="cb144-6"><a href="makeevents.html#cb144-6" aria-hidden="true"></a>founding_event &lt;-<span class="st"> </span><span class="kw">make.events</span>(</span>
-<span id="cb144-7"><a href="makeevents.html#cb144-7" aria-hidden="true"></a>                  <span class="dt">target =</span> <span class="st">&quot;founding&quot;</span>,</span>
-<span id="cb144-8"><a href="makeevents.html#cb144-8" aria-hidden="true"></a>                  <span class="dt">condition =</span> <span class="kw">taxa.condition</span>(<span class="dv">10</span>),</span>
-<span id="cb144-9"><a href="makeevents.html#cb144-9" aria-hidden="true"></a>                  <span class="dt">modification =</span> <span class="kw">founding.event</span>(</span>
-<span id="cb144-10"><a href="makeevents.html#cb144-10" aria-hidden="true"></a>                                    <span class="dt">bd.params =</span> <span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> <span class="dv">2</span>,</span>
-<span id="cb144-11"><a href="makeevents.html#cb144-11" aria-hidden="true"></a>                                                               <span class="dt">extinction =</span> <span class="dv">0</span>)),</span>
-<span id="cb144-12"><a href="makeevents.html#cb144-12" aria-hidden="true"></a>                  <span class="dt">additional.args =</span> <span class="kw">list</span>(<span class="dt">prefix =</span> <span class="st">&quot;founding_&quot;</span>))</span>
-<span id="cb144-13"><a href="makeevents.html#cb144-13" aria-hidden="true"></a>    </span>
-<span id="cb144-14"><a href="makeevents.html#cb144-14" aria-hidden="true"></a><span class="co">## Simulations</span></span>
-<span id="cb144-15"><a href="makeevents.html#cb144-15" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">11</span>)</span>
-<span id="cb144-16"><a href="makeevents.html#cb144-16" aria-hidden="true"></a>founding_tree &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd.params,</span>
-<span id="cb144-17"><a href="makeevents.html#cb144-17" aria-hidden="true"></a>                      <span class="dt">stop.rule =</span> stop.rule,</span>
-<span id="cb144-18"><a href="makeevents.html#cb144-18" aria-hidden="true"></a>                      <span class="dt">events =</span> founding_event)</span>
-<span id="cb144-19"><a href="makeevents.html#cb144-19" aria-hidden="true"></a><span class="kw">plot</span>(founding_tree, <span class="dt">cex =</span> <span class="fl">0.4</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb143-1"><a href="makeevents.html#cb143-1" aria-hidden="true"></a><span class="co">## Set up parameters</span></span>
+<span id="cb143-2"><a href="makeevents.html#cb143-2" aria-hidden="true"></a>stop.rule &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">max.time =</span> <span class="dv">4</span>)</span>
+<span id="cb143-3"><a href="makeevents.html#cb143-3" aria-hidden="true"></a>bd.params &lt;-<span class="st"> </span><span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> <span class="dv">1</span>, <span class="dt">extinction =</span> <span class="fl">0.3</span>)</span>
+<span id="cb143-4"><a href="makeevents.html#cb143-4" aria-hidden="true"></a></span>
+<span id="cb143-5"><a href="makeevents.html#cb143-5" aria-hidden="true"></a><span class="co">## Events that generate a new process (founding tree - with no extinction)</span></span>
+<span id="cb143-6"><a href="makeevents.html#cb143-6" aria-hidden="true"></a>founding_event &lt;-<span class="st"> </span><span class="kw">make.events</span>(</span>
+<span id="cb143-7"><a href="makeevents.html#cb143-7" aria-hidden="true"></a>                  <span class="dt">target =</span> <span class="st">&quot;founding&quot;</span>,</span>
+<span id="cb143-8"><a href="makeevents.html#cb143-8" aria-hidden="true"></a>                  <span class="dt">condition =</span> <span class="kw">taxa.condition</span>(<span class="dv">10</span>),</span>
+<span id="cb143-9"><a href="makeevents.html#cb143-9" aria-hidden="true"></a>                  <span class="dt">modification =</span> <span class="kw">founding.event</span>(</span>
+<span id="cb143-10"><a href="makeevents.html#cb143-10" aria-hidden="true"></a>                                    <span class="dt">bd.params =</span> <span class="kw">make.bd.params</span>(<span class="dt">speciation =</span> <span class="dv">2</span>,</span>
+<span id="cb143-11"><a href="makeevents.html#cb143-11" aria-hidden="true"></a>                                                               <span class="dt">extinction =</span> <span class="dv">0</span>)),</span>
+<span id="cb143-12"><a href="makeevents.html#cb143-12" aria-hidden="true"></a>                  <span class="dt">additional.args =</span> <span class="kw">list</span>(<span class="dt">prefix =</span> <span class="st">&quot;founding_&quot;</span>))</span>
+<span id="cb143-13"><a href="makeevents.html#cb143-13" aria-hidden="true"></a>    </span>
+<span id="cb143-14"><a href="makeevents.html#cb143-14" aria-hidden="true"></a><span class="co">## Simulations</span></span>
+<span id="cb143-15"><a href="makeevents.html#cb143-15" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">11</span>)</span>
+<span id="cb143-16"><a href="makeevents.html#cb143-16" aria-hidden="true"></a>founding_tree &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd.params,</span>
+<span id="cb143-17"><a href="makeevents.html#cb143-17" aria-hidden="true"></a>                      <span class="dt">stop.rule =</span> stop.rule,</span>
+<span id="cb143-18"><a href="makeevents.html#cb143-18" aria-hidden="true"></a>                      <span class="dt">events =</span> founding_event)</span>
+<span id="cb143-19"><a href="makeevents.html#cb143-19" aria-hidden="true"></a><span class="kw">plot</span>(founding_tree, <span class="dt">cex =</span> <span class="fl">0.4</span>)</span></code></pre></div>
 <p><img src="treats_manual_files/figure-html/unnamed-chunk-92-1.png" width="672" /></p>
 <p>Note that the nestedness here is potentially endless, for example, you can pass an <code>event</code> argument to the <code>founding.event</code> that will generate another founding event, etc.</p>
 

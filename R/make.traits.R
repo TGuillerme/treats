@@ -4,12 +4,12 @@
 #'
 #' @param process      The trait process(es) (default is \code{\link{BM.process}}).
 #' @param n            Optional, the number of traits per process (default is \code{1}).
-#' @param start        Optional, the starting values for each traits (default is {0}).
+#' @param start        Optional, the starting values for each traits (default is \code{0}).
 #' @param process.args Optional, a named list of optional arguments for the trait process.
 #' @param trait.names  Optional, the name(s) of the process(s).
 #' @param add          Optional, another previous \code{"treats"} traits object to which to add the trait.
 #' @param update       Optional, another previous \code{"treats"} traits object to update (see details).
-#' @param background    Optional, another \code{"treats"} \code{"traits"} object to simulate background trait evolution (see details).
+#' @param background   Optional, another \code{"treats"} \code{"traits"} object to simulate background trait evolution (see details).
 #' @param test         Logical, whether to test if the traits object will work with \code{\link{treats}} (\code{TRUE} - default).
 #' 
 #' 

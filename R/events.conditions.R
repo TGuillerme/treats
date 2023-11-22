@@ -1,5 +1,5 @@
 #' @name events.conditions
-#' @aliases time.condition taxa.condition trait.condition
+#' @aliases age.condition taxa.condition trait.condition
 #' @title events.conditions
 #'
 #' @description Inbuilt conditions functions for helping designing events
@@ -14,7 +14,7 @@
 #' The following functions allow to design specific conditions for events:
 #' 
 #' \itemize{
-#'      \item{\code{time.condition}}: a conditional function based on the time \code{x}. Typically this can be translated into "when time reaches the value x, trigger a condition" (see \code{\link{make.events}}). There is no optional argument for the function.
+#'      \item{\code{age.condition}}: a conditional function based on the time \code{x}. Typically this can be translated into "when time reaches the value x, trigger a condition" (see \code{\link{make.events}}). There is no optional argument for the function.
 #' 
 #'      \item{\code{taxa.condition}}: a conditional function based on the number of taxa \code{x}. Typically this can be  translated into "when the number of taxa reaches the value x, trigger a condition" (see \code{\link{make.events}}). This function has one optional argument:
 #'      \itemize{
@@ -37,7 +37,7 @@
 #' ## 80% mass extinction at time 4
 #' mass_extinction <- make.events(
 #'                       target       = "taxa",
-#'                       condition    = time.condition(4),
+#'                       condition    = age.condition(4),
 #'                       modification = random.extinction(0.8))
 #' 
 #' ## Set the simulation parameters
@@ -94,13 +94,18 @@
 events.condition <- function(x, condition, ...) {
     cat("List of inbuilt condition functions in treats:\n")
     cat("   ?taxa.condition\n")
-    cat("   ?time.condition\n")
+    cat("   ?age.condition\n")
     cat("   ?trait.condition\n")
     return(invisible())
 } 
 
+## time.condition alias
+time.condition <- function(x, ...) {
+    age.condition(x, ...)
+}
+
 ## A condition based on a specific time value \code{x}
-time.condition <- function(x, condition = `>`) {
+age.condition <- function(x, condition = `>`) {
     return(function(bd.params, lineage, trait.values, time) {condition(time, x)})
 }
 

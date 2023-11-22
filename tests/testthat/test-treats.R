@@ -85,12 +85,12 @@ test_that("paper example works", {
     ## Creating a random mass extinction
     random_extinction <- make.events(
         target       = "taxa",
-        condition    = time.condition(15),
+        condition    = age.condition(15),
         modification = random.extinction(0.75))
     ## Creating an extinction that removes species with positive trait values
     positive_extinction <- make.events(
         target = "taxa",
-        condition = time.condition(15),
+        condition = age.condition(15),
         modification = trait.extinction(x = 0, condition = `>=`))
 
     set.seed(123)
@@ -109,7 +109,7 @@ test_that("paper example works", {
 
     ## multiple prints
     output <- capture_output(print.treats(sim_rand_extinction))
-    expect_equal(output, " ---- treats object with 10 replicates ---- \nYou can access individual replicates by extracting them, e.g. using x[[1]]\nBirth death process with events:\nspeciation: 0.352.\nextinction: 0.288.\nEvent targeting \"taxa\" to be triggered 1 time.\nThe condition function is: time.condition\nThe modification function is: random.extinction\n\nSimulated trait data:\n2 traits for 1 process (A:2) with one starting value (0).")
+    expect_equal(output, " ---- treats object with 10 replicates ---- \nYou can access individual replicates by extracting them, e.g. using x[[1]]\nBirth death process with events:\nspeciation: 0.352.\nextinction: 0.288.\nEvent targeting \"taxa\" to be triggered 1 time.\nThe condition function is: age.condition\nThe modification function is: random.extinction\n\nSimulated trait data:\n2 traits for 1 process (A:2) with one starting value (0).")
 
 
 
@@ -127,7 +127,7 @@ test_that("paper example works", {
     expect_equal(length(sim_trait_extinction), 10)
 
     output <- capture_output(print.treats(sim_trait_extinction))
-    expect_equal(output, " ---- treats object with 10 replicates ---- \nYou can access individual replicates by extracting them, e.g. using x[[1]]\nBirth death process with events:\nspeciation: 0.352.\nextinction: 0.288.\nEvent targeting \"taxa\" to be triggered 1 time.\nThe condition function is: time.condition\nThe modification function is: trait.extinction\n\nSimulated trait data:\n2 traits for 1 process (A:2) with one starting value (0).")
+    expect_equal(output, " ---- treats object with 10 replicates ---- \nYou can access individual replicates by extracting them, e.g. using x[[1]]\nBirth death process with events:\nspeciation: 0.352.\nextinction: 0.288.\nEvent targeting \"taxa\" to be triggered 1 time.\nThe condition function is: age.condition\nThe modification function is: trait.extinction\n\nSimulated trait data:\n2 traits for 1 process (A:2) with one starting value (0).")
 
 })
 

@@ -35,7 +35,7 @@ trigger.events <- function(one_event, bd.params, lineage, trait.values, time) {
     return(one_event$condition(bd.params = bd.params, lineage = lineage, trait.values = trait.values, time = time) && one_event$trigger < 1L)
 }
 ## Creates a snapshot (creates a snapshot of the data (lineage or/and traits) at a specific time): single updates
-update.single.nodes <- function(lineage) {
+bd.update.single.nodes <- function(lineage) {
     ## Creating the new lineage
     new_lineage <- lineage
     ## Adding the living species as new parents
@@ -57,7 +57,7 @@ update.single.nodes <- function(lineage) {
     ## Done
     return(new_lineage)
 }
-update.single.edges <- function(time, time.slice, lineage, edge_lengths) {
+bd.update.single.edges <- function(time, time.slice, lineage, edge_lengths) {
     ## Calculate the difference at the split time
     diff <- time - time.slice
     ## Updating the edge lengths
@@ -68,7 +68,7 @@ update.single.edges <- function(time, time.slice, lineage, edge_lengths) {
     edge_lengths_out[lineage$livings] <- diff
     return(edge_lengths_out)
 }
-update.single.traits <- function(trait_values, traits, lineage, edge_lengths) {
+bd.update.single.traits <- function(trait_values, traits, lineage, edge_lengths) {
     ## Simulate the traits for all the singles
     snap_traits <- do.call(cbind,
                         lapply(traits,
@@ -123,7 +123,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     # }
     # modifiers <- make.modifiers(selection = select.scale.to.absolute.trait.value)
     # events <- make.events(target = "taxa",
-    #                       condition = time.condition(1),
+    #                       condition = age.condition(1),
     #                       modification = trait.extinction(0))
 
     # null.error <- FALSE
@@ -294,10 +294,10 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                 time.slice <- first_waiting_time + current.save.steps[1]
                 
                 ## Save a step by creating singles
-                lineage      <- update.single.nodes(lineage)
-                edge_lengths <- update.single.edges(time, time.slice, lineage, edge_lengths)
+                lineage      <- bd.update.single.nodes(lineage)
+                edge_lengths <- bd.update.single.edges(time, time.slice, lineage, edge_lengths)
                 if(do_traits) {
-                    trait_values <- update.single.traits(trait_values, traits$main, lineage, edge_lengths)
+                    trait_values <- bd.update.single.traits(trait_values, traits$main, lineage, edge_lengths)
                 }
 
                 ## Updating the saving.steps
@@ -318,9 +318,9 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
 
                 # time.slice <- first_waiting_time + time
                 ## Update the lineage and create generate background traits
-                lineage      <- update.single.nodes(lineage)
-                edge_lengths <- update.single.edges(time, time.slice = time, lineage, edge_lengths)
-                trait_values <- update.single.traits(trait_values, traits$background$main, lineage, edge_lengths)
+                lineage      <- bd.update.single.nodes(lineage)
+                edge_lengths <- bd.update.single.edges(time, time.slice = time, lineage, edge_lengths)
+                trait_values <- bd.update.single.traits(trait_values, traits$background$main, lineage, edge_lengths)
 
                 ## Redo the current node
                 trait_values <- rbind(trait_values,
@@ -379,7 +379,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
             lineage$n <- lineage$n - 1L
         }
 
-        # plot.lineage(lineage, edge_lengths) ; warning("DEBUG")
+        # internal.plot.lineage(lineage, edge_lengths) ; warning("DEBUG")
         # warning("DEBUG"); reached_event <- TRUE
 
         ## Trigger events
@@ -397,7 +397,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                 # lineage_bkp <- lineage ; edge_lengths_bkp <- edge_lengths ; trait_values_bkp <- trait_values
                 # lineage_bkp -> lineage ; edge_lengths_bkp -> edge_lengths ; trait_values_bkp -> trait_values
 
-                # plot.lineage(lineage, edge_lengths)
+                # internal.plot.lineage(lineage, edge_lengths)
 
                 ## Selecting the first triggerable event
                 selected_event <- which(triggers)[1]
@@ -409,10 +409,10 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
 
                 ## Create trait snapshot at the time of the event
                 time.slice   <- time#-first_waiting_time #TG: Check here if time-first_waiting_time is needed OR, if time condition, the proper extinction time is needed
-                lineage      <- update.single.nodes(lineage)
-                edge_lengths <- update.single.edges(time, time.slice, lineage, edge_lengths)
+                lineage      <- bd.update.single.nodes(lineage)
+                edge_lengths <- bd.update.single.edges(time, time.slice, lineage, edge_lengths)
                 if(do_traits) {
-                    trait_values <- update.single.traits(trait_values, traits$main, lineage, edge_lengths)
+                    trait_values <- bd.update.single.traits(trait_values, traits$main, lineage, edge_lengths)
                 }
 
                 ## Trigger the event

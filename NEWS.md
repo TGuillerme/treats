@@ -1,4 +1,4 @@
-treats v1.0 (2023-11-21) 
+treats v1.0 (2023-11-22) 
 =========================
 
 ### NEW FEATURES
@@ -17,6 +17,11 @@ treats v1.0 (2023-11-21)
  
  * Fixed many simulation corner cases (mainly ones for special trees with always only one node, one living and one fossil).
  * Fixed printing issues with S3 `"treats"` sub-classes
+
+### DEPRECATED AND DEFUNCT
+
+ * `time.condition` is now changed to `age.condition`.
+
 
 treats v0.2 (2023-05-25) *CRAN friendly pre-release*
 =========================

@@ -28,7 +28,7 @@ sim.motion <- function(one_trait, steps) {
 # ' @param quantiles the quantiles to display (default is \code{c(95, 50)})
 # ' @param ... any additional argument to be passed to \code{\link[graphics]{plot}}.
 
-plot.simulation <- function(data, cent.tend, quantiles, col, use.3D, trait, trait.name, ...) {
+internal.plot.simulation <- function(data, cent.tend, quantiles, col, use.3D, trait, trait.name, ...) {
     
     ## Whether to use 3D plots or not
     is_1D <- ncol(data[[1]]) == 1

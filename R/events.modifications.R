@@ -53,7 +53,7 @@
 #' ## 80% mass extinction at time 4
 #' mass_extinction <- make.events(
 #'                       target       = "taxa",
-#'                       condition    = time.condition(4),
+#'                       condition    = age.condition(4),
 #'                       modification = random.extinction(0.8))
 #' 
 #' ## Set the simulation parameters

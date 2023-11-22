@@ -7,7 +7,7 @@
 # @param ... additional \code{treats} objects to add (e.g. \code{traits}).
 #'
 #' @return
-#' This function outputs a \code{treats} object that is a list of at least two elements: \code{$tree}, a \code{"phylo"} object and \code{$data}, a code{"matrix"} of the trait values.
+#' This function outputs a \code{treats} object that is a list of at least two elements: \code{$tree}, a \code{"phylo"} object and \code{$data}, a \code{"matrix"} of the trait values.
 #'
 #' @examples
 #' ## Creating a random tree

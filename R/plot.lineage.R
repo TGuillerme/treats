@@ -7,7 +7,7 @@
 # @param edge_lengths  Optional, the edge_lengths
 # @param element.names logical, whether to display the elements as named in lineage (TRUE) or as named in the output tree (FALSE)
 # @param plot logical, also plots the tree (TRUE) or not (FALSE)
-plot.lineage <- function(lineage, edge_lengths, element.names = TRUE, plot = TRUE) {
+internal.plot.lineage <- function(lineage, edge_lengths, element.names = TRUE, plot = TRUE) {
 
     ## Missing edge lenghts
     if(missing(edge_lengths)) {

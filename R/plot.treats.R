@@ -116,7 +116,7 @@ plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NUL
             }
 
             ## Plotting the results
-            plot.simulation(data = replicate(simulations, 
+            internal.plot.simulation(data = replicate(simulations, 
                                              sim.motion(one_trait, steps = 100),
                                              simplify = FALSE),
                             col = col, use.3D = use.3D, trait = trait_ids, trait.name = trait_name, quantiles = quantiles, cent.tend = cent.tend, ...)

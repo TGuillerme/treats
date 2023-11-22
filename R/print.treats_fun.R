@@ -1,5 +1,5 @@
 ## Function for printing the traits info
-print.traits.info <- function(x) {
+internal.print.traits.info <- function(x) {
     ## Get the trait object info
     n_processes   <- length(x)
     trait_process <- lapply(x, function(X) X$trait_id)
@@ -39,7 +39,7 @@ print.traits.info <- function(x) {
 }
 
 ## Function for printing the modifiers info
-print.modifiers.info <- function(x) {
+internal.print.modifiers.info <- function(x) {
 
     ## Check of is null or default
     not.null.default <- function(x) {
@@ -104,7 +104,7 @@ print.modifiers.info <- function(x) {
 }
 
 ## Function for printing the events info
-print.events.info <- function(x) {
+internal.print.events.info <- function(x) {
     cat(paste0(ifelse(is.null(x$call$event.name), "E", paste0(x$call$event.name, " e")), "vent targeting \"", x$target, "\" to be triggered ", x$trigger+1, " time", ifelse(x$trigger < 0, "s.", ".")))
     cat("\n")
     condition_fun <- if(is(x$call$condition, "name")) {x$call$condition} else {x$call$condition[[1]]}
@@ -115,7 +115,7 @@ print.events.info <- function(x) {
 }
 
 ## Function for printing bd.params info
-print.bd.params.info <- function(x) {
+internal.print.bd.params.info <- function(x) {
     if(x$joint) {
         cat("joint sampling for:\n")
     }

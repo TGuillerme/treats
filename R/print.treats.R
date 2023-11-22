@@ -38,22 +38,22 @@ print.treats <- function(x, all = FALSE, ...) {
             switch(class(x)[[2]],
                 traits = {
                     cat(" ---- treats traits object ---- \n")
-                    print.traits.info(x$main)
+                    internal.print.traits.info(x$main)
                     if(!is.null(x$background)) {
                         cat("And a background trait (see x$background for info).")
                     }
                 },
                 events = {
                     cat(" ---- treats events object ---- \n")
-                    lapply(x, print.events.info)
+                    lapply(x, internal.print.events.info)
                 },
                 modifiers = {
                     cat(" ---- treats modifiers object ---- \n")
-                    print.modifiers.info(x)
+                    internal.print.modifiers.info(x)
                 },
                 bd.params = {
                     cat(" ---- treats birth-death parameters object ---- \n")
-                    print.bd.params.info(x)
+                    internal.print.bd.params.info(x)
                 }
                 )
             return(invisible())
@@ -79,13 +79,13 @@ print.treats <- function(x, all = FALSE, ...) {
                 ifelse(!is.null(x$events), paste0(ifelse(!is.null(x$modifiers), " and", ""), " events"), ""), 
                 ":\n"))
             if(!is.null(x$bd.params)) {
-                print.bd.params.info(x$bd.params)
+                internal.print.bd.params.info(x$bd.params)
             } 
             if(!is.null(x$modifiers)) {
-                print.modifiers.info(x$modifiers)
+                internal.print.modifiers.info(x$modifiers)
             } 
             if(!is.null(x$events)) {
-                lapply(x$events, print.events.info)
+                lapply(x$events, internal.print.events.info)
             }
             # cat("\n")
         }
@@ -107,7 +107,7 @@ print.treats <- function(x, all = FALSE, ...) {
                 cat("Simulated trait data")
             }
             cat(":\n")
-            print.traits.info(x$traits$main)
+            internal.print.traits.info(x$traits$main)
             if(!is.null(x$traits$background)) {
                 cat("And a background trait (see x$background for info).")
             }

@@ -26,10 +26,10 @@ The \code{scale.trees} option allows the trees to have the same depth and root a
 
 Common optional arguments for the following arguments include the following (refer the the specific function for the arguments details):
 \itemize{
- \item code{\link[dispRity]{custom.subsets}}: \code{group} for the list of elements to be attributed to specific groups;
- \item code{\link[dispRity]{chrono.subsets}}: \code{method} for selecting the time binning or slicing method; \code{time} for the number of time bins/slices or their specific ages; \code{model} for the time slicing method; or \code{inc.nodes} for whether to include nodes or not in the time subsets;
- \item code{\link[dispRity]{boot.matrix}}: \code{bootstraps} for the number of bootstrap replicates; \code{rarefaction} for the number of elements to include in each bootstrap replicate; or \code{boot.type} for the bootstrap algorithm;
- \item code{\link[dispRity]{dispRity}}: \code{metric} for the disparity, dissimilarity or spatial occupancy metric to apply to the data; or \code{dimensions} for the number of dimensions to consider.
+ \item \code{\link[dispRity]{custom.subsets}}: \code{group} for the list of elements to be attributed to specific groups;
+ \item \code{\link[dispRity]{chrono.subsets}}: \code{method} for selecting the time binning or slicing method; \code{time} for the number of time bins/slices or their specific ages; \code{model} for the time slicing method; or \code{inc.nodes} for whether to include nodes or not in the time subsets;
+ \item \code{\link[dispRity]{boot.matrix}}: \code{bootstraps} for the number of bootstrap replicates; \code{rarefaction} for the number of elements to include in each bootstrap replicate; or \code{boot.type} for the bootstrap algorithm;
+ \item \code{\link[dispRity]{dispRity}}: \code{metric} for the disparity, dissimilarity or spatial occupancy metric to apply to the data; or \code{dimensions} for the number of dimensions to consider.
 }
 }
 \examples{

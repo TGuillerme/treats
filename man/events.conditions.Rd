@@ -3,7 +3,7 @@
 \name{events.conditions}
 \alias{events.conditions}
 \alias{events.condition}
-\alias{time.condition}
+\alias{age.condition}
 \alias{taxa.condition}
 \alias{trait.condition}
 \title{events.conditions}
@@ -24,7 +24,7 @@ Inbuilt conditions functions for helping designing events
 The following functions allow to design specific conditions for events:
 
 \itemize{
-     \item{\code{time.condition}}: a conditional function based on the time \code{x}. Typically this can be translated into "when time reaches the value x, trigger a condition" (see \code{\link{make.events}}). There is no optional argument for the function.
+     \item{\code{age.condition}}: a conditional function based on the time \code{x}. Typically this can be translated into "when time reaches the value x, trigger a condition" (see \code{\link{make.events}}). There is no optional argument for the function.
 
      \item{\code{taxa.condition}}: a conditional function based on the number of taxa \code{x}. Typically this can be  translated into "when the number of taxa reaches the value x, trigger a condition" (see \code{\link{make.events}}). This function has one optional argument:
      \itemize{
@@ -46,7 +46,7 @@ More details about the \code{events} functions is explained in the \code{treats}
 ## 80\% mass extinction at time 4
 mass_extinction <- make.events(
                       target       = "taxa",
-                      condition    = time.condition(4),
+                      condition    = age.condition(4),
                       modification = random.extinction(0.8))
 
 ## Set the simulation parameters

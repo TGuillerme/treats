@@ -21,7 +21,7 @@ make.traits(
 
 \item{n}{Optional, the number of traits per process (default is \code{1}).}
 
-\item{start}{Optional, the starting values for each traits (default is {0}).}
+\item{start}{Optional, the starting values for each traits (default is \code{0}).}
 
 \item{process.args}{Optional, a named list of optional arguments for the trait process.}
 

@@ -36,7 +36,7 @@ treats(
 \item{verbose}{Logical, whether to be verbose (\code{TRUE}; default) or not (\code{FALSE}).}
 }
 \value{
-This function outputs either a \code{"phylo"} object if no traits where generated or a \code{treats} object that is a list of at least two elements: \code{$tree}, a \code{"phylo"} object and \code{$data}, a code{"matrix"} of the trait values.
+This function outputs either a \code{"phylo"} object if no traits where generated or a \code{treats} object that is a list of at least two elements: \code{$tree}, a \code{"phylo"} object and \code{$data}, a \code{"matrix"} of the trait values.
 }
 \description{
 Simulating phylogenetic trees and traits. See full manual here: https://github.com/TGuillerme/treats
@@ -96,7 +96,7 @@ treats(stop.rule = list(max.taxa = 20),
 ## 80\% mass extinction at time 4
 mass_extinction <- make.events(
                       target       = "taxa",
-                      condition    = time.condition(4),
+                      condition    = age.condition(4),
                       modification = random.extinction(0.8))
 
 ## Set the simulation parameters

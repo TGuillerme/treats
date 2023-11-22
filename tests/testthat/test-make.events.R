@@ -1,7 +1,7 @@
 ## Test
 test_that("make.events works", {
 
-    condition.test.ok <- time.condition(5)
+    condition.test.ok <- age.condition(5)
     condition.test.wrong <- "bob"
     modification.test.ok <- traits.update(process = OU.process)
     modification.test.wrong <- "bub"

@@ -34,7 +34,7 @@ And more specifically for the events:
 
 Functionality showcase | Example
 --------------|----------
-`time.condition` | [mass extinction](#EGrandom_ext), [negative trait extinction](#EGneg_ext), [reducing speciation rate](#EGred_spec), [changing trait process](#EG_change_trait), [changing modifiers](#EG_change_modif)
+`age.condition` | [mass extinction](#EGrandom_ext), [negative trait extinction](#EGneg_ext), [reducing speciation rate](#EGred_spec), [changing trait process](#EG_change_trait), [changing modifiers](#EG_change_modif)
 `random.extinction` | [mass extinction](#EGrandom_ext)
 `trait.extinction` | [negative trait extinction](#EGneg_ext)
 `taxa.condition` | [background extinction](#EGbg_ext), [change branch length](#EG_modify_brlen)
@@ -62,13 +62,13 @@ stop_time_6 <- list(max.time = 6)
 speciation_1 <- make.bd.params(speciation = 1)
 ```
 
-We will then create a event that triggers when reaching half of the simulation time (using `time.condition(2.5)`).
+We will then create a event that triggers when reaching half of the simulation time (using `age.condition(2.5)`).
 This event will target `"taxa"`, i.e. the number of species, and randomly remove 80% of them (using `random.extinction(0.8)`):
 
 ```{r}
 ## 80% mass extinction at time 4
 mass.extinction <- make.events(
-                    condition = time.condition(4),
+                    condition = age.condition(4),
                     target = "taxa",
                     modification = random.extinction(0.8))
 ```
@@ -108,13 +108,13 @@ Then set up our trait which is a one dimensional Brownian Motion
 simple_bm_trait <- make.traits(n = 1, process = BM.process)
 ```
 
-And our extinction event which triggers after reaching time 4 (`time.condition(4)`), targets the `"taxa"` and modifies the extinction for species with traits lower than 0.
+And our extinction event which triggers after reaching time 4 (`age.condition(4)`), targets the `"taxa"` and modifies the extinction for species with traits lower than 0.
 
 ```{r}
 ## Extinction of any tips with trait < 1 at time 4
 trait.extinction <- make.events(
                       target = "taxa",
-                      condition = time.condition(4),
+                      condition = age.condition(4),
                       modification = trait.extinction(x = 0,
                                                       condition = `<`))
 ```
@@ -183,12 +183,12 @@ random_speciation <- make.bd.params(speciation = runif,
                                     speciation.args = list(min = 0.5, max = 1))
 ```
 
-And our extinction event which triggers after reaching time 4 (`time.condition(4)`), targets the `"bd.params"` and modifies the speciation rate to 1/3:
+And our extinction event which triggers after reaching time 4 (`age.condition(4)`), targets the `"bd.params"` and modifies the speciation rate to 1/3:
 
 ```{r}
 ## Reducing speciation after reaching time 4
 reduced.speciation <- make.events(
-                      condition = time.condition(4),
+                      condition = age.condition(4),
                       target = "bd.params",
                       modification = bd.params.update(speciation = 1/3))
 ```
@@ -239,12 +239,12 @@ Then set up our trait which is a one dimensional Brownian Motion
 simple_bm_trait <- make.traits(n = 1, process = BM.process)
 ```
 
-And our event which triggers after reaching time 5 (`time.condition(5)`), targets the `"traits"` and modifies the process to `OU.process`.
+And our event which triggers after reaching time 5 (`age.condition(5)`), targets the `"traits"` and modifies the process to `OU.process`.
 
 ```{r}
 ## Create an event to change the trait process
 change.process.to.OU <- make.events(
-                  condition    = time.condition(5),
+                  condition    = age.condition(5),
                   target       = "traits",
                   modification = traits.update(process = OU.process))
 ```
@@ -367,7 +367,7 @@ And a modifier that is the default birth-death algorithm rules
 default_modifiers <- make.modifiers()
 ```
 
-And our extinction event which triggers after reaching time 3 (`time.condition(3)`), targets the `"modifiers"` and modifies birth-death rule as follows:
+And our extinction event which triggers after reaching time 3 (`age.condition(3)`), targets the `"modifiers"` and modifies birth-death rule as follows:
  * When a species is descendant from a parent with a negative trait value (`negative.trait.condition`);
  * Then increase your chances of going extinct by +1 (`increase.extinction.1`)
 
@@ -382,7 +382,7 @@ increase.extinction.1 <- function(x, trait.values, lineage) {
 
 ## Update the modifier
 change.speciation <- make.events(
-    condition    = time.condition(3),
+    condition    = age.condition(3),
     target       = "modifiers",
     modification = modifiers.update(speciation = speciation,
                                     condition  = negative.trait.condition,

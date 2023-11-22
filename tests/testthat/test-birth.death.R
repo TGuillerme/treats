@@ -216,7 +216,7 @@ test_that("events work", {
     ## Taxa events
     ###################   
     events <- make.events(target = "taxa",
-                          condition = time.condition(4),
+                          condition = age.condition(4),
                           modification = random.extinction(0.8))
 
     set.seed(1)
@@ -232,7 +232,7 @@ test_that("events work", {
 
     ## Mass extinction based on trait values at time t
     events <- make.events(target = "taxa",
-                          condition = time.condition(4),
+                          condition = age.condition(4),
                           modification = trait.extinction(1))
 
     set.seed(7)
@@ -285,7 +285,7 @@ test_that("events work", {
 
     ## Reducing speciation after reaching time t
     events <- make.events(
-        condition    = time.condition(2),
+        condition    = age.condition(2),
         target       = "bd.params",
         modification = bd.params.update(speciation = 1/3))
     
@@ -313,7 +313,7 @@ test_that("events work", {
     stop.rule$max.time <- 6
     traits <- make.traits()
     events <- make.events(
-        condition    = time.condition(5),
+        condition    = age.condition(5),
         target       = "traits",
         modification = traits.update(process = OU.process))
     
@@ -369,7 +369,7 @@ test_that("events work", {
     new.modify    <- function(x, trait.values, lineage) return(x + 1)
     
     events <- make.events(
-        condition    = time.condition(3),
+        condition    = age.condition(3),
         target       = "modifiers",
         modification = modifiers.update(speciation = speciation, condition = new.condition, modify = new.modify))
 
@@ -570,7 +570,7 @@ test_that("single logic works", {
     time <- 2
 
     ## Testing single.nodes
-    test <- update.single.nodes(lineage_pre)
+    test <- bd.update.single.nodes(lineage_pre)
     expect_is(test, "list")
     expect_equal(names(test), names(lineage_pre))
     expect_equal(test$parents, c(0, 1, 1, 3, 3, 2, 4, 5))
@@ -581,8 +581,8 @@ test_that("single logic works", {
     expect_equal(test$split, c(T, T, T, T, T, F, F, F))
 
     ## Testing single.edges
-    lineage_after <- update.single.nodes(lineage_pre)
-    test <- update.single.edges(time = time, time.slice = 1.75, lineage = lineage_after, edge_lengths = edge_lengths) 
+    lineage_after <- bd.update.single.nodes(lineage_pre)
+    test <- bd.update.single.edges(time = time, time.slice = 1.75, lineage = lineage_after, edge_lengths = edge_lengths) 
     expect_equal(length(test), 8)
     expect_equal(test, c(0, 1.75, 1, 0.75, 0.75, 0.25, 0.25, 0.25))
 
@@ -594,7 +594,7 @@ test_that("single logic works", {
                         n       = c(1),
                         split   = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE))
     ## Testing
-    test <- update.single.nodes(lineage_pre)
+    test <- bd.update.single.nodes(lineage_pre)
     expect_equal(test$parents, c(0, 1, 1, 2, 2, 4, 4, 6, 6, 9, 9, 10, 10, 13, 13, 14))
     expect_equal(test$livings, 16)
     expect_equal(test$drawn, 1)
@@ -611,7 +611,7 @@ test_that("single logic works", {
                         split   = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE))
 
     ## Testing
-    test <- update.single.nodes(lineage_pre)
+    test <- bd.update.single.nodes(lineage_pre)
     expect_equal(test$parents, c(0, 1, 1, 2, 2, 4, 4, 6, 6, 9, 9, 10, 10, 13, 13, 14))
     expect_equal(test$livings, 16)
     expect_equal(test$drawn, 1)
@@ -627,7 +627,7 @@ test_that("single logic works", {
                         n = c(2),
                         split = c(TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE))
     set.seed(1)
-    test <- update.single.nodes(lineage_pre)
+    test <- bd.update.single.nodes(lineage_pre)
     expect_equal(test$parents, c(0, 1, 1, 2, 2, 4, 4, 7, 7, 8, 8, 11, 11, 13, 13, 14, 14, 17, 17, 15, 15, 21, 21, 20, 22))
     expect_equal(test$livings, c(24, 25))
     expect_equal(test$drawn, 1)
@@ -644,7 +644,7 @@ test_that("single logic works", {
     lineage_pre$n <- 1
     lineage_pre$split <- c(TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE)
 
-    test <- update.single.nodes(lineage_pre)
+    test <- bd.update.single.nodes(lineage_pre)
     expect_equal(test$parents, c(0, 1, 1, 2, 2, 5, 5, 6, 6, 8, 8, 9, 9, 7, 7, 4, 4, 14, 14, 15, 15, 16, 16, 11, 11, 18, 18, 13, 13, 20, 20, 30, 30, 21, 21, 25, 25, 35, 35, 31, 31, 37, 37, 28, 28, 44, 44, 32, 32, 34, 34, 50, 50, 53, 53, 54, 54, 48, 48, 46))
     expect_equal(test$livings, 60)
     expect_equal(test$drawn, 1)
@@ -661,7 +661,7 @@ test_that("single logic works", {
     lineage_pre$split <- c( TRUE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE)
 
     set.seed(1)
-    test <- update.single.nodes(lineage_pre)
+    test <- bd.update.single.nodes(lineage_pre)
     expect_equal(test$parents, c(0, 1, 1, 3, 3, 5, 5, 6, 6, 7, 7, 10, 10, 11, 11, 15, 15, 17, 17, 13, 13, 20, 20, 23, 23, 25, 25, 26, 26, 28, 28, 12, 30))
     expect_equal(test$livings, c(32, 33))
     expect_equal(test$drawn, 2)

@@ -65,7 +65,7 @@ Here is a list of implemented `conditions` (see `?events.conditions`):
 
 function | arguments | input | what does it do
 ---------|-----------|-------|----------------
-`time.condition`, `taxa.condition`, `trait.condition` | x | the value to check the target against | e.g. time = x, taxa = x or trait = x (see below)
+`age.condition`, `taxa.condition`, `trait.condition` | x | the value to check the target against | e.g. time = x, taxa = x or trait = x (see below)
  | condition | a relational operator | e.g. `==`, `>`, `!=`, etc. for asking for example `time == x` 
  | ... | any additional arguments to be passed to the event | |
 
@@ -104,7 +104,7 @@ Currently there are three conditions functions implemented in `treats` but you c
 
 All `condition` functions in `treats` take at least two arguments: `x` for the variable of interest (e.g. time, number of taxa, trait value, etc.) and `condition`, the relational operator to evaluate. A relational operator is the proper (fancy) term designating all the comparisons you're regularly using in `R` like `==` (is equal?) `<` (is smaller?) `>=` (is bigger or equal?). You can get the full list in the R base manual (using `?Comparison` or any of the relational operator in a function form). For more details on how functions _really_ work in R see the [Advanced `R` book](https://adv-r.hadley.nz/functions.html)!
 
- * `time.condition` will trigger the `event` once a certain time is reached in the simulations and is the simplest/most basic condition with no arguments other than the time required. For example ``time.condition(4, condition = `==`)`` will trigger the `event` once the simulations reaches 4 time units. Easy.
+ * `age.condition` will trigger the `event` once a certain time is reached in the simulations and is the simplest/most basic condition with no arguments other than the time required. For example ``age.condition(4, condition = `==`)`` will trigger the `event` once the simulations reaches 4 time units. Easy.
  * `taxa.condition` will trigger the `event` once a certain number of taxa are reached. This can be considered including or excluding fossil species. For example ``taxa.condition(42, condition = `>=`, living = TRUE)`` will trigger the `event` if there are at least 42 living taxa.
  * `trait.condition` will trigger the `event` once a certain trait value is reached. This function allows to say which trait(s) to target (by default, the first one using `trait = 1`), what value of the trait to target (by default `what = max`) and whether to use and absolute trait value or not (`absolute = TRUE`). For example ``trait.condition(1/3, condition = `>`, trait = 1, what = sd)`` will trigger the condition after the standard deviation of the first trait reaches 1/3.
 
@@ -151,7 +151,7 @@ For a simple example, we can create a extinction event that will remove 80% of s
 ## 80% mass extinction at time 4
 mass_extinction <- make.events(
                       target = "taxa",
-                      condition = time.condition(4),
+                      condition = age.condition(4),
                       modification = random.extinction(0.8))
 
 ## Simulation parameters
