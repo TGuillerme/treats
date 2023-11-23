@@ -20,6 +20,9 @@ drop.singles(treats)
 
 \item{what}{what to drop. Can be \code{"fossils"}, \code{"livings"} or \code{"singles"} (non-bifurcating nodes).}
 }
+\value{
+This function outputs either a \code{"phylo"} object if no traits where generated or a \code{treats} object that is a list of at least two elements: \code{$tree}, a \code{"phylo"} object and \code{$data}, a \code{"matrix"} of the trait values.
+}
 \description{
 Remove fossils or living species or non-bifurcating nodes (singles) from \code{treats} objects or \code{phylo} objects.
 }

@@ -30,7 +30,8 @@ These evolutionary processes can then be nearly infinitely modified to include c
 
 3. Here I present the `treats` package, a modular `R` package for trees and traits simulations.
 This package is based on a simple birth death algorithm from which all steps can easily be modified by users.
-It also provides a tidy interface through the `treats` object, allowing users to easily run reproducible simulations.
+
+4. `treats` also provides a tidy interface through the `treats` object, allowing users to easily run reproducible simulations.
 It also comes with an extend manual regularly updated following users' questions or suggestions.
 
 ###### Keywords: trees, traits, simulations, birth-death, null-models, ecology, evolution, disparity
@@ -460,7 +461,7 @@ This is of course a very crude way of testing this, a more rigorous approach is 
 
 ## Manuals and vignettes
 
-The `treats` package comes with internal documentation (e.g. `?treats`) but also with a thorough and extended vignette in a gitbook format: the [`treats` manual](http://tguillerme.github.io/treats.html) ([http://tguillerme.github.io/treats.html](http://tguillerme.github.io/treats.html).
+The `treats` package comes with internal documentation (e.g. `?treats`) but also with a thorough and extended vignette in a gitbook format: the [`treats` manual](http://tguillerme.github.io/treats.html).
 This manual is designed so that it can be regularly updated and enhanced through the lifetime of the package facilitating the interface between methods development and usage [@cooper2016dark].
 
 ## Further directions

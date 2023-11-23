@@ -11,6 +11,8 @@
 #' @details
 #' This function is designed to be used internally in \code{treats} to help \code{modifiers}, \code{traits} or \code{events} objects to access the parent traits of the lineages simulated through the internal birth death algorithm. 
 #' 
+#' @return Returns one or more \code{"numeric"} values.
+#'
 #' @examples
 #' ## Speciation event is more likely if lineage's ancestor is further away from the mean trait value
 #' distance.modify <- function(x, trait.values, lineage) {
@@ -63,6 +65,8 @@ parent.traits <- function(trait.values, lineage, current = TRUE) {
 #'}
 #'
 #' If \code{rates} is a function that generates negative values or a negative value, the output transition matrix always returns absolute values.
+#'
+#' @return Returns a squared \code{"matrix"}.
 #'
 #' @examples
 #' ## A two states equal rates matrix with a rate of 1

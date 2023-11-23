@@ -21,6 +21,9 @@ modifiers(bd.params = NULL, lineage = NULL, trait.values = NULL,
 
 \item{modify.fun}{A list of internals functions that can modified by \code{events} (see details).}
 }
+\value{
+These functions returns either \code{"numeric"} or \code{"logical"} values to be passed to \code{\link{make.modifiers}} and \code{\link{treats}}.
+}
 \description{
 Different modifiers for the birth death process implemented in treats.
 }

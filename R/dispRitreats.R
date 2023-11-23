@@ -149,9 +149,9 @@ dispRitreats <- function(data, ..., scale.trees = TRUE) {
     }
 
     ## Apply the function for each dataset
-    if(verbose) cat("Calculating disparity:")
+    if(verbose) message("Calculating disparity:", appendLF = FALSE)
     disparity_list <- lapply(data, apply.dispRity, group_type, subset_args, do_bootstrap, boot_args, dispRity_args, verbose)
-    if(verbose) cat("Done.")
+    if(verbose) message("Done.")
 
     ## Single simulation
     if(length(disparity_list) == 1) {
@@ -211,7 +211,7 @@ apply.dispRity <- function(one_simulation, group_type, subset_args, do_bootstrap
     dispRity_args$data <- disparity_data
     disparity_data <- do.call(dispRity, dispRity_args)
 
-    if(verbose) cat(".")
+    if(verbose) message(".", appendLF = FALSE)
 
     return(disparity_data)
 }

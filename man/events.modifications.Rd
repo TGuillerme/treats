@@ -18,6 +18,9 @@ events.modification(x, ...)
 
 \item{...}{any specific argument for the modification (see details).}
 }
+\value{
+This function outputs a \code{"function"} to be passed to \code{\link{make.events}}.
+}
 \description{
 Inbuilt modifications functions for helping designing events
 }
@@ -109,9 +112,10 @@ process_change <- treats(bd.params = bd.params,
                        traits    = traits,
                        events    = change_process)
 ## Plot the results
-par(mfrow = c(1,2))
+oldpar <- par(mfrow = c(1,2))
 plot(no_change, ylim = c(-7, 7))
 plot(process_change, ylim = c(-7, 7))
+par(oldpar)
 
 
 }

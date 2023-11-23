@@ -72,10 +72,10 @@
 #'                        traits    = traits,
 #'                        events    = change_process)
 #' ## Plot the results
-#' par(mfrow = c(1,2))
+#' oldpar <- par(mfrow = c(1,2))
 #' plot(no_change, ylim = c(-7, 7))
 #' plot(process_change, ylim = c(-7, 7))
-#' 
+#' par(oldpar)
 #' 
 #' @seealso \code{\link{treats}} \code{\link{make.bd.params}} \code{\link{make.traits}} \code{\link{make.modifiers}} \code{\link{events.conditions}} \code{\link{events.modifications}}
 #' @author Thomas Guillerme

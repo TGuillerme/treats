@@ -29,11 +29,12 @@
 #' no_traits <- map.traits(no_process, my_tree)
 #' 
 #' ## Plotting the topology and the different traits
-#' par(mfrow = c(2,2))
+#' oldpar <- par(mfrow = c(2,2))
 #' plot(my_tree, main = "Base topology")
 #' plot(bm_traits, main = "Mapped BM")
 #' plot(ou_traits, main = "Mapped OU")
 #' plot(no_traits, main = "Mapped normal trait")
+#' par(oldpar)
 #'
 map.traits <- function(traits, tree) {
     ## Sanitizing

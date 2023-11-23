@@ -39,8 +39,8 @@ test_that("dispRitreats works", {
     expect_equal(round(summary(test)[1,3], 2)[[1]], 3.71)
 
     ## Verbose
-    tust <- capture_output(test <- dispRitreats(sim_data, metric = c(mean, centroids), centroid = 100, bootstraps = 10, time = 5, method = "continuous", model = "acctran", verbose = TRUE))
-    expect_equal(tust, "Calculating disparity:.....Done.")  
+    tust <- capture_messages(test <- dispRitreats(sim_data, metric = c(mean, centroids), centroid = 100, bootstraps = 10, time = 5, method = "continuous", model = "acctran", verbose = TRUE))
+    expect_equal(paste(tust, collapse = ""), "Calculating disparity:.....Done.\n")  
 
     ## MULTIPLE SIMULATIONS:
     ## Simple test: just metric

@@ -10,6 +10,9 @@
 #' @param condition the logical function for triggering the condition (e.g. `<`, `==`, `!>`, etc...).
 #' @param ...       any optional argument specific for that condition (see details)
 #' 
+#' @return
+#' This function outputs a \code{"function"} to be passed to \code{\link{make.events}}.
+#'
 #' @details
 #' The following functions allow to design specific conditions for events:
 #' 
@@ -81,10 +84,10 @@
 #'                        traits    = traits,
 #'                        events    = change_process)
 #' ## Plot the results
-#' par(mfrow = c(1,2))
+#' oldpar <- par(mfrow = c(1,2))
 #' plot(no_change, ylim = c(-7, 7))
 #' plot(process_change, ylim = c(-7, 7))
-#' 
+#' par(oldpar)
 #' 
 #' @seealso \code{\link{treats}} \code{\link{make.events}} \code{\link{events.modifications}}
 #' 
@@ -92,17 +95,12 @@
 
 ## The list of conditions
 events.condition <- function(x, condition, ...) {
-    cat("List of inbuilt condition functions in treats:\n")
-    cat("   ?taxa.condition\n")
-    cat("   ?age.condition\n")
-    cat("   ?trait.condition\n")
+    message("List of inbuilt condition functions in treats:")
+    message("   ?taxa.condition")
+    message("   ?age.condition")
+    message("   ?trait.condition")
     return(invisible())
 } 
-
-## time.condition alias
-time.condition <- function(x, ...) {
-    age.condition(x, ...)
-}
 
 ## A condition based on a specific time value \code{x}
 age.condition <- function(x, condition = `>`) {

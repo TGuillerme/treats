@@ -20,6 +20,9 @@
 #' @param trait.values   A matrix containing the trait values (see details).
 #' @param modify.fun     A list of internals functions that can modified by \code{events} (see details).
 #' 
+#' @return
+#' These functions returns either \code{"numeric"} or \code{"logical"} values to be passed to \code{\link{make.modifiers}} and \code{\link{treats}}.
+#'
 #' @details
 #' \code{bd.params} can be either a named list of parameter values (e.g. \code{list("extinction" = 0, "speciation" = 1)}) but it is typically handled internally from a \code{"treats"} \code{"bd.params"} object.
 #' 
@@ -65,15 +68,15 @@
 
 
 modifiers <- function(bd.params = NULL, lineage = NULL, trait.values = NULL, modify.fun = NULL) {
-    cat("modifiers functions implemented in treats:\n")
-    cat("branch length generating functions:\n")
-    cat("   ?branch.length\n")
-    cat("   ?branch.length.trait\n")
-    cat("lineage selection functions:\n")
-    cat("   ?selection\n")
-    cat("speciation trigger functions:\n")
-    cat("   ?speciation\n")
-    cat("   ?speciation.trait\n")
+    message("modifiers functions implemented in treats:")
+    message("branch length generating functions:")
+    message("   ?branch.length")
+    message("   ?branch.length.trait")
+    message("lineage selection functions:")
+    message("   ?selection")
+    message("speciation trigger functions:")
+    message("   ?speciation")
+    message("   ?speciation.trait")
 }
 
 ## Normal branch length

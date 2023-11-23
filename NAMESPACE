@@ -37,7 +37,6 @@ export(speciation.trait)
 ## Events
 export(make.events)
 export(events.condition)
-export(time.condition)
 export(age.condition)
 export(taxa.condition)
 export(trait.condition)

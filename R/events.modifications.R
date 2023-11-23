@@ -9,6 +9,9 @@
 #' @param x   a numerical value to update.
 #' @param ... any specific argument for the modification (see details).
 #' 
+#' @return
+#' This function outputs a \code{"function"} to be passed to \code{\link{make.events}}.
+#'
 #' @details
 #' The following functions allow to design specific modifications for events:
 #' 
@@ -97,9 +100,10 @@
 #'                        traits    = traits,
 #'                        events    = change_process)
 #' ## Plot the results
-#' par(mfrow = c(1,2))
+#' oldpar <- par(mfrow = c(1,2))
 #' plot(no_change, ylim = c(-7, 7))
 #' plot(process_change, ylim = c(-7, 7))
+#' par(oldpar)
 #' 
 #' 
 #' @seealso \code{\link{treats}} \code{\link{make.events}} \code{\link{events.conditions}}
@@ -108,18 +112,18 @@
 
 ## The list of conditions
 events.modification <- function(x, ...) {
-    cat("List of inbuilt modification functions in treats:\n")
-    cat("For the taxa target:\n")
-    cat("   ?random.extinction\n")
-    cat("   ?trait.extinction\n")
-    cat("For the bd.params target:\n")
-    cat("   ?bd.params.update\n")
-    cat("For the traits target:\n")
-    cat("   ?traits.update\n")
-    cat("For the modifiers target:\n")
-    cat("   ?modifiers.update\n")
-    cat("For the founding target:\n")
-    cat("   ?founding.event\n")
+    message("List of inbuilt modification functions in treats:")
+    message("For the taxa target:")
+    message("   ?random.extinction")
+    message("   ?trait.extinction")
+    message("For the bd.params target:")
+    message("   ?bd.params.update")
+    message("For the traits target:")
+    message("   ?traits.update")
+    message("For the modifiers target:")
+    message("   ?modifiers.update")
+    message("For the founding target:")
+    message("   ?founding.event")
     return(invisible())
 } 
 

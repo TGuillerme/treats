@@ -13,6 +13,9 @@ parent.traits(trait.values, lineage, current = TRUE)
 
 \item{current}{Whether to consider only the current lineage (\code{TRUE} - default) or all the living lineages (\code{FALSE}).}
 }
+\value{
+Returns one or more \code{"numeric"} values.
+}
 \description{
 An internal utility function for \code{modifiers}, \code{traits} or \code{events} to access the value(s) of the parent traits in the \code{treats} algorithm
 }

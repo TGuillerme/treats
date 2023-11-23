@@ -17,6 +17,9 @@ transition.matrix(type, states, rates = runif, self = TRUE, ...)
 
 \item{...}{if \code{rates} is a function, any optional arguments to be passed to it.}
 }
+\value{
+Returns a squared \code{"matrix"}.
+}
 \description{
 Utility function for generating discrete characters evolution transition matrices.
 }

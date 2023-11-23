@@ -41,6 +41,9 @@
 
 \item{legend}{logical, whether to display the legend in 2D plots (\code{TRUE}) or not (\code{FALSE}; default)}
 }
+\value{
+No return value, plot \code{x}'s content.
+}
 \description{
 Plotting treats objects (either a simulated tree and trait(s) or a process for traits objects)
 }

@@ -19,6 +19,9 @@ trait.process(x0, edge.length, ...)
 
 \item{...}{Any optional argument for the specific process (see details).}
 }
+\value{
+Returns one or more \code{"numeric"} value(s).
+}
 \description{
 Different trait processes implemented in treats.
 }

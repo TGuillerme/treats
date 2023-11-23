@@ -4,6 +4,7 @@
 %
 \documentclass[
 ]{article}
+\usepackage{lineno}
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
@@ -106,17 +107,18 @@
   \everypar{\setlength{\hangindent}{\cslhangindent}}\ignorespaces}%
   {\par}
 
+\linenumbers
+
 \title{\texttt{treats}: a modular \texttt{R} package for simulating
 trees and traits.}
-\author{Thomas Guillerme\(^1\)}
-\date{2023-11-22}
+\author{Anonymous\(^1\)}% \author{Thomas Guillerme\(^1\)}
+\date{2023-11-23}
 
 \begin{document}
 \maketitle
 
-\(^1\) School of Biosciences, University of Sheffield, Sheffield, S10
-2TN, United Kingdom.
-\href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}}
+\(^1\) Anonymous % \(^1\) School of Biosciences, University of Sheffield, Sheffield, S10 2TN, United Kingdom.
+\href{mailto:anonymous}{\nolinkurl{anonymous}}% \href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}}
 
 Running head: \texttt{treats}: TREes And Traits Simulations
 
@@ -143,7 +145,9 @@ Running head: \texttt{treats}: TREes And Traits Simulations
   Here I present the \texttt{treats} package, a modular \texttt{R}
   package for trees and traits simulations. This package is based on a
   simple birth death algorithm from which all steps can easily be
-  modified by users. It also provides a tidy interface through the
+  modified by users.
+\item
+  \texttt{treats} also provides a tidy interface through the
   \texttt{treats} object, allowing users to easily run reproducible
   simulations. It also comes with an extend manual regularly updated
   following users' questions or suggestions.
@@ -285,7 +289,7 @@ implemented functions.
 \begin{figure}
 \hypertarget{figure1}{%
 \centering
-\includegraphics{../inst/gitbook/treats_structure.png}
+\includegraphics{treats_structure.png}
 \caption{\texttt{treats} package workflow: the \texttt{treats} algorithm
 generates a tree and traits using inbuilt \texttt{"traits"} objects that
 contain the instructions on how to generate the trait data (e.g.~which
@@ -513,17 +517,17 @@ mass extinction events are designed in the example above.
 \CommentTok{\#\# Creating an extinction that removes species with positive trait values}
 \NormalTok{positive\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
     \DataTypeTok{target       =} \StringTok{"taxa"}\NormalTok{,}
-    \DataTypeTok{condition    =} \KeywordTok{time.condition}\NormalTok{(}\DecValTok{15}\NormalTok{),}
+    \DataTypeTok{condition    =} \KeywordTok{age.condition}\NormalTok{(}\DecValTok{15}\NormalTok{),}
     \DataTypeTok{modification =} \KeywordTok{trait.extinction}\NormalTok{(}\DataTypeTok{x =} \DecValTok{0}\NormalTok{, }\DataTypeTok{condition =} \StringTok{\textasciigrave{}}\DataTypeTok{\textgreater{}=}\StringTok{\textasciigrave{}}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
 For this event, the target is the number of taxa in the simulations.
 This is indicated using the \texttt{target\ =\ "taxa"} argument. Then
-the event is triggered using the argument \texttt{time.condition(15)}
-and modifies the internal \texttt{lineage} object using the
+the event is triggered using the argument \texttt{age.condition(15)} and
+modifies the internal \texttt{lineage} object using the
 \texttt{trait.extinction(x\ =\ 0,\ condition\ =\ \textasciigrave{}\textgreater{}=\textasciigrave{})}
-function. \texttt{time.condition} and \texttt{trait.extinction} are both
+function. \texttt{age.condition} and \texttt{trait.extinction} are both
 function factories which are not gonna be detailed here (see Wickham
 (2019)). Effectively these arguments can be passed directly as standard
 functions. For example, to trigger the event when reaching time 15 we
@@ -628,7 +632,7 @@ the Cretaceous-Palaeogene extinction event (K-Pg, 66 Mya; Fig. 2).
 
 \begin{figure}
 \centering
-\includegraphics{treats_paper_files/figure-latex/prepdata-1.pdf}
+\includegraphics{prepdata-1.pdf}
 \caption{Observed phylogeny (A) and disparity through time (B) in the
 subset of Beck and Lee (2014)'s dataset. The red line represents the
 K-Pg boundary. Is this change in disparity related to the K-Pg mass
@@ -682,7 +686,7 @@ more information can be found in the
 
 \begin{figure}
 \centering
-\includegraphics{treats_paper_files/figure-latex/simtree-1.pdf}
+\includegraphics{simtree-1.pdf}
 \caption{A randomly simulated tree with similar properties as the
 observed one. Note that the time here is expressed in arbitrary units.}
 \end{figure}
@@ -726,7 +730,7 @@ their nodes (Fig. 4).
 
 \begin{figure}
 \centering
-\includegraphics{treats_paper_files/figure-latex/simtreetraits-1.pdf}
+\includegraphics{simtreetraits-1.pdf}
 \caption{A randomly simulated tree with a 2 dimensional random Brownian
 Motion trait. Orange, light blue and dark blue dots respectively
 represent nodes, fossils and living species.}
@@ -760,12 +764,12 @@ could be idiosyncratic (Fig. 5).
 \CommentTok{\#\# Creating a random mass extinction}
 \NormalTok{random\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
     \DataTypeTok{target       =} \StringTok{"taxa"}\NormalTok{,}
-    \DataTypeTok{condition    =} \KeywordTok{time.condition}\NormalTok{(}\DecValTok{15}\NormalTok{),}
+    \DataTypeTok{condition    =} \KeywordTok{age.condition}\NormalTok{(}\DecValTok{15}\NormalTok{),}
     \DataTypeTok{modification =} \KeywordTok{random.extinction}\NormalTok{(}\FloatTok{0.75}\NormalTok{))}
 \CommentTok{\#\# Creating an extinction that removes species with positive trait values}
 \NormalTok{positive\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
     \DataTypeTok{target =} \StringTok{"taxa"}\NormalTok{,}
-    \DataTypeTok{condition =} \KeywordTok{time.condition}\NormalTok{(}\DecValTok{15}\NormalTok{),}
+    \DataTypeTok{condition =} \KeywordTok{age.condition}\NormalTok{(}\DecValTok{15}\NormalTok{),}
     \DataTypeTok{modification =} \KeywordTok{trait.extinction}\NormalTok{(}\DataTypeTok{x =} \DecValTok{0}\NormalTok{, }\DataTypeTok{condition =} \StringTok{\textasciigrave{}}\DataTypeTok{\textgreater{}=}\StringTok{\textasciigrave{}}\NormalTok{))}
 
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
@@ -791,7 +795,7 @@ could be idiosyncratic (Fig. 5).
 
 \begin{figure}
 \centering
-\includegraphics{treats_paper_files/figure-latex/simtreetraitsevents-1.pdf}
+\includegraphics{simtreetraitsevents-1.pdf}
 \caption{Two different mass extinction events: (A) 75\% of species go
 extinct; (B) all species with positive trait values go extinct. The red
 line marks the extinction event.}
@@ -839,7 +843,7 @@ simulated data and compare it to the observed disparity.
 
 \begin{figure}
 \centering
-\includegraphics{treats_paper_files/figure-latex/simdisparity-1.pdf}
+\includegraphics{simdisparity-1.pdf}
 \caption{Comparison of the observed sum of variances (dashed line) to
 the simulated one (ligth and dark grey polygons and black line
 representing respectively the 95\% and 50\% confidence interval and the
@@ -863,10 +867,10 @@ The \texttt{treats} package comes with internal documentation
 (e.g.~\texttt{?treats}) but also with a thorough and extended vignette
 in a gitbook format: the
 \href{http://tguillerme.github.io/treats.html}{\texttt{treats} manual}
-(\url{http://tguillerme.github.io/treats.html}. This manual is designed
-so that it can be regularly updated and enhanced through the lifetime of
-the package facilitating the interface between methods development and
-usage (Cooper, Thomas, and FitzJohn 2016).
+(\href{https://anonymous.4open.science/r/treats-006B}{http://tguillerme.github.io/treats.html}).
+This manual is designed so that it can be regularly updated and enhanced
+through the lifetime of the package facilitating the interface between
+methods development and usage (Cooper, Thomas, and FitzJohn 2016).
 
 \hypertarget{further-directions}{%
 \subsection{Further directions}\label{further-directions}}
@@ -905,9 +909,9 @@ easily reproducible and reusable scripts.
 \subsection{Package location}\label{package-location}}
 
 The \texttt{treats} package is available on
-\href{https://github.com/TGuillerme/treats}{GitHub} with more associated
-information. All the versions of the package are archived on ZENODO with
-associated
+\href{https://anonymous.4open.science/r/treats-006B}{GitHub} with more
+associated information. All the versions of the package are archived on
+ZENODO with associated
 \href{https://doi.org/10.5281/zenodo.7970384}{DOI:10.5281/zenodo.7970384}.
 
 \hypertarget{acknowledgments}{%

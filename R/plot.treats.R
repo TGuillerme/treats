@@ -14,6 +14,8 @@
 #' @param quantiles if the input is a \code{treats} \code{traits}, which quantiles to plot (default are \code{c(95, 50))}).
 #' @param legend logical, whether to display the legend in 2D plots (\code{TRUE}) or not (\code{FALSE}; default)
 #' 
+#' @return No return value, plot \code{x}'s content.
+#'
 #' @details
 #' The \code{col} option can be either:
 #' \itemize{

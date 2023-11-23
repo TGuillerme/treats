@@ -14,6 +14,9 @@
 #' 
 #' @details \emph{NOTE} that dropping living or fossils species DOES NOT drop associated internal nodes and edge lengths. To drop both fossil/living taxa AND internal nodes, you can use for example: \code{drop.things(drop.things(my_data, what = "fossils"), what = "singles")}.
 #'
+#' @return
+#' This function outputs either a \code{"phylo"} object if no traits where generated or a \code{treats} object that is a list of at least two elements: \code{$tree}, a \code{"phylo"} object and \code{$data}, a \code{"matrix"} of the trait values.
+#'
 #' @examples
 #' ## A random tree with fossils and traits and internal nodes every 0.5 times
 #' set.seed(3)

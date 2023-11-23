@@ -10,6 +10,8 @@
 #' @param edge.length The branch length (default must be 1). This is always a single value.
 #' @param ... Any optional argument for the specific process (see details).
 #' 
+#' @return Returns one or more \code{"numeric"} value(s).
+#'
 #' @details
 #' The different trait processes implemented in treats are:
 #' 
@@ -107,13 +109,13 @@
 #' @export
 
 trait.process <- function(x0 = 0, edge.length = 1, ...) {
-    cat("Trait processes implemented in treats:\n")
-    cat("?BM.process\n")
-    cat("?discrete.process\n")
-    cat("?OU.process\n")
-    cat("?no.process\n")
-    cat("?multi.peak.process\n")
-    cat("?repulsion.process\n")
+    message("Trait processes implemented in treats:")
+    message("?BM.process")
+    message("?discrete.process")
+    message("?OU.process")
+    message("?no.process")
+    message("?multi.peak.process")
+    message("?repulsion.process")
 }
 
 ## The Brownian motion
