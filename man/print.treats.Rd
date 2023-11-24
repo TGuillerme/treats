@@ -13,6 +13,9 @@
 
 \item{...}{further arguments to be passed to \code{print} or to \code{print.treats}.}
 }
+\value{
+No return value, summarises \code{x}'s content.
+}
 \description{
 Summarises the content of a \code{treats} object.
 }

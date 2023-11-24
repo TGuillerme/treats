@@ -6,6 +6,8 @@
 #' @param all \code{logical}; whether to display the entire object (\code{TRUE}) or just summarise its contents (\code{FALSE} - default).
 #' @param ... further arguments to be passed to \code{print} or to \code{print.treats}.
 #' 
+#' @return No return value, summarises \code{x}'s content.
+#'
 #' @examples
 #' ## A treats birth-death parameters object
 #' make.bd.params()
