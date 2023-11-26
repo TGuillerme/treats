@@ -1,7 +1,7 @@
 [![R-CMD-check](https://github.com/TGuillerme/treats/workflows/R-CMD-check/badge.svg)](https://github.com/TGuillerme/treats/actions)
 [![codecov](https://app.codecov.io/gh/TGuillerme/treats/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/treats)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![develVersion](https://img.shields.io/badge/devel%20version-0.2-green.svg?style=flat)](https://github.com/TGuillerme/treats/tree/master)
+[![develVersion](https://img.shields.io/badge/devel%20version-1.0-green.svg?style=flat)](https://github.com/TGuillerme/treats/tree/master)
 [![DOI](https://zenodo.org/badge/299272555.svg)](https://zenodo.org/badge/latestdoi/299272555)
 
 
