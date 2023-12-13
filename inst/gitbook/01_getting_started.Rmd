@@ -318,7 +318,7 @@ We can do that by using crude parameters from the observed tree:
 
 ```{r}
 ## Extracting the crude parameters
-(est_params <- crude.bd.est(BeckLee_tree))
+(est_params <- crude.bd.est(BeckLee_tree, method = "count"))
 ## These parameters are the observed speciation and extinction rate per million years.
 
 ## Setting the stopping rule (stop after reaching 50 taxa)

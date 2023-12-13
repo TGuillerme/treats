@@ -4,34 +4,45 @@
 \alias{crude.bd.est}
 \title{Crudely estimates extinction and speciation}
 \usage{
-crude.bd.est(tree)
+crude.bd.est(tree, method, ...)
 }
 \arguments{
 \item{tree}{a \code{"phylo"} object.}
+
+\item{method}{either \code{"count"} or \code{"estimate"}. See details.}
+
+\item{...}{any additional arguments to be passed to \code{geiger::bd.km} and \code{geiger::bd.ms}.}
 }
 \value{
 A \code{"bd.params"} object to be fed to \code{\link{treats}}.
 }
 \description{
-Very crudely estimates the extinction and speciaton rate of a tree.
+Crudely estimates the extinction and speciaton rate of a tree based on \code{geiger::bd.km} and \code{geiger::bd.ms}
 }
 \details{
-This function calculates the extinction rate as the number of extinction events in the tree divided by the tree age (expressed in tree age units - e.g. million years). The speciation rate is calculated as the number of speciation events divided by the tree age. If the input tree has no \code{$root.time} element, the speciation and extinction rate are just the number of speciation and extinction events.
-\emph{NOTE} that this function is a very crude way to estimate rates of extinction and speciation: the rates are calculated from the raw data (not estimated), ignore sampling biases of the data and the variability in rates. For correct model base approaches see for example \code{\link[ape]{birthdeath}} or \code{\link[ape]{bd.ext}}.
+This function calculates the extinction and speciation rates using two methods:
+\itemize{
+     \item \code{"estimate"} estimates the rates using the algorithm from \code{geiger::bd.km} and \code{geiger::bd.ms} based on the Magallon and Sanderson 2000 method. Note that this function provides more of a "guestimate" of extinction and speciation rates which can be especially wrong with low sampling (either missing fossil or living data). This can lead to estimating erroneous negative extinction rates.
+     \item \code{"count"} This function calculates the extinction rate as the logged number of extinction events in the tree divided by the tree age (expressed in tree age units - e.g. million years). The speciation rate is calculated as the logged number of speciation events divided by the tree age. If the input tree has no \code{$root.time} element, the speciation and extinction rate are just the number of speciation and extinction events. Although \emph{very crude} this method is slightly better at handling under sampled trees.
+}
+For more accurate model base approaches see for example \code{\link[ape]{birthdeath}} or \code{\link[ape]{bd.ext}}.
 }
 \examples{
 set.seed(1)
 ## Generating a random tree
-my_tree <- rtree(20)
-## Calculating the number of speciations and extinctions events
-crude.bd.est(my_tree)
+my_tree <- rcoal(20)
+## Estimate the number of speciations and extinctions events
+crude.bd.est(my_tree, method = "estimate")
 
 ## Adding a root time
 my_tree$root.time <- 5
-## Calculating the number of speciations and extinctions
+## Count the number of speciations and extinctions
 ## per units of time
-crude.bd.est(my_tree)
+crude.bd.est(my_tree, method = "count")
 
+}
+\references{
+Magallon S and MJ Sanderson. 2000. Absolute diversification rates in angiosperm clades. Evolution 55:1762-1780.
 }
 \seealso{
 \code{\link{treats}} \code{\link{make.bd.params}}

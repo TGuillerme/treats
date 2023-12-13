@@ -113,7 +113,7 @@
 
 \title{treats manual}
 \author{Thomas Guillerme (\href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}})}
-\date{2023-12-06}
+\date{2023-12-13}
 
 \begin{document}
 \maketitle
@@ -803,14 +803,14 @@ We can do that by using crude parameters from the observed tree:
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\#\# Extracting the crude parameters}
-\NormalTok{(est\_params \textless{}{-}}\StringTok{ }\KeywordTok{crude.bd.est}\NormalTok{(BeckLee\_tree))}
+\NormalTok{(est\_params \textless{}{-}}\StringTok{ }\KeywordTok{crude.bd.est}\NormalTok{(BeckLee\_tree, }\DataTypeTok{method =} \StringTok{"count"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##  ---- treats birth-death parameters object ---- 
-## speciation: 0.352.
-## extinction: 0.288.
+## speciation: 0.028.
+## extinction: 0.027.
 \end{verbatim}
 
 \begin{Shaded}
@@ -997,56 +997,56 @@ We can then measure the disparity from these scenarios and compare them to our o
 \end{Shaded}
 
 \begin{verbatim}
+## Building the tree:....................Done.
 ## Building the tree:....Done.
-## Building the tree:.......Done.
-## Building the tree:...Done.
-## Building the tree:......Done.
-## Building the tree:..Done.
-## Building the tree:..Done.
-## Building the tree:.Done.
-## Building the tree:........Done.
-## Building the tree:..Done.
-## Building the tree:.....Done.
-## Building the tree:....Done.
-## Building the tree:....Done.
-## Building the tree:..Done.
-## Building the tree:.................Done.
-## Building the tree:....Done.
-## Building the tree:....Done.
-## Building the tree:..Done.
-## Building the tree:......Done.
-## Building the tree:.......Done.
-## Building the tree:.Done.
-## Building the tree:.Done.
-## Building the tree:..Done.
-## Building the tree:......Done.
 ## Building the tree:...........Done.
-## Building the tree:......Done.
-## Building the tree:....Done.
 ## Building the tree:.Done.
-## Building the tree:..................Done.
+## Building the tree:............Done.
+## Building the tree:.Done.
+## Building the tree:.Done.
+## Building the tree:.Done.
+## Building the tree:..............Done.
+## Building the tree:...................................Done.
+## Building the tree:......................Done.
+## Building the tree:........Done.
+## Building the tree:...................Done.
+## Building the tree:...Done.
+## Building the tree:.......Done.
+## Building the tree:.....Done.
+## Building the tree:....................Done.
+## Building the tree:.Done.
+## Building the tree:...Done.
+## Building the tree:................Done.
+## Building the tree:.......Done.
+## Building the tree:.................Done.
+## Building the tree:.....Done.
+## Building the tree:.................Done.
+## Building the tree:............Done.
 ## Building the tree:....Done.
+## Building the tree:....Done.
+## Building the tree:...Done.
+## Building the tree:...................................................Done.
 ## Building the tree:...............Done.
 ## Building the tree:....Done.
-## Building the tree:..Done.
+## Building the tree:.........Done.
+## Building the tree:..................................Done.
+## Building the tree:.....Done.
 ## Building the tree:........Done.
 ## Building the tree:....Done.
+## Building the tree:.Done.
+## Building the tree:...................Done.
+## Building the tree:...........Done.
+## Building the tree:...........Done.
+## Building the tree:...........Done.
+## Building the tree:.Done.
+## Building the tree:...........Done.
+## Building the tree:.Done.
+## Building the tree:.............Done.
+## Building the tree:.............Done.
 ## Building the tree:........Done.
-## Building the tree:...Done.
-## Building the tree:...Done.
-## Building the tree:.Done.
-## Building the tree:...Done.
-## Building the tree:..............Done.
+## Building the tree:.............Done.
 ## Building the tree:...Done.
 ## Building the tree:.Done.
-## Building the tree:..Done.
-## Building the tree:....Done.
-## Building the tree:..Done.
-## Building the tree:..Done.
-## Building the tree:.Done.
-## Building the tree:.Done.
-## Building the tree:....Done.
-## Building the tree:..........Done.
 \end{verbatim}
 
 \begin{Shaded}
@@ -1063,56 +1063,56 @@ We can then measure the disparity from these scenarios and compare them to our o
 \end{Shaded}
 
 \begin{verbatim}
-## Building the tree:.....................Done.
-## Building the tree:...................Done.
-## Building the tree:.....Done.
-## Building the tree:.Done.
-## Building the tree:....Done.
-## Building the tree:..Done.
-## Building the tree:..Done.
 ## Building the tree:......................Done.
-## Building the tree:..Done.
-## Building the tree:..Done.
 ## Building the tree:...Done.
+## Building the tree:..................Done.
+## Building the tree:.......Done.
+## Building the tree:.................Done.
+## Building the tree:...Done.
+## Building the tree:..................Done.
+## Building the tree:....................Done.
 ## Building the tree:.Done.
-## Building the tree:..Done.
-## Building the tree:......Done.
+## Building the tree:............Done.
+## Building the tree:.Done.
 ## Building the tree:.Done.
 ## Building the tree:......Done.
-## Building the tree:..Done.
+## Building the tree:...............Done.
+## Building the tree:....Done.
+## Building the tree:.................Done.
+## Building the tree:.........Done.
+## Building the tree:....Done.
+## Building the tree:.....Done.
+## Building the tree:....Done.
+## Building the tree:......Done.
+## Building the tree:.....................Done.
+## Building the tree:.................Done.
 ## Building the tree:.Done.
 ## Building the tree:....Done.
 ## Building the tree:...Done.
-## Building the tree:..Done.
-## Building the tree:......Done.
-## Building the tree:....................Done.
-## Building the tree:...Done.
-## Building the tree:.........Done.
-## Building the tree:.Done.
-## Building the tree:...Done.
-## Building the tree:.Done.
-## Building the tree:.........Done.
-## Building the tree:.Done.
-## Building the tree:.............Done.
-## Building the tree:..............Done.
-## Building the tree:......Done.
-## Building the tree:.Done.
+## Building the tree:...........................Done.
 ## Building the tree:.......Done.
-## Building the tree:...Done.
-## Building the tree:..Done.
-## Building the tree:......Done.
-## Building the tree:.Done.
-## Building the tree:..Done.
-## Building the tree:............Done.
+## Building the tree:.......Done.
 ## Building the tree:.....Done.
 ## Building the tree:......Done.
-## Building the tree:.Done.
-## Building the tree:.Done.
-## Building the tree:..............Done.
-## Building the tree:........Done.
-## Building the tree:..............Done.
-## Building the tree:.Done.
+## Building the tree:.......Done.
+## Building the tree:.........Done.
+## Building the tree:.....Done.
+## Building the tree:...Done.
+## Building the tree:...................Done.
+## Building the tree:............Done.
+## Building the tree:......................Done.
+## Building the tree:......Done.
+## Building the tree:............Done.
+## Building the tree:.............Done.
+## Building the tree:...........Done.
 ## Building the tree:..Done.
+## Building the tree:.........................Done.
+## Building the tree:.Done.
+## Building the tree:......................Done.
+## Building the tree:.............Done.
+## Building the tree:...Done.
+## Building the tree:...............Done.
+## Building the tree:..........Done.
 \end{verbatim}
 
 \begin{Shaded}
@@ -1402,7 +1402,7 @@ Note that you can see the multiple options for plotting the trait process by loo
 ##     return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = Sigma * edge.length, 
 ##         ...)))
 ## }
-## <bytecode: 0x55e979290a30>
+## <bytecode: 0x560fcf695180>
 ## <environment: namespace:treats>
 ## 
 ## $main$A$start
@@ -2146,7 +2146,7 @@ By default, the birth-death process in \texttt{treats} uses this modifier:
 ## {
 ##     return(rexp(1, sum(lineage$n * (bd.params$speciation + bd.params$extinction))))
 ## }
-## <bytecode: 0x55e977cfc060>
+## <bytecode: 0x560fce0ebbe0>
 ## <environment: namespace:treats>
 ## 
 ## $waiting$internal
@@ -2159,7 +2159,7 @@ By default, the birth-death process in \texttt{treats} uses this modifier:
 ## {
 ##     return(sample(lineage$n, 1))
 ## }
-## <bytecode: 0x55e977d04410>
+## <bytecode: 0x560fce0eaf30>
 ## <environment: namespace:treats>
 ## 
 ## $selecting$internal
@@ -2173,7 +2173,7 @@ By default, the birth-death process in \texttt{treats} uses this modifier:
 ##     return(runif(1) <= (bd.params$speciation/(bd.params$speciation + 
 ##         bd.params$extinction)))
 ## }
-## <bytecode: 0x55e977d03ae0>
+## <bytecode: 0x560fce0ea600>
 ## <environment: namespace:treats>
 ## 
 ## $speciating$internal
@@ -3667,7 +3667,7 @@ If two traits are provided, the 3rd dimension is going to be time by default:
 ## snapshots
 \end{verbatim}
 
-\includegraphics[width=6.5in]{../../../../../../tmp/RtmpMmzXjr/file3e7f6e0175d3}
+\includegraphics[width=6.5in]{../../../../../../tmp/Rtmp6UK3fU/file52c0514edd4f}
 
 If three traits are provide, you can set up a fourth coloured dimension as time (similarly to the 2D plots with the colour gradients).
 This uses the \texttt{rgl} functions, namely \texttt{lines3d}, \texttt{points3d} (if \texttt{type\ =\ "p"}; default) or \texttt{sphere3d} (if \texttt{type\ =\ "s"}).
@@ -3693,7 +3693,7 @@ The additional arguments \texttt{...} are directly handled and attributed to the
 ## snapshots
 \end{verbatim}
 
-\includegraphics[width=6.5in]{../../../../../../tmp/RtmpMmzXjr/file3e7f7aec27f9}
+\includegraphics[width=6.5in]{../../../../../../tmp/Rtmp6UK3fU/file52c079e156e9}
 
 \hypertarget{specific-examples}{%
 \chapter{Specific examples}\label{specific-examples}}
@@ -4159,7 +4159,7 @@ And we can visualise this change through time:
 ## snapshots
 \end{verbatim}
 
-\includegraphics[width=6.5in]{../../../../../../tmp/RtmpMmzXjr/file3e7f5c6b6ac6}
+\includegraphics[width=6.5in]{../../../../../../tmp/Rtmp6UK3fU/file52c02397d39c}
 
 \hypertarget{EG_change_modif}{%
 \section{Event for changing a modifier: extinction event increase for species with negative values}\label{EG_change_modif}}

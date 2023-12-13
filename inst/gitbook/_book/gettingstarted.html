@@ -23,7 +23,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie)" />
 
 
-<meta name="date" content="2023-12-06" />
+<meta name="date" content="2023-12-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -589,10 +589,10 @@ As a subsidiary question, they want to know whether the pattern is more likely d
 <p>The first step is to simulate the observed tree.
 We can do that by using crude parameters from the observed tree:</p>
 <div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="gettingstarted.html#cb38-1" aria-hidden="true"></a><span class="co">## Extracting the crude parameters</span></span>
-<span id="cb38-2"><a href="gettingstarted.html#cb38-2" aria-hidden="true"></a>(est_params &lt;-<span class="st"> </span><span class="kw">crude.bd.est</span>(BeckLee_tree))</span></code></pre></div>
+<span id="cb38-2"><a href="gettingstarted.html#cb38-2" aria-hidden="true"></a>(est_params &lt;-<span class="st"> </span><span class="kw">crude.bd.est</span>(BeckLee_tree, <span class="dt">method =</span> <span class="st">&quot;count&quot;</span>))</span></code></pre></div>
 <pre><code>##  ---- treats birth-death parameters object ---- 
-## speciation: 0.352.
-## extinction: 0.288.</code></pre>
+## speciation: 0.028.
+## extinction: 0.027.</code></pre>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="gettingstarted.html#cb40-1" aria-hidden="true"></a><span class="co">## These parameters are the observed speciation and extinction rate per million years.</span></span>
 <span id="cb40-2"><a href="gettingstarted.html#cb40-2" aria-hidden="true"></a></span>
 <span id="cb40-3"><a href="gettingstarted.html#cb40-3" aria-hidden="true"></a><span class="co">## Setting the stopping rule (stop after reaching 50 taxa)</span></span>
@@ -702,56 +702,56 @@ This allows us to simulate two contrasted scenarios to see whether using our obs
 <span id="cb51-6"><a href="gettingstarted.html#cb51-6" aria-hidden="true"></a>                   <span class="dt">events     =</span> random_extinction,</span>
 <span id="cb51-7"><a href="gettingstarted.html#cb51-7" aria-hidden="true"></a>                   <span class="dt">null.error =</span> <span class="dv">100</span>,</span>
 <span id="cb51-8"><a href="gettingstarted.html#cb51-8" aria-hidden="true"></a>                   <span class="dt">replicates =</span> <span class="dv">50</span>)</span></code></pre></div>
-<pre><code>## Building the tree:....Done.
-## Building the tree:.......Done.
-## Building the tree:...Done.
-## Building the tree:......Done.
-## Building the tree:..Done.
-## Building the tree:..Done.
-## Building the tree:.Done.
-## Building the tree:........Done.
-## Building the tree:..Done.
-## Building the tree:.....Done.
+<pre><code>## Building the tree:....................Done.
 ## Building the tree:....Done.
-## Building the tree:....Done.
-## Building the tree:..Done.
-## Building the tree:.................Done.
-## Building the tree:....Done.
-## Building the tree:....Done.
-## Building the tree:..Done.
-## Building the tree:......Done.
-## Building the tree:.......Done.
-## Building the tree:.Done.
-## Building the tree:.Done.
-## Building the tree:..Done.
-## Building the tree:......Done.
 ## Building the tree:...........Done.
-## Building the tree:......Done.
-## Building the tree:....Done.
 ## Building the tree:.Done.
-## Building the tree:..................Done.
+## Building the tree:............Done.
+## Building the tree:.Done.
+## Building the tree:.Done.
+## Building the tree:.Done.
+## Building the tree:..............Done.
+## Building the tree:...................................Done.
+## Building the tree:......................Done.
+## Building the tree:........Done.
+## Building the tree:...................Done.
+## Building the tree:...Done.
+## Building the tree:.......Done.
+## Building the tree:.....Done.
+## Building the tree:....................Done.
+## Building the tree:.Done.
+## Building the tree:...Done.
+## Building the tree:................Done.
+## Building the tree:.......Done.
+## Building the tree:.................Done.
+## Building the tree:.....Done.
+## Building the tree:.................Done.
+## Building the tree:............Done.
 ## Building the tree:....Done.
+## Building the tree:....Done.
+## Building the tree:...Done.
+## Building the tree:...................................................Done.
 ## Building the tree:...............Done.
 ## Building the tree:....Done.
-## Building the tree:..Done.
+## Building the tree:.........Done.
+## Building the tree:..................................Done.
+## Building the tree:.....Done.
 ## Building the tree:........Done.
 ## Building the tree:....Done.
+## Building the tree:.Done.
+## Building the tree:...................Done.
+## Building the tree:...........Done.
+## Building the tree:...........Done.
+## Building the tree:...........Done.
+## Building the tree:.Done.
+## Building the tree:...........Done.
+## Building the tree:.Done.
+## Building the tree:.............Done.
+## Building the tree:.............Done.
 ## Building the tree:........Done.
+## Building the tree:.............Done.
 ## Building the tree:...Done.
-## Building the tree:...Done.
-## Building the tree:.Done.
-## Building the tree:...Done.
-## Building the tree:..............Done.
-## Building the tree:...Done.
-## Building the tree:.Done.
-## Building the tree:..Done.
-## Building the tree:....Done.
-## Building the tree:..Done.
-## Building the tree:..Done.
-## Building the tree:.Done.
-## Building the tree:.Done.
-## Building the tree:....Done.
-## Building the tree:..........Done.</code></pre>
+## Building the tree:.Done.</code></pre>
 <div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="gettingstarted.html#cb53-1" aria-hidden="true"></a><span class="co">## Simulate the tree and traits with a random extinction event</span></span>
 <span id="cb53-2"><a href="gettingstarted.html#cb53-2" aria-hidden="true"></a>sim_trait_extinction &lt;-<span class="st"> </span><span class="kw">treats</span>(</span>
 <span id="cb53-3"><a href="gettingstarted.html#cb53-3" aria-hidden="true"></a>                   <span class="dt">traits     =</span> my_traits,</span>
@@ -760,56 +760,56 @@ This allows us to simulate two contrasted scenarios to see whether using our obs
 <span id="cb53-6"><a href="gettingstarted.html#cb53-6" aria-hidden="true"></a>                   <span class="dt">events     =</span> negative_extinction,</span>
 <span id="cb53-7"><a href="gettingstarted.html#cb53-7" aria-hidden="true"></a>                   <span class="dt">null.error =</span> <span class="dv">100</span>,</span>
 <span id="cb53-8"><a href="gettingstarted.html#cb53-8" aria-hidden="true"></a>                   <span class="dt">replicates =</span> <span class="dv">50</span>)</span></code></pre></div>
-<pre><code>## Building the tree:.....................Done.
-## Building the tree:...................Done.
-## Building the tree:.....Done.
-## Building the tree:.Done.
-## Building the tree:....Done.
-## Building the tree:..Done.
-## Building the tree:..Done.
-## Building the tree:......................Done.
-## Building the tree:..Done.
-## Building the tree:..Done.
+<pre><code>## Building the tree:......................Done.
 ## Building the tree:...Done.
-## Building the tree:.Done.
-## Building the tree:..Done.
-## Building the tree:......Done.
-## Building the tree:.Done.
-## Building the tree:......Done.
-## Building the tree:..Done.
-## Building the tree:.Done.
-## Building the tree:....Done.
-## Building the tree:...Done.
-## Building the tree:..Done.
-## Building the tree:......Done.
-## Building the tree:....................Done.
-## Building the tree:...Done.
-## Building the tree:.........Done.
-## Building the tree:.Done.
-## Building the tree:...Done.
-## Building the tree:.Done.
-## Building the tree:.........Done.
-## Building the tree:.Done.
-## Building the tree:.............Done.
-## Building the tree:..............Done.
-## Building the tree:......Done.
-## Building the tree:.Done.
+## Building the tree:..................Done.
 ## Building the tree:.......Done.
+## Building the tree:.................Done.
 ## Building the tree:...Done.
-## Building the tree:..Done.
-## Building the tree:......Done.
+## Building the tree:..................Done.
+## Building the tree:....................Done.
 ## Building the tree:.Done.
-## Building the tree:..Done.
 ## Building the tree:............Done.
+## Building the tree:.Done.
+## Building the tree:.Done.
+## Building the tree:......Done.
+## Building the tree:...............Done.
+## Building the tree:....Done.
+## Building the tree:.................Done.
+## Building the tree:.........Done.
+## Building the tree:....Done.
+## Building the tree:.....Done.
+## Building the tree:....Done.
+## Building the tree:......Done.
+## Building the tree:.....................Done.
+## Building the tree:.................Done.
+## Building the tree:.Done.
+## Building the tree:....Done.
+## Building the tree:...Done.
+## Building the tree:...........................Done.
+## Building the tree:.......Done.
+## Building the tree:.......Done.
 ## Building the tree:.....Done.
 ## Building the tree:......Done.
+## Building the tree:.......Done.
+## Building the tree:.........Done.
+## Building the tree:.....Done.
+## Building the tree:...Done.
+## Building the tree:...................Done.
+## Building the tree:............Done.
+## Building the tree:......................Done.
+## Building the tree:......Done.
+## Building the tree:............Done.
+## Building the tree:.............Done.
+## Building the tree:...........Done.
+## Building the tree:..Done.
+## Building the tree:.........................Done.
 ## Building the tree:.Done.
-## Building the tree:.Done.
-## Building the tree:..............Done.
-## Building the tree:........Done.
-## Building the tree:..............Done.
-## Building the tree:.Done.
-## Building the tree:..Done.</code></pre>
+## Building the tree:......................Done.
+## Building the tree:.............Done.
+## Building the tree:...Done.
+## Building the tree:...............Done.
+## Building the tree:..........Done.</code></pre>
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="gettingstarted.html#cb55-1" aria-hidden="true"></a><span class="co">## Visualising the difference between both scenarios</span></span>
 <span id="cb55-2"><a href="gettingstarted.html#cb55-2" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
 <span id="cb55-3"><a href="gettingstarted.html#cb55-3" aria-hidden="true"></a><span class="kw">plot</span>(sim_rand_extinction[[<span class="dv">1</span>]], <span class="dt">main =</span> <span class="st">&quot;Random extinction&quot;</span>)</span>

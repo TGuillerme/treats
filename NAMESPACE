@@ -9,6 +9,7 @@ importFrom("MASS","mvrnorm")
 importFrom("rgl","plot3d","segments3d","spheres3d","points3d")
 importFrom("methods", "formalArgs", "is")
 importFrom("utils", "tail")
+importFrom("geiger", "bd.km", "bd.ms")
 
 ## Main functions
 export(treats)

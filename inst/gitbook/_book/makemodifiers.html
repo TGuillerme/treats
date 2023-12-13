@@ -23,7 +23,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie)" />
 
 
-<meta name="date" content="2023-12-06" />
+<meta name="date" content="2023-12-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -406,7 +406,7 @@ By default, the birth-death process in <code>treats</code> uses this modifier:</
 ## {
 ##     return(rexp(1, sum(lineage$n * (bd.params$speciation + bd.params$extinction))))
 ## }
-## &lt;bytecode: 0x5635acdb88b8&gt;
+## &lt;bytecode: 0x55673cbe93f0&gt;
 ## &lt;environment: namespace:treats&gt;
 ## 
 ## $waiting$internal
@@ -419,7 +419,7 @@ By default, the birth-death process in <code>treats</code> uses this modifier:</
 ## {
 ##     return(sample(lineage$n, 1))
 ## }
-## &lt;bytecode: 0x5635acdb58f8&gt;
+## &lt;bytecode: 0x55673cbe8740&gt;
 ## &lt;environment: namespace:treats&gt;
 ## 
 ## $selecting$internal
@@ -433,7 +433,7 @@ By default, the birth-death process in <code>treats</code> uses this modifier:</
 ##     return(runif(1) &lt;= (bd.params$speciation/(bd.params$speciation + 
 ##         bd.params$extinction)))
 ## }
-## &lt;bytecode: 0x5635acdb65e0&gt;
+## &lt;bytecode: 0x55673cbed3c0&gt;
 ## &lt;environment: namespace:treats&gt;
 ## 
 ## $speciating$internal

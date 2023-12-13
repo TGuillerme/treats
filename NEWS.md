@@ -1,3 +1,10 @@
+treats v1.0.1 (2023-12-13) 
+=========================
+
+### MINOR IMPROVEMENTS
+
+ * `crude.bd.est` now calculates the speciation and extinction rates based on the `geiger` package by default (using the `"estimate"` method) or just counts the events per time (using the `"count"` method).
+
 treats v1.0 (2023-11-22) 
 =========================
 
