@@ -1,0 +1,33 @@
+---
+title: "Response to reviewers"
+author: "Thomas Guillerme"
+bibliography: References.bib
+# csl: mee.csl
+date: "`r Sys.Date()`"
+output: 
+  pdf_document: 
+    keep_tex: yes
+    fig_width: 8
+    fig_height: 8
+  bookdown::html_document2: default
+  bookdown::pdf_document2: default
+---
+
+Dear Editor,
+
+I am grateful for the associate editor's comment on the (bad) use and showcase of the `crude.bd.est` function.
+
+I have now updated the function to allow two methods: either `"count"` for counting the number of events (extinction or speciation) per time per lineage (now calculating log(events)/time); and the `"estimate"` method to estimate the actual rates based on Magallon and Sanderson 2001 (in references) using the `geiger` implementations of the method.
+
+However, in the example case of the paper, both methods are actually not really satisfactory (the estimates are widely off because of the bad sampling of the example tree and the counting is not that good either because it's ignoring missing data). I've thus removed the use of that function in the example in the paper all together (although updated it in the package) and just use the arbitrary rates of 0.035 and 0.02 that make 140 units of time old trees look similar as the example one. I've added the following sentence regarding the rates calculation as well:
+
+*"Here we are using two relatively arbitrary (speciation = 0.035 and extinction = 0.02) to get trees roughly matching the observed tree. Note that you might want to consider more appropriate ways to calculate these rates for research projects (e.g Magallon and Sanderson 2001). We also need a stopping rule for when to stop the simulations (in our case when reaching 140 time units)."* l. @@@
+
+I hope this solves the associate editor's rightful concerns. 
+
+I've updated the pipeline and the examples accordingly (now matching the 66 Mya extinction and the 140 Mya old tree from the observed example data).
+
+I've also pushed the package to the CRAN and linked it in the "Package location" section at the end of the paper.
+
+Best regards,
+Thomas Guillerme
