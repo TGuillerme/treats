@@ -11,6 +11,7 @@ Depends:
     stats
 Imports:
     graphics,
+    geiger,
     MASS,
     methods,
     utils,
