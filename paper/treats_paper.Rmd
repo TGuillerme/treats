@@ -45,7 +45,7 @@ These methods rely on comparing patterns in a phylogenetic context to understand
 These comparisons can be done between observed patterns under different conditions or against null, neutral or baseline models (see @bausman2018neutral for distinctions) suggesting different processes or mechanisms.
 For example different traits distribution for species with different diets [@deepak2023diet] or habitats [@pinto2017geographical].
 Or by comparing some observed pattern to one simulated under null or base conditions [@miller2022alternating].
-In theory, workers can follow the following research pipeline: 1) thinking of a specific mechanism (e.g. mass extinction allowing the surviving species to acquire new morphologies), 2) collecting some data to test this mechanism (e.g. some traits of species across and extinction event) and then 3) comparing these patterns to some simulated under no specific conditions (e.g. a null model where the traits evolve randomly regardless of an extinction event @puttick2020complex).
+In theory, workers can use the following research pipeline: 1) thinking of a specific mechanism (e.g. mass extinction allowing the surviving species to acquire new morphologies), 2) collecting some data to test this mechanism (e.g. some traits of species across and extinction event) and then 3) comparing these patterns to some simulated under no specific conditions (e.g. a null model where the traits evolve randomly regardless of an extinction event @puttick2020complex).
 Workers might thus need to simulate a great diversity of evolutionary scenarios to test their specific question.
 To do so, we need statistical and software solutions to simulate trees and data to generate many specific null models.
 
@@ -215,7 +215,7 @@ positive_extinction <- make.events(
 For this event, the target is the number of taxa in the simulations.
 This is indicated using the `target = "taxa"` argument.
 Then the event is triggered using the argument `age.condition(15)` and modifies the internal `lineage` object using the ``trait.extinction(x = 0, condition = `>=`)`` function.
-`age.condition` and `trait.extinction` are both function factories which are not gonna be detailed here (see @wickham2019advanced).
+`age.condition` and `trait.extinction` are both function factories which are not going to be detailed here (see @wickham2019advanced).
 Effectively these arguments can be passed directly as standard functions.
 For example, to trigger the event when reaching time 15 we can use the following function:
 
@@ -445,10 +445,12 @@ observed_disparity <- unlist(get.disparity(scale.dispRity(observed_disparity)))
 
 ## Plotting the results with the observed disparity
 par(mfrow = c(1,2))
-plot(random_extinction_disparity, main = "Random extinction", ylab = "Scaled sum of variances", ylim = c(0, 1))
+plot(random_extinction_disparity, main = "Random extinction",
+     ylab = "Scaled sum of variances", ylim = c(0, 1))
 abline(v = 4, col = "red")
 lines(x = 1:7, y = observed_disparity, lty = 2, lwd = 2)
-plot(selective_extinction_disparity, main = "Selective extinction", ylab = "", ylim = c(0, 1))
+plot(selective_extinction_disparity, main = "Selective extinction",
+     ylab = "", ylim = c(0, 1))
 abline(v = 4, col = "red")
 lines(x = 1:7, y = observed_disparity, lty = 2, lwd = 2)
 ```
@@ -459,10 +461,13 @@ This is of course a very crude way of testing this, a more rigorous approach is 
 
 # Additional information
 
-## Manuals and vignettes
+## Manuals, vignette and templates
 
 The `treats` package comes with internal documentation (e.g. `?treats`) but also with a thorough and extended vignette in a gitbook format: the [`treats` manual](http://tguillerme.github.io/treats.html).
 This manual is designed so that it can be regularly updated and enhanced through the lifetime of the package facilitating the interface between methods development and usage [@cooper2016dark].
+Furthermore, a library of simulation templates is maintained on the [GitHub page](https://github.com/TGuillerme/treats/issues?q=is%3Aopen+is%3Aissue+label%3A%22simulation+template%22).
+These templates are written and shared in the form of GitHub issues template and can be submitted and shared by any users.
+Either for them to have them stored somewhere curated, or better yet, so that other users can reuse, comment and mofidy them for their own projects.
 
 ## Further directions
 
@@ -470,7 +475,6 @@ This paper describes the first version of the `treats` package.
 However, I intend to continuously develop this package.
 For example future planned versions will include abiotic events and a better integration with the `dispRity` package.
 This will be done while keeping track change (through `NEWS` file), continuous integration and unit testing. 
-Furthermore, I am planning to develop the GitHub page associated with the package to encourage users to share their simulation templates and build library from them to facilitate the work for future users.
 
 ## Repeatability and reproducibility
 This paper is entirely reproducible from an Rmarkdown document available on [GitHub](https://github.com/TGuillerme/treats/inst/paper.Rmd).

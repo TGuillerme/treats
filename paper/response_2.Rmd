@@ -21,13 +21,13 @@ I have now updated the function to allow two methods: either `"count"` for count
 
 However, in the example case of the paper, both methods are actually not really satisfactory (the estimates are widely off because of the bad sampling of the example tree and the counting is not that good either because it's ignoring missing data). I've thus removed the use of that function in the example in the paper all together (although updated it in the package) and just use the arbitrary rates of 0.035 and 0.02 that make 140 units of time old trees look similar as the example one. I've added the following sentence regarding the rates calculation as well:
 
-*"Here we are using two relatively arbitrary (speciation = 0.035 and extinction = 0.02) to get trees roughly matching the observed tree. Note that you might want to consider more appropriate ways to calculate these rates for research projects (e.g Magallon and Sanderson 2001). We also need a stopping rule for when to stop the simulations (in our case when reaching 140 time units)."* l. @@@
+*"Here we are using two relatively arbitrary (speciation = 0.035 and extinction = 0.02) to get trees roughly matching the observed tree. Note that you might want to consider more appropriate ways to calculate these rates for research projects (e.g Magallon and Sanderson 2001). We also need a stopping rule for when to stop the simulations (in our case when reaching 140 time units)."* l. 178-181
 
 I hope this solves the associate editor's rightful concerns. 
 
 I've updated the pipeline and the examples accordingly (now matching the 66 Mya extinction and the 140 Mya old tree from the observed example data).
 
-I've also pushed the package to the CRAN and linked it in the "Package location" section at the end of the paper.
+Finally I've also added two minor modifications: (1) I've pushed the package to the CRAN and linked it in the "Package location" section at the end of the paper; (2) I now mention the template sharing format (via github issues) in the "Manuals, vignette and templates" section rather than in the "Further directions" section.
 
 Best regards,
 Thomas Guillerme
