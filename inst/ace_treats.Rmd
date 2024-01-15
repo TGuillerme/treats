@@ -1,0 +1,43 @@
+---
+title: "Running ancestral states estimations on treats"
+author: "Thomas Guillerme"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    fig_width: 6
+    fig_height: 6
+---
+
+## Ace pipeline idea
+
+1 - estimate the root (x0)
+2 - estimate the parameters (e.g. variance)
+3 - simulate the process
+4 - test the fit with the observed data.
+
+## Readings
+
+https://link.springer.com/article/10.1007/s11692-020-09505-x
+
+Cunningham, C. W., Omland, K. E. and Oakley, T. H. (1998) Reconstructing ancestral character
+states: a critical reappraisal. Trends in Ecology & Evolution, 13, 361–366
+
+Pagel, M. (1994) Detecting correlated evolution on phylogenies: a general method for the com-
+parative analysis of discrete characters. Proceedings of the Royal Society of London. Series B.
+Biological Sciences, 255, 37–45
+
+## Playground
+
+```{r}
+library(treats)
+set.seed(1)
+play_data <- treats(bd.params  = list(speciation = 1, extinction = 0.5),
+                    traits     = make.traits(),
+                    stop.rule  = list(max.taxa = 50),
+                    null.error = 100) 
+plot(play_data)
+```
+
+https://github.com/pasraia/RRphylo/blob/master/R/RRphylo.R
+
+https://github.com/emmanuelparadis/ape/blob/master/R/ace.R
