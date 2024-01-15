@@ -379,7 +379,11 @@ plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NUL
     if(do_edges) {
 
         ## Add the colours
-        lines_params$col <- edges
+        if(!missing(transparency)) {
+            lines_params$col <- grDevices::adjustcolor(edges, alpha.f = transparency)
+        } else {
+            lines_params$col <- edges
+        }
 
         if(!use.3D) {
             # ## Make the points data table
