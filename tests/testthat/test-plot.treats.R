@@ -79,3 +79,15 @@ test_that("example works", {
          edges = "grey", tips.nodes = "black", use.3D = TRUE, type = "s", radius = 0.1))
     # rgl::rglwidget()
 })
+
+test_that("blurry plots works", {
+
+    ## Different trait values
+    set.seed(2)
+    tree <- rcoal(30) 
+    data <- map.traits(tree, traits = make.traits(), replicates = 5)
+    expect_null(plot(data))
+
+    output <- map.traits(rmtree(5, 10), traits = make.traits())
+    expect_null(plot(output))
+})
