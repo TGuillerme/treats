@@ -13,6 +13,8 @@
 #' @param cent.tend if the input is a \code{treats} \code{traits}, which central tendency to plot (default is \code{mean}).
 #' @param quantiles if the input is a \code{treats} \code{traits}, which quantiles to plot (default are \code{c(95, 50))}).
 #' @param legend logical, whether to display the legend in 2D plots (\code{TRUE}) or not (\code{FALSE}; default)
+#' @param add logical, whether to add to a previous plot.
+#' @param transparency Optional, a transparency factor (\code{1} = not transparent, \code{0} = invisible). If left empty, and multiple plots are called, the transparency is set to 1 / number of plots + 0.1. 
 #' 
 #' @return No return value, plot \code{x}'s content.
 #'
@@ -78,7 +80,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL, use.3D = FALSE, simulations = 50, cent.tend = mean, quantiles = c(95, 50), legend = FALSE) {
+plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL, use.3D = FALSE, simulations = 50, cent.tend = mean, quantiles = c(95, 50), legend = FALSE, transparency, add = FALSE) {
 
     match_call <- match.call()
 
@@ -179,6 +181,25 @@ plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NUL
         return(invisible())
     }
 
+    ## Make the data a data list
+    if(is(data[[1]], "treats")) {
+
+        ## Set transparency
+        if(missing(transparency)) {
+            transparency <- 1/length(data) + 0.1
+        }
+                
+        ## First plot
+        plot.treats(data[[1]], col = col, ..., trait = trait, edges = edges, tips.nodes = tips.nodes, use.3D = use.3D, legend = legend, transparency = transparency, add = FALSE)
+        # plot.treats(data[[1]], col = col, trait = trait, edges = edges, tips.nodes = tips.nodes, use.3D = use.3D, legend = legend, transparency = transparency, add = FALSE) ; warning("DEBUG")
+
+        ## Subsequent plots
+        lapply(data[-1], plot.treats, col = col, ..., trait = trait, edges = edges, tips.nodes = tips.nodes, use.3D = use.3D, legend = FALSE, transparency = transparency, add = TRUE)
+        # lapply(data[-1], plot.treats, col = col, trait = trait, edges = edges, tips.nodes = tips.nodes, use.3D = use.3D, legend = FALSE, transparency = transparency, add = TRUE) ; warning("DEBUG")
+
+        return(invisible())
+    }
+
     ## Sanitizing
     if(missing(col)) {
         col <- "default"
@@ -202,6 +223,7 @@ plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NUL
         do_circles <- TRUE
     }
     check.class(use.3D, "logical")
+    check.class(add, "logical")
 
     ## Handle the type of plot
     if((n_traits <- length(trait)) > 3) {
@@ -335,23 +357,33 @@ plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NUL
 
     ## Handle the colours
     col_handle <- handle.colours(col, points_tree_IDs, points_ages, data, legend)
-    points_params$col <- col_handle$col
+    if(!missing(transparency)) {
+        points_params$col <- grDevices::adjustcolor(col_handle$col, alpha.f = transparency)
+    } else {
+        points_params$col <- col_handle$col
+    }
     legend_col <- col_handle$legend
 
     ## Plotting the frame
-    if(!use.3D) {
-        plot_params <- c(plot_params, x = list(NULL), y = list(NULL))
-        do.call(plot, plot_params)
-    } else {
-        plot_params <- c(plot_params, x = list(NULL), y = list(NULL), z = list(NULL))
-        do.call(rgl::plot3d, plot_params)
+    if(!add) {
+        if(!use.3D) {
+            plot_params <- c(plot_params, x = list(NULL), y = list(NULL))
+            do.call(plot, plot_params)
+        } else {
+            plot_params <- c(plot_params, x = list(NULL), y = list(NULL), z = list(NULL))
+            do.call(rgl::plot3d, plot_params)
+        }
     }
 
     ## Plotting the tree (if needed)
     if(do_edges) {
 
         ## Add the colours
-        lines_params$col <- edges
+        if(!missing(transparency)) {
+            lines_params$col <- grDevices::adjustcolor(edges, alpha.f = transparency)
+        } else {
+            lines_params$col <- edges
+        }
 
         if(!use.3D) {
             # ## Make the points data table

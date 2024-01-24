@@ -15,7 +15,9 @@
   simulations = 50,
   cent.tend = mean,
   quantiles = c(95, 50),
-  legend = FALSE
+  legend = FALSE,
+  transparency,
+  add = FALSE
 )
 }
 \arguments{
@@ -40,6 +42,10 @@
 \item{quantiles}{if the input is a \code{treats} \code{traits}, which quantiles to plot (default are \code{c(95, 50))}).}
 
 \item{legend}{logical, whether to display the legend in 2D plots (\code{TRUE}) or not (\code{FALSE}; default)}
+
+\item{transparency}{Optional, a transparency factor (\code{1} = not transparent, \code{0} = invisible). If left empty, and multiple plots are called, the transparency is set to 1 / number of plots + 0.1.}
+
+\item{add}{logical, whether to add to a previous plot.}
 }
 \value{
 No return value, plot \code{x}'s content.

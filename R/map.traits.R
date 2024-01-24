@@ -4,6 +4,7 @@
 #'
 #' @param traits A \code{"traits"} object (see \code{\link{make.traits}}).
 #' @param tree   A \code{"phylo"} or \code{"multiPhylo"} object.
+#' @param replicates Optional, a number of replicated traits to map.
 #'
 #' @return
 #' A \code{"treats"} object containing the tree and the traits.
@@ -36,13 +37,21 @@
 #' plot(no_traits, main = "Mapped normal trait")
 #' par(oldpar)
 #'
-map.traits <- function(traits, tree) {
+map.traits <- function(traits, tree, replicates) {
     ## Sanitizing
     check.class(traits, c("treats", "traits"), " must be of class \"traits\". You can generate such object using:\nmake.traits()")
     tree_class <- check.class(tree, c("phylo", "multiPhylo"))
     if(tree_class == "phylo") {
         tree <- list(tree)
     }
+
+    ## Check replicates
+    if(missing(replicates)) {
+        replicates <- 1
+    } else {
+        check.class(replicates, c("numeric", "integer"))
+    }
+
     ## Check for edge lengths
     if(any(unlist(lapply(tree, function(x) is.null(x$edge.length))))) {
         stop(paste0("The input tree", ifelse(tree_class == "phylo", " has", "s have"), " no branch lengths."))
@@ -54,15 +63,22 @@ map.traits <- function(traits, tree) {
     }
 
     ## Map the traits
-    all_traits <- lapply(tree, map.traits_fun, traits = traits)
+    all_traits <- replicate(replicates, lapply(tree, map.traits_fun, traits = traits), simplify = FALSE)
 
     ## Output
-    output <- lapply(all_traits, function(x) make.treats(x$tree, x$data))
+    output <- lapply(all_traits, lapply, function(x) make.treats(x$tree, x$data))
+
+    ## Output
     if(tree_class == "phylo") {
-        return(output[[1]])
+        output <- lapply(output, function(x) return(x[[1]]))
     } else {
-        return(output)
+        output <- unlist(output, recursive = FALSE)
     }
+    if(length(output) == 1) {
+        output <- output[[1]]
+    }
+    class(output) <- c("treats")
+    return(output)
 }
 
 ## Internal function for a single tree

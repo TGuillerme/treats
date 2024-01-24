@@ -4,7 +4,7 @@ import(stats)
 import(dispRity)
 
 importFrom("graphics","plot", "points", "lines", "hist", "text", "polygon", "legend")
-importFrom("grDevices","rgb", "as.raster")
+importFrom("grDevices","rgb", "as.raster", "adjustcolor")
 importFrom("MASS","mvrnorm")
 importFrom("rgl","plot3d","segments3d","spheres3d","points3d")
 importFrom("methods", "formalArgs", "is")

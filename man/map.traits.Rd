@@ -4,12 +4,14 @@
 \alias{map.traits}
 \title{Maps a trait on a tree}
 \usage{
-map.traits(traits, tree)
+map.traits(traits, tree, replicates)
 }
 \arguments{
 \item{traits}{A \code{"traits"} object (see \code{\link{make.traits}}).}
 
 \item{tree}{A \code{"phylo"} or \code{"multiPhylo"} object.}
+
+\item{replicates}{Optional, a number of replicated traits to map.}
 }
 \value{
 A \code{"treats"} object containing the tree and the traits.
