@@ -27,47 +27,105 @@
 #' @export
 
 make.treats <- function(tree, data) {#, ...) {
+
     ## Sanitizing
 
-    ## Check the tree
-    check.class(tree, "phylo") #TODO: generalise to multiPhylo
-    if(is.null(tree$tip.label) || is.null(tree$node.label)) {
-        stop("The input tree must have tip and node labels.")
+    ## First input is dispRity
+    if(!missing(tree) && is(tree, "dispRity")) {
+        data <- tree
     }
 
     ## Check the data
-    data_class <- check.class(data, c("data.frame", "matrix", "numeric", "integer"))
-    row_names_error <- "data must be a matrix with column names or a named vector."
-    if(data_class != "matrix") {
-        if(data_class == "data.frame") {
-            data <- as.matrix(data)
+    data_class <- check.class(data, c("list", "data.frame", "matrix", "numeric", "integer", "dispRity"))
+    row_names_error <- "data must be a matrix or a data.frame with row names or a named vector."
+
+    ## data is dispRity
+    if(data_class == "dispRity") {
+        ## Check if data has tree and data
+        if(is.null(data$tree[[1]])) {
+            stop("make.treats can only interpret dispRity data with data and tree(s). Make sure your dispRity object contains a tree by using:\ndispRity::get.tree(data)")
         } else {
-            ## Check for rownames
-            if(is.null(names(data))) stop(row_names_error)
-            data <- matrix(data, ncol = 1, dimnames = list(names(data)))
+            ## Set the data and the tree to check
+            tree <- data$tree
+            data <- data$matrix
+            data_class <- "list"
+            tree_can_be_missing <- TRUE
         }
     } else {
-        ## Check for rownames
-        if(is.null(rownames(data))) {
-            stop(row_names_error)
-        }
-    }
-    ## Check the length of the data
-    if(nrow(data) == Ntip(tree)) {
-        stop("The data does not seem to contain node values or they are not matching with the tree tips or node names.")
+        tree_can_be_missing <- FALSE
     }
 
+    ## Make the data into a list
+    if(data_class != "list") {
+        data <- list(data)
+    }
+
+    ## Check the data validity
+    data <- lapply(data, check.data.make.treats, data_class, row_names_error)
+
+    ## Check the tree
+    if(!tree_can_be_missing) {
+        tree_class <- check.class(tree, c("phylo", "multiPhylo"))
+        if(tree_class == "phylo") {
+            tree <- list(tree)
+        }
+
+        ## Check the length of the data
+        if(length(data) != length(tree)) {
+            ## Replicating the tree or the data
+            if(length(data) == 1) {
+                data <- unlist(replicate(length(tree), data, simplify = FALSE), recursive = FALSE)
+            }
+            if(length(tree) == 1) {
+                tree <- unlist(replicate(length(data), tree, simplify = FALSE), recursive = FALSE)
+            }
+            if(length(tree) != 1 && length(data) != 1) {
+                stop("The tree and data don't match.")
+            }
+        }
+        ## Check the data and the tree
+        silent <- mapply(check.tree.make.treats, tree, data)
+    }
+
+    ## Make the treats object
+    output <- mapply(make.treats.object, tree, data, SIMPLIFY = FALSE)
+
+    if(length(output) == 1) {
+        return(output[[1]])
+    } else {
+        class(output) <- "treats"
+        return(output)
+    }
+}
+
+## Check the data and the tree
+check.tree.make.treats <- function(tree, data) {
+    ## Check node and tip labels
+    if(is.null(tree$tip.label) || is.null(tree$node.label)) {
+        stop("The input tree must have tip and node labels.")
+    }
     ## Check the data match
     if(nrow(data) != (Ntip(tree)+Nnode(tree)) || any(is.na(match(rownames(data), c(tree$tip.label, tree$node.label)))))  {
-        stop("tree and data labels don't match.\nYou can use dispRity::clean.data(data, tree) to make them match.")
+        stop("The tree and data labels don't match.\nYou can use the following to make them match:\ndispRity::clean.data(data, tree)")
     }
-
-    ## Catch the optional info
-    # options <- list(...)
-    # valid_options <- unlist(lapply(lapply(options, class), function(x) return("treats" %in% x)))
-
-    ## Making output
-    # output <- list(valid_options)
+    return(NULL)
+}
+## Check the data validity
+check.data.make.treats <- function(data, data_class, row_names_error) {
+    if(data_class == "data.frame") {
+        data <- as.matrix(data)
+    }
+    if(data_class %in% c("integer", "numeric")) {
+        if(is.null(names(data))) stop(row_names_error, call. = FALSE)
+        data <- matrix(data, ncol = 1, dimnames = list(names(data)))
+    }
+    ## Check for rownames
+    if(is.null(rownames(data))) {
+        stop(row_names_error)
+    }
+    return(data)
+}
+make.treats.object <- function(tree, data) {
     output <- list()
     output$tree <- tree
     output$data <- data

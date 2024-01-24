@@ -1,10 +1,11 @@
-treats v1.0.2 (2024-01-15) 
+treats v1.0.3 (2024-01-24) 
 =========================
 
 ### MINOR IMPROVEMENTS
 
  * `map.traits` now can directly save multiple mappings in the same object and can be plotted directly to visualise uncertainty.
  * `crude.bd.est` now calculates the speciation and extinction rates based on the `geiger` package by default (using the `"estimate"` method) or just counts the events per time (using the `"count"` method).
+ * `make.treats` can now directly intake `dispRity` objects with trees and data (e.g. for visualisation).
 
 treats v1.0 (2023-11-22) 
 =========================
