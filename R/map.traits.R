@@ -74,6 +74,9 @@ map.traits <- function(traits, tree, replicates) {
     } else {
         output <- unlist(output, recursive = FALSE)
     }
+    if(length(output) == 1) {
+        output <- output[[1]]
+    }
     class(output) <- c("treats")
     return(output)
 }
