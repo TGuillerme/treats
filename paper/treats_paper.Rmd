@@ -34,6 +34,21 @@ This package is based on a simple birth death algorithm from which all steps can
 4. `treats` also provides a tidy interface through the `treats` object, allowing users to easily run reproducible simulations.
 It also comes with an extend manual regularly updated following users' questions or suggestions.
 
+
+<!-- 1. Simuler des données réalistes est une étape importante pour la comprehension de la biologie.
+Ces données simulées peuvent être utilisées pour générer des modèles nuls, neutres ou de base.
+Elles peuvent ensuite être comparées à des données observées pour comprendre les mécanismes biologiques à l'origine de ces observations.
+Ou alors, elles peuvent être utilisées pour explorer, comprendre ou déveloper des modèles théoriques.
+
+2. En biologie evolutive, une simulation implique souvent le besoin de définir un modèle évolutif de descendance avec modification.
+Il existe quasiment une infinité de ces modèles évolutifs qui peuvent être modifiés pour inclure des processus complexes comme par exemple la co-évolution de plusieurs traits, des mécanismes de compétition ou des extinctions de masse.
+
+3. Je présente ici le package `R` modulaire `treats` pour simuler des phylogénies et des traits.
+Le package se base sur un simple algorithme de birth-death que les utilisateurs peuvent facilement modifier.
+
+4. `treats` fournit une interface ordonnée a travers l'objet `treats` qui permet aux utilisateurs de produire des pipelines faciles d'utilisation et reproductibles.
+Le package contient également un manuel complet (en anglais) qui est régulièrement actualisé en fonction des requêtes et questions d'utilisateurs. -->
+
 ###### Keywords: trees, traits, simulations, birth-death, null-models, ecology, evolution, disparity
 
 
