@@ -492,7 +492,7 @@ For example future planned versions will include abiotic events and a better int
 This will be done while keeping track change (through `NEWS` file), continuous integration and unit testing. 
 
 ## Repeatability and reproducibility
-This paper is entirely reproducible from an Rmarkdown document available on [GitHub](https://github.com/TGuillerme/treats/inst/paper.Rmd).
+This paper is entirely reproducible from an Rmarkdown document available on [GitHub](https://github.com/TGuillerme/treats/inst/treats_paper.Rmd).
 The data used for the example above [@beck2014ancient] is available from the `dispRity` package [@dispRity].
 
 # Conclusion
@@ -505,5 +505,8 @@ All the versions of the package are archived on ZENODO with associated [DOI:10.5
 
 ## Acknowledgments
 Many thanks to Mark Puttick for inspiring the development the package through previous collaborations. Thanks to Andrew Beckerman, Ian Brennan, Gustavo Burin, Christopher Cooney, Natalie Cooper, Alex Cranston, Jasmine Hardie, Tom Lansley, Clement Prieul, Joe Rees, James Rule, Sophie Ryan and Gavin Thomas, for support and useful comments on late stages of the development of this package. Thanks to William Gearty, one anonymous reviewer and one anonymous associate editor for their very useful suggestions. This work was funded by UKRI-NERC Grant NE/T000139/1 awarded to Gavin Thomas.
+
+## Conflict of interest statement
+I declare no conflicts of interest.
 
 # References
