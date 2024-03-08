@@ -23,6 +23,8 @@ This can be useful for simulating mass extinctions, species competition, traitsp
 
 ![](TreatYoSelf.jpg)
 
+<a href="https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.14306"><img src="http://tguillerme.github.io/images/OA.png" height="15" widht="5"/></a> 
+Check out the [paper](https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.14306) associated with the first version of this package.
 ## Still work in progress (but nearly done!)
 
 ### So what's missing?
