@@ -1,0 +1,76 @@
+---
+title: "treats workshop"
+author: "Thomas Guillerme"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    fig_width: 12
+    fig_height: 6
+---
+
+Most of the information about the workshop comes from the [`treats` manual](https://tguillerme.github.io/treats).
+You can also always find more documentation about the functions used here using the `R` inbuilt manual by typing `?function.name`.
+
+#### `R` level
+
+In this workshop I will assume you are already familiar with basic `R`. The basic notions that I'll assume you know are:
+
+ * What is a package (e.g. `ape` or `dispRity`)
+ * What is an object (e.g. `this_object <- 1`)
+ * What is an object's class (e.g. the class `"matrix"` or `"phylo"`)
+ * What is a function (e.g. the function `mean(c(1,2))`)
+ * How to access function manuals (e.g. `?mean`)
+
+Let's get into it.
+First we'll want to download and install the package:
+
+```{r, eval = FALSE}
+install.package("treats")
+library(treats)
+```
+
+# Intro:
+
+What ca we do with `treats`?
+
+ * Simulate trees and traits for illustration (toy model, teaching) 
+ * Simulate trees and traits as a null model for analysis
+ * Whatever you want!
+
+# The bare basics
+
+Illustrating and evolutionary process
+
+## Growing a tree
+
+introduce:
+ * stop.rule
+ * bd.params
+ * replicates
+ * null
+
+## Adding a trait
+
+make.traits
+
+### Bonus: map.traits
+
+you could just have used map.traits!
+
+But no, it's more useful/interesting than that!
+
+## Adding modifiers!
+
+Simulate a tree where the trait influences the growing
+
+You can also add events, but we'll see this later!
+
+# Generating some null models
+
+## K-Pg example
+
+## Modeling extinction event
+
+## Comparing both
+
+# Bonus: the birth-death algorithm in R:
