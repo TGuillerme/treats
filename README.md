@@ -1,7 +1,7 @@
 [![R-CMD-check](https://github.com/TGuillerme/treats/workflows/R-CMD-check/badge.svg)](https://github.com/TGuillerme/treats/actions)
 [![codecov](https://codecov.io/gh/TGuillerme/treats/graph/badge.svg?token=NY0M0TX334)](https://codecov.io/gh/TGuillerme/treats)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![develVersion](https://img.shields.io/badge/devel%20version-1.0-green.svg?style=flat)](https://github.com/TGuillerme/treats/tree/master)
+[![develVersion](https://img.shields.io/badge/devel%20version-1.0.3-green.svg?style=flat)](https://github.com/TGuillerme/treats/tree/master)
 [![DOI](https://zenodo.org/badge/299272555.svg)](https://zenodo.org/badge/latestdoi/299272555)
 
 <!--
@@ -23,6 +23,8 @@ This can be useful for simulating mass extinctions, species competition, traitsp
 
 ![](TreatYoSelf.jpg)
 
+<a href="https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.14306"><img src="http://tguillerme.github.io/images/OA.png" height="15" widht="5"/></a> 
+Check out the [paper](https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.14306) associated with the first version of this package.
 ## Still work in progress (but nearly done!)
 
 ### So what's missing?
