@@ -37,6 +37,8 @@ What ca we do with `treats`?
  * Simulate trees and traits as a null model for analysis
  * Whatever you want!
 
+TODO: show illustration examples
+
 # The bare basics
 
 Illustrating and evolutionary process
@@ -46,6 +48,10 @@ Illustrating and evolutionary process
 introduce:
  * stop.rule
  * bd.params
+
+Show the birth death process in action [here](http://tguillerme.github.io/treats_01.html)
+
+some more options:
  * replicates
  * null
 
@@ -60,6 +66,8 @@ you could just have used map.traits!
 But no, it's more useful/interesting than that!
 
 ## Adding modifiers!
+
+Show the birth death process in action [here](http://tguillerme.github.io/treats_01.html)
 
 Simulate a tree where the trait influences the growing
 
