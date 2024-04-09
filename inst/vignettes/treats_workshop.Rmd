@@ -35,25 +35,190 @@ What ca we do with `treats`?
 
  * Simulate trees and traits for illustration (toy model, teaching) 
  * Simulate trees and traits as a null model for analysis
- * Whatever you want!
-
+ * Whatever you want
+!
 TODO: show illustration examples
 
 # The bare basics
 
-Illustrating and evolutionary process
-
+```{r}
+library(treats)
+set.seed(1)
+```
 ## Growing a tree
 
-introduce:
- * stop.rule
- * bd.params
+For the very basics here we're going to see how to grow a tree with the minimum number of options.
+`treats` is designed to grow trees easily but not with to many default options this is so to encourage users to know what they're doing _at least a minimum_.
 
-Show the birth death process in action [here](http://tguillerme.github.io/treats_01.html)
+#### `stop.rule`
 
-some more options:
- * replicates
- * null
+So what do we need? To grow a tree you need to fix a rule of when the simulation should stop:
+This is a hard coded rule for stopping the growth of a tree, this can be the number of species (living or fossil) or a certain time of the simulation. Here when I mean time, I mean how long the simulation runs for in arbitrary time units (e.g. million of years, etc...).
+
+This is passed to the `stop.rule` argument that is a named list containing integers or numeric values.
+For example:
+
+```{r}
+## Stopping when reaching 200 species
+stop_200_sp <- list(max.taxa = 200)
+## Stopping when reaching 4 time units
+stop_4_time <- list(max.time = 4)
+```
+
+You can then feed these stop rules to the treats function and let the magic happen:
+
+```{r}
+## Create a tree with 200 taxa
+tree_200_sp <- treats(stop.rule = stop_200_sp)
+## Creating a tree with 4 time units
+tree_4_time <- treats(stop.rule = stop_4_time)
+```
+
+This results in two different trees (`"phylo"` objects) that you can easily visualise with the excellent `"ape"` package:
+
+```{r}
+## What's in these objects?
+tree_200_sp
+tree_4_time
+
+## Displaying the trees
+op <- par(mfrow = c(1,2))
+plot(tree_200_sp, main = "Stop at 200 tips") ; axisPhylo()
+plot(tree_4_time, main = "Stop at 4 time units") ; axisPhylo()
+par(op)
+```
+
+So the trees here have roughly the same age but a very different shape, we'll get back to that in a moment.
+One other thing to note for this stopping rule, is that you can stack them: for example, you can ask the simulation to stop when it reaches 200 species _or_ 4 time units.
+
+
+```{r}
+## Multiple rules
+my_stop_rules <- list(max.taxa = 200, max.time = 4)
+## Simulating one tree with these rules
+my_tree <- treats(stop.rule = my_stop_rules)
+## Displaying the resulting tree
+plot(my_tree) ; axisPhylo()
+```
+
+
+#### `bd.params`
+
+As mentioned above, we can have vastly different trees depending on the simulation random seed.
+You can of course always modify that by modifying the seed.
+But a more interesting method is to try to control the actual speciation parameter.
+This is also called the birth or $\lambda$ parameter.
+You can find details on how the speciation and the extinction parameters are used in the birth-death equations in the [`treats` manual](http://tguillerme.github.io/treats.html) (or anywhere else where there's info about birth-death algorithms) so I'm not gonna go in the details here.
+Basically, the bigger the speciation parameter, the shorter the tree branches (the bushier the tree).
+
+You can set this parameter using the `make.bd.params` function:
+
+```{r}
+set.seed(1)
+## Creating a small birth parameter
+speciation_0.5 <- make.bd.params(speciation = 0.5)
+## Creating a big birth parameter (1 is the default by the way)
+speciation_1.0 <- make.bd.params(speciation = 1.0)
+
+## Simulating the trees
+my_tree_small <- treats(stop.rule = my_stop_rules,
+                        bd.params = speciation_0.5)
+my_tree_big   <- treats(stop.rule = my_stop_rules,
+                        bd.params = speciation_1.0)
+## Displaying the trees
+op <- par(mfrow = c(1,2))
+plot(my_tree_small, main = "Speciation = 0.5") ; axisPhylo()
+plot(my_tree_big, main = "Speciation = 1.0") ; axisPhylo()
+par(op)
+```
+
+By the way, throughout the pipeline in the package you can check what's in the object you create.
+For example, `speciation_0.5` is a `"treats"` and `"bd.params"` object that contains info about the parameters:
+
+```{r}
+## What is this?
+class(speciation_0.5)
+## What's in it?
+speciation_0.5
+```
+
+This allows you to always double check what's in the objects you create!
+
+#### DEATH!
+
+Note that this object contained also an extinction parameter (set to 0 by default).
+This allows to introduce extinction events in your trees!
+The bigger this parameter, the more fossils in your tree.
+
+```{r}
+## Creating a small death parameter
+extinction_0.1 <- make.bd.params(extinction = 0.1,
+                                 speciation = 1)
+## Creating a big death parameter
+## (note speciation = 1 is the default)
+extinction_0.5 <- make.bd.params(extinction = 0.5)
+
+## Simulating the trees
+set.seed(1) ## Putting the seed here ensures both trees grow the same way
+few_fossils  <- treats(stop.rule = my_stop_rules,
+                       bd.params = extinction_0.1)
+set.seed(1)
+many_fossils <- treats(stop.rule = my_stop_rules,
+                       bd.params = extinction_0.5)
+
+## Displaying the trees
+op <- par(mfrow = c(1,2))
+plot(few_fossils,  main = "Extinction = 0.1", show.tip.label = FALSE) ; axisPhylo()
+plot(many_fossils, main = "Extinction = 0.5", show.tip.label = FALSE) ; axisPhylo()
+par(op)
+```
+
+OK but what's actually happening in the algorithm here? Again there's many ways to illustrate or define the birth-death process (e.g. [wikipedia](https://en.wikipedia.org/wiki/Birth%E2%80%93death_process)) but we can have a look at a simple illustration of each step [here](http://tguillerme.github.io/treats_01.html).
+
+> Note that speciation and extinction are fixed values here. But they can also be distributions! For example `make.bd.params(speciation = runif)` creates a `bd.params` object with a speciation always randomly drawn between 0 and 1. You can also link this parameter to the extinction parameter (for example for keep speciation always greater than extinction). Have a look at `?make.bd.params` for more details
+
+### More simulation options for `treats`
+
+Just before we get in the more interesting bits, I want to highlight some useful options to deal with stochasticity in `treats`.
+In fact, sometimes (often?) your trees can "die" before reaching the stop value, especially if the speciation and extinction parameters are close to each other numerically
+
+```{r} 
+## Creating some dangerous parameters
+dangerous_params <- make.bd.params(speciation = 1,
+                                   extinction = 0.9)
+```
+```{r, eval = FALSE} 
+## Simulating a tree that "dies" (returns an error)
+set.seed(2)
+dead_tree <- treats(stop.rule = my_stop_rules,
+                    bd.params = dangerous_params)
+```
+
+This outputs an error message! Aaaah!
+But fear not, you can handle this error message differently depending on what you need:
+
+ * you can either set it to null rather than and error (giving you `NULL` rather than an error) using the `null.error = 100` option:
+
+```{r} 
+## Simulating a tree that "dies" (returns NULL)
+set.seed(2)
+dead_tree <- treats(stop.rule  = my_stop_rules,
+                    bd.params  = dangerous_params,
+                    null.error = TRUE)
+dead_tree # is NULL
+```
+
+ * or you can "brute force" it by keeping trying to generate a tree until it works (or you loose) patience using the `null.error = n` option (where *n* is the number of trials you're happy to wait for:
+
+```{r} 
+## Simulating a tree that "dies" (try and try again!)
+set.seed(2)
+dead_tree <- treats(stop.rule  = my_stop_rules,
+                    bd.params  = dangerous_params,
+                    null.error = 100,  ## Try 100 times!
+                    verbose    = TRUE) ## Visualise the trials
+dead_tree # is a tree!
+```
 
 ## Adding a trait
 
@@ -63,7 +228,7 @@ make.traits
 
 you could just have used map.traits!
 
-But no, it's more useful/interesting than that!
+But no, it's more useful/interesting thna that!
 
 ## Adding modifiers!
 
