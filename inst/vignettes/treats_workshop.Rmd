@@ -4,14 +4,14 @@ author: "Thomas Guillerme"
 date: "`r Sys.Date()`"
 output:
   html_document:
-    fig_width: 12
+    fig_width: 6
     fig_height: 6
 ---
 
 Most of the information about the workshop comes from the [`treats` manual](https://tguillerme.github.io/treats).
 You can also always find more documentation about the functions used here using the `R` inbuilt manual by typing `?function.name`.
 
-#### `R` level
+### `R` level
 
 In this workshop I will assume you are already familiar with basic `R`. The basic notions that I'll assume you know are:
 
@@ -29,22 +29,163 @@ install.package("treats")
 library(treats)
 ```
 
-# Intro:
+```{r, eval = TRUE, echo = FALSE, message = FALSE}
+library(treats)
+```
+
+# Intro
 
 What ca we do with `treats`?
 
- * Simulate trees and traits for illustration (toy model, teaching) 
- * Simulate trees and traits as a null model for analysis
- * Whatever you want
-!
-TODO: show illustration examples
+ * Simulate trees and traits for illustration (toy model, teaching);
+ * Simulate trees and traits as a null model for analysis (we'll see an example of that later)
+ * Whatever you want: this is because of the modular architecture of the package allowing you to modify each steps of the simulations easily (we'll see this throughout the workshop);
 
-# The bare basics
+Here are a couple of examples of things that we can do with `treats`:
 
-```{r}
-library(treats)
-set.seed(1)
+#### Simulating a tree with increased extinction rate for species with negative trait values after some time:
+```{r, echo = FALSE, message = FALSE}
+my_bd_params <- make.bd.params(speciation = 1, extinction = 0.1)
+
+## birth-death rules (default)
+default_modifiers <- make.modifiers()
+
+## New condition and new modifier (increasing speciation if trait is negative)
+negative.trait.condition <- function(trait.values, lineage) {
+    return(parent.traits(trait.values, lineage) < 0)
+}
+increase.extinction.1 <- function(x, trait.values, lineage) {
+  return(x + 1)
+}
+
+## Update the modifier
+change.speciation <- make.events(
+    condition    = age.condition(3),
+    target       = "modifiers",
+    modification = modifiers.update(speciation = speciation,
+                                    condition  = negative.trait.condition,
+                                    modify     = increase.extinction.1))
+## My favorite seed
+set.seed(3)
+
+## Some stopping rules
+my_stop.rule <- list(max.time = 5)
+
+## The simulation
+my_simulation <- treats(stop.rule = my_stop.rule,
+                        bd.params = my_bd_params,
+                        traits    = make.traits(),
+                        modifiers = default_modifiers,
+                        events    = change.speciation)
+
+plot(drop.singles(my_simulation))
 ```
+
+#### Simulating a tree with a 2D trait with changing correlation:
+```{r, echo = FALSE, message = FALSE}
+# A 2D variance covariance matrix
+cor_matrix <- matrix(1, 2, 2)
+
+## A correlated 2D Brownian Motion
+correlated_2D_BM <- make.traits(n = 2, process = BM.process,
+                      process.args = list(Sigma = cor_matrix))
+
+## New correlation
+new_cor <- matrix(c(10,3,3,2),2,2)
+
+## Event changing a trait correlation
+correlation.change <- make.events(
+    condition    = trait.condition(3, absolute = TRUE),
+    target       = "traits",
+    modification = traits.update(process.args = list(Sigma = new_cor)))
+
+## My favorite seed
+set.seed(42)
+
+## Some stopping rules
+my_stop.rule <- list(max.taxa = 100)
+
+## The simulation
+my_simulation <- treats(stop.rule = my_stop.rule,
+                        traits    = correlated_2D_BM,
+                        events    = correlation.change)
+
+## Plot in 2D
+# plot(my_simulation, trait = c(1:2))
+## 3D plot in 3D
+plot(drop.singles(my_simulation), trait = c(1:2), use.3D = TRUE)
+rgl::rglwidget()
+```
+
+#### Simulating a tree with sequential extinction events affect species on the edges of the trait distribution each time:
+```{r, echo = FALSE, message = FALSE}
+library(treats)
+
+## The triggering conditions (every year)
+trigger.year1 <- age.condition(x = 1, condition = `>=`)
+trigger.year2 <- age.condition(x = 2, condition = `>=`)
+trigger.year3 <- age.condition(x = 3, condition = `>=`)
+trigger.year4 <- age.condition(x = 4, condition = `>=`)
+
+## Trimming the tree
+trim.the.tree <- function(bd.params, lineage, trait.values) {
+    ## Get all the trait values
+    parent_traits <- parent.traits(trait.values, lineage,  current = FALSE)
+
+    ## Measure the spread of these values
+    boundaries <- sort(range(parent_traits[, 1]))
+    spread <- diff(boundaries)
+    ## Scale the boundaries to 12.5% each side
+    boundaries[1] <- boundaries[1] + spread*0.125
+    boundaries[2] <- boundaries[2] - spread*0.125
+
+    ## Select all the nodes that are not the boundary
+    selected_nodes <- as.numeric(names(which(!(parent_traits[, 1] <= boundaries[2] & parent_traits[, 1] >= boundaries[1]))))
+
+    ## Make them extinct
+    extinct <- which(lineage$parents %in% selected_nodes)
+    ## Update the lineage object
+    lineage$livings <- lineage$livings[!lineage$livings %in% extinct]
+    lineage$n <- length(lineage$livings)
+    return(lineage)
+}
+
+## Make christmas events
+christmas <- make.events(target = "taxa",
+                         condition = trigger.year1,
+                         modification = trim.the.tree,
+                         event.name = "year1")
+christmas <- make.events(target = "taxa",
+                         condition = trigger.year2,
+                         modification = trim.the.tree,
+                         event.name = "year2",
+                         add = christmas)
+christmas <- make.events(target = "taxa",
+                         condition = trigger.year3,
+                         modification = trim.the.tree,
+                         event.name = "year3",
+                         add = christmas)
+christmas <- make.events(target = "taxa",
+                         condition = trigger.year4,
+                         modification = trim.the.tree,
+                         event.name = "year4",
+                         add = christmas)
+
+## A beautiful chris
+set.seed(19)
+test <- treats(stop.rule = list(max.time = 5),
+               traits    = make.traits(),
+               bd.params = make.bd.params(speciation = 1.5, extinction = 0.2),
+               events    = christmas,
+               null.error = 100)
+plot(drop.singles(test), col = c("nodes" = "darkgreen", "fossils" = "gold", "livings" = "darkgreen"), edges = "darkgreen", lwd = 2)
+points(y = 0, x = 5, pch = 24, col = NULL, bg = "red", cex = 2.6)
+points(y = 0, x = 5, pch = 25, col = NULL, bg = "red", cex = 2.6)
+```
+
+
+# The basics
+
 ## Growing a tree
 
 For the very basics here we're going to see how to grow a tree with the minimum number of options.
@@ -76,7 +217,7 @@ tree_4_time <- treats(stop.rule = stop_4_time)
 
 This results in two different trees (`"phylo"` objects) that you can easily visualise with the excellent `"ape"` package:
 
-```{r}
+```{r, fig.width = 12}
 ## What's in these objects?
 tree_200_sp
 tree_4_time
@@ -112,7 +253,7 @@ Basically, the bigger the speciation parameter, the shorter the tree branches (t
 
 You can set this parameter using the `make.bd.params` function:
 
-```{r}
+```{r, fig.width = 12}
 set.seed(1)
 ## Creating a small birth parameter
 speciation_0.5 <- make.bd.params(speciation = 0.5)
@@ -149,7 +290,7 @@ Note that this object contained also an extinction parameter (set to 0 by defaul
 This allows to introduce extinction events in your trees!
 The bigger this parameter, the more fossils in your tree.
 
-```{r}
+```{r, fig.width = 12}
 ## Creating a small death parameter
 extinction_0.1 <- make.bd.params(extinction = 0.1,
                                  speciation = 1)
@@ -307,7 +448,7 @@ Because yes, in this example so far the trait is just "mapped" on the tree: in o
 This means that you can also just "map" any trait on a tree that you already have.
 For example, here we're going to map this BM trait on the bird orders example tree from `ape` using the `map.traits` function:
 
-```{r}
+```{r, fig.width = 12}
 ## Loading the bird.orders tree
 data(bird.orders)
 
@@ -404,7 +545,7 @@ badly_formated_modifier <- make.modifiers(selection = rnorm)
 
 Once you're happy with the `"modifier"` you can feed it to `treats` the same way as a `"traits"` object:
 
-```{r}
+```{r, fig.width = 12}
 ## What is it?
 class(modify_selection)
 ## What's in it
@@ -448,7 +589,7 @@ bd.waiting <- function(lineage, bd.params) {
 
 Again, for a simplifyed example, let's do a waiting process that generates always the same waiting time of 0.2 (i.e. the branch length is then independant from the birth-death parameters and the number of lineages):
 
-```{r}
+```{r, fig.width = 12}
 ## Our function always returns the value
 constant.brlen <- function(lineage, bd.params) {
     return(0.2)
@@ -501,7 +642,7 @@ Even more advanced, we will use the utility function `parent.traits` here that, 
 
 > Note you can always check what arguments are allowed for internal functions and what internal parts they modify by checking the [manual](http://tguillerme.github.io/treats) "Quick overview" sections.
 
-```{r}
+```{r, fig.width = 12}
 ## A modifier for kills lineages with negative values
 modify.trait <- function(trait.values, lineage) {
     if(parent.traits(trait.values, lineage) < 0) {
