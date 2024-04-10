@@ -18,4 +18,4 @@ lineage
     \---$split = a "logical" vector: the list of splits for each lineage (TRUE), the number of total tips is equal to sum(!lineage$split).
 ```
 
-You can internally visiualise a lineage object by loading the package via `devtools::load_all()` and use `topo.convert.lineage(lineage)`.
+You can internally visiualise a lineage object by loading the internal functions of the package using `devtools::load_all()` in the root of the package (i.e. `my_path_to_treats/treats/`) and then call the function `topo.convert.lineage(my_lineage)`.
