@@ -50,7 +50,7 @@ set.seed(1)
 For the very basics here we're going to see how to grow a tree with the minimum number of options.
 `treats` is designed to grow trees easily but not with to many default options this is so to encourage users to know what they're doing _at least a minimum_.
 
-#### `stop.rule`
+### `stop.rule`
 
 So what do we need? To grow a tree you need to fix a rule of when the simulation should stop:
 This is a hard coded rule for stopping the growth of a tree, this can be the number of species (living or fossil) or a certain time of the simulation. Here when I mean time, I mean how long the simulation runs for in arbitrary time units (e.g. million of years, etc...).
@@ -101,8 +101,7 @@ my_tree <- treats(stop.rule = my_stop_rules)
 plot(my_tree) ; axisPhylo()
 ```
 
-
-#### `bd.params`
+### `bd.params`
 
 As mentioned above, we can have vastly different trees depending on the simulation random seed.
 You can of course always modify that by modifying the seed.
@@ -144,7 +143,7 @@ speciation_0.5
 
 This allows you to always double check what's in the objects you create!
 
-#### DEATH!
+### The death parameter!
 
 Note that this object contained also an extinction parameter (set to 0 by default).
 This allows to introduce extinction events in your trees!
@@ -215,22 +214,133 @@ dead_tree # is NULL
 set.seed(2)
 dead_tree <- treats(stop.rule  = my_stop_rules,
                     bd.params  = dangerous_params,
-                    null.error = 100,  ## Try 100 times!
+                    null.error = 100,  ## Try up to 100 times!
                     verbose    = TRUE) ## Visualise the trials
 dead_tree # is a tree!
 ```
 
+Finally, you can also create tree distributions by using the option `replicates = n` that will generate _n_ trees.
+
 ## Adding a trait
 
-make.traits
+Now this is all nice a well but not very different from other great `R` packages that allow you to grow a birth-death tree.
+If anything it's maybe even just more cumbersome! 
+But of course, in `treats` you can also do the traits simulation part!
+To do that we're going to use the `make.traits` function that will create a `"treats"` and `"traits"` object.
+
+First we need to choose a trait generation process.
+This process should be a `function` that intakes the arguments `x0` (the value of the trait in at it's last node) and `edge.length` (the amount of evolutionary time since last node).
+
+For example we can create a Brownian Motion (BM) that is process that draws a random value from a normal distribution centered on some value (`x0`) and with a standard deviation that's relative to the evolutionary time spend (`edge.length`).
+By default it's good practice to set the `edge.length` argument to a specific value (say 1).
+
+```{r}
+## Creating a simple BM process
+my.BM.process <- function(x0, edge.length = 1) {
+    return(rnorm(n = 1, mean = x0, sd = sqrt(edge.length)))
+}
+```
+
+You can then feed this process to `make.traits` and set some specific parameters (e.g. the starting value) or check if it works and visualise it:
+
+```{r}
+## Creating the trait object with the BM process
+## and a starting value of 0
+my_trait <- make.traits(process = my.BM.process,
+                        start   = 0)
+## What is the trait?
+class(my_trait)
+## What's in it?
+my_trait ## Note the process name is A (you can change that)
+## Visualising what the process would look over time
+plot(my_trait, main = "What does the process look like over time?")
+```
+
+> Note that you can of course use much more complex processes (e.g. multidimensional, with correlation, etc...). You can find some inbuilt processes by looking at the documentation for `?trait.process`.
+
+Once you're happy with your process you can simply feed it to `treats` with the other arguments we've covered before:
+
+```{r}
+## Generating a tree and a trait
+tree_and_trait <- treats(stop.rule  = my_stop_rules,
+                         bd.params  = extinction_0.5,
+                         traits     = my_trait,
+                         null.error = 100,
+                         verbose    = TRUE)
+```
+
+The resulting object is now a `"treats"` object (not a `"phylo"` as previously) that contains two main elements: the tree (a `"phylo"` object) and the data (a code `"matrix"`).
+
+```{r}
+## What is it?
+class(tree_and_trait)
+## What's in it?
+tree_and_trait
+## The tree:
+tree_and_trait$tree
+## The data
+head(tree_and_trait$data)
+```
+
+You can again also visualise both together using our faithful `plot` function:
+
+```{r}
+## Wow!
+plot(tree_and_trait, main = "A tree with a trait")
+```
+
+And that's it! We've simulated a tree and a trait at the same time.
+The whole point of this package is of course the modularity where you can play around and choose different tree parameters and different traits.
+
+In the next part we'll even see how we can complexify all that by making all the birth-death process and the traits interact.
+Because yes, in this example so far the trait is just "mapped" on the tree: in other words, although both are simulated at the same time, the traits here are not influencing the tree generation.
 
 ### Bonus: map.traits
 
-you could just have used map.traits!
+This means that you can also just "map" any trait on a tree that you already have.
+For example, here we're going to map this BM trait on the bird orders example tree from `ape` using the `map.traits` function:
 
-But no, it's more useful/interesting thna that!
+```{r}
+## Loading the bird.orders tree
+data(bird.orders)
+
+## map the trait on the tree
+## (i.e. simulate the trait using the tree topology)
+my_bird_BM <- map.traits(traits = my_trait, tree = bird.orders)
+
+## Show the results
+op <- par(mfrow = c(1,2))
+plot(bird.orders, main = "A tree with no traits")
+plot(my_bird_BM, main = "A tree with a trait")
+par(op)
+```
+
+The resulting object is a `"treats"` one so you can also just quickly generate just the data using `map.traits(traits = my_trait, tree = bird.orders)$data`.
+
+### Bonus: save.steps
+
+Note that here we've been generating trait values only at nodes and tips.
+In some cases, you might be interested to see you trait values generated constantly through time rather than just during speciation and extinction events. For example simulating trait values every _x_ amount of time.
+You can do this using the `save.steps` in `treats` for example to generate the data every 0.2 time units:
+
+```{r}
+## Generating a tree and a trait every 0.2 time steps
+continuous_trait <- treats(stop.rule  = my_stop_rules,
+                           bd.params  = extinction_0.5,
+                           traits     = my_trait,
+                           save.steps = 0.2,
+                           null.error = 100,
+                           verbose    = TRUE)
+## Visualise the tree and trait
+plot(continuous_trait)
+```
+
+Of course though, the bigger the tree and the traits, the slower the algorithm (and the more RAM eaten)!
 
 ## Adding modifiers!
+
+But let's get back to fun modular stuff: one of the advantages of the `treats` package is that you can modify _all_ steps of the process.
+
 
 Show the birth death process in action [here](http://tguillerme.github.io/treats_01.html)
 
@@ -246,4 +356,4 @@ You can also add events, but we'll see this later!
 
 ## Comparing both
 
-# Bonus: the birth-death algorithm in R:
+# Bonus: some plotting options!
