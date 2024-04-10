@@ -258,6 +258,13 @@ plot(my_trait, main = "What does the process look like over time?")
 
 > Note that you can of course use much more complex processes (e.g. multidimensional, with correlation, etc...). You can find some inbuilt processes by looking at the documentation for `?trait.process`.
 
+Importantly, the function `make.traits` also checks if you have configured your process function correctly and will ping you an error message if not:
+
+```{r, eval = FALSE}
+## This doesn't work!
+badly_formated_trait <- make.traits(process = rnorm)
+```
+
 Once you're happy with your process you can simply feed it to `treats` with the other arguments we've covered before:
 
 ```{r}
@@ -340,13 +347,208 @@ Of course though, the bigger the tree and the traits, the slower the algorithm (
 ## Adding modifiers!
 
 But let's get back to fun modular stuff: one of the advantages of the `treats` package is that you can modify _all_ steps of the process.
+The birth-death process is effectively separated into three independent parts:
 
+ 1. The selection of the lineage of interest.
+ 2. The generation of branch length.
+ 3. The decision whether that lineage goes extinct or speciates.
 
-Show the birth death process in action [here](http://tguillerme.github.io/treats_01.html)
+These three steps are encoded by default in the `treats` birth-death algorithm to be:
 
-Simulate a tree where the trait influences the growing
+ 1. The selection of the lineage of interest: `sample(1, n)`
+ 2. The generation of branch length:. `rexp(1, rate = n*(speciation + extinction))`
+ 3. The decision whether that lineage speciates (`TRUE`) or goes extinct (`FALSE`): `runif(1) < speciation/(speciation + extinction)`
 
-You can also add events, but we'll see this later!
+You can see in more details what's happening by clicking on the modifier at the bottom of the pages [here](http://tguillerme.github.io/treats_01.html).
+
+So what's the point of all that and of the modifiers?
+
+### Modifying the selection process
+
+Similarly to `"traits"` you can build `"modifiers"` using `make.modifiers`!
+You can change the parts of interest in the `"modifiers"` by changing the default function that modifies the `lineage` internal structure of the `treats` package (no need to worry what's in there for now - but if you're interested, it's all detailed [here](https://github.com/TGuillerme/treats/blob/master/lineage_object_structure.md)).
+
+For a simple starting example, say we want to change the selection part of the algorithm to not randomly choose a lineage among the currently living lineages but instead just always choose the most recently lineage.
+The default selection function is:
+
+```{r}
+## The default selection function
+bd.selection <- function(lineage) {
+    return(as.integer(sample(1, lineage$n)))
+}
+```
+Where lineage is the `lineage` internal object and `lineage$n` automatically tracks the number of living lineages.
+We can modify this to always select the most recently generated lineage (the last one: `n`)
+
+```{r}
+## Our function to always select the last taxon
+## (making sure it returns an integer)
+select.last <- function(lineage) {
+    return(as.integer(lineage$n))
+}
+```
+
+We can then provide our special modifier to `make.modifiers`:
+
+```{r}
+## Making a modifier to the birth-death algorithm
+modify_selection <- make.modifiers(selection = select.last)
+```
+
+Similarly to `make.traits`, `make.modifiers` internally checks the validity of your changes and will let you know if it doesn't work:
+
+```{r, eval = FALSE}
+## Wrongly defined modifier
+badly_formated_modifier <- make.modifiers(selection = rnorm)
+```
+
+Once you're happy with the `"modifier"` you can feed it to `treats` the same way as a `"traits"` object:
+
+```{r}
+## What is it?
+class(modify_selection)
+## What's in it
+modify_selection
+
+set.seed(1)
+## Generating a tree and a trait (no modifier)
+no_modifier <- treats(stop.rule  = my_stop_rules,
+                      bd.params  = extinction_0.5,
+                      null.error = 100,
+                      verbose    = TRUE)
+
+set.seed(1)
+## Generating a tree and a trait (modified selection)
+modified_selection <- treats(stop.rule  = my_stop_rules,
+                      bd.params  = extinction_0.5,
+                      modifiers  = modify_selection,
+                      null.error = 100,
+                      verbose    = TRUE)
+
+## Plotting the results
+op <- par(mfrow = c(1,2))
+plot(no_modifier, main = "Default birth-death")
+plot(modified_selection, main = "Modified selection")
+par(op)
+```
+
+OK, this is not directly useful (albeit funny!) but it illustrates the modularity here!
+Let see how we can also modify the waiting and the speciation processes.
+
+### Modifying the waiting process
+
+This is the default waiting process that's using the `lineage` object but also `bd.params`, the birth-death parameters that we encountered already:
+
+```{r}
+## The default waiting function
+bd.waiting <- function(lineage, bd.params) {
+    return(rexp(1, sum(lineage$n * (bd.params$speciation + bd.params$extinction))))
+}
+```
+
+Again, for a simplifyed example, let's do a waiting process that generates always the same waiting time of 0.2 (i.e. the branch length is then independant from the birth-death parameters and the number of lineages):
+
+```{r}
+## Our function always returns the value
+constant.brlen <- function(lineage, bd.params) {
+    return(0.2)
+}
+
+## Making a modifier to the birth-death algorithm
+modified_waiting <- make.modifiers(branch.length = constant.brlen)
+
+set.seed(1)
+## Generating a tree and a trait (no modifier)
+no_modifier <- treats(stop.rule  = my_stop_rules,
+                      bd.params  = extinction_0.5,
+                      null.error = 100,
+                      verbose    = TRUE)
+
+set.seed(1)
+## Generating a tree and a trait (modified waiting)
+modified_waiting <- treats(stop.rule  = my_stop_rules,
+                      bd.params  = extinction_0.5,
+                      modifiers  = modified_waiting,
+                      null.error = 100,
+                      verbose    = TRUE)
+
+## Plotting the results
+op <- par(mfrow = c(1,2))
+plot(no_modifier, main = "Default birth-death")
+plot(modified_waiting, main = "Modified waiting")
+abline(v = seq(from = 0, to = 4, by = 0.2), col = "grey")
+axisPhylo()
+par(op)
+```
+
+### Modifying the speciation process
+
+OK, so far the modifiers are a bit silly and not very illustrative in terms of usefulness.
+But we can do more complex and useful ones, for example linking the speciation or extinction process to the lineage's ancestral trait value!
+
+This is the default speciation process that's using the `bd.params` object:
+
+```{r}
+## The default speciation process (if TRUE, do speciate)
+bd.speciating <- function(bd.params) {
+    return(runif(1) <= (bd.params$speciation/(bd.params$speciation + bd.params$extinction)))
+}
+```
+
+We can modify this to be only dependent on the lineage ancestral trait value: if it's negative, go extinct, otherwise speciate.
+To do that, we can provide the argument named `trait.values` and `lineage`: both are internal objects in the `treats` algorithm (one tracking the trait values for each element: tips, nodes, branches) and the other one tracking the lineages and the tree structure in general.
+Even more advanced, we will use the utility function `parent.traits` here that, when given these two objects, knows where to find information in the RAM about the ancestral trait values of any lineage.
+
+> Note you can always check what arguments are allowed for internal functions and what internal parts they modify by checking the [manual](http://tguillerme.github.io/treats) "Quick overview" sections.
+
+```{r}
+## A modifier for kills lineages with negative values
+modify.trait <- function(trait.values, lineage) {
+    if(parent.traits(trait.values, lineage) < 0) {
+        ## Go extinct!
+        return(FALSE)
+    } else {
+        ## Speciate!
+        return(TRUE)
+    }
+}
+
+## Making the modifier
+modify_speciation <- make.modifiers(speciation = modify.trait)
+
+set.seed(1)
+## Generating a tree and a trait (no modifier)
+no_modifier <- treats(stop.rule  = my_stop_rules,
+                      bd.params  = extinction_0.5,
+                      traits     = my_trait,
+                      null.error = 100,
+                      verbose    = TRUE)
+
+set.seed(1)
+## Generating a tree and a trait (modified sepciation)
+modified_speciation <- treats(stop.rule  = my_stop_rules,
+                      bd.params  = extinction_0.5,
+                      traits     = my_trait,
+                      modifiers  = modify_speciation,
+                      null.error = 100,
+                      verbose    = TRUE)
+
+## Plotting the results
+op <- par(mfrow = c(1,2))
+plot(no_modifier, main = "Default birth-death")
+plot(modified_speciation, main = "Modified speciation")
+par(op)
+```
+
+So here we have a neat modifier that directly changes the structure of the tree by modifying the birth-death algorithm rather than the birth death parameters: note that both trees have the same input extinction rates but the modified one have it's extinction based one the trait values rather than that rate!
+
+## Adding events!
+
+OK, and finally, the last class of `"treats"` objects are `"events"` created via `make.events`.
+These work the same way as for `"traits"` and `"modifiers"` but affect the `treats` simulation at a higher level.
+For example you can use them to simulate mass extinctions after a certain amount of time.
+Or you can do much more complex things due to the package modular structure: for example, you can use an `"event"` that changes a `"modifier"` depending on some trait values...
+Instead of going into details on how to configure `"events"` as above, we're gonna directly create one for a more applied example
 
 # Generating some null models
 
@@ -355,5 +557,10 @@ You can also add events, but we'll see this later!
 ## Modeling extinction event
 
 ## Comparing both
+
+# Bonus: pre-made evolutionary scenarios
+
+On the GitHub page of the package you can find [a series of simulation templates](https://github.com/TGuillerme/treats/labels/simulation%20template): these are simplified complex simulation scenarios that you could find useful for your own specific questions.
+The idea here is to have a library of such templates so if you create one, please share it to the community by following [this template](https://github.com/TGuillerme/treats/issues/new?assignees=&labels=simulation+template&projects=&template=simulation-template.md&title=Simulate+something).
 
 # Bonus: some plotting options!
