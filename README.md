@@ -21,29 +21,10 @@ Basically you can simulate a tree depending on the traits of the tip taxa, or no
 And you can also add events to your simulations that can modify either the tree, the traits or both (or the way they influence each other).
 This can be useful for simulating mass extinctions, species competition, traitspace saturation or whatever you can think of.
 
-![](TreatYoSelf.jpg)
+<!-- ![](TreatYoSelf.jpg) -->
 
 <a href="https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.14306"><img src="http://tguillerme.github.io/images/OA.png" height="15" widht="5"/></a> 
 Check out the [paper](https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.14306) associated with the first version of this package.
-## Still work in progress (but nearly done!)
-
-### So what's missing?
-
-All functionalities for the future first release (`treats v.1.0`) are now implemented and solid.
-The package is now at the pre-release stage which means I am looking for minor improvements here and there before submitting it to the CRAN.
-
-### What can you do for helping?
-
-Please let me know if you have any suggestions about the package.
-At this stage any comments are more than welcome but the main things I am looking for are:
- 
- * Whether this is/could be useful for your or not?
- * Whether there is some very important functionality I've missed that you really need?
- * Whether some functionalities are cumbersome or really badly documented?
- * Typos, typos, typos (especially in the manual).
-
-If you want to contribute, you can send me [issues](https://github.com/TGuillerme/treats/issues) or [pull requests](https://github.com/TGuillerme/treats/pulls) through GitHub or, send me an [email](mailto:guillert@tcd.ie).
-And of course you will be fully acknowledged as a contributor for the package development!
 
 ## Installing `treats`
 
@@ -61,6 +42,10 @@ The detailed manual is available [here](http://tguillerme.github.io/treats.html)
 ## Latest patch notes
 
 Patch notes can be seen [here](https://github.com/TGuillerme/treats/blob/master/NEWS.md).
+
+## Workshop
+
+You can get the workshop R markdown document [here](https://github.com/TGuillerme/treats/blob/master/inst/vignettes/treats_workshop.Rmd) or download it directly from [here](https://raw.githubusercontent.com/TGuillerme/treats/master/inst/vignettes/treats_workshop.Rmd) (right click + save as) or visualise it in html from [here](https://cdn.githubraw.com/TGuillerme/treats/master/inst/vignettes/treats_workshop.html).
 
 ## Simulation templates
 
