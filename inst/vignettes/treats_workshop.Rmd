@@ -27,7 +27,7 @@ Let's get into it.
 First we'll want to download and install the package:
 
 ```{r, eval = FALSE}
-install.package("treats")
+install.packages("treats")
 library(treats)
 ```
 
@@ -191,7 +191,6 @@ points(y = 0, x = 5, pch = 24, col = NULL, bg = "red", cex = 2.6)
 points(y = 0, x = 5, pch = 25, col = NULL, bg = "red", cex = 2.6)
 ```
 
-
 # The basics
 
 ## Growing a tree
@@ -236,6 +235,14 @@ plot(tree_200_sp, main = "Stop at 200 tips") ; axisPhylo()
 plot(tree_4_time, main = "Stop at 4 time units") ; axisPhylo()
 par(op)
 ```
+
+
+```{r, eval = FALSE, echo = FALSE}
+## Playground bit
+test <- treats(stop.rule = list(max.taxa = 3))
+plot(test)
+```
+
 
 So the trees here have roughly the same age but a very different shape, we'll get back to that in a moment.
 One other thing to note for this stopping rule, is that you can stack them: for example, you can ask the simulation to stop when it reaches 200 species _or_ 4 time units.
@@ -493,6 +500,15 @@ plot(continuous_trait)
 
 Of course though, the bigger the tree and the traits, the slower the algorithm (and the more RAM eaten)!
 
+
+
+
+
+
+
+
+
+
 ## Adding modifiers!
 
 But let's get back to fun modular stuff: one of the advantages of the `treats` package is that you can modify _all_ steps of the process.
@@ -512,128 +528,7 @@ You can see in more details what's happening by clicking on the modifier at the 
 
 So what's the point of all that and of the modifiers?
 
-### Modifying the selection process
-
-Similarly to `"traits"` you can build `"modifiers"` using `make.modifiers`!
-You can change the parts of interest in the `"modifiers"` by changing the default function that modifies the `lineage` internal structure of the `treats` package (no need to worry what's in there for now - but if you're interested, it's all detailed [here](https://github.com/TGuillerme/treats/blob/master/lineage_object_structure.md)).
-
-For a simple starting example, say we want to change the selection part of the algorithm to not randomly choose a lineage among the currently living lineages but instead just always choose the most recently lineage.
-The default selection function is:
-
-```{r}
-## The default selection function
-bd.selection <- function(lineage) {
-    return(as.integer(sample(1, lineage$n)))
-}
-```
-Where lineage is the `lineage` internal object and `lineage$n` automatically tracks the number of living lineages.
-We can modify this to always select the most recently generated lineage (the last one: `n`)
-
-```{r}
-## Our function to always select the last taxon
-## (making sure it returns an integer)
-select.last <- function(lineage) {
-    return(as.integer(lineage$n))
-}
-```
-
-We can then provide our special modifier to `make.modifiers`:
-
-```{r}
-## Making a modifier to the birth-death algorithm
-modify_selection <- make.modifiers(selection = select.last)
-```
-
-Similarly to `make.traits`, `make.modifiers` internally checks the validity of your changes and will let you know if it doesn't work:
-
-```{r, eval = FALSE}
-## Wrongly defined modifier
-badly_formated_modifier <- make.modifiers(selection = rnorm)
-```
-
-Once you're happy with the `"modifier"` you can feed it to `treats` the same way as a `"traits"` object:
-
-```{r, fig.width = 12}
-## What is it?
-class(modify_selection)
-## What's in it
-modify_selection
-
-set.seed(1)
-## Generating a tree and a trait (no modifier)
-no_modifier <- treats(stop.rule  = my_stop_rules,
-                      bd.params  = extinction_0.5,
-                      null.error = 100,
-                      verbose    = TRUE)
-
-set.seed(1)
-## Generating a tree and a trait (modified selection)
-modified_selection <- treats(stop.rule  = my_stop_rules,
-                      bd.params  = extinction_0.5,
-                      modifiers  = modify_selection,
-                      null.error = 100,
-                      verbose    = TRUE)
-
-## Plotting the results
-op <- par(mfrow = c(1,2))
-plot(no_modifier, main = "Default birth-death")
-plot(modified_selection, main = "Modified selection")
-par(op)
-```
-
-OK, this is not directly useful (albeit funny!) but it illustrates the modularity here!
-Let see how we can also modify the waiting and the speciation processes.
-
-### Modifying the waiting process
-
-This is the default waiting process that's using the `lineage` object but also `bd.params`, the birth-death parameters that we encountered already:
-
-```{r}
-## The default waiting function
-bd.waiting <- function(lineage, bd.params) {
-    return(rexp(1, sum(lineage$n * (bd.params$speciation + bd.params$extinction))))
-}
-```
-
-Again, for a simplifyed example, let's do a waiting process that generates always the same waiting time of 0.2 (i.e. the branch length is then independant from the birth-death parameters and the number of lineages):
-
-```{r, fig.width = 12}
-## Our function always returns the value
-constant.brlen <- function(lineage, bd.params) {
-    return(0.2)
-}
-
-## Making a modifier to the birth-death algorithm
-modified_waiting <- make.modifiers(branch.length = constant.brlen)
-
-set.seed(1)
-## Generating a tree and a trait (no modifier)
-no_modifier <- treats(stop.rule  = my_stop_rules,
-                      bd.params  = extinction_0.5,
-                      null.error = 100,
-                      verbose    = TRUE)
-
-set.seed(1)
-## Generating a tree and a trait (modified waiting)
-modified_waiting <- treats(stop.rule  = my_stop_rules,
-                      bd.params  = extinction_0.5,
-                      modifiers  = modified_waiting,
-                      null.error = 100,
-                      verbose    = TRUE)
-
-## Plotting the results
-op <- par(mfrow = c(1,2))
-plot(no_modifier, main = "Default birth-death")
-plot(modified_waiting, main = "Modified waiting")
-abline(v = seq(from = 0, to = 4, by = 0.2), col = "grey")
-axisPhylo()
-par(op)
-```
-
 ### Modifying the speciation process
-
-OK, so far the modifiers are a bit silly and not very illustrative in terms of usefulness.
-But we can do more complex and useful ones, for example linking the speciation or extinction process to the lineage's ancestral trait value!
 
 This is the default speciation process that's using the `bd.params` object:
 
@@ -644,32 +539,40 @@ bd.speciating <- function(bd.params) {
 }
 ```
 
-We can modify this to be only dependent on the lineage ancestral trait value: if it's negative, go extinct, otherwise speciate.
-To do that, we can provide the argument named `trait.values` and `lineage`: both are internal objects in the `treats` algorithm (one tracking the trait values for each element: tips, nodes, branches) and the other one tracking the lineages and the tree structure in general.
-Even more advanced, we will use the utility function `parent.traits` here that, when given these two objects, knows where to find information in the RAM about the ancestral trait values of any lineage.
+Here the speciation process is just depending on the birth-death parameters.
+But we can be interested in making a simulating a scenario approximating environements limiting capacities: for example, extinction never occurs until there is at least ten species, then it becomes more and more likely the more species in the environement.
+We can create a modifier that scales the speciation/turnover ratio by the number of species present in the simulation:
 
-> Note you can always check what arguments are allowed for internal functions and what internal parts they modify by checking the [manual](http://tguillerme.github.io/treats) "Quick overview" sections.
+```{r}
+## The default speciation process (if TRUE, do speciate)
+density.dependent.sp <- function(bd.params, lineage) {
+    ## Calculate the speciation/turnover ratio (as previously)
+    ratio <- bd.params$speciation/(bd.params$speciation + bd.params$extinction)
+    ## Scale in with the 10s of species
+    return(runif(1) <= ratio*(10/lineage$n))
+}
+```
+
+> Note here that `lineage` is a new argument introduced here. You can always check what arguments are allowed for internal functions and what internal parts they modify by checking the [manual](http://tguillerme.github.io/treats) "Quick overview" sections. In the case the argument `lineage` points to an internal structure of the `treats` package (no need to worry what's in there for now - but if you're interested, it's all detailed [here](https://github.com/TGuillerme/treats/blob/master/lineage_object_structure.md)).
+
+Similarly as for `make.traits` you can create a `"modifiers"` object using `make.modifiers` (again, testing for the validity of your inputs):
+
+```{r}
+## A modifier that makes extinction density dependent
+dd.extinction <- make.modifiers(speciation = density.dependent.sp)
+## What is it?
+class(dd.extinction)
+## What's in it?
+dd.extinction
+```
+
+And then feed it to the `treats` function:
 
 ```{r, fig.width = 12}
-## A modifier for kills lineages with negative values
-modify.trait <- function(trait.values, lineage) {
-    if(parent.traits(trait.values, lineage) < 0) {
-        ## Go extinct!
-        return(FALSE)
-    } else {
-        ## Speciate!
-        return(TRUE)
-    }
-}
-
-## Making the modifier
-modify_speciation <- make.modifiers(speciation = modify.trait)
-
 set.seed(1)
 ## Generating a tree and a trait (no modifier)
 no_modifier <- treats(stop.rule  = my_stop_rules,
                       bd.params  = extinction_0.5,
-                      traits     = my_trait,
                       null.error = 100,
                       verbose    = TRUE)
 
@@ -677,8 +580,7 @@ set.seed(1)
 ## Generating a tree and a trait (modified sepciation)
 modified_speciation <- treats(stop.rule  = my_stop_rules,
                       bd.params  = extinction_0.5,
-                      traits     = my_trait,
-                      modifiers  = modify_speciation,
+                      modifiers  = dd.extinction,
                       null.error = 100,
                       verbose    = TRUE)
 
@@ -689,7 +591,7 @@ plot(modified_speciation, main = "Modified speciation")
 par(op)
 ```
 
-So here we have a neat modifier that directly changes the structure of the tree by modifying the birth-death algorithm rather than the birth death parameters: note that both trees have the same input extinction rates but the modified one have it's extinction based one the trait values rather than that rate!
+
 
 ## Adding events!
 
@@ -697,9 +599,77 @@ OK, and finally, the last class of `"treats"` objects are `"events"` created via
 These work the same way as for `"traits"` and `"modifiers"` but affect the `treats` simulation at a higher level.
 For example you can use them to simulate mass extinctions after a certain amount of time.
 Or you can do much more complex things due to the package modular structure: for example, you can use an `"event"` that changes a `"modifier"` depending on some trait values...
-Instead of going into details on how to configure `"events"` as above, we're gonna directly create one for a more applied example
+Let's look at a quick example here.
 
-# Generating some null models
+To create an extinction event, you need to set up three aspects:
+
+ * *What the event is going to affect?* This can be each individual object passed to the simulation (i.e. the `modifiers`, `traits` or `bd.params`) or internal objects like, in our case the we can set to target to `target = "taxa"` (that will affect the internal `"lineage"` object);
+ * *When should the event happen?* This should be a function that is triggered following any specific condition (e.g. some species has a specific trait value, some number of species are present, etc.). In our case we are going to use a pre-implemented function called `age.condition` that generates the function to trigger the event at a specific age:
+
+```{r}
+## Making a function that triggers and event after 2 time units
+age.condition(x = 2, condition = `>=`)
+## This is effectively testing whether time is greater or equal than x
+x = 2
+time <- 1
+time >= x
+## Or, in a more classic function format
+`>=`(time, x)
+```
+
+> Note that for `age.condition`: the age is in units from the past, i.e. since the start of the simulation, not units from the present (i.e. units of time ago). You can always change that by defining it as `age.condition(x = time_in_the_present - time)`
+
+ * *What the event is going to modify?* This should be also a function that, once the event is triggered, modifies the target of the simulation (e.g. modify the `bd.params` or the `traits` object). In our case, we will use the pre-implemented function `trait.extinction`:
+
+```{r}
+## Making a function that removes all species with trait values >= 0
+trait.extinction(x = 0, condition = `>=`)
+```
+
+We can then create these events the same way as for `make.modifiers` or `make.traits`:
+
+```{r, message = FALSE}
+## Creating an extinction that removes species with positive trait values
+positive_extinction <- make.events(
+    target = "taxa",
+    condition = age.condition(3),
+    modification = trait.extinction(x = 0, condition = `>=`))
+
+## What's it?
+class(positive_extinction)
+
+## What's in it?
+positive_extinction
+```
+
+And then simulate a tree and trait with this extinction event:
+
+```{r, message = FALSE}
+set.seed(7)
+## Simulate the tree and traits with a selective extinction event
+sim_trait_extinction <- treats(
+                   traits     = my_trait,
+                   bd.params  = extinction_0.5,
+                   stop.rule  = my_stop_rules,
+                   events     = positive_extinction,
+                   null.error = 100)
+
+## Selective extinction
+plot(sim_trait_extinction, main = "Positive extinction")
+abline(v = 1, col = "red")
+abline(h = 0, col = "grey")
+```
+
+
+
+
+
+
+
+
+
+
+# The exercise: comparing simulated extinction scenarios to observed ones:
 
 OK, but what's the point of doing all these simulations?
 As suggested before, there are probably many uses for simulating some evolutionary scenarios.
@@ -708,10 +678,10 @@ For example, you could use it to generate a series of null models to test some b
 ## Mammalian evolution after the K-Pg extinction
 
 One toy example could be to test how a mass extinction event affect species traits evolution.
-Two potential scenarios could be tested depending on the type of extinction
- 
- * The extinction is random
- * The extinction targets specific trait values
+Two potential scenarios could be tested depending on the type of extinction:
+
+ * The mass extinction is random
+ * The mass extinction targets specific trait values
 
 We could simulate both scenarios and compare them to an observed one to see if the trait evolution matches with either of the simulated scenarios.
 If they do, we could suggest that one of the extinction scenario occurred.
@@ -759,93 +729,56 @@ abline(v = 4, col = "red")
 
 ## Simulating similar data
 
-So here the objective is to simulate a similar tree and traits and then simulate the extinction events.
-Note that because of the stochastic nature of these simulations we will simulate a series of trees and traits, not just one.
-This can easily be done in `treats` using the `replicates` option.
-Here we will do 50 replicates and focus on just 2 traits.
+To simulate the data and the extinction we will need the following:
 
-```{r, fig.height = 12, fig.width = 12}
-## Using the birth-death parameters from the observed tree
-my_bd_params <- make.bd.params(speciation = 0.035, extinction = 0.02)
+ 1. A stopping rule
+ 2. A set of birth death parameters
+ 3. Some traits
+ 4. Some extinction events
+
+
+### 1. The stopping rule
+
+Stopping when reaching 140 time units:
+
+```{r}
 ## Setting the stopping rule (stop after 140 time units)
 stop_rule <- list(max.time = 140)
+```
 
-## Creating a trait in 2 dimensions.
+### 2. The birth death parameters
+
+```{r}
+## Using the birth-death parameters from the observed tree
+my_bd_params <- make.bd.params(speciation = 0.035, extinction = 0.02)
+```
+
+### 3. The traits
+
+```{r}
+## A 2D Brownian motion
 my_traits <- make.traits(process = BM.process, n = 2)
-
-## Simulate 50 trees and traits
-set.seed(1)
-sim_trees <- treats(bd.params  = my_bd_params,
-                    stop.rule  = stop_rule,
-                    trait      = my_traits,
-                    null.error = 100,
-                    replicates = 50,
-                    verbose    = FALSE)
-
-par(mfrow = c(2,2), bty = "null")
-
-## Plotting the resulting tree
-plot(ladderize(sim_trees[[1]]$tree), show.tip.label = FALSE, main = "one simulated tree")
-## Adding the phylogenetic axis
-axisPhylo()
-
-## Plotting one trait through time
-plot(sim_trees[[1]], ylab = "Trait 1", las = 1, main = "Trait 1 through time")
-
-## Plotting the two dimensions against each other
-plot(sim_trees[[1]], trait = c(2,1), ylab = "Trait 1", xlab = "Trait 2", las = 1, main = "Traits 1 and 2")
 ```
 
-## Creating extinction events
-
-OK, now we can use the `make.events` function to design our extinction events.
-This function works similarly to `make.modifiers` or `make.traits` and creates a `"treats"` and `"events"` object that can be fed to the `treats` function.
-To create an event, we need to specify the following aspects:
-
- * *What the event is going to affect?* This can be each individual object passed to the simulation (i.e. the `modifiers`, `traits` or `bd.params`) or internal objects like, in our case the we can set to target to `target = "taxa"` (that will affect the internal `"lineage"` object);
- * *When should the event happen?* This should be a function that is triggered following any specific condition (e.g. some species has a specific trait value, some number of species are present, etc.). In our case we are going to use a pre-implemented function called `age.condition` that generates the function to trigger the event at a specific age:
+### 4. The extinction events
 
 ```{r}
-## Making a function that triggers and event 66 time units in the past
-age.condition(x = 140-66, condition = `>=`)
-## This is effectively testing whether time is greater or equal than x
-x = 140 - 66
-time <- 1
-time >= x
-## Or, in a more classic function format
-`>=`(time, x)
-```
- * *What the event is going to modify?* This should be also a function that, once the event is triggered, modifies the target of the simulation (e.g. modify the `bd.params` or the `traits` object). In our case, we will use the pre-implemented functions called `random.extinction` and `trait.extinction` that generate functions that modify the internal `"lineage"` object:
-
-```{r}
-## Making a function that removes 75% of species 
-random.extinction(0.75)
-
-## Making a function that removes all species with trait values >= 0
-trait.extinction(x = 0, condition = `>=`)
-```
-
-We can then create these events the same way as for `make.modifiers` or `make.traits`:
-
-```{r, message = FALSE}
 ## Creating a random mass extinction
 random_extinction <- make.events(
     target       = "taxa",
     condition    = age.condition(140-66),
     modification = random.extinction(0.75))
-class(random_extinction)
-random_extinction
 
 ## Creating an extinction that removes species with positive trait values
 positive_extinction <- make.events(
     target = "taxa",
     condition = age.condition(140-66),
     modification = trait.extinction(x = 0, condition = `>=`))
-class(positive_extinction)
-positive_extinction
 ```
 
-And then simulate a bunch of trees and traits with these extinction events:
+## Simulating the data
+
+We can then feed all that to our two simulations:
 
 ```{r, message = FALSE, fig.width = 12}
 set.seed(123)
@@ -883,13 +816,17 @@ legend("topleft", pch = NULL, legend = "B", bty = "n", cex = 2)
 
 Tada!
 
+> Note that because of the stochastic nature of these simulations we will simulate a series of trees and traits, not just one. This can easily be done in `treats` using the `replicates` option. Here we will do 50 replicates and focus on just 2 traits.
+
+
+
 ## Comparing both simualted and empirical scenarios
 
 And from there, we can compare the simulated data to the empirical on to see if they match or not.
 In our specific question we can use the `dispRitreats` function that's a handy interface between the `dispRity` package and `treats` and use that to measure disparity in our simulated scenarios.
 Again, I'm not going into the details there because this kind of comparisons requires much more work and thoughts but it's here just used as a dummy example on how you can use `treats` for your empirical questions!
 
-```{r, fig.width = 12}
+```{r, fig.width = 12, warning = FALSE, message = FALSE}
 ## Remove single nodes simulated at the extinction
 sim_rand_extinction <- drop.singles(sim_rand_extinction)
 sim_trait_extinction <- drop.singles(sim_trait_extinction)
@@ -929,3 +866,6 @@ lines(x = 1:7, y = observed_disparity, lty = 2, lwd = 2)
 
 On the GitHub page of the package you can find [a series of simulation templates](https://github.com/TGuillerme/treats/labels/simulation%20template): these are simplified complex simulation scenarios that you could find useful for your own specific questions.
 The idea here is to have a library of such templates so if you create one, please share it to the community by following [this template](https://github.com/TGuillerme/treats/issues/new?assignees=&labels=simulation+template&projects=&template=simulation-template.md&title=Simulate+something).
+
+
+
