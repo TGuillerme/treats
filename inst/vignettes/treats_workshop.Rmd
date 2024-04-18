@@ -39,7 +39,7 @@ library(treats)
 
 Note that I am the only author on the paper associated with this software suggesting I work alone and deserve all credits.
 This is of course not the case and a lot of input on this project was provided by many patient people.
-Many thanks to Mark Puttick that inspired the idea of the package, Andrew Beckerman, Natalie Cooper and Gavin Thomas for support during the development stage and Ian Brennan, Gustavo Burin, Christopher Cooney, Alex Cranston, William Geraty, Jasmine Hardie, Tom Lansley, Clement Prieul, Tiago Quental, Joe Rees, Louie Rombaut, James Rule and Sophie Ryan for comments and suggestions on late development stages.
+Many thanks to Mark Puttick that inspired the idea of the package; Andrew Beckerman, Natalie Cooper and Gavin Thomas for support during the development stage; Ian Brennan, Gustavo Burin, Christopher Cooney, Alex Cranston, William Gearty, Jasmine Hardie, Tom Lansley, Clement Prieul, Tiago Quental, Joe Rees, Louie Rombaut, James Rule and Sophie Ryan for comments and suggestions on late development stages; and Alain Danet, Tom Lansley, Rob McDonald and Ankita Sinha for testing this workshop
 
 # Intro
 
@@ -191,7 +191,204 @@ points(y = 0, x = 5, pch = 24, col = NULL, bg = "red", cex = 2.6)
 points(y = 0, x = 5, pch = 25, col = NULL, bg = "red", cex = 2.6)
 ```
 
-# The basics
+<!-- 
+The workshop markdown file: https://github.com/TGuillerme/treats/blob/master/inst/vignettes/treats_workshop.Rmd
+The same file for direct download (right click + save as): https://raw.githubusercontent.com/TGuillerme/treats/master/inst/vignettes/treats_workshop.Rmd
+The same file but in html (for visualising the fancy plots): https://cdn.githubraw.com/TGuillerme/treats/master/inst/vignettes/treats_workshop.html
+ -->
+
+
+# An example of using some null modeling
+
+Say we're looking at an empirical dataset showing trait evolution through time.
+Here we have (part of) a mammalian dataset from [Beck and Lee 2014](https://royalsocietypublishing.org/doi/full/10.1098/rspb.2014.1278) showing mammalian traits evolution around the K-Pg extinction 66 million years ago (the one that wiped out dinosaurs).
+We could be interested in the question of whether the mass extinction event freed ecological niches and was responsible for mammalian diversification in terms of traits.
+To do this we can simply look at the dataset an measure changes in trait diversity through time (disparity).
+For ecologists: this is very similar to functional diversity or dissimilarity analyses (I would even argue it's identical).
+
+```{r, fig.height = 6, fig.width = 6, echo = FALSE}
+## Loading the package and data
+library(dispRity)
+data(BeckLee_tree)
+data(BeckLee_mat99)
+
+## Make the data into treats format for visualising
+beck_lee_data_3d <- make.treats(tree = BeckLee_tree, data = BeckLee_mat99[, c(1,2)])
+
+plot(beck_lee_data_3d, trait = c(1:2), use.3D = TRUE)
+rgl::rglwidget()
+```
+
+```{r, fig.height = 6, fig.width = 12, echo = FALSE}
+## Creating the time slices
+time_slices <- chrono.subsets(BeckLee_mat99[, c(1,2)], BeckLee_tree,
+                              method = "continuous",
+                              model  = "proximity",
+                              time   = seq(from = 96, to = 36, by = -10))
+
+## Calculating disparity on the two first dimensions only
+observed_disparity <- dispRity(boot.matrix(time_slices),
+                               metric = c(sum, variances),
+                               dimensions = c(1,2))
+
+## Plotting the tree and the disparity through time
+par(mfrow = c(1,2))
+## Thre tree
+plot(beck_lee_data_3d, trait = 1, main = "The tree", ylab = "Trait 1")
+abline(v = BeckLee_tree$root.time - 66, col = "red")
+
+## The disparity
+plot(observed_disparity, ylab = "Sum of variances",
+     main = "The disparity through time")
+abline(v = 4, col = "red")
+```
+
+Here we can see that, although disparity (trait diversity) changes through time, it doesn't seem that affected by the K-Pg extinction event.
+This can be due to many causes, namely because of the quality of this dataset (that was not designed for this).
+But a fair question could be whether mass extinction events in general _CAN_ actually result in changes of disparity through time, regardless of the clade and the data!
+In other words, could our tools pick up something here?
+
+## Simulating data to test our hypothesis
+
+To test our hypothesis **whether mass extinction could liberate niches for trait diversification to occur**, we could simulate some neutral scenarios that would show us what disparity through time (trait diversification) would look like under two neutral scenarios: 
+ 
+ * What happens to disparity when a random mass extinction occurs?
+ * What happens to disparity when a selective mass extinction occurs?
+
+To do so, we would need to simulate a decent amount of datasets under these two specific scenarios and measure disparity from them and then compare it to our observed disparity.
+
+This can be done relatively easily in `treats` by design very specific extinction scenarios.
+For example here we can simulate some similar datasets as the empirical ones with the two extinction scenarios:
+
+
+```{r, message = FALSE, fig.width = 6, echo = FALSE}
+## Setting the stopping rule (stop after 140 time units)
+stop_rule <- list(max.time = 140)
+
+## Using the birth-death parameters from the observed tree
+my_bd_params <- make.bd.params(speciation = 0.035, extinction = 0.02)
+
+## A 2D Brownian motion
+my_traits <- make.traits(process = BM.process, n = 2)
+
+## Creating a random mass extinction
+random_extinction <- make.events(
+    target       = "taxa",
+    condition    = age.condition(140-66),
+    modification = random.extinction(0.75))
+
+## Creating an extinction that removes species with positive trait values
+positive_extinction <- make.events(
+    target = "taxa",
+    condition = age.condition(140-66),
+    modification = trait.extinction(x = 0, condition = `>=`))
+
+set.seed(123)
+## Simulate the tree and traits with a random extinction event
+sim_rand_extinction <- treats(
+                   traits     = my_traits,
+                   bd.params  = my_bd_params,
+                   stop.rule  = stop_rule,
+                   events     = random_extinction,
+                   null.error = 100,
+                   replicates = 50)
+
+## Simulate the tree and traits with a selective extinction event
+sim_trait_extinction <- treats(
+                   traits     = my_traits,
+                   bd.params  = my_bd_params,
+                   stop.rule  = stop_rule,
+                   events     = positive_extinction,
+                   null.error = 100,
+                   replicates = 50)
+```
+
+```{r,  echo = FALSE}
+plot(sim_rand_extinction[[42]], trait = c(1:2), use.3D = TRUE)
+rgl::rglwidget()
+```
+
+```{r,  echo = FALSE}
+plot(sim_trait_extinction[[50]], trait = c(1:2), use.3D = TRUE)
+rgl::rglwidget()
+```
+
+```{r, message = FALSE, fig.width = 12, echo = FALSE}
+par(mfrow = c(1,2))
+## Visualising the difference between both scenarios
+## Random extinction
+plot(sim_rand_extinction[[42]], main = "Random extinction")
+abline(v = 66, col = "red")
+abline(h = 0, col = "grey")
+## Selective extinction
+plot(sim_trait_extinction[[50]], main = "Positive extinction")
+abline(v = 66, col = "red")
+abline(h = 0, col = "grey")
+```
+
+We can then compare the measured disparity in these scenarios to the observed one in the empirical data:
+
+```{r, fig.width = 12, warning = FALSE, message = FALSE, echo = FALSE}
+## Remove single nodes simulated at the extinction
+sim_rand_extinction <- drop.singles(sim_rand_extinction)
+sim_trait_extinction <- drop.singles(sim_trait_extinction)
+
+## Calculate the dispRity for all the simulations
+random_extinction_disparity <- dispRitreats(sim_rand_extinction,
+                                            method = "continuous",
+                                            model  = "proximity",
+                                            time   = seq(from = 96, to = 36, by = -10),
+                                            metric = c(sum, variances),
+                                            scale.trees = FALSE)
+selective_extinction_disparity <- dispRitreats(sim_trait_extinction,
+                                            method = "continuous",
+                                            model  = "proximity",
+                                            time   = seq(from = 96, to = 36, by = -10),
+                                            metric = c(sum, variances),
+                                            scale.trees = FALSE)
+
+## Scale the disparity results (to compare to the observed ones)
+random_extinction_disparity <- scale.dispRity(random_extinction_disparity)
+selective_extinction_disparity <- scale.dispRity(selective_extinction_disparity)
+observed_disparity <- unlist(get.disparity(scale.dispRity(observed_disparity)))
+
+## Plotting the results with the observed disparity
+par(mfrow = c(1,2))
+plot(random_extinction_disparity, main = "Random extinction",
+     ylab = "Scaled sum of variances", ylim = c(0, 1))
+abline(v = 4, col = "red")
+lines(x = 1:7, y = observed_disparity, lty = 2, lwd = 2)
+plot(selective_extinction_disparity, main = "Selective extinction",
+     ylab = "", ylim = c(0, 1))
+abline(v = 4, col = "red")
+lines(x = 1:7, y = observed_disparity, lty = 2, lwd = 2)
+```
+
+So here this example is just to highlight the need for a modular package to simulate trees and traits using very specific simulation scenarios.
+
+> Note that here I didn't explain what's going on on the coding level. But you can check out a more detailed version of this case example at the end of this workshop.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# The basics: copy-pasting starts here!
 
 ## Growing a tree
 
@@ -213,7 +410,7 @@ stop_200_sp <- list(max.taxa = 200)
 stop_4_time <- list(max.time = 4)
 ```
 
-You can then feed these stop rules to the treats function and let the magic happen:
+You can then feed these stop rules to the `treats` function and let the magic happen:
 
 ```{r}
 ## Create a tree with 200 taxa
@@ -234,13 +431,6 @@ op <- par(mfrow = c(1,2))
 plot(tree_200_sp, main = "Stop at 200 tips") ; axisPhylo()
 plot(tree_4_time, main = "Stop at 4 time units") ; axisPhylo()
 par(op)
-```
-
-
-```{r, eval = FALSE, echo = FALSE}
-## Playground bit
-test <- treats(stop.rule = list(max.taxa = 3))
-plot(test)
 ```
 
 
@@ -494,6 +684,7 @@ continuous_trait <- treats(stop.rule  = my_stop_rules,
                            save.steps = 0.2,
                            null.error = 100,
                            verbose    = TRUE)
+
 ## Visualise the tree and trait
 plot(continuous_trait)
 ```
@@ -660,6 +851,10 @@ abline(v = 1, col = "red")
 abline(h = 0, col = "grey")
 ```
 
+# Bonus: pre-made evolutionary scenarios
+
+On the GitHub page of the package you can find [a series of simulation templates](https://github.com/TGuillerme/treats/labels/simulation%20template): these are simplified complex simulation scenarios that you could find useful for your own specific questions.
+The idea here is to have a library of such templates so if you create one, please share it to the community by following [this template](https://github.com/TGuillerme/treats/issues/new?assignees=&labels=simulation+template&projects=&template=simulation-template.md&title=Simulate+something).
 
 
 
@@ -669,11 +864,28 @@ abline(h = 0, col = "grey")
 
 
 
-# The exercise: comparing simulated extinction scenarios to observed ones:
 
-OK, but what's the point of doing all these simulations?
-As suggested before, there are probably many uses for simulating some evolutionary scenarios.
-For example, you could use it to generate a series of null models to test some biological questions.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Mega bonus: comparing simulated extinction scenarios to observed ones
+
+Here is the detailed script for the simulating extinction scenarios from the start of the workshop.
 
 ## Mammalian evolution after the K-Pg extinction
 
@@ -861,11 +1073,4 @@ plot(selective_extinction_disparity, main = "Selective extinction",
 abline(v = 4, col = "red")
 lines(x = 1:7, y = observed_disparity, lty = 2, lwd = 2)
 ```
-
-# Bonus: pre-made evolutionary scenarios
-
-On the GitHub page of the package you can find [a series of simulation templates](https://github.com/TGuillerme/treats/labels/simulation%20template): these are simplified complex simulation scenarios that you could find useful for your own specific questions.
-The idea here is to have a library of such templates so if you create one, please share it to the community by following [this template](https://github.com/TGuillerme/treats/issues/new?assignees=&labels=simulation+template&projects=&template=simulation-template.md&title=Simulate+something).
-
-
 
