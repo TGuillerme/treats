@@ -24,6 +24,16 @@ In this workshop I will assume you are already familiar with basic `R`. The basi
  * How to access function manuals (e.g. `?mean`)
 
 Let's get into it.
+
+
+The workshop markdown file: https://github.com/TGuillerme/treats/blob/master/inst/vignettes/treats_workshop.Rmd
+
+The same file for direct download (right click + save as): https://raw.githubusercontent.com/TGuillerme/treats/master/inst/vignettes/treats_workshop.Rmd
+
+The same file but in html (for visualising the fancy plots): https://cdn.githubraw.com/TGuillerme/treats/master/inst/vignettes/treats_workshop.html
+
+
+
 First we'll want to download and install the package:
 
 ```{r, eval = FALSE}
@@ -46,7 +56,7 @@ Many thanks to Mark Puttick that inspired the idea of the package; Andrew Becker
 What ca we do with `treats`?
 
  * Simulate trees and traits for illustration (toy model, teaching);
- * Simulate trees and traits as a null model for analysis (we'll see an example of that later)
+ * Simulate trees and traits as a null model for analysis (we'll see an example of that later);
  * Whatever you want: this is because of the modular architecture of the package allowing you to modify each steps of the simulations easily (we'll see this throughout the workshop);
 
 Here are a couple of examples of things that we can do with `treats`:
@@ -191,11 +201,6 @@ points(y = 0, x = 5, pch = 24, col = NULL, bg = "red", cex = 2.6)
 points(y = 0, x = 5, pch = 25, col = NULL, bg = "red", cex = 2.6)
 ```
 
-<!-- 
-The workshop markdown file: https://github.com/TGuillerme/treats/blob/master/inst/vignettes/treats_workshop.Rmd
-The same file for direct download (right click + save as): https://raw.githubusercontent.com/TGuillerme/treats/master/inst/vignettes/treats_workshop.Rmd
-The same file but in html (for visualising the fancy plots): https://cdn.githubraw.com/TGuillerme/treats/master/inst/vignettes/treats_workshop.html
- -->
 
 
 # An example of using some null modeling
@@ -390,6 +395,10 @@ So here this example is just to highlight the need for a modular package to simu
 
 # The basics: copy-pasting starts here!
 
+```{r}
+library(treats)
+```
+
 ## Growing a tree
 
 For the very basics here we're going to see how to grow a tree with the minimum number of options.
@@ -567,6 +576,27 @@ dead_tree # is a tree!
 
 Finally, you can also create tree distributions by using the option `replicates = n` that will generate _n_ trees.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Adding a trait
 
 Now this is all nice a well but not very different from other great `R` packages that allow you to grow a birth-death tree.
@@ -598,6 +628,12 @@ my_trait <- make.traits(process = my.BM.process,
 class(my_trait)
 ## What's in it?
 my_trait ## Note the process name is A (you can change that)
+
+## Add a name to the trait object
+my_trait <- make.traits(process = my.BM.process,
+                        start   = 0,
+                        trait.name = "BM")
+
 ## Visualising what the process would look over time
 plot(my_trait, main = "What does the process look like over time?")
 ```
@@ -700,6 +736,8 @@ Of course though, the bigger the tree and the traits, the slower the algorithm (
 
 
 
+
+
 ## Adding modifiers!
 
 But let's get back to fun modular stuff: one of the advantages of the `treats` package is that you can modify _all_ steps of the process.
@@ -712,7 +750,7 @@ The birth-death process is effectively separated into three independent parts:
 These three steps are encoded by default in the `treats` birth-death algorithm to be:
 
  1. The selection of the lineage of interest: `sample(1, n)`
- 2. The generation of branch length:. `rexp(1, rate = n*(speciation + extinction))`
+ 2. The generation of branch length: `rexp(1, rate = n*(speciation + extinction))`
  3. The decision whether that lineage speciates (`TRUE`) or goes extinct (`FALSE`): `runif(1) < speciation/(speciation + extinction)`
 
 You can see in more details what's happening by clicking on the modifier at the bottom of the pages [here](http://tguillerme.github.io/treats_01.html).
@@ -769,7 +807,8 @@ no_modifier <- treats(stop.rule  = my_stop_rules,
 
 set.seed(1)
 ## Generating a tree and a trait (modified sepciation)
-modified_speciation <- treats(stop.rule  = my_stop_rules,
+modified_speciation <- treats(
+                      stop.rule  = my_stop_rules,
                       bd.params  = extinction_0.5,
                       modifiers  = dd.extinction,
                       null.error = 100,
