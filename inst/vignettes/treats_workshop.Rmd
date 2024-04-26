@@ -738,6 +738,9 @@ Of course though, the bigger the tree and the traits, the slower the algorithm (
 
 
 
+
+
+
 ## Adding modifiers!
 
 But let's get back to fun modular stuff: one of the advantages of the `treats` package is that you can modify _all_ steps of the process.
@@ -823,7 +826,12 @@ par(op)
 
 
 
+
+
+
 ## Adding events!
+
+You can find a gallery of events [here](https://raw.githack.com/TGuillerme/dads/master/inst/gitbook/_book/specific-examples.html).
 
 OK, and finally, the last class of `"treats"` objects are `"events"` created via `make.events`.
 These work the same way as for `"traits"` and `"modifiers"` but affect the `treats` simulation at a higher level.
