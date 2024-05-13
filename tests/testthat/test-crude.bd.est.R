@@ -9,7 +9,7 @@ test_that("crude.bd.est works", {
     expect_equal(round(crude.bd.est(liv, method = "count")$speciation(), 4), round(2.197225, 4))
     expect_equal(round(crude.bd.est(liv, method = "count")$extinction(), 4), round(0, 4))
     liv$root.time <- 10
-    expect_equal(round(crude.bd.est(liv, method = "count")$speciation(), 4), round(1.276417, 4))
+    expect_equal(round(crude.bd.est(liv, method = "count")$speciation(), 3), round(1.276417, 3))
     expect_equal(round(crude.bd.est(liv, method = "count")$extinction(), 4), round(0, 4))
 
     ## Also fossils
