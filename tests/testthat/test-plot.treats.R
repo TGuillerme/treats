@@ -7,6 +7,10 @@ test_that("plot.treats works for traits", {
     expect_null(plot.treats(list_of_traits, trait = 2))
     expect_null(plot.treats(list_of_traits, trait = 3))
     expect_null(plot.treats(list_of_traits, trait = 3,cent.tend = sd, quantiles = c(25, 10, 5), col = palette()[1:4]))
+
+    BM_2d <- make.traits(process = BM.process, n = 2, start = c(10, 20))
+    expect_null(plot.treats(BM_2d, trait = 1))
+    expect_null(plot.treats(BM_2d, trait = 2))
 })
 
 test_that("plot.treats works for treats", {

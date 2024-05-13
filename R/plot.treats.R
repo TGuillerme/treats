@@ -3,7 +3,7 @@
 #' @description Plotting treats objects (either a simulated tree and trait(s) or a process for traits objects)
 #'
 #' @param x \code{treats} data.
-#' @param col Optional, a vector of colours that can be named (see details).
+#' @param col Optional, a \code{vector} of colours that can be named or a \code{function} (see details).
 #' @param ... Any additional options to be passed to plot functions (from \code{graphics} or \code{rgl} if \code{use.3D = TRUE}).
 #' @param trait which trait to plot (default is \code{1}; see details).
 #' @param edges either a colour name to attribute to the edges or \code{NULL} to not display the edges (default is \code{"grey"}).
@@ -22,7 +22,8 @@
 #' The \code{col} option can be either:
 #' \itemize{
 #'      \item a \code{vector} of colours to be applied to \code{"treats"} \code{"traits"} objects (for respectively the median, 50% CI and 95% CI - by default this is \code{col = c("black", "grey", "lightgrey")}). This is the default option when plotting traits.
-#'      \item a \code{vector} of colours to be applied to \code{"treats"} objects for the colours of different elements of the plot. This vector cycles through different elements of the the tree depending on the length of the vector: if one colour is given, it is applied to all elements; if two colours are given, the first one is applied to the nodes and the second to the tips; if three colours are given, they are applied to the nodes, fossils and living elements respectively. If more colours are given, they are applied in a gradient way to all elements depending on their age (see the \code{function} usage below). Note that you can always name the vector elements for avoiding ambiguities: e.g. \code{col = c("nodes" = "orange", "fossils" = "lightblue", "livings" = "blue")} (the default - you can use the name \code{"tips"} to designate both livings and fossils).
+#'      \item a \code{vector} of colours to be applied to \code{"treats"} objects for the colours of different elements of the plot. This vector is applied to all the elements in the tree using the order in \code{tree$tip.label} and \code{tree$node.label}.
+#'      \item an unambiguous named \code{vector} for colouring each specific elements. These can be any of the following (with default colours) \code{col = c("nodes" = "orange", "fossils" = "lightblue", "livings" = "blue")} or \code{"tips"} to designate both livings and fossils and \code{"singletons"} to designate non-bifurcating nodes.
 #'      \item a \code{function} from which to sample the colours to match the time gradient for each element.
 #' }
 #' 
@@ -42,8 +43,8 @@
 #' plot(my_tree, main = "A pure birth tree")
 #' 
 #' ## Simulating a tree with traits
-#' my_data <- treats(stop.rule = list(max.taxa = 10),
-#'                 traits    = my_trait)
+#' my_data <- treats(stop.rule = list(max.taxa = 100),
+#'                   traits    = my_trait)
 #' ## Plotting the tree and traits
 #' plot(my_data)
 #'
@@ -51,13 +52,14 @@
 #' my_3D_trait <- make.traits(n = 3)
 #' ## Simulating a birth death tree with that trait
 #' my_data <- treats(bd.params = list(extinction = 0.2),
-#'                 stop.rule = list(max.living = 50),
-#'                 traits    = my_3D_trait)
+#'                   stop.rule = list(max.living = 50),
+#'                   traits    = my_3D_trait)
 #' 
 #' ## Plotting the second trait and the tree (default)
 #' ## The colours are purple for nodes and blue for tips
 #' ## with a black circle for highlighting the tips
-#' plot(my_data, trait = 2, col = c("purple", "blue"),
+#' plot(my_data, trait = 2,
+#'      col = c("nodes" = "purple", "tips" = "blue"),
 #'      edges = "pink", tips.nodes = "black")
 #' 
 #' ## Plotting the first and third trait correlation
@@ -96,8 +98,29 @@ plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NUL
         second_class <- treats_class[2]
 
         if(second_class == "traits") {
-            ## Selecting the trait
-            one_trait <- data$main[[trait]]
+
+            ## Get all the traits id
+            trait_IDs <- lapply(data$main, function(x) return(x$trait_id))
+
+            ## Check if the trait is multidimensional
+            if(length(trait_IDs) != length(unlist(trait_IDs))) {
+                ## Find which trait is requested
+                which_trait <- lapply(trait_IDs, function(x, request) x %in% request, request = trait)
+                ## Find which process is requested
+                which_process <- which(unlist(lapply(which_trait, any)))
+                ## Select the process and the trait
+                one_trait <- data$main[[which_process]]
+                ## Select the trait
+                if(!is.null(one_trait$start) && length(one_trait$start) != 1) {
+                    one_trait$start <- one_trait$start[which_trait[[which_process]]]
+                }
+                if(!is.null(one_trait$trait_id) && length(one_trait$trait_id) != 1) {
+                    one_trait$trait_id <- one_trait$trait_id[which_trait[[which_process]]]
+                }
+            } else {
+                ## Selecting the trait
+                one_trait <- data$main[[trait]]                
+            }
 
             ## Selecting the trait ids
             if(use.3D) {

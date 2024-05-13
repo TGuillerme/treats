@@ -180,88 +180,102 @@ get.quantile.col <- function(cis, n_quantiles) {
 handle.colours <- function(col, points_tree_IDs, points_ages, data, legend) {
 
     legend_col <- NULL
-    col_scheme <- character()
     do_gradient <- FALSE
+    use_scheme <- FALSE
+    ## Default colour scheme
+    col_scheme <- character()
+    col_scheme["nodes"]   <- "orange"
+    col_scheme["fossils"] <- "lightblue"
+    col_scheme["livings"] <- "blue"
 
     if(is(col, "function")) {
         ## Make a colour gradient
         do_gradient <- TRUE
         ## Check if the function works
         col.fun <- col
-        test <- try(col.fun(3), silent = TRUE)
-        if(is(test, "try-error") || length(test) != 3 || !is(test,  "character")) {
+        test <- try(col.fun(Ntip(data$tree)+Nnode(data$tree)), silent = TRUE)
+        if(is(test, "try-error") || length(test) != Ntip(data$tree)+Nnode(data$tree) || !is(test,  "character")) {
             stop("The col function failed to generate a list of colours.", call. = FALSE)
         }
     } else {
-        if(col[1] == "default") {
-            ## Default colour scheme
-            col_scheme["nodes"]   <- "orange"
-            col_scheme["fossils"] <- "lightblue"
-            col_scheme["livings"] <- "blue"
-        
-        } else {
-
+        if(col[1] != "default") {
             if(is(col,  "character")) {
                 ## col is an unamed vector
-                if(is.null(names(col))) {
-                    if((n_col <- length(col)) > 3) {
-                        col_select <- col[1:3]
-                    } else {
-                        if(n_col == 1) {
-                            col_select <- rep(col, 3)
-                        } else {
-                            if(n_col == 2) {
-                                col_select <- c(col[1], col[2], col[2])
-                            }
-                        }
+                if(!is.null(names(col))) {
+                    allowed_names <- c("nodes", "tips", "fossils", "livings", "singletons")
+                    if(!all(names(col) %in% allowed_names)) {
+                        stop(paste0("If col is a named vector, it must contains the names ", paste0(allowed_names[-length(allowed_names)], collapse = ", "), " and/or ", allowed_names[length(allowed_names)], "."))
                     }
-                    ## Attributing the colours
-                    col_scheme["nodes"]   <- col_select[1]
-                    col_scheme["fossils"] <- col_select[2]
-                    col_scheme["livings"] <- col_select[3]
+                    use_scheme <- TRUE
 
-                } else {
-                ## col is a named vector
-                    if(all(c("nodes", "tips") %in% names(col))) {
-                        ## Attribute the colours
-                        col_scheme["nodes"]   <- col["nodes"]
+                    ## Attributing the colours to each element
+                    if("nodes" %in% names(col)) {
+                        col_scheme["nodes"] <- col["nodes"]
+                    }
+                    if("fossils" %in% names(col)) {
+                        col_scheme["fossils"] <- col["fossils"]
+                    }
+                    if("livings" %in% names(col)) {
+                        col_scheme["livings"] <- col["livings"]
+                    }
+                    if("tips" %in% names(col)) {
                         col_scheme["fossils"] <- col["tips"]
                         col_scheme["livings"] <- col["tips"]
-                    } else {
-                        if(all(c("nodes", "fossils", "livings") %in% names(col))) {
-                            ## Attribute the colours
-                            col_scheme["nodes"]   <- col["nodes"]
-                            col_scheme["fossils"] <- col["fossils"]
-                            col_scheme["livings"] <- col["livings"]
-                        } else {
-                            ## Wrong names
-                            stop("If col is a named vector, it must contains the names \"nodes\" and \"tips\" or \"nodes\", \"fossils\" and \"livings\".", call. = FALSE)
-                        }
-                    }                
+                    }
+                    if("singletons" %in% names(col)) {
+                        col_scheme["singletons"] <- col["singletons"]
+                    }
                 }
             }
+        } else {
+            use_scheme <- TRUE
         }
     }
 
     if(!do_gradient) {
-        ## Creating the colour values
-        col_val <- vector("character", length = (Ntip(data$tree) + Nnode(data$tree)))
+        if(use_scheme) {
+            ## Creating the colour values
+            col_val <- vector("character", length = (Ntip(data$tree) + Nnode(data$tree)))
 
-        ## Nodes
-        col_val[which(points_tree_IDs > Ntip(data$tree))] <- col_scheme["nodes"]
+            ## Nodes
+            col_val[which(points_tree_IDs > Ntip(data$tree))] <- col_scheme["nodes"]
+            ## Singletons
+            if(!is.na(col_scheme["singletons"])) {
+                ## Detect the singletons
+                nodes_singles <- data$tree$edge[!(data$tree$edge[,1] %in% data$tree$edge[duplicated(data$tree$edge[,1]), 1]), 1]
+                ## Adjust the colour values
+                col_val[which(points_tree_IDs %in% nodes_singles)] <- col_scheme["singletons"]
+            }
 
-        ## Living
-        if(length(livings <- which(points_ages[points_tree_IDs, "ages"] == 0)) > 0) {
-            col_val[livings] <- col_scheme["livings"]
-        }
-        ## Fossils (the ones remaining)
-        if(length(fossils <- which(col_val == "")) > 0) {
-            col_val[fossils] <- col_scheme["fossils"]
-        }
-        ## Set the legend
-        if(legend) {
-            ## Select the available data 
-            legend_col <- col_scheme[col_scheme %in% unique(col_val)]
+            ## Living
+            if(length(livings <- which(points_ages[points_tree_IDs, "ages"] == 0)) > 0) {
+                col_val[livings] <- col_scheme["livings"]
+            }
+            ## Fossils (the ones remaining)
+            if(length(fossils <- which(col_val == "")) > 0) {
+                col_val[fossils] <- col_scheme["fossils"]
+            }
+            ## Set the legend
+            if(legend) {
+                ## Select the available data 
+                legend_col <- col_scheme[col_scheme %in% unique(col_val)]
+            }
+        } else {
+            ## Apply the colours to all elements
+            if(length(col) == (Ntip(data$tree) + Nnode(data$tree))) {
+                col_val <- col
+            } else {
+                if(length(col) > (Ntip(data$tree) + Nnode(data$tree))) {
+                    col_val <- col[1:(Ntip(data$tree) + Nnode(data$tree))]
+                    warning(paste0("Only the first ", (Ntip(data$tree) + Nnode(data$tree)), " colours are used."))
+                }
+                if(length(col) < (Ntip(data$tree) + Nnode(data$tree))) {
+                    col_val <- rep(col, ceiling((Ntip(data$tree) + Nnode(data$tree))/length(col)))[1:(Ntip(data$tree) + Nnode(data$tree))]
+                }
+            }
+            ## Reorder
+            col_val <- col_val[points_tree_IDs]
+            legend_col <- col
         }
     } else {
         ## Sort the data by range
