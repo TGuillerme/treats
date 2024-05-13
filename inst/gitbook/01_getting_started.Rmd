@@ -190,13 +190,13 @@ In this specific case the `modifiers` object is not necessary as it is doing not
 For more interesting simulations however, you can provide modifiers that actually modify the birth-death process.
 We can create one for example that makes species go extinct if their ancestor has a negative trait value.
 For that we need to create a `"modifiers"` object that modifies the `speciation` process with a specific condition and a specific modification when that condition is met.
-For a speciation to occur (and a species to not go extinct), the algorithm draws a random value _x_ between 0 and 1 and if the value is smaller than the speciation parameter divided by the speciation + extinction parameter, the lineage speciates ($x < (\lambda \ (\lambda + \mu))$), else it goes extinct.
+For a speciation to occur (and a species to not go extinct), the algorithm draws a random value _x_ between 0 and 1 and if the value is smaller than the speciation parameter divided by the speciation + extinction parameter, the lineage speciates ($x < (\lambda \div (\lambda + \mu))$), else it goes extinct.
 _x_ is a random value that simulates some stochasticity in the evolutionary simulation.
 At every step of the simulation, a different random value _x_ is drawn making sure that the resulting speciation or extinction is not predictable. 
 
 However, we can create a modifier that introduces less randomness (or a different level of randomness) by forcing the lineage to go extinct every time a specific condition is met, e.g. if the lineage trait value is negative.
-This can be done for example by not randomly generating the value _x_ but giving it a fixed value of say 1 so that the estimation of the speciation function $x < (\lambda \ (\lambda + \mu))$ is always met.
-In other words, if the lineage's trait value is negative, make sure that _x_ is equal to 1, so that the speciation condition $x < (\lambda \ (\lambda + \mu))$ is never met.
+This can be done for example by not randomly generating the value _x_ but giving it a fixed value of say 1 so that the estimation of the speciation function $x < (\lambda \div (\lambda + \mu))$ is always met.
+In other words, if the lineage's trait value is negative, make sure that _x_ is equal to 1, so that the speciation condition $x < (\lambda \div\ (\lambda + \mu))$ is never met.
 
 First we need to create a `condition` function to trigger this (non) speciation event.
 We can do that by specifying our `condition` function (here the `going.extinct` function) to apply our modification.
