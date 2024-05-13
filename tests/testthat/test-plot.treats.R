@@ -20,7 +20,7 @@ test_that("plot.treats works for treats", {
     ## Default plot
     expect_null(plot(test))
     ## Other options
-    expect_null(plot(test, main = "what?", xlim = c(0, test$tree$root.time), col = c(tips = "pink", nodes = "red", edges = "purple"), ylab = "data"))
+    expect_null(plot(test, main = "what?", xlim = c(0, test$tree$root.time), edges = "purple", col = c(tips = "pink", nodes = "red"), ylab = "data"))
 
     ## A more complex trait
     complex_traits <- make.traits(process = c(BM.process, BM.process), n = c(2,3), process.args = list(list(Sigma = diag(2)), list(Sigma = matrix(1/3, 3, 3))), trait.names = c("bib", "bob"))

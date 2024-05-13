@@ -240,7 +240,6 @@ test_that("bkg.traits works", {
     expect_equal(test2$background$main$bg.OU$start, rep(10, 6))
 })
 
-
 test_that("trait processes work", {
 
     ## BM.process
@@ -266,7 +265,7 @@ test_that("trait processes work", {
     expect_equal(round(multi.peak.process(), 5), matrix(round(-0.4119058, 5)))
     expect_is(plot(multi.peak.process), "list")
     expect_null(plot(make.traits(multi.peak.process, process.args = list(peaks = c(1, 5, 10)))))
-    expect_null(plot(make.traits(multi.peak.process, n = 3, start = c(1,2,3),process.args = list(peaks = list(1, 5, 10)))))
+    expect_null(plot(make.traits(multi.peak.process, n = 3, start = c(1,2,3), process.args = list(peaks = list(1, 5, 10)))))
 
     ## repulsion.process
     set.seed(1)

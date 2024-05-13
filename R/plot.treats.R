@@ -117,6 +117,13 @@ plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NUL
                 if(!is.null(one_trait$trait_id) && length(one_trait$trait_id) != 1) {
                     one_trait$trait_id <- one_trait$trait_id[which_trait[[which_process]]]
                 }
+                ## Handle extra arguments
+                if(any(extra <- which(unlist(lapply(one_trait, length)) > 1))) {
+                    ## Extract extra arguments
+                    for(one_extra in extra) {
+                        one_trait[one_extra] <- list(one_trait[[one_extra]][[trait]])
+                    }
+                }
             } else {
                 ## Selecting the trait
                 one_trait <- data$main[[trait]]                
