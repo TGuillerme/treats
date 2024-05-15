@@ -37,7 +37,10 @@ library(treats)
 
 ## How does it work?
 
-The detailed manual is available [here](http://tguillerme.github.io/treats.html).
+The detailed manual is available [here](http://tguillerme.github.io/treats.html). Alternatively, you can use [this cheat sheet](https://github.com/TGuillerme/treats/blob/master/inst/gitbook/treats_cheat_sheet.pdf) if you're already familiar with the package. 
+
+<a href="https://tguillerme.github.io/treats.html"><img src="http://tguillerme.github.io/images/rawgit.png" height="30"/></a> <a href="https://github.com/TGuillerme/treats/blob/master/inst/gitbook/_book/treats_manual.pdf"><img src="http://tguillerme.github.io/images/pdf.gif" height="30"/></a> 
+
 
 ## Latest patch notes
 
