@@ -48,7 +48,7 @@ Patch notes can be seen [here](https://github.com/TGuillerme/treats/blob/master/
 
 ## Workshop
 
-You can get the workshop R markdown document [here](https://github.com/TGuillerme/treats/blob/master/inst/vignettes/treats_workshop.Rmd) or download it directly from [here](https://raw.githubusercontent.com/TGuillerme/treats/master/inst/vignettes/treats_workshop.Rmd) (right click + save as) or visualise it in html from [here](https://cdn.githubraw.com/TGuillerme/treats/master/inst/vignettes/treats_workshop.html).
+You can get the workshop R markdown document [here](https://github.com/TGuillerme/treats/blob/master/inst/vignettes/treats_workshop.Rmd) or download it directly from [here](https://raw.githubusercontent.com/TGuillerme/treats/master/inst/vignettes/treats_workshop.Rmd) (right click + save as) or visualise it in html from [here](https://cdn.githubraw.com/TGuillerme/treats/master/inst/vignettes/treats_workshop.html). If you have some time you can also watch this [MEE Live!](https://www.youtube.com/watch?v=QUhaFZxER2I) video (55 minutes though!). 
 
 ## Simulation templates
 
