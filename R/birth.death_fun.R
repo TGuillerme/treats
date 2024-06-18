@@ -1,21 +1,28 @@
 ## Simulating traits for one element
-sim.element.trait <- function(one.trait, parent.trait, edge.length) {
-    ## Don't simulate the trait value if edge.length is 0
-    # if(edge.length == 0) {
-    #     return(parent.trait[one.trait$trait_id])
-    # }
+sim.element.trait <- function(one.trait, parent.trait, edge.length, select = NULL) {
+    ## Select the trait (if needed)
+    if(!is.null(select)) {
+        one.trait <- one.trait[[select]]
+    }
     ## Set the simulation arguments
     trait_args <- one.trait
-    ## Remove the process and the n argument
-    trait_args$process  <- NULL
+    ## Remove unusablee arguments
+    trait_args$process <- NULL
     trait_args$trait_id <- NULL
-    trait_args$start    <- NULL
+    trait_args$start <- NULL
+    trait_args$condition.test <- NULL
     ## Add the x0 (last step) + the edge length
     trait_args$x0 <- parent.trait[one.trait$trait_id]
     trait_args$edge.length <- edge.length
     return(do.call(one.trait$process, trait_args))
 }
-multi.sim.element.trait <- function(one.trait, parent.traits, edge.lengths) {
+multi.sim.element.trait <- function(one.trait, parent.traits, edge.lengths, select = NULL) {
+    ## Select the trait (if needed)
+    if(!is.null(select)) {
+        one.trait <- one.trait[[select]]
+        warning("background or save.steps trait simulation not tested with conditional traits")
+    }
+    ## Run all the traits
     return(do.call(rbind, lapply(as.list(1:dim(parent.traits)[1]), function(X, parent.traits, edge.lengths, one.trait) sim.element.trait(one.trait, parent.traits[X, , drop = FALSE], edge.lengths[X]), parent.traits, edge.lengths, one.trait)))
 }
 add.trait.value <- function(trait_values, traits, lineage, edge_lengths, type = "one_node") {
@@ -33,8 +40,33 @@ add.trait.value <- function(trait_values, traits, lineage, edge_lengths, type = 
                     "one_node" = edge_lengths[lineage$current],
                     "all_node" = edge_lengths[lineage$parents[lineage$livings]])
 
-    ## Simulate the new trait values
-    new_trait_values <- lapply(traits, sim.fun, parent.trait = parent_traits, edge.length = edges)
+    ## Check for conditional simulations
+    trait_names <- names(traits)
+    if(any(cond_traits <- grepl("conditional.trait:", trait_names))) {
+        
+        ## Find the traits to simulate under which conditions
+        conditional_pairs <- unlist(lapply(strsplit(trait_names, split = "conditional.trait:"), function(x) x[length(x)]))
+
+        ## Loop through each pair
+        for(one_pair in unique(conditional_pairs)) {
+            ## Select the pair
+            pair_ids <- which(conditional_pairs == one_pair)
+            ## Simulate the first character (the condition)
+            condition_value <- sim.fun(traits[[pair_ids[1]]], parent.trait = parent_traits[, , drop = FALSE], edge.length = edges)
+
+            ## Select the first valid condition
+            select <- which(unlist(lapply(traits[[pair_ids[-1]]], function(one_trait, condition_value) return(one_trait$condition.test(condition_value)), condition_value)))[1]
+
+            ## Simulate the second character (the conditioned)
+            conditioned_value <- lapply(traits[pair_ids[-1]], sim.fun, parent.trait = parent_traits[, , drop = FALSE], edge.length = edges, select = select)
+
+            ## Save the trait values
+            new_trait_values <- c(condition_value, conditioned_value)
+        }
+    } else {
+        ## Simulate the new trait values in batch
+        new_trait_values <- lapply(traits, sim.fun, parent.trait = parent_traits, edge.length = edges)
+    }
 
     ## Output
     if(type == "one_node") {
@@ -200,6 +232,10 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
 
     ## Start the trait    
     if(do_traits) {
+        ## Has conditional traits
+        warning("TODO: set conditional traits start")
+
+        ## No conditional traits
         trait_values <- rbind(NULL, c(unlist(lapply(traits$main, function(x) return(x$start)))))
         rownames(trait_values) <- 1
     } else {
