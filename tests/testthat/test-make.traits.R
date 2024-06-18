@@ -273,3 +273,55 @@ test_that("trait processes work", {
     expect_null(plot(make.traits(repulsion.process)))
     expect_null(plot(make.traits(repulsion.process, process.args = list(repulsion = 5))))
 })
+
+test_that("conditional.process works", {
+
+
+
+
+# ## First let's design a discrete islandness trait
+# transition_matrix <- matrix(c(3, 0.2, 0.05, 3), 2, 2)
+
+# ## The firs trait (upon which to check the condition)
+# discrete_trait <- make.traits(discrete.process, process.args = list(transitions = transition_matrix), trait.name = "my_condition")
+
+# ## The two traits to trigger depending on the condition
+# BM_trait <- make.traits(BM.process)
+# OU_trait <- make.traits(OU.process)
+
+# ## Add the conditional process:
+# conditional_trait <- make.traits(process = conditional.process,
+#     ## The trait is going to be conditional on the one called "my_condition" (in the background)
+#                                  conditional.trait = "my_condition",
+#     ## The trait is going to be either BM_trait or OU_trait depending on
+#     ## if "my_condition" is equal to 0 or to 1
+#                                  conditions = list(c(`==`, 0), c(`==`, 1)),
+#                                  processes  = list(BM_trait, OU_trait),
+#                                  background = discrete_trait)
+
+# #
+
+
+# conditional.process <- function(x0 = 0, edge.length = 1, conditional.trait = 1, conditions = list(c(is, "numeric"))), processes = list(make.traits()), ...) {
+#     ## Run through the conditions
+#     if(c)
+# }
+
+
+
+# stop.rule  = list(max.taxa = 100)
+#     stop.rule$max.living = Inf
+#     stop.rule$max.time = Inf
+# bd.params  = make.bd.params()
+# traits     = make.traits(BM.process, add = discrete_trait)
+# modifiers = NULL
+# events = NULL
+# null.error = FALSE
+# check.results = TRUE
+# save.steps = NULL
+
+
+# conditional.process()
+
+
+})
