@@ -218,10 +218,51 @@ plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NUL
         if(missing(transparency)) {
             transparency <- 1/length(data) + 0.1
         }
-                
+        
+        ## Detect the plot limits for the first plot
+        dots <- list(...)
+        xlim <- ylim <- zlim <- NULL
+        if(is.null(dots$xlim)) {
+            xlim <- range(unlist(lapply(data, function(x, trait) range(x$data[, trait[1]]), trait = trait)))
+        }
+        if(is.null(dots$ylim)) {
+            if(length(trait) > 1) {
+                ## ylim is the second trait
+                ylim <- range(unlist(lapply(data, function(x, trait) range(x$data[, trait[2]]), trait = trait)))
+            } else {
+                ## ylim is the tree depth
+                get.root.time <- function(x) {
+                    if(is.null(x$tree$root.time)) {
+                        return(max(tree.age(x$tree)$age))
+                    } else {
+                        return(x$tree$root.time)
+                    }
+                }
+                ylim <- xlim
+                xlim <- c(max(unlist(lapply(data, get.root.time))), 0)
+            }
+        }   
+        if(is.null(dots$zlim) && use.3D) {
+            if(length(trait) > 2) {
+                ## zlim is the second trait
+                zlim <- range(unlist(lapply(data, function(x, trait) range(x$data[, trait[3]]), trait = trait)))
+            } else {
+                ## zlim is the tree depth
+                get.root.time <- function(x) {
+                    if(is.null(x$tree$root.time)) {
+                        return(max(tree.age(x$tree)$age))
+                    } else {
+                        return(x$tree$root.time)
+                    }
+                }
+                zlim <- ylim
+                ylim <- c(max(unlist(lapply(data, get.root.time))), 0)
+            }
+        }
+
         ## First plot
-        plot.treats(data[[1]], col = col, ..., trait = trait, edges = edges, tips.nodes = tips.nodes, use.3D = use.3D, legend = legend, transparency = transparency, add = FALSE)
-        # plot.treats(data[[1]], col = col, trait = trait, edges = edges, tips.nodes = tips.nodes, use.3D = use.3D, legend = legend, transparency = transparency, add = FALSE) ; warning("DEBUG")
+        plot.treats(data[[1]], col = col, xlim = xlim, ylim = ylim, zlim = zlim, ..., trait = trait, edges = edges, tips.nodes = tips.nodes, use.3D = use.3D, legend = legend, transparency = transparency, add = FALSE)
+        # plot.treats(data[[1]], col = col, xlim = xlim, ylim = ylim, zlim = zlim,  trait = trait, edges = edges, tips.nodes = tips.nodes, use.3D = use.3D, legend = legend, transparency = transparency, add = FALSE) ; warning("DEBUG")
 
         ## Subsequent plots
         lapply(data[-1], plot.treats, col = col, ..., trait = trait, edges = edges, tips.nodes = tips.nodes, use.3D = use.3D, legend = FALSE, transparency = transparency, add = TRUE)
@@ -265,6 +306,75 @@ plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NUL
                             "2" = ifelse(use.3D, TRUE, FALSE),
                             "3" = ifelse(use.3D, FALSE, stop("Set use.3D = TRUE to display three traits.", call. = FALSE)))
     }
+
+    ## Check whether to plot discrete characters
+    do_discrete_plot <- FALSE
+    if(!is.null(data$data) && length(trait) == 1) {
+        ## Is discrete?
+        if(!is.integer(data$data[, trait])) {
+            do_discrete_plot <- all(as.integer(data$data[, trait]) == unname(data$data[, trait]))
+            if(is.na(do_discrete_plot)) {
+                do_discrete_plot <- FALSE
+            }
+        } else {
+            do_discrete_plot <- TRUE
+        }
+    }
+
+    ## Plotting discrete characters on a tree
+    if(do_discrete_plot) {
+        ## Isolate the components
+        tree <- ladderize(data$tree)
+        data <- data$data
+        tips <- match(tree$tip.label, rownames(data))
+        nodes <- match(tree$node.label, rownames(data))
+
+        ## Get the number of states
+        n_states <- length(unique(data[, trait]))
+
+        ## Set the colours
+        if(col[1] == "default") {
+            ## Default colours
+            if(n_states <= 3) {
+                col <- c("orange", "blue", "darkgreen")
+            } else {
+                col <- grDevices::hcl(h = seq(15, 375, length = n_states + 1), l = 65, c = 100)[1:n_states]
+            }
+        } else {
+            if(length(col) < n_states) {
+                col <- rep(col, n_states)
+            }
+        }
+        col <- col[1:n_states]
+
+        ## Plotting args
+        plot_args <- list(...)
+        plot_args$x <- tree
+
+        ## Handle the default parameters for the tree plot
+        if(is.null(plot_args$show.tip.label)) {
+            plot_args$show.tip.label <- FALSE
+        }
+        if(is.null(plot_args$edge.color)) {
+            plot_args$edge.color <-  match.tip.edge(vector = col[data[c(tips, nodes),1]+1], phylo = tree)
+        }
+
+        ## Plot the tree with the edge colours
+        do.call(plot.phylo, plot_args)
+
+        if(legend) {
+            col_order <- match(sort(unique(data[, trait])), unique(data[, trait])) 
+            legend("bottomleft", legend = as.character(unique(data[, trait]))[col_order], lty = 1, col = col[col_order], title = colnames(data)[trait])
+        }
+
+        ## Leave the functions
+        return(invisible())
+    }    
+
+
+
+
+
 
     ## Handle plot options
 

@@ -1,5 +1,12 @@
-treats v1.0.4 (2024-05-13) 
+treats v1.0.5 (2024-06-18) 
 =========================
+
+### NEW FEATURES
+
+ * New inbuilt trait process: `conditional.process` that allows to generate a trait that is conditional to anther one.
+    - [ ] test
+    - [ ] example
+    - [ ] manual
 
 ### MINOR IMPROVEMENTS
 
@@ -7,6 +14,9 @@ treats v1.0.4 (2024-05-13)
  * `crude.bd.est` now calculates the speciation and extinction rates based on the `geiger` package by default (using the `"estimate"` method) or just counts the events per time (using the `"count"` method).
  * `make.treats` can now directly intake `dispRity` objects with trees and data (e.g. for visualisation).
  * `plot.treats` now plots singletons nodes in light orange when present (with the option added to the manual as well). Thanks for Rob McDonald for the suggestion.
+ * `plot.treats` now handles dynamic plot window sizes when plotting multiple trees on top of each other.
+ * `plot.treats` now automatically plots any detectable discrete characters using the `"phylo"` format.
+
 
 ## BUG FIXES
 

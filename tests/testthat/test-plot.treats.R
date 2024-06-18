@@ -95,3 +95,24 @@ test_that("blurry plots works", {
     output <- map.traits(rmtree(5, 10), traits = make.traits())
     expect_null(plot(output))
 })
+
+test_that("discrete characters plot works", {
+
+    ## 2 states
+    trait_2states <- make.traits(discrete.process, process.args = list(transitions = transition.matrix("ARD", states = 2)))
+    data <- treats(stop.rule = list(max.taxa = 50), traits = trait_2states)
+    expect_null(plot(data))
+    expect_null(plot(data, col = c("purple", "blue"), legend = TRUE, show.tip.label = TRUE))
+
+    ## 3 states
+    trait_3states <- make.traits(discrete.process, process.args = list(transitions = transition.matrix("ARD", states = 3)))
+    data <- treats(stop.rule = list(max.taxa = 200), traits = trait_3states)
+    expect_null(plot(data, legend = TRUE))
+    expect_null(plot(data, col = c("orange", "blue", "darkgreen")))
+
+    ## 8 states
+    trait_8states <- make.traits(discrete.process, process.args = list(transitions = transition.matrix("ARD", states = 8)))
+    data <- treats(stop.rule = list(max.taxa = 200), traits = trait_8states)
+    expect_null(plot(data, legend = TRUE))
+    expect_null(plot(data, col = c("orange", "blue"), legend = TRUE))
+})
