@@ -18,6 +18,64 @@ sim.element.trait <- function(one.trait, parent.trait, edge.length) {
 multi.sim.element.trait <- function(one.trait, parent.traits, edge.lengths) {
     return(do.call(rbind, lapply(as.list(1:dim(parent.traits)[1]), function(X, parent.traits, edge.lengths, one.trait) sim.element.trait(one.trait, parent.traits[X, , drop = FALSE], edge.lengths[X]), parent.traits, edge.lengths, one.trait)))
 }
+add.trait.value <- function(trait_values, traits, lineage, edge_lengths, type = "one_node") {
+
+    ## Simulation selector
+    sim.fun <- switch(type,
+                     "one_node" = sim.element.trait,
+                     "all_node" = multi.sim.element.trait)
+    ## Parent traits selector
+    parent_traits <- switch(type,
+                            "one_node" = parent.traits(trait_values, lineage),
+                            "all_node" = trait_values[match(lineage$parents[lineage$parents[lineage$livings]], rownames(trait_values)), , drop = FALSE])
+    ## Edges selector
+    edges <- switch(type,
+                    "one_node" = edge_lengths[lineage$current],
+                    "all_node" = edge_lengths[lineage$parents[lineage$livings]])
+
+    ## Simulate the new trait values
+    new_trait_values <- lapply(traits, sim.fun, parent.trait = parent_traits, edge.length = edges)
+
+    ## Output
+    if(type == "one_node") {
+        return(rbind(trait_values, unlist(new_trait_values), deparse.level = 0))
+    }
+    if(type == "all_node") {
+        new_trait_values <- do.call(cbind, new_trait_values)
+        rownames(new_trait_values) <- lineage$parents[lineage$livings]
+        return(rbind(trait_values, snap_traits))
+    }
+ 
+
+    # ## Simulate the new trait values
+    # new_trait_values <- lapply(traits,
+    #                            sim.fun,
+    #                            parent.trait = parent.traits(trait_values, lineage),
+    #                            edge.length  = edge_lengths[lineage$current])
+
+    ## Add the trait to the trait values
+    
+}
+
+bd.update.single.traits <- function(trait_values, traits, lineage, edge_lengths) {
+    ## Simulate the traits for all the singles
+    snap_traits <- do.call(cbind,
+                        lapply(traits,
+                            multi.sim.element.trait,
+                            parent.traits = trait_values[match(lineage$parents[lineage$parents[lineage$livings]], rownames(trait_values)), , drop = FALSE],
+                            edge.lengths  = edge_lengths[lineage$parents[lineage$livings]])
+                    )
+    ## Adding the node names
+    rownames(snap_traits) <- lineage$parents[lineage$livings]
+    ## Combine with the trait values
+    return(rbind(trait_values, snap_traits))
+}
+
+
+
+
+
+# TODO?: also update add.trait.value in bd.update.single.traits with multi.sim.element.trait
 
 ## Simulates one set of traits for the living species
 sim.living.tips <- function(living, trait_table, traits) {
@@ -68,19 +126,7 @@ bd.update.single.edges <- function(time, time.slice, lineage, edge_lengths) {
     edge_lengths_out[lineage$livings] <- diff
     return(edge_lengths_out)
 }
-bd.update.single.traits <- function(trait_values, traits, lineage, edge_lengths) {
-    ## Simulate the traits for all the singles
-    snap_traits <- do.call(cbind,
-                        lapply(traits,
-                            multi.sim.element.trait,
-                            parent.traits = trait_values[match(lineage$parents[lineage$parents[lineage$livings]], rownames(trait_values)), , drop = FALSE],
-                            edge.lengths  = edge_lengths[lineage$parents[lineage$livings]])
-                    )
-    ## Adding the node names
-    rownames(snap_traits) <- lineage$parents[lineage$livings]
-    ## Combine with the trait values
-    return(rbind(trait_values, snap_traits))
-}
+
 # remove.current <- function(what, current_was, from) {
 #     switch(from,
 #            "lineage" =      {
@@ -323,28 +369,14 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                 trait_values <- bd.update.single.traits(trait_values, traits$background$main, lineage, edge_lengths)
 
                 ## Redo the current node
-                trait_values <- rbind(trait_values,
-                                      ## Add the updated trait from the parent lineage
-                                      unlist(lapply(traits$main,
-                                                    sim.element.trait,
-                                                    parent.trait = parent.traits(trait_values, lineage),
-                                                    edge.length  = edge_lengths[lineage$current])
-                                                    )
-                                     , deparse.level = 0)
+                trait_values <- add.trait.value(trait_values, traits$main, lineage, edge_lengths)
                 rownames(trait_values)[rownames(trait_values) == ""] <- lineage$current
                 ## Duplicate the trait value for the ancestor of the current node?
                 trait_values[lineage$parent[lineage$livings[lineage$drawn]], ] <- trait_values[nrow(trait_values),]
 
             } else {
                 ## Simulate trait values for current node only
-                trait_values <- rbind(trait_values,
-                                      ## Add the updated trait from the parent lineage
-                                      unlist(lapply(traits$main,
-                                                    sim.element.trait,
-                                                    parent.trait = parent.traits(trait_values, lineage),
-                                                    edge.length  = edge_lengths[lineage$current])
-                                                    )
-                                     , deparse.level = 0)
+                trait_values <- add.trait.value(trait_values, traits$main, lineage, edge_lengths)
                 rownames(trait_values)[rownames(trait_values) == ""] <- lineage$current
             }
         }
