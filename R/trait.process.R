@@ -205,6 +205,6 @@ repulsion.process <- function(x0 = 0, edge.length = 1, repulsion = 0.5, sd = 1, 
 
 
 ## A conditional process
-conditional.process <- function(x0 = 0, edge.length = 1, conditional.trait = 1, conditions = list(is(x1, "numeric")), processes = list(make.traits())) {
-
+conditional.process <- function(x0 = 0, edge.length = 1, conditional.trait = make.traits(), conditions = list(function(x1) x1 == 0), processes = list(make.traits())) {
+    return("conditional.process")
 }
