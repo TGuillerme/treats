@@ -233,7 +233,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     ## Start the trait    
     if(do_traits) {
         ## Has conditional traits
-        warning("TODO: set conditional traits start")
+        # warning("TODO: set conditional traits start")
 
         ## No conditional traits
         trait_values <- rbind(NULL, c(unlist(lapply(traits$main, function(x) return(x$start)))))

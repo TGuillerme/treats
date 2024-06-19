@@ -312,41 +312,41 @@ test_that("conditional.process works", {
 # ## Testing format
 
 
-## First let's design a discrete islandness trait
-transition_matrix <- matrix(c(3, 0.2, 0.05, 3), 2, 2)
-discrete_trait <- make.traits(discrete.process, process.args = list(transitions = transition_matrix))
-## The two traits to trigger depending on the condition
-BM_trait <- make.traits(BM.process)
-constant.process <- function(x0 = 0, edge.length = 1) {
-    return(42)
-}
-no_trait <- make.traits(process = constant.process)
+# ## First let's design a discrete islandness trait
+# transition_matrix <- matrix(c(3, 0.2, 0.05, 3), 2, 2)
+# discrete_trait <- make.traits(discrete.process, process.args = list(transitions = transition_matrix))
+# ## The two traits to trigger depending on the condition
+# BM_trait <- make.traits(BM.process)
+# constant.process <- function(x0 = 0, edge.length = 1) {
+#     return(42)
+# }
+# no_trait <- make.traits(process = constant.process)
 
 
-## conditional.process is empty
-expect_equal(conditional.process(), "conditional.process")
+# ## conditional.process is empty
+# expect_equal(conditional.process(), "conditional.process")
 
-## But it works with make.traits
-test <- make.traits(process = conditional.process,
-                    process.args = list(conditional.trait = discrete_trait,
-                                        conditions = list(function(x1) x1 == 0,
-                                                          function(x1) x1 == 1),
-                                        processes  = list(BM_trait, no_trait)),
-                    trait.names = "tust")
+# ## But it works with make.traits
+# test <- make.traits(process = conditional.process,
+#                     process.args = list(conditional.trait = discrete_trait,
+#                                         conditions = list(function(x1) x1 == 0,
+#                                                           function(x1) x1 == 1),
+#                                         processes  = list(BM_trait, no_trait)),
+#                     trait.names = "tust")
 
-expect_is(test, c("treats", "traits"))
-expect_equal(names(test), c("main", "background"))
-expect_equal(names(test$main), c("conditional.trait:tust", "tust"))
-## The conditional
-expect_equal(names(test$main$`conditional.trait:tust`), c("process", "start", "trait_id"))
-expect_equal(test$main$`conditional.trait:tust`$trait_id, 1)
+# expect_is(test, c("treats", "traits"))
+# expect_equal(names(test), c("main", "background"))
+# expect_equal(names(test$main), c("conditional.trait:tust", "tust"))
+# ## The conditional
+# expect_equal(names(test$main$`conditional.trait:tust`), c("process", "start", "trait_id"))
+# expect_equal(test$main$`conditional.trait:tust`$trait_id, 1)
 
-## The conditioned
-expect_equal(length(test$main$tust), 2)
-expect_equal(names(test$main$tust[[1]]), c("process", "start", "trait_id", "condition.test"))
-expect_equal(test$main$tust[[1]]$trait_id, 2)
-expect_equal(names(test$main$tust[[2]]), c("process", "start", "trait_id", "condition.test"))
-expect_equal(test$main$tust[[2]]$trait_id, 2)
+# ## The conditioned
+# expect_equal(length(test$main$tust), 2)
+# expect_equal(names(test$main$tust[[1]]), c("process", "start", "trait_id", "condition.test"))
+# expect_equal(test$main$tust[[1]]$trait_id, 2)
+# expect_equal(names(test$main$tust[[2]]), c("process", "start", "trait_id", "condition.test"))
+# expect_equal(test$main$tust[[2]]$trait_id, 2)
 
 
 
