@@ -4,16 +4,16 @@
 \alias{link.traits}
 \title{link.traits}
 \usage{
-link.traits(base.trait, next.trai, link.type, link.args)
+link.traits(base.trait, next.trait, link.type, link.args)
 }
 \arguments{
 \item{base.trait}{One or more \code{"treats"} \code{"traits"} object(s) to be considered first.}
 
+\item{next.trait}{One or more \code{"treats"} \code{"traits"} object(s) to be considered sequentially.}
+
 \item{link.type}{The type of link between the traits. Can be \code{"conditional"}.}
 
 \item{link.args}{Optional arguments to interpret the link between the objects (based on the \code{link.type}).}
-
-\item{next.trait}{One or more \code{"treats"} \code{"traits"} object(s) to be considered sequentially.}
 }
 \value{
 This function outputs a \code{treats} object that is a named list of elements handled internally by the \code{\link{treats}} function.

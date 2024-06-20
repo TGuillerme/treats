@@ -1,5 +1,15 @@
 ## Function for printing the traits info
 internal.print.traits.info <- function(x) {
+
+    ## Print contidionals
+    if(!is.null(names(x)) && all(names(x) %in% c("conditional", "conditioned"))) {
+        cat(paste0("One conditional trait:\n"))
+        internal.print.traits.info(x$conditional)
+        cat(paste0("Linked to one of ", length(x$conditioned), " traits:\n"))
+        silent <- lapply(x$conditioned, internal.print.traits.info)
+        return(invisible())
+    }
+
     ## Get the trait object info
     n_processes   <- length(x)
     trait_process <- lapply(x, function(X) X$trait_id)

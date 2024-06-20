@@ -24,7 +24,87 @@
 #' @author Thomas Guillerme
 #' @export
 
+link.traits <- function(base.trait, next.trait, link.type, link.args) {
+    
+    match_call <- match.call()
 
-link.traits <- function(base.trait, next.trai, link.type, link.args) {
-    return(NULL)
+    ## Sanitizing
+    ## Traits must be traits
+    base_class <- check.class(base.trait, c("list", "treats"))
+    next_class <- check.class(next.trait, c("list", "treats"))
+    if(base_class == "list") {
+        lapply(base.trait, check.class, c("treats"))
+    }
+    if(next_class == "list") {
+        lapply(next.trait, check.class, c("treats"))
+    }
+
+    ## types
+    implemented_methods <- c("conditional")
+    check.method(link.type, all_arguments = implemented_methods, msg = "link.type")
+
+    ## link.args
+    if(link.type == "conditional") {
+        ## Must be the same length of next.trait and be functions
+        error_msg <- "next.trait and link.args must be a lists of the same lengths containing one or more traits and conditional arguments for conditional links."
+        if(next_class != "list" || !is(link.args, "list")) {
+            stop(error_msg,  call. = FALSE)
+        }
+        if(!(length(link.args) == length(next.trait))) {
+            stop(error_msg, call. = FALSE)
+        }
+        if(any(!unlist(lapply(link.args, is, "function")))) {
+            stop(error_msg, call. = FALSE)
+        }
+    }
+
+    ## Generate the linked trait
+    set.traits <- switch(link.type, {
+        "conditional" = set.conditional.traits
+    }) 
+
+    ## Create the traits
+    linked_traits <- set.traits(base.trait, next.trait, link.args)
+    linked_traits <- list("main" = linked_traits, "background" = NULL)
+    class(linked_traits) <- c("treats", "traits")
+
+    return(linked_traits)
+}
+
+set.conditional.traits <- function(base.trait, next.trait, link.args) {
+    ## Combine the base trait and the next traits
+    conditional_trait <- list("conditional" = base.trait$main)
+    
+    ## Trait ID base
+    id_base <- conditional_trait$conditional[[1]]$trait_id
+    ## Set to 1 for now
+    if(id_base != 1) {
+        conditional_trait$conditional[[1]]$trait_id <- seq(1:length(id_base))
+        id_base <- seq(1:length(id_base))
+    }
+
+    ## Get the conditioned traits (keep the names)
+    conditioned_traits <- lapply(next.trait, function(x) return(x$main))
+
+    ## Check if conditioned traits have the same IDs length
+    id_next <- lapply(conditioned_traits, function(x) x[[1]]$trait_id)
+    ## Check lengths
+    if(length(dimensions <- unique(unlist(lapply(id_next, length)))) != 1) {
+        stop("The next.traits must have the same number of dimensions.")
+    }
+    ## Set to the same IDs
+    new_ids <- seq(1:dimensions)+ max(id_base)
+
+    ## Get the conditions
+    update.conditionals <- function(trait, condition, id) {
+        trait[[1]]$trait_id <- id
+        trait[[1]]$condition.test <- condition
+        return(trait)
+    }
+    conditioned_traits <- mapply(update.conditionals, conditioned_traits, link.args, MoreArgs = list(id = new_ids), SIMPLIFY = FALSE)
+
+    ## Merge conditional and conditioned
+    conditional_trait$conditioned <- conditioned_traits
+
+    return(conditional_trait)
 }
