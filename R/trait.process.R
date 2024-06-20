@@ -65,14 +65,6 @@
 #'               \item \code{lineage} LEAVE AS \code{NULL} (it designates the lineage object from the birth death process and is handled internally by \code{\link{treats}}).
 #'               \item \code{trait} LEAVE AS \code{NULL} (it which trait to use and is analysed an is handled internally by \code{\link{treats}}).
 #'          }
-#'      
-#'      \item{conditional.process} Any number of processes conditional to another underlying process. This process takes the following optional arguments:
-#'          \itemize{
-#'               \item \code{conditional.trait}: The name or ID of the trait on which to decide the condition (e.g. the parent trait).
-#'               \item \code{conditions}: A list of conditions to trigger each process written as \code{c(condition, <value>)}. For example \code{c(`==`, 0)} will trigger \code{`==`(x1, 0)} where \code{x1} is the current value(s) of the conditional trait (here it will trigger if this value is equal to \code{0}). The conditions can be passed as a list like: \code{list(c(`==`, 0), c(`==`, 1), c(`>=`, 2))}. 
-#'               \item \code{processes}: A list of \code{treats} \code{traits} objects (e.g. \code{BM.process}). Each element of this list corresponds to a condition and are recycled in a cyclical way. For example, if \code{process.list = list(make.traits(BM.process), make.traits(OU.process))}, the first condition will use the trait \code{make.traits(BM.process)} to generate the trait, the second condition will use \code{make.traits(OU.process)}, the third will use \code{make.traits(BM.process)}, etc.
-#'          }
-#' 
 #' }
 #' 
 #' More details about the \code{trait.process} functions is explained in the \code{treats} manual: \url{http://tguillerme.github.io/treats}.
@@ -201,10 +193,4 @@ repulsion.process <- function(x0 = 0, edge.length = 1, repulsion = 0.5, sd = 1, 
     }
 
     return(bm_value)
-}
-
-
-## A conditional process
-conditional.process <- function(x0 = 0, edge.length = 1, conditional.trait = make.traits(), conditions = list(function(x1) x1 == 0), processes = list(make.traits())) {
-    return("conditional.process")
 }

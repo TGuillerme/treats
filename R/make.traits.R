@@ -228,50 +228,22 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
 
     traits <- list(main = NULL, background = NULL)
     
-    ## Check if conditional
-    # test_conditional <- NULL
-    # test_conditional <- try(process[[1]](), silent = TRUE)
-    # is_conditional <- is(test_conditional, "character") && test_conditional == "conditional.process"
-
     if(!do_update) {
 
-        # if(is_conditional) {
-
-        #     ## Add the conditions and IDs to the processes
-        #     merge.process.condition <- function(one_process, one_condition, id) {
-        #         ## Only select the first process
-        #         process_out <- one_process$main[[1]]
-        #         process_out$trait_id <- id
-        #         process_out$condition.test <- one_condition
-        #         return(process_out)
-        #     } 
-        #     processes <- mapply(merge.process.condition, process.args[[1]]$processes, process.args[[1]]$conditions, id = 2, SIMPLIFY = FALSE)
-
-        #     ## Set the conditional and the conditioned process
-        #     traits$main <- list(c(process.args[[1]]$conditional.trait$main[[1]]), c(processes))
-        #     trait_names <- c(paste0("conditional.trait:", trait_names), trait_names)
-        #     names(traits$main) <- trait_names
-
-        #     stop("DEBUG: make.traits")
-        #     #TODO: set the id for both the conditioning and the conditioned (n and n+1)
-        #     #TODO: check with updates and add
-
-        # } else {
-            ## Add the process
-            traits$main <- lapply(process, function(x) return(list(process = x)))
-            ## Add the ids and the starts
-            for(one_process in 1:n_processes) {
-                traits$main[[one_process]]$start    <- start_values[[one_process]]
-                traits$main[[one_process]]$trait_id <- trait_id[[one_process]]
-                if(add_process_args) {
-                    ## Adding optional arguments if not NULL
-                    if(!is.null(process.args[[one_process]][[1]])) {
-                        traits$main[[one_process]] <- c(traits$main[[one_process]], process.args[[one_process]])
-                    }
+        ## Add the process
+        traits$main <- lapply(process, function(x) return(list(process = x)))
+        ## Add the ids and the starts
+        for(one_process in 1:n_processes) {
+            traits$main[[one_process]]$start    <- start_values[[one_process]]
+            traits$main[[one_process]]$trait_id <- trait_id[[one_process]]
+            if(add_process_args) {
+                ## Adding optional arguments if not NULL
+                if(!is.null(process.args[[one_process]][[1]])) {
+                    traits$main[[one_process]] <- c(traits$main[[one_process]], process.args[[one_process]])
                 }
             }
-        # }
-
+        }
+    
         ## Add previous traits
         if(add_traits) {
             traits$main <- c(add$main, traits$main)

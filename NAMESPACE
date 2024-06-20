@@ -18,6 +18,7 @@ export(plot.treats)
 
 ## Traits
 export(make.traits)
+export(link.traits)
 export(trait.process)
 export(BM.process)
 export(discrete.process)

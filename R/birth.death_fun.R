@@ -78,7 +78,6 @@ add.trait.value <- function(trait_values, traits, lineage, edge_lengths, type = 
         return(rbind(trait_values, new_trait_values))
     }   
 }
-
 ## Simulates one set of traits for the living species
 sim.living.tips <- function(living, trait_table, traits) {
     return(unlist(
@@ -132,7 +131,7 @@ bd.update.single.edges <- function(time, time.slice, lineage, edge_lengths) {
 ## Run a birth death process to generate both tree and traits
 birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE, save.steps = NULL) {
 
-# bd.debug <- function(seed) {
+ # bd.debug <- function(seed) {
 
     ############
     ## Initialising

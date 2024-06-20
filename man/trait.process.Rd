@@ -78,7 +78,6 @@ The different trait processes implemented in treats are:
               \item \code{lineage} LEAVE AS \code{NULL} (it designates the lineage object from the birth death process and is handled internally by \code{\link{treats}}).
               \item \code{trait} LEAVE AS \code{NULL} (it which trait to use and is analysed an is handled internally by \code{\link{treats}}).
          }
-
 }
 
 More details about the \code{trait.process} functions is explained in the \code{treats} manual: \url{http://tguillerme.github.io/treats}.
@@ -115,6 +114,8 @@ plot(make.traits(repulsion.process, process.args = list(repulsion = 5)))
 stepwise_matrix <- transition.matrix(type = "stepwise", states = 3)
 ## Generatin and plotting the the trait
 plot(make.traits(discrete.process, process.args = list(transitions = stepwise_matrix)))
+
+## 
 
 }
 \seealso{
