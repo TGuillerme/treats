@@ -1,8 +1,8 @@
 Package: treats
 Title: Trees and Traits Simulations
 Authors@R: c(person("Thomas", "Guillerme", role = c("aut", "cre", "cph"), email = "guillert@tcd.ie", comment = c(ORCID = "0000-0003-4325-1275")))
-Version: 1.0.4
-Date: 2024-05-13
+Version: 1.0.5
+Date: 2024-06-18
 Description: A modular package for simulating phylogenetic trees and species traits jointly. Trees can be simulated using modular birth-death parameters (e.g. changing starting parameters or algorithm rules). Traits can be simulated in any way designed by the user. The growth of the tree and the traits can influence each other through modifiers objects providing rules for affecting each other. Finally, events can be created to modify both the tree and the traits under specific conditions. 
 Depends:
     R (>= 4.0.0),
