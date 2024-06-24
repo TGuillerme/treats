@@ -2,7 +2,7 @@
 sim.element.trait <- function(one.trait, parent.trait, edge.length, select = NULL) {
     ## Select the trait (if needed)
     if(!is.null(select)) {
-        one.trait <- one.trait[[select]]
+        one.trait <- one.trait[[select]][[1]]
     }
     ## Set the simulation arguments
     trait_args <- one.trait
@@ -25,6 +25,22 @@ multi.sim.element.trait <- function(one.trait, parent.traits, edge.lengths, sele
     ## Run all the traits
     return(do.call(rbind, lapply(as.list(1:dim(parent.traits)[1]), function(X, parent.traits, edge.lengths, one.trait) sim.element.trait(one.trait, parent.traits[X, , drop = FALSE], edge.lengths[X]), parent.traits, edge.lengths, one.trait)))
 }
+conditional.sim.element.trait <- function(linked.traits, parent.trait, edge.length) {
+    ## Get the linked traits
+    if(all(names(linked.traits) %in% c("linked.traits"))) {
+        linked.traits <- linked.traits$linked.traits
+    }
+    
+    ## Get the conditional
+    conditional_value <- sim.element.trait(linked.traits$conditional[[1]], parent.trait, edge.length)
+
+    ## Select the conditioned
+    selected <- which(unlist(lapply(linked.traits$conditioned, function(one_trait, condition_value) return(one_trait[[1]]$condition.test(condition_value)), condition_value = conditional_value)))[1]
+
+    ## Get the conditionel
+    conditioned_value <- sim.element.trait(linked.traits$conditioned, parent.trait, edge.length, select = selected)
+    return(c(conditional_value, conditioned_value))
+}
 add.trait.value <- function(trait_values, traits, lineage, edge_lengths, type = "one_node") {
 
     ## Simulation selector
@@ -40,32 +56,22 @@ add.trait.value <- function(trait_values, traits, lineage, edge_lengths, type = 
                     "one_node" = edge_lengths[lineage$current],
                     "all_node" = edge_lengths[lineage$parents[lineage$livings]])
 
-    ## Check for conditional simulations
-    trait_names <- names(traits)
-    if(any(cond_traits <- grepl("conditional.trait:", trait_names))) {
-        
-        ## Find the traits to simulate under which conditions
-        conditional_pairs <- unlist(lapply(strsplit(trait_names, split = "conditional.trait:"), function(x) x[length(x)]))
-
-        ## Loop through each pair
-        for(one_pair in unique(conditional_pairs)) {
-            ## Select the pair
-            pair_ids <- which(conditional_pairs == one_pair)
-            ## Simulate the first character (the condition)
-            condition_value <- sim.fun(traits[[pair_ids[1]]], parent.trait = parent_traits[, , drop = FALSE], edge.length = edges)
-
-            ## Select the first valid condition
-            select <- which(unlist(lapply(traits[[pair_ids[-1]]], function(one_trait, condition_value) return(one_trait$condition.test(condition_value)), condition_value)))[1]
-
-            ## Simulate the second character (the conditioned)
-            conditioned_value <- lapply(traits[pair_ids[-1]], sim.fun, parent.trait = parent_traits[, , drop = FALSE], edge.length = edges, select = select)
-
-            ## Save the trait values
-            new_trait_values <- c(condition_value, conditioned_value)
-        }
+    ## Check for linked traits
+    if(any(linked <- names(traits) %in% "linked.traits")) {
+        ## Get the linked traits
+        linked_traits <- which(linked)
+        not_linked_traits <- which(!linked)
     } else {
+        linked_traits <- integer()
+        not_linked_traits <- 1:length(traits)
+    }
+    if(length(linked_traits) > 0) {
+        ## Run the conditional traits pairs
+        new_trait_values <- conditional.sim.element.trait(traits[linked_traits], parent.trait = parent_traits, edge.length = edges)  
+    }
+    if(length(not_linked_traits) > 0) {
         ## Simulate the new trait values in batch
-        new_trait_values <- lapply(traits, sim.fun, parent.trait = parent_traits, edge.length = edges)
+        new_trait_values <- lapply(traits[not_linked_traits], sim.fun, parent.trait = parent_traits, edge.length = edges)
     }
 
     ## Output
@@ -80,14 +86,25 @@ add.trait.value <- function(trait_values, traits, lineage, edge_lengths, type = 
 }
 ## Simulates one set of traits for the living species
 sim.living.tips <- function(living, trait_table, traits) {
-    return(unlist(
-          lapply(traits,
-                 sim.element.trait,
-                 parent.trait = trait_table[which(trait_table[, "element"] == trait_table[living, "parent"]), -c(1:3), drop = FALSE],
-                 edge.length  = trait_table[living, "edge"]
-                 )
-          )
-    )
+    if(all(names(traits) %in% c("linked.traits"))) {
+
+        return(unlist(
+                lapply(traits,
+                     conditional.sim.element.trait,
+                     parent.trait = trait_table[which(trait_table[, "element"] == trait_table[living, "parent"]), -c(1:3), drop = FALSE],
+                     edge.length  = trait_table[living, "edge"])
+                )
+            )
+    } else {
+        return(unlist(
+              lapply(traits,
+                     sim.element.trait,
+                     parent.trait = trait_table[which(trait_table[, "element"] == trait_table[living, "parent"]), -c(1:3), drop = FALSE],
+                     edge.length  = trait_table[living, "edge"]
+                     )
+              )
+        )
+    }
 }
 ## Check the events triggering (the first one gets triggered)
 trigger.events <- function(one_event, bd.params, lineage, trait.values, time) {
@@ -178,6 +195,10 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     ## Set up the traits, modifiers and events simulation
     do_traits    <- ifelse(is.null(traits), FALSE, TRUE)
     do_events    <- ifelse(is.null(events), FALSE, TRUE)
+    if(do_traits) {
+        ## Check conditional traits
+        do_link_trait <- (!is.null(names(traits$main)) && all(names(traits$main) %in% c("linked.traits")))
+    }
 
     ## Make the initial modifier (no modifier)
     initial.modifiers <- list("waiting"    = list(fun = branch.length.fast,
@@ -232,11 +253,22 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
     ## Start the trait    
     if(do_traits) {
         ## Has conditional traits
-        # warning("TODO: set conditional traits start")
-
-        ## No conditional traits
-        trait_values <- rbind(NULL, c(unlist(lapply(traits$main, function(x) return(x$start)))))
-        rownames(trait_values) <- 1
+        if(!do_link_trait) {
+            ## No conditional traits
+            trait_values <- rbind(NULL, c(unlist(lapply(traits$main, function(x) return(x$start)))))
+            rownames(trait_values) <- 1
+        } else {
+            ## Conditional traits
+            traits_conditional <- lapply(traits$main$linked.trait$conditional, function(x) return(x$start))
+            ## Get the conditioned traits
+            get.cond.start <- function(cond, traits) {
+                selected <- which(unlist(lapply(traits$main$linked.trait$conditioned, function(x, cond) x[[1]]$condition.test(cond), cond = cond)))
+                return(traits$main$linked.trait$conditioned[[selected]][[1]]$start)
+            }
+            trait_values <- rbind(c(as.numeric(traits_conditional), as.numeric(unlist(lapply(traits_conditional, get.cond.start, traits)))))
+            rownames(trait_values) <- 1
+            colnames(trait_values) <- c(names(traits$main$linked.trait$conditional), paste0(unique(unlist(lapply(traits$main$linked.trait$conditioned, names))), unique(unlist(lapply(traits$main$linked.trait$conditioned, function(x)return(x[[1]]$trait_id)))) ))
+        }
     } else {
         trait_table <- NULL
     }
