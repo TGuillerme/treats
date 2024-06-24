@@ -2,11 +2,15 @@
 internal.print.traits.info <- function(x) {
 
     ## Print contidionals
-    if(!is.null(names(x)) && all(names(x) %in% c("conditional", "conditioned"))) {
-        cat(paste0("One conditional trait:\n"))
-        internal.print.traits.info(x$conditional)
-        cat(paste0("Linked to one of ", length(x$conditioned), " traits:\n"))
-        silent <- lapply(x$conditioned, internal.print.traits.info)
+    if(!is.null(names(x)) && all(names(x) == "linked.traits")) {
+        ## Get the pairing type
+        if(all(names(x$linked.traits) %in% c("conditional", "conditioned"))) {
+            pair_type <- "conditional"
+        }
+        cat(paste0("One paired trait (", pair_type, "):\n"))
+        internal.print.traits.info(x$linked.traits[[1]])
+        cat(paste0("Linked to ", length(x$linked.traits[[2]]), " traits:\n"))
+        silent <- lapply(x$linked.traits[[2]], internal.print.traits.info)
         return(invisible())
     }
 

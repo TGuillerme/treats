@@ -106,5 +106,5 @@ set.conditional.traits <- function(base.trait, next.trait, link.args) {
     ## Merge conditional and conditioned
     conditional_trait$conditioned <- conditioned_traits
 
-    return(conditional_trait)
+    return(list("linked.traits" = conditional_trait))
 }
