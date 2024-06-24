@@ -199,7 +199,7 @@ handle.colours <- function(col, points_tree_IDs, points_ages, data, legend) {
         }
     } else {
         if(col[1] != "default") {
-            if(is(col,  "character")) {
+            if(is(col,  "character") && length(col) != Ntip(data$tree)+Nnode(data$tree)) {
                 ## col is an unamed vector
                 if(!is.null(names(col))) {
                     allowed_names <- c("nodes", "tips", "fossils", "livings", "singletons")

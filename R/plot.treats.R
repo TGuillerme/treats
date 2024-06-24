@@ -371,11 +371,6 @@ plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NUL
         return(invisible())
     }    
 
-
-
-
-
-
     ## Handle plot options
 
     ## Plot the normal data
