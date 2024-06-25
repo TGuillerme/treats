@@ -1,5 +1,3 @@
-library(dispRity)
-
 ## Test
 test_that("simulating trees works", {
 
@@ -101,16 +99,16 @@ test_that("simulating trees + traits works", {
     ## Sim.element.trait internals work (for one trait)
     one_trait <- list(
         trait_id = 1,
-        process  = true.answer)
+        process  = list(true.answer))
     expect_equal(sim.element.trait(one_trait, parent.trait = 2, edge.length = 0.1), 42)
-    one_trait$process <- element.rank
+    one_trait$process[[1]] <- element.rank
     expect_equal(sim.element.trait(one_trait, parent.trait = 2, edge.length = 0.1), 3)
-    one_trait$process <- branch.length
+    one_trait$process[[1]] <- branch.length
     expect_equal(sim.element.trait(one_trait, parent.trait = 2, edge.length = 0.1), 0.1)
-    one_trait$process <- element.depth
+    one_trait$process[[1]] <- element.depth
     expect_equal(sim.element.trait(one_trait, parent.trait = 2, edge.length = 0.1), 2.1)
 
-    element_rank_10 <- list(trait_id = 1, process = element.rank, start = 10)
+    element_rank_10 <- list(trait_id = 1, process = list(element.rank), start = 10)
     traits_list <- list("main" = list("A" = element_rank_10))
     bd.params <- make.bd.params(speciation = 1, extinction = 0.5)
     stop.rule <- list(max.living = Inf,
@@ -146,7 +144,7 @@ test_that("simulating trees + traits works", {
                       max.taxa   = 10,
                       max.time   = Inf)
     set.seed(10)
-    traits_list$main$A$process <- branch.length
+    traits_list$main$A$process <- list(branch.length)
     traits_list$main$B <- traits_list$main$A
     traits_list$main$C <- traits_list$main$A
     test <- birth.death.tree.traits(bd.params = bd.params, traits = traits_list, stop.rule)
@@ -174,10 +172,10 @@ test_that("simulating trees + traits works", {
     ## Complex traits
     complex_traits <- list(
                 "A" = list(trait_id = 1:3,
-                           process  = element.rank,
+                           process  = list(element.rank),
                            start    = c(0,10,20)),
                 "B" = list(trait_id = 4,
-                           process  = branch.length,
+                           process  = list(branch.length),
                            start    = 0)
                 )
     complex_traits <- list(main = complex_traits)
@@ -192,10 +190,10 @@ test_that("simulating trees + traits works", {
     ## Multidimensional brownian trait
     complex_traits <- list(
                 "A" = list(trait_id = 1:3,
-                           process  = BM.process,
+                           process  = list(BM.process),
                            start    = c(0,0,0)),
                 "B" = list(trait_id = 4,
-                           process  = branch.length,
+                           process  = list(branch.length),
                            start    = 0)
                 )
     complex_traits <- list(main = complex_traits)
