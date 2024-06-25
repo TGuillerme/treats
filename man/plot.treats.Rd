@@ -12,7 +12,7 @@
   edges = "grey",
   tips.nodes = NULL,
   use.3D = FALSE,
-  simulations = 50,
+  simulations = 20,
   cent.tend = mean,
   quantiles = c(95, 50),
   legend = FALSE,
