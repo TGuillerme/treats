@@ -82,7 +82,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL, use.3D = FALSE, simulations = 50, cent.tend = mean, quantiles = c(95, 50), legend = FALSE, transparency, add = FALSE) {
+plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NULL, use.3D = FALSE, simulations = 20, cent.tend = mean, quantiles = c(95, 50), legend = FALSE, transparency, add = FALSE) {
 
     match_call <- match.call()
 
@@ -110,18 +110,19 @@ plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NUL
                 which_process <- which(unlist(lapply(which_trait, any)))
                 ## Select the process and the trait
                 one_trait <- data$main[[which_process]]
-                ## Select the trait
+                # Select the trait
                 if(!is.null(one_trait$start) && length(one_trait$start) != 1) {
                     one_trait$start <- one_trait$start[which_trait[[which_process]]]
                 }
                 if(!is.null(one_trait$trait_id) && length(one_trait$trait_id) != 1) {
                     one_trait$trait_id <- one_trait$trait_id[which_trait[[which_process]]]
                 }
-                ## Handle extra arguments
-                if(any(extra <- which(unlist(lapply(one_trait, length)) > 1))) {
-                    ## Extract extra arguments
-                    for(one_extra in extra) {
-                        one_trait[one_extra] <- list(one_trait[[one_extra]][[trait]])
+                ## Handle extra process arguments
+                if(!is.null(one_trait$process.args)) {
+                    if(any(process_args <- which(unlist(lapply(one_trait$process.args[[which_process]], length)) > 1))) {
+                        for(one_arg in process_args) {
+                            one_trait$process.args[[which_process]][[one_arg]] <- list(one_trait$process.args[[which_process]][[one_arg]][[trait]])
+                        }
                     }
                 }
             } else {
@@ -136,7 +137,7 @@ plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NUL
                 trait_ids <- 1
             }
 
-            ##TODO: handle colours!
+            ## Handle colours
             if(missing(col)) {
                 col <- "default"
             }

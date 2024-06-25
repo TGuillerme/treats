@@ -2,17 +2,19 @@
 internal.print.traits.info <- function(x) {
 
     ## Print contidionals
-    if(!is.null(names(x)) && all(names(x) == "linked.traits")) {
-        ## Get the pairing type
-        if(all(names(x$linked.traits) %in% c("conditional", "conditioned"))) {
-            pair_type <- "conditional"
-        }
-        cat(paste0("One paired trait (", pair_type, "):\n"))
-        internal.print.traits.info(x$linked.traits[[1]])
-        cat(paste0("Linked to ", length(x$linked.traits[[2]]), " traits:\n"))
-        silent <- lapply(x$linked.traits[[2]], internal.print.traits.info)
-        return(invisible())
-    }
+    #OLD_LINK_TRAITS IN
+    # if(!is.null(names(x)) && all(names(x) == "linked.traits")) {
+    #     ## Get the pairing type
+    #     if(all(names(x$linked.traits) %in% c("conditional", "conditioned"))) {
+    #         pair_type <- "conditional"
+    #     }
+    #     cat(paste0("One paired trait (", pair_type, "):\n"))
+    #     internal.print.traits.info(x$linked.traits[[1]])
+    #     cat(paste0("Linked to ", length(x$linked.traits[[2]]), " traits:\n"))
+    #     silent <- lapply(x$linked.traits[[2]], internal.print.traits.info)
+    #     return(invisible())
+    # }
+    #OLD_LINK_TRAITS OUT
 
     ## Get the trait object info
     n_processes   <- length(x)
@@ -20,7 +22,7 @@ internal.print.traits.info <- function(x) {
     n_traits      <- length(unlist(trait_process))
     start_values  <- unlist(lapply(x, function(X) X$start))
     n_start       <- length(unique(start_values))
-    extra_options <- lapply(x, function(X) names(X)[!names(X) %in% c("process", "start", "trait_id")])
+    extra_options <- lapply(x, function(X) lapply(X$process.args, names))
     with_extra    <- unlist(lapply(extra_options, function(x) length(x) != 0))
 
     ## Number of traits

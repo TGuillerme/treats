@@ -3,10 +3,16 @@ sim.motion <- function(one_trait, steps) {
     ## Initialising the simulation
     output <- one_trait$start
     count <- 1
-    process <- one_trait$process
+    process <- one_trait$process[[1]]
     parameters <- one_trait
+    if(!is.null(parameters$process.args)) {
+        parameters <- parameters$process.args[[1]]    
+    }
     parameters$x0 <- one_trait$start
-    parameters$start <- parameters$trait_id <- parameters$process <- NULL
+    parameters$process <- NULL
+    parameters$trait_id <- NULL
+    parameters$start <- NULL
+    parameters$condition.test <- NULL
     ## First step
     output <- rbind(do.call(process, parameters), output)
     
