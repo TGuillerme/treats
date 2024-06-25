@@ -1,11 +1,16 @@
 ## Simulating traits for one element
 sim.element.trait <- function(one.trait, parent.trait, edge.length, select = NULL) {
     ## Select the trait (if needed)
-    if(!is.null(select)) {
-        one.trait <- one.trait[[select]][[1]]
-    }
+    # OLD_LINK_TRAIT_IN
+    # if(!is.null(select)) {
+    #     one.trait <- one.trait[[select]][[1]]
+    # }
+    # OLD_LINK_TRAIT_OUT
     ## Set the simulation arguments
     trait_args <- one.trait
+    if(!is.null(trait_args$process.args)) {
+        trait_args <- trait_args$process.args[[1]]    
+    }
     ## Remove unusablee arguments
     trait_args$process <- NULL
     trait_args$trait_id <- NULL
@@ -14,7 +19,7 @@ sim.element.trait <- function(one.trait, parent.trait, edge.length, select = NUL
     ## Add the x0 (last step) + the edge length
     trait_args$x0 <- parent.trait[one.trait$trait_id]
     trait_args$edge.length <- edge.length
-    return(do.call(one.trait$process, trait_args))
+    return(do.call(one.trait$process[[1]], trait_args))
 }
 multi.sim.element.trait <- function(one.trait, parent.traits, edge.lengths, select = NULL) {
     ## Select the trait (if needed)

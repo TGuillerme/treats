@@ -20,22 +20,26 @@ check.traits <- function(traits, events = FALSE) {
     ## Loop through each trait for detailed explanation on why it failed
     try_success <- list()
     for(one_trait in 1:length(traits)) {
-        if(all(names(traits[[one_trait]]) %in% c("conditional", "conditioned"))) {
-            ## Separately trying either
-            test1 <- try(sim.element.trait(traits[[one_trait]]$conditional[[1]], parent.trait, edge.length), silent = TRUE)
-            test2 <- try(lapply(traits[[one_trait]]$conditioned, function(x, parent.trait,edge.length) return(sim.element.trait(x[[1]], parent.trait, edge.length)), parent.trait, edge.length), silent = TRUE)
-            if(is(test1, "try-error")) {
-                try_success[[one_trait]] <- test1
-            } else {
-                if(is(test2, "try-error")) {
-                    try_success[[one_trait]] <- test2
-                } else {
-                    try_success[[one_trait]] <- test1
-                }
-            }
-        } else {
-            try_success[[one_trait]] <- try(sim.element.trait(traits[[one_trait]], parent.trait, edge.length), silent = TRUE)
-        }
+        # OLD_LINK_TRAITS_IN
+        # if(all(names(traits[[one_trait]]) %in% c("conditional", "conditioned"))) {
+        #     ## Separately trying either
+        #     test1 <- try(sim.element.trait(traits[[one_trait]]$conditional[[1]], parent.trait, edge.length), silent = TRUE)
+        #     test2 <- try(lapply(traits[[one_trait]]$conditioned, function(x, parent.trait,edge.length) return(sim.element.trait(x[[1]], parent.trait, edge.length)), parent.trait, edge.length), silent = TRUE)
+        #     if(is(test1, "try-error")) {
+        #         try_success[[one_trait]] <- test1
+        #     } else {
+        #         if(is(test2, "try-error")) {
+        #             try_success[[one_trait]] <- test2
+        #         } else {
+        #             try_success[[one_trait]] <- test1
+        #         }
+        #     }
+        # } else {
+        # OLD_LINK_TRAITS_OUT
+        try_success[[one_trait]] <- try(sim.element.trait(traits[[one_trait]], parent.trait, edge.length), silent = TRUE)
+        # OLD_LINK_TRAITS_IN
+        #}
+        # OLD_LINK_TRAITS_OUT
     }
 
     ## catch the errors

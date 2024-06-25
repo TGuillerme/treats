@@ -26,7 +26,8 @@ test_that("make.traits works", {
     expect_equal(names(test$main[[1]]), c("process", "start", "trait_id"))
     expect_equal(test$main[[1]]$trait_id, 1)
     expect_equal(test$main[[1]]$start   , 0)
-    expect_is(test$main[[1]]$process, "function")
+    expect_is(test$main[[1]]$process, "list")
+    expect_is(test$main[[1]]$process[[1]], "function")
     expect_null(test$background)
 
 
@@ -35,27 +36,35 @@ test_that("make.traits works", {
         return(x0 + 1)
     }
 
-    test <- make.traits(n = 2)
+    test <- make.traits(n = 2, process.args = list(Sigma = diag(2)))
     expect_is(test, c("treats", "traits"))
     expect_equal(length(test), 2)
-    expect_equal(names(test$main[[1]]), c("process", "start", "trait_id"))
+    expect_equal(names(test$main[[1]]), c("process", "start", "trait_id", "process.args"))
     expect_equal(test$main[[1]]$trait_id, c(1,2))
     expect_equal(test$main[[1]]$start   , c(0,0))
-    expect_is(test$main[[1]]$process, "function")
-
+    expect_is(test$main[[1]]$process, "list")
+    expect_is(test$main[[1]]$process[[1]], "function")
+    expect_is(test$main[[1]]$process.args, "list")
+    expect_equal(names(test$main[[1]]$process.args[[1]]), "Sigma")
 
     ## Add works
     test2 <- make.traits(process = c(BM.process, element.rank), n = c(4,2), add = test, start = 1)
     expect_is(test2, c("treats", "traits"))
     expect_equal(length(test2), 2)
     expect_equal(length(test2$main), 3)
-    expect_equal(names(test2$main$A), c("process", "start", "trait_id"))
+    expect_equal(names(test2$main$A), c("process", "start", "trait_id", "process.args"))
     expect_equal(test2$main$A$trait_id, c(1,2))
     expect_equal(test2$main$A$start, rep(0, 2))
     expect_equal(test2$main$B$trait_id, c(3,4,5,6))
     expect_equal(test2$main$B$start, rep(1, 4))
     expect_equal(test2$main$C$trait_id, c(7,8))
     expect_equal(test2$main$C$start, rep(1, 2))
+    expect_is(test2$main$A$process, "list")
+    expect_is(test2$main$A$process[[1]], "function")
+    expect_is(test2$main$B$process, "list")
+    expect_is(test2$main$B$process[[1]], "function")
+    expect_is(test2$main$C$process, "list")
+    expect_is(test2$main$C$process[[1]], "function")
 
     ## Add works with proper name update
     test2 <- make.traits(process = c(BM.process, element.rank), n = c(4,2), add = make.traits(trait.names = "bob"))
@@ -77,7 +86,7 @@ test_that("make.traits works", {
     expect_equal(names(test$main[[1]]), c("process", "start", "trait_id"))
     expect_equal(test$main[[1]]$trait_id, c(1,2))
     expect_equal(test$main[[1]]$start   , c(0,0))
-    expect_is(test$main[[1]]$process, "function")
+    expect_is(test$main[[1]]$process[[1]], "function")
     expect_equal(test$main[[2]]$trait_id, c(3,4))
 
     test <- make.traits(process = c(BM.process, element.rank), n = c(1, 2))
@@ -86,7 +95,7 @@ test_that("make.traits works", {
     expect_equal(names(test$main[[1]]), c("process", "start", "trait_id"))
     expect_equal(test$main[[1]]$trait_id, 1)
     expect_equal(test$main[[1]]$start   , 0)
-    expect_is(test$main[[1]]$process, "function")
+    expect_is(test$main[[1]]$process[[1]], "function")
     expect_equal(test$main[[2]]$trait_id, c(2,3))
     expect_equal(test$main[[2]]$start, c(0,0))
 
@@ -94,10 +103,10 @@ test_that("make.traits works", {
     expect_is(test, c("treats", "traits"))
     expect_equal(length(test$main), 2)
     expect_equal(names(test$main), c("A", "B"))
-    expect_is(test$main$A$process, "function")
+    expect_is(test$main$A$process[[1]], "function")
     expect_equal(test$main$A$start, c(0,0,0))
     expect_equal(test$main$A$trait_id, c(1,2,3))
-    expect_is(test$main$B$process, "function")
+    expect_is(test$main$B$process[[1]], "function")
     expect_equal(test$main$B$start, 0)
     expect_equal(test$main$B$trait_id, 4)
 
@@ -105,17 +114,17 @@ test_that("make.traits works", {
     error <- capture_error(make.traits(process = c(BM.process, BM.process), process.args = list(Sigma = diag(1))))
     expect_equal(error[[1]], "You must provide additional arguments for every process (2). You can provide NULL arguments for processes that don't need extra arguments e.g.\n\n    process.args = list(list(NULL),\n                        list(extra.arg = some_extra_argument))\n\nwill only provide extra arguments to the second process.")
     ## Working well with a single extra argument
-    test <- make.traits(n = 3, process.args = list(Sigma = diag(3)))    
+    test <- make.traits(n = 3, process.args = list(Sigma = diag(3)))
     expect_is(test, c("treats", "traits"))
-    expect_equal(names(test$main$A), c("process", "start", "trait_id", "Sigma"))
+    expect_equal(names(test$main$A), c("process", "start", "trait_id", "process.args"))
     ## Working well on multiple processes
     test <- make.traits(process = c(BM.process, BM.process), n = c(2,3), process.args = list(list(Sigma = diag(2)), list(Sigma = matrix(1/3, 3, 3))))
-    expect_equal(test$main$A$Sigma, diag(2))
-    expect_equal(test$main$B$Sigma, matrix(1/3, 3, 3))
+    expect_equal(test$main$A$process.args[[1]]$Sigma, diag(2))
+    expect_equal(test$main$B$process.args[[1]]$Sigma, matrix(1/3, 3, 3))
 
     ## Working well on multiple processes with null arguments
     test <- make.traits(process = c(BM.process, OU.process), n = c(2, 3), process.args = list(list(Sigma = diag(2)), list(NULL)))
-    expect_equal(names(test$main$A), c("process", "start", "trait_id", "Sigma"))
+    expect_equal(names(test$main$A), c("process", "start", "trait_id", "process.args"))
     expect_equal(names(test$main$B), c("process", "start", "trait_id"))
 })
 
@@ -132,7 +141,9 @@ test_that("make.traits(update) works", {
 
     ## Nothing happens
     test2 <- make.traits(update = test)
+    test3 <- make.traits(process = NULL, update = test)
     expect_equal(capture_output(print(test)), capture_output(print(test2)))
+    expect_equal(capture_output(print(test)), capture_output(print(test3)))
 
     ## Process is updated
     test1 <- make.traits(n = 2)
@@ -153,8 +164,8 @@ test_that("make.traits(update) works", {
     my_correlation2 <- matrix(2, ncol = 3, nrow = 3) 
     test2 <- make.traits(update = test,
                          process.args = list(Sigma = my_correlation2))
-    expect_equal(unique(c(test$main[[1]]$Sigma)), 1)
-    expect_equal(unique(c(test2$main[[1]]$Sigma)), 2)
+    expect_equal(unique(c(test$main[[1]]$process.args[[1]]$Sigma)), 1)
+    expect_equal(unique(c(test2$main[[1]]$process.args[[1]]$Sigma)), 2)
 
     ## Complex update
     traits <- make.traits(n = 2, process.args = list(Sigma = matrix(1, 2, 2)))
@@ -163,8 +174,8 @@ test_that("make.traits(update) works", {
     ## Update just the Sigma for the two traits of the first process
     traits2 <- make.traits(update = traits, process.args = list(Sigma = matrix(c(10,3,3,2),2,2)), trait.name = "A", start = 1)
 
-    expect_equal(traits$main$A$Sigma, matrix(1, 2, 2))
-    expect_equal(traits2$main$A$Sigma, matrix(c(10,3,3,2),2,2))
+    expect_equal(traits$main$A$process.args[[1]]$Sigma, matrix(1, 2, 2))
+    expect_equal(traits2$main$A$process.args[[1]]$Sigma, matrix(c(10,3,3,2),2,2))
     expect_equal(traits$main$A$start, c(0,0))
     expect_equal(traits2$main$A$start, c(1,1))
     expect_equal(traits2$main$noupdate$start, 0)
@@ -218,11 +229,11 @@ test_that("bkg.traits works", {
     expect_equal(names(test$main[[1]]), c("process", "start", "trait_id"))
     expect_equal(test$main[[1]]$trait_id, 1)
     expect_equal(test$main[[1]]$start   , 0)
-    expect_is(test$main[[1]]$process, "function")
+    expect_is(test$main[[1]]$process[[1]], "function")
     expect_equal(names(test$background$main[[1]]), c("process", "start", "trait_id"))
     expect_equal(test$background$main[[1]]$trait_id, 1)
     expect_equal(test$background$main[[1]]$start   , 0)
-    expect_is(test$background$main[[1]]$process, "function")
+    expect_is(test$background$main[[1]]$process[[1]], "function")
 
     ## Something a bit more fancy
     error <- capture_error(test2 <- make.traits(process = c(BM.process, BM.process), n = c(4,2), background = make.traits(process = OU.process, start = 10, trait.names = "bg.OU")))
