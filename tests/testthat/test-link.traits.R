@@ -59,123 +59,131 @@ test_that("link.traits works", {
     expect_equal(class(test), c("treats", "traits"))
     ## Printing
     out <- capture_output(print.treats(test))
-    expect_equal(out[[1]], " ---- treats traits object ---- \n3 traits for 1 conditional process (conditional: conditional.trait:A; conditioned: A, A) with one starting value (0).\nprocess conditional.trait uses the following extra arguments: transitions, NULL, NULL.")
+    expect_equal(out[[1]], " ---- treats traits object ---- \n3 traits for 1 process (conditional.trait:3) with one starting value (0).\nprocess conditional.trait uses the following extra arguments: transitions, NULL, NULL.")
 })
 
-# test_that("implementation works", {
+test_that("implementation works", {
 
-#     ## First let's design a discrete islandness trait
-#     transition_matrix <- matrix(c(3, 0.2, 0.05, 3), 2, 2)
+    ## First let's design a discrete islandness trait
+    transition_matrix <- matrix(c(3, 0.2, 0.05, 3), 2, 2)
 
-#     ## The firs trait (upon which to check the condition)
-#     discrete_trait <- make.traits(discrete.process, process.args = list(transitions = transition_matrix), trait.name = "conditional.trait:A")
+    ## The firs trait (upon which to check the condition)
+    discrete_trait <- make.traits(discrete.process, process.args = list(transitions = transition_matrix), trait.name = "conditional.trait:A")
 
-#     ## The second and third traits
-#     trait.1 <- function(x0 = 0, edge.length = 1) {return(1)}
-#     trait.0 <- function(x0 = 0, edge.length = 1) {return(0)}
+    ## The second and third traits
+    trait.1 <- function(x0 = 0, edge.length = 1) {return(1)}
+    trait.0 <- function(x0 = 0, edge.length = 1) {return(0)}
 
-#     # OU_trait <- make.traits(OU.process, n = 1)
-#     # BM_trait <- make.traits(BM.process, n = 1)
-#     trait_0 <- make.traits(process = trait.0)
-#     trait_1 <- make.traits(process = trait.1)
-#     link_args <- list("choose.0" = function(x1) {x1 == 0}, "choose.1" = function(x1) {x1 == 1}) 
+    # OU_trait <- make.traits(OU.process, n = 1)
+    # BM_trait <- make.traits(BM.process, n = 1)
+    trait_0 <- make.traits(process = trait.0)
+    trait_1 <- make.traits(process = trait.1)
+    link_args <- list("choose.0" = function(x1) {x1 == 0}, "choose.1" = function(x1) {x1 == 1}) 
 
-#     traits <- link.traits(base.trait = discrete_trait, next.trait = list(trait_0, trait_1), link.type = "conditional", link.args = link_args)
+    traits <- link.traits(base.trait = discrete_trait, next.trait = list(trait_0, trait_1), link.type = "conditional", link.args = link_args)
 
-#     stop.rule  = list(max.taxa = 100)
-#     stop.rule$max.living = Inf
-#     stop.rule$max.time = Inf
-#     bd.params  = make.bd.params()
-#     modifiers = NULL
-#     events = NULL
-#     null.error = FALSE
-#     check.results = TRUE
-#     save.steps = NULL
+    stop.rule  = list(max.taxa = 100)
+    stop.rule$max.living = Inf
+    stop.rule$max.time = Inf
+    bd.params  = make.bd.params()
+    modifiers = NULL
+    events = NULL
+    null.error = FALSE
+    check.results = TRUE
+    save.steps = NULL
 
+    ## Test basic trait (1D)
+    test <- birth.death.tree.traits(stop.rule, bd.params, traits = traits, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE, save.steps = NULL)
+    expect_equal(test$data[, 1], test$data[, 2])
 
-#     ## Test basic trait (1D)
-#     test <- birth.death.tree.traits(stop.rule, bd.params, traits = traits, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE, save.steps = NULL)
-#     expect_equal(test$data[, 1], test$data[, 2])
+    ## The second and third traits
+    trait.1 <- function(x0 = 0, edge.length = 1) {return(c(1,1))}
+    trait.0 <- function(x0 = 0, edge.length = 1) {return(c(0,0))}
 
-#     ## The second and third traits
-#     trait.1 <- function(x0 = 0, edge.length = 1) {return(c(1,1))}
-#     trait.0 <- function(x0 = 0, edge.length = 1) {return(c(0,0))}
+    # OU_trait <- make.traits(OU.process, n = 1)
+    # BM_trait <- make.traits(BM.process, n = 1)
+    trait_0 <- make.traits(process = trait.0, n = 2)
+    trait_1 <- make.traits(process = trait.1, n = 2)
+    link_args <- list("choose.0" = function(x1) {x1 == 0}, "choose.1" = function(x1) {x1 == 1}) 
+    traits <- link.traits(base.trait = discrete_trait, next.trait = list(trait_0, trait_1), link.type = "conditional", link.args = link_args)
 
-#     # OU_trait <- make.traits(OU.process, n = 1)
-#     # BM_trait <- make.traits(BM.process, n = 1)
-#     trait_0 <- make.traits(process = trait.0, n = 2)
-#     trait_1 <- make.traits(process = trait.1, n = 2)
-#     link_args <- list("choose.0" = function(x1) {x1 == 0}, "choose.1" = function(x1) {x1 == 1}) 
-#     traits <- link.traits(base.trait = discrete_trait, next.trait = list(trait_0, trait_1), link.type = "conditional", link.args = link_args)
+    ## Test basic trait (2D)
+    test <- birth.death.tree.traits(stop.rule, bd.params, traits = traits, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE, save.steps = NULL)
+    expect_equal(test$data[, 1], test$data[, 2])
+    expect_equal(test$data[, 1], test$data[, 3])
 
-#     ## Test basic trait (2D)
-#     test <- birth.death.tree.traits(stop.rule, bd.params, traits = traits, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE, save.steps = NULL)
-#     expect_equal(test$data[, 1], test$data[, 2])
-#     expect_equal(test$data[, 1], test$data[, 3])
+    traits <- link.traits(base.trait = discrete_trait, next.trait = list(make.traits(n = 2), trait_1), link.type = "conditional", link.args = link_args)
 
-#     traits <- link.traits(base.trait = discrete_trait, next.trait = list(make.traits(n = 2), trait_1), link.type = "conditional", link.args = link_args)
+    set.seed(1)
+    test <- birth.death.tree.traits(stop.rule, bd.params, traits = traits, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE, save.steps = NULL)
 
-#     set.seed(1)
-#     test <- birth.death.tree.traits(stop.rule, bd.params, traits = traits, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE, save.steps = NULL)
+    expect_equal(test$data[which(test$data[, 1] == 1), 1], test$data[which(test$data[, 1] == 1), 2])
+    expect_equal(test$data[which(test$data[, 1] == 1), 1], test$data[which(test$data[, 1] == 1), 3])
+    expect_lt(test$data[2, 1], test$data[2, 3])
 
-#     expect_equal(test$data[which(test$data[, 1] == 1), 1], test$data[which(test$data[, 1] == 1), 2])
-#     expect_equal(test$data[which(test$data[, 1] == 1), 1], test$data[which(test$data[, 1] == 1), 3])
-#     expect_lt(test$data[2, 1], test$data[2, 3])
+    ## Works with treats
+    test <- treats(stop.rule = stop.rule, traits = traits)
+    expect_equal(length(test), 4)
+    expect_equal(ncol(test$data), 3)
+})
 
-#     ## Works with treats
-#     test <- treats(stop.rule = stop.rule, traits = traits)
-#     expect_equal(length(test), 4)
-#     expect_equal(ncol(test$data), 3)
-# })
+test_that("complex implementation works", {
 
-# test_that("complex implementation works", {
+    ## Mixing a linked trait with a normal trait
+    transition_matrix <- matrix(c(3, 0.2, 0.05, 3), 2, 2)
 
-#     ## Mixing a linked trait with a normal trait
-#    transition_matrix <- matrix(c(3, 0.2, 0.05, 3), 2, 2)
+    ## The firs trait (upon which to check the condition)
+    discrete_trait <- make.traits(discrete.process, process.args = list(transitions = transition_matrix), trait.name = "discrete")
 
-#     ## The firs trait (upon which to check the condition)
-#     discrete_trait <- make.traits(discrete.process, process.args = list(transitions = transition_matrix), trait.name = "conditional.trait:A")
+    ## The second and third traits
+    trait.1 <- function(x0 = 0, edge.length = 1) {return(1)}
+    trait.0 <- function(x0 = 0, edge.length = 1) {return(0)}
 
-#     ## The second and third traits
-#     trait.1 <- function(x0 = 0, edge.length = 1) {return(1)}
-#     trait.0 <- function(x0 = 0, edge.length = 1) {return(0)}
+    # OU_trait <- make.traits(OU.process, n = 1)
+    # BM_trait <- make.traits(BM.process, n = 1)
+    trait_0 <- make.traits(process = trait.0, trait.names = "zero")
+    trait_1 <- make.traits(process = trait.1, trait.names = "one")
+    link_args <- list("choose.0" = function(x1) {x1 == 0}, "choose.1" = function(x1) {x1 == 1}) 
 
-#     # OU_trait <- make.traits(OU.process, n = 1)
-#     # BM_trait <- make.traits(BM.process, n = 1)
-#     trait_0 <- make.traits(process = trait.0)
-#     trait_1 <- make.traits(process = trait.1)
-#     link_args <- list("choose.0" = function(x1) {x1 == 0}, "choose.1" = function(x1) {x1 == 1}) 
+    linked <- link.traits(base.trait = discrete_trait, next.trait = list(trait_0, trait_1), link.type = "conditional", link.args = link_args)
 
-#     linked <- link.traits(base.trait = discrete_trait, next.trait = list(trait_0, trait_1), link.type = "conditional", link.args = link_args)
+    ## Adding to a normal trait
+    traits <- make.traits(process = OU.process, add = linked)
 
-#     ## Adding to a normal trait
-#     traits <- make.traits(process = OU.process, add = linked)
+    stop.rule  = list(max.taxa = 100)
+    stop.rule$max.living = Inf
+    stop.rule$max.time = Inf
+    bd.params  = make.bd.params()
+    modifiers = NULL
+    events = NULL
+    null.error = FALSE
+    check.results = TRUE
+    save.steps = NULL
 
-#     stop.rule  = list(max.taxa = 100)
-#     stop.rule$max.living = Inf
-#     stop.rule$max.time = Inf
-#     bd.params  = make.bd.params()
-#     modifiers = NULL
-#     events = NULL
-#     null.error = FALSE
-#     check.results = TRUE
-#     save.steps = NULL
+    ## Test basic trait (1D)
+    test <- birth.death.tree.traits(stop.rule, bd.params, traits = traits, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE, save.steps = NULL)
+    expect_equal(test$data[, 1], test$data[, 2])
 
-#     ## Test basic trait (1D)
-#     test <- birth.death.tree.traits(stop.rule, bd.params, traits = traits, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE, save.steps = NULL)
-#     expect_equal(test$data[, 1], test$data[, 2])
-
-#     ## Works with treats
-#     test <- treats(stop.rule = stop.rule, traits = traits)
-#     expect_equal(length(test), 4)
-#     expect_equal(ncol(test$data), 3)
-
+    ## Works with treats
+    test <- treats(stop.rule = stop.rule, traits = traits)
+    expect_equal(length(test), 4)
+    expect_equal(ncol(test$data), 3)
 
 
-#     ## Link trait with save.steps
+    ## Link trait with save.steps
+    set.seed(1)
+    test <- treats(stop.rule = stop.rule, traits = linked, save.steps = 0.5)
+    expect_equal(length(test), 4)
+    expect_equal(ncol(test$data), 2)
+    expect_gt(Nnode(test$tree), Ntip(test$tree)+1)
 
-#     ## Linked trait with a background
+    ## Linked trait with a background
+    traits <- make.traits(background = make.traits(n = 3), add = linked)
+    test <- treats(stop.rule = stop.rule, traits = linked)
+    expect_equal(length(test), 4)
+    expect_equal(ncol(test$data), 2)
 
-#     ## Link trait with update
+    ## Link trait with update
+    # test2 <- make.traits(process = list(BM.process, OU.process), update = linked)
 
-# })
+})

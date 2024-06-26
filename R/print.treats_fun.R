@@ -13,19 +13,9 @@ internal.print.traits.info <- function(x) {
     ## Number of traits
     cat(paste0(n_traits, " trait", ifelse(n_traits > 1, "s ", " ")))
     ## Number of processes
-    cat(paste0("for ", n_processes, ifelse(is.null(x[[1]]$link), "", paste0(" ", x[[1]]$link$type)), " process", ifelse(n_processes > 1, "es ", " ")))
+    cat(paste0("for ", n_processes, " process", ifelse(n_processes > 1, "es ", " ")))
     if(n_traits != n_processes) {
-        if(is.null(x[[1]]$link)) {
-            cat(paste0("(", paste0(paste(names(x), unlist(lapply(trait_process, length)), sep = ":"), collapse = ", ") , ") "))
-        } else {
-            if(x[[1]]$link$type == "conditional") {
-                cat(paste0(
-                    paste0("(conditional: ", x[[1]]$link$trait.names[1], "; "),
-                    paste0("conditioned: ", paste0(x[[1]]$link$trait.names[-1], collapse = ", "), ") "))
-                )
-            }
-        }
-
+        cat(paste0("(", paste0(paste(names(x), unlist(lapply(trait_process, length)), sep = ":"), collapse = ", ") , ") "))
     } else {
         cat(paste0("(", paste0(names(x), collapse = ", ") , ") "))
     }
