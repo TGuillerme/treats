@@ -138,13 +138,9 @@ test_that("complex implementation works", {
     ## The second and third traits
     trait.1 <- function(x0 = 0, edge.length = 1) {return(1)}
     trait.0 <- function(x0 = 0, edge.length = 1) {return(0)}
-
-    # OU_trait <- make.traits(OU.process, n = 1)
-    # BM_trait <- make.traits(BM.process, n = 1)
     trait_0 <- make.traits(process = trait.0, trait.names = "zero")
     trait_1 <- make.traits(process = trait.1, trait.names = "one")
     link_args <- list("choose.0" = function(x1) {x1 == 0}, "choose.1" = function(x1) {x1 == 1}) 
-
     linked <- link.traits(base.trait = discrete_trait, next.trait = list(trait_0, trait_1), link.type = "conditional", link.args = link_args)
 
     ## Adding to a normal trait
@@ -154,11 +150,6 @@ test_that("complex implementation works", {
     stop.rule$max.living = Inf
     stop.rule$max.time = Inf
     bd.params  = make.bd.params()
-    modifiers = NULL
-    events = NULL
-    null.error = FALSE
-    check.results = TRUE
-    save.steps = NULL
 
     ## Test basic trait (1D)
     test <- birth.death.tree.traits(stop.rule, bd.params, traits = traits, modifiers = NULL, events = NULL, null.error = FALSE, check.results = TRUE, save.steps = NULL)
@@ -168,7 +159,7 @@ test_that("complex implementation works", {
     test <- treats(stop.rule = stop.rule, traits = traits)
     expect_equal(length(test), 4)
     expect_equal(ncol(test$data), 3)
-
+    expect_null(plot(test, trait = 3))
 
     ## Link trait with save.steps
     set.seed(1)
@@ -176,6 +167,20 @@ test_that("complex implementation works", {
     expect_equal(length(test), 4)
     expect_equal(ncol(test$data), 2)
     expect_gt(Nnode(test$tree), Ntip(test$tree)+1)
+    plot(test, trait = 2)
+
+    ## Link trait with save.steps and plotting
+    trait_0 <- make.traits(process = BM.process, trait.names = "zero")
+    trait_1 <- make.traits(process = trait.1, trait.names = "one")
+    link_args <- list("choose.0" = function(x1) {x1 == 0}, "choose.1" = function(x1) {x1 == 1})
+    linked <- link.traits(base.trait = discrete_trait, next.trait = list(trait_0, trait_1), link.type = "conditional", link.args = link_args)
+    set.seed(1)
+    test <- treats(stop.rule = stop.rule, traits = linked, save.steps = 0.5)
+    expect_equal(length(test), 4)
+    expect_equal(ncol(test$data), 2)
+    expect_gt(Nnode(test$tree), Ntip(test$tree)+1)
+    expect_null(plot(test, trait = 1))
+    expect_null(plot(test, trait = c(1,2)))
 
     ## Linked trait with a background
     traits <- make.traits(background = make.traits(n = 3), add = linked)
