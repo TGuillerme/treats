@@ -1,12 +1,13 @@
-treats v1.0.5 (2024-06-18) 
+treats v1.0.6 (2024-06-26) 
 =========================
 
 ### NEW FEATURES
 
- * New inbuilt trait process: `conditional.process` that allows to generate a trait that is conditional to anther one.
+ * New function: `link.traits` to link several traits to each other
     - [ ] test
     - [ ] example
     - [ ] manual
+ * New S3 function: `drop.tip` and `keep.tip` from `ape` now work on `"treats"` objects
 
 ### MINOR IMPROVEMENTS
 
@@ -16,7 +17,7 @@ treats v1.0.5 (2024-06-18)
  * `plot.treats` now plots singletons nodes in light orange when present (with the option added to the manual as well). Thanks for Rob McDonald for the suggestion.
  * `plot.treats` now handles dynamic plot window sizes when plotting multiple trees on top of each other.
  * `plot.treats` now automatically plots any detectable discrete characters using the `"phylo"` format.
-
+ * revamped `traits` internal structure for more modularity.
 
 ## BUG FIXES
 
