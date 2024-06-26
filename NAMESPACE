@@ -57,6 +57,8 @@ export(drop.things)
 export(drop.fossils)
 export(drop.livings)
 export(drop.singles)
+export(drop.tip.treats)
+export(keep.tip.treats)
 export(make.bd.params)
 export(make.treats)
 export(map.traits)
@@ -66,4 +68,7 @@ export(transition.matrix)
 ##S3 
 S3method(plot, treats) #incl traits
 S3method(print, treats) #incl traits modifiers and events
+S3method(drop.tip, treats)
+S3method(keep.tip, treats)
+
 
