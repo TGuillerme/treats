@@ -9,7 +9,7 @@ test_that("print.treats works for traits", {
     ## Complex
     complex <- make.traits(process = c(BM.process, BM.process), n = c(2,3), process.args = list(list(Sigma = diag(2)), list(Sigma = matrix(1/3, 3, 3))), trait.names = c("bib", "bob"))
     out <- capture_output(internal.print.traits.info(complex$main))
-    expect_equal(out[[1]], "5 traits for 2 processes (bib:2, bob:3) with one starting value (0).\nprocess bib uses the following extra argument: Sigma;\nprocess bob uses the following extra argument: Sigma;")
+    expect_equal(out[[1]], "5 traits for 2 processes (bib:2, bob:3) with one starting value (0).\nprocess bib uses the following extra argument: Sigma.\nprocess bob uses the following extra argument: Sigma.")
 
     ## Simple treats
     out <- capture_output(print.treats(simple))
@@ -31,7 +31,7 @@ test_that("print.treats works for treats", {
     complex_traits <- make.traits(process = c(BM.process, BM.process), n = c(2,3), process.args = list(list(Sigma = diag(2)), list(Sigma = matrix(1/3, 3, 3))), trait.names = c("bib", "bob"))
     test <- treats(stop.rule = list("max.living" = 10), traits = complex_traits)
     out <- capture_output(print.treats(test))
-    expect_equal(out[[1]], " ---- treats object ---- \nSimulated phylogenetic tree (x$tree):\n\nPhylogenetic tree with 10 tips and 9 internal nodes.\n\nTip labels:\n  t1, t2, t3, t4, t5, t6, ...\nNode labels:\n  n1, n2, n3, n4, n5, n6, ...\n\nRooted; includes branch lengths.\n\nSimulated trait data (x$data):\n5 traits for 2 processes (bib:2, bob:3) with one starting value (0).\nprocess bib uses the following extra argument: Sigma;\nprocess bob uses the following extra argument: Sigma;")    
+    expect_equal(out[[1]], " ---- treats object ---- \nSimulated phylogenetic tree (x$tree):\n\nPhylogenetic tree with 10 tips and 9 internal nodes.\n\nTip labels:\n  t1, t2, t3, t4, t5, t6, ...\nNode labels:\n  n1, n2, n3, n4, n5, n6, ...\n\nRooted; includes branch lengths.\n\nSimulated trait data (x$data):\n5 traits for 2 processes (bib:2, bob:3) with one starting value (0).\nprocess bib uses the following extra argument: Sigma.\nprocess bob uses the following extra argument: Sigma.")    
 })
 
 test_that("print.modifiers works", {

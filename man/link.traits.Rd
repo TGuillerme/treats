@@ -4,7 +4,7 @@
 \alias{link.traits}
 \title{link.traits}
 \usage{
-link.traits(base.trait, next.trait, link.type, link.args)
+link.traits(base.trait, next.trait, link.type, link.args, trait.name)
 }
 \arguments{
 \item{base.trait}{One or more \code{"treats"} \code{"traits"} object(s) to be considered first.}
@@ -14,6 +14,8 @@ link.traits(base.trait, next.trait, link.type, link.args)
 \item{link.type}{The type of link between the traits. Can be \code{"conditional"}.}
 
 \item{link.args}{Optional arguments to interpret the link between the objects (based on the \code{link.type}).}
+
+\item{trait.name}{Optional, a \code{character}, the name the resulting trait.}
 }
 \value{
 This function outputs a \code{treats} object that is a named list of elements handled internally by the \code{\link{treats}} function.

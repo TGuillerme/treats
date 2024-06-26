@@ -1,21 +1,6 @@
 ## Function for printing the traits info
 internal.print.traits.info <- function(x) {
 
-    ## Print contidionals
-    #OLD_LINK_TRAITS IN
-    # if(!is.null(names(x)) && all(names(x) == "linked.traits")) {
-    #     ## Get the pairing type
-    #     if(all(names(x$linked.traits) %in% c("conditional", "conditioned"))) {
-    #         pair_type <- "conditional"
-    #     }
-    #     cat(paste0("One paired trait (", pair_type, "):\n"))
-    #     internal.print.traits.info(x$linked.traits[[1]])
-    #     cat(paste0("Linked to ", length(x$linked.traits[[2]]), " traits:\n"))
-    #     silent <- lapply(x$linked.traits[[2]], internal.print.traits.info)
-    #     return(invisible())
-    # }
-    #OLD_LINK_TRAITS OUT
-
     ## Get the trait object info
     n_processes   <- length(x)
     trait_process <- lapply(x, function(X) X$trait_id)
@@ -28,9 +13,19 @@ internal.print.traits.info <- function(x) {
     ## Number of traits
     cat(paste0(n_traits, " trait", ifelse(n_traits > 1, "s ", " ")))
     ## Number of processes
-    cat(paste0("for ", n_processes, " process", ifelse(n_processes > 1, "es ", " ")))
+    cat(paste0("for ", n_processes, ifelse(is.null(x[[1]]$link), "", paste0(" ", x[[1]]$link$type)), " process", ifelse(n_processes > 1, "es ", " ")))
     if(n_traits != n_processes) {
-        cat(paste0("(", paste0(paste(names(x), unlist(lapply(trait_process, length)), sep = ":"), collapse = ", ") , ") "))
+        if(is.null(x[[1]]$link)) {
+            cat(paste0("(", paste0(paste(names(x), unlist(lapply(trait_process, length)), sep = ":"), collapse = ", ") , ") "))
+        } else {
+            if(x[[1]]$link$type == "conditional") {
+                cat(paste0(
+                    paste0("(conditional: ", x[[1]]$link$trait.names[1], "; "),
+                    paste0("conditioned: ", paste0(x[[1]]$link$trait.names[-1], collapse = ", "), ") "))
+                )
+            }
+        }
+
     } else {
         cat(paste0("(", paste0(names(x), collapse = ", ") , ") "))
     }
@@ -46,7 +41,7 @@ internal.print.traits.info <- function(x) {
     if(any(with_extra)) {
         for(one_process in seq_along(with_extra)) {
             if(with_extra[one_process]) {
-                cat(paste0("process ", names(x)[one_process], " uses the following extra argument", ifelse(length(extra_options[[one_process]]) > 1, "s: ", ": "), paste0(extra_options[[one_process]], collapse = ","), ";\n"))
+                cat(paste0("process ", names(x)[one_process], " uses the following extra argument", ifelse(length(extra_options[[one_process]]) > 1, "s: ", ": "), paste0(extra_options[[one_process]], collapse = ", "), ".\n"))
             }
         }
         paste0("\n")

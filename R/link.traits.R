@@ -6,7 +6,7 @@
 #' @param next.trait    One or more \code{"treats"} \code{"traits"} object(s) to be considered sequentially.
 #' @param link.type     The type of link between the traits. Can be \code{"conditional"}.
 #' @param link.args     Optional arguments to interpret the link between the objects (based on the \code{link.type}).
-# @param trait.names   Optional, the name(s) of the process(s). 
+#' @param trait.name    Optional, a \code{character}, the name the resulting trait. 
 #'
 #' @details
 #' This function allows to link several traits together in the simulations. The current link types implemented are:
@@ -24,7 +24,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-link.traits <- function(base.trait, next.trait, link.type, link.args) {
+link.traits <- function(base.trait, next.trait, link.type, link.args, trait.name) {
     
     match_call <- match.call()
 
@@ -56,6 +56,23 @@ link.traits <- function(base.trait, next.trait, link.type, link.args) {
         if(any(!unlist(lapply(link.args, is, "function")))) {
             stop(error_msg, call. = FALSE)
         }
+        ## Check if IDs are the same
+        trait_IDs <- lapply(next.trait, function(x) x$main[[1]]$trait_id)
+        if(length(unique(unlist(lapply(trait_IDs, length)))) > 1) {
+            stop(error_msg, call. = FALSE)
+        } else {
+            if(!all(unlist(unique(trait_IDs)) %in% trait_IDs[[1]])) {
+                stop(error_msg, call. = FALSE)
+            }    
+        }
+        
+    }
+
+    if(!missing(trait.name)) {
+        check.class(trait.name, "character")
+        check.length(trait.name, 1)
+    } else {
+        trait.name <- paste0(link.type, ".trait")
     }
 
     ## Generate the linked trait
@@ -65,46 +82,50 @@ link.traits <- function(base.trait, next.trait, link.type, link.args) {
 
     ## Create the traits
     linked_traits <- set.traits(base.trait, next.trait, link.args)
-    linked_traits <- list("main" = linked_traits, "background" = NULL)
+    linked_traits <- list("main" = list(linked_traits), "background" = NULL)
+    names(linked_traits$main) <- trait.name
     class(linked_traits) <- c("treats", "traits")
 
     return(linked_traits)
 }
 
 set.conditional.traits <- function(base.trait, next.trait, link.args) {
-    ## Combine the base trait and the next traits
-    conditional_trait <- list("conditional" = base.trait$main)
     
-    ## Trait ID base
-    id_base <- conditional_trait$conditional[[1]]$trait_id
-    ## Set to 1 for now
-    if(id_base != 1) {
-        conditional_trait$conditional[[1]]$trait_id <- seq(1:length(id_base))
-        id_base <- seq(1:length(id_base))
+    ## Set the base trait
+    conditional_trait <- base.trait$main[[1]]
+    base_name <- names(base.trait$main)
+    next_names <- unlist(lapply(next.trait, function(x) names(x$main)))
+    conditional_trait$link <- list(type = "conditional",
+                                   conditional.test = link.args,
+                                   trait.names = c(base_name, next_names))
+
+    ## Add the conditional processes
+    conditional_trait$process <- c(conditional_trait$process[[1]], lapply(next.trait, function(x) x$main[[1]]$process[[1]]))
+    
+    ## Add the conditional starts and ids
+    conditional_trait$start <- c(conditional_trait$start, next.trait[[1]]$main[[1]]$start)
+    conditional_trait$trait_id <- c(conditional_trait$trait_id, (next.trait[[1]]$main[[1]]$trait_id) + base.trait$main[[1]]$trait_id)
+
+    ## Add the conditional process.args
+    base_has_no_args <- is.null(conditional_trait$process.args)
+    next_process_args <- lapply(next.trait, function(x) x$main[[1]]$process.args)
+    next_has_no_args <- unlist(lapply(next_process_args, is.null))
+    if(!all(c(base_has_no_args, next_has_no_args))) {
+        ## Add base if not present
+        if(base_has_no_args) {
+            conditional_trait$process.args <- list(NULL)
+        }
+        ## Add the nexts empties
+        for(one_trait in 1:length(next.trait)) {
+            conditional_trait$process.args[[one_trait + 1]] <- list(NULL)
+        }
+        if(!all(next_has_no_args)) {
+            not_empties <- which(!next_has_no_args)
+            for(one_trait in not_empties) {
+                conditional_trait$process.args[one_trait+1] <- next.trait[[one_trait]]$main[[1]]$process.args
+            }   
+        }
     }
-
-    ## Get the conditioned traits (keep the names)
-    conditioned_traits <- lapply(next.trait, function(x) return(x$main))
-
-    ## Check if conditioned traits have the same IDs length
-    id_next <- lapply(conditioned_traits, function(x) x[[1]]$trait_id)
-    ## Check lengths
-    if(length(dimensions <- unique(unlist(lapply(id_next, length)))) != 1) {
-        stop("The next.traits must have the same number of dimensions.")
-    }
-    ## Set to the same IDs
-    new_ids <- seq(1:dimensions)+ max(id_base)
-
-    ## Get the conditions
-    update.conditionals <- function(trait, condition, id) {
-        trait[[1]]$trait_id <- id
-        trait[[1]]$condition.test <- condition
-        return(trait)
-    }
-    conditioned_traits <- mapply(update.conditionals, conditioned_traits, link.args, MoreArgs = list(id = new_ids), SIMPLIFY = FALSE)
-
-    ## Merge conditional and conditioned
-    conditional_trait$conditioned <- conditioned_traits
-
-    return(list("linked.traits" = conditional_trait))
+        
+    return(conditional_trait)
 }
