@@ -36,10 +36,10 @@
 #'                    "choose.one" = function(x1) {x1 == 1}) 
 #'
 #' ## Creating the linked trait
-#' conditional <- link.trait(base.trait = discrete_trait,
-#'                           next.trait = list(BM_trait, always_one),
-#'                           link.type  = "conditional",
-#'                           link.args  = conditions)
+#' conditional <- link.traits(base.trait = discrete_trait,
+#'                            next.trait = list(BM_trait, always_one),
+#'                            link.type  = "conditional",
+#'                            link.args  = conditions)
 #'
 #' ## Simulating a tree using this trait
 #' treats(stop.rule = list(max.living = 200),
