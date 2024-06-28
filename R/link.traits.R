@@ -18,6 +18,32 @@
 #' This function outputs a \code{treats} object that is a named list of elements handled internally by the \code{\link{treats}} function.
 #'
 #' @examples
+#' ## Setting up a discrete trait
+#' discrete_trait <- make.traits(discrete.process,
+#'        process.args = list(transitions = matrix(c(3, 0.2, 0.05, 3), 2, 2)),
+#'        trait.names  = "discrete")
+#'
+#' ## Setting up one dummy trait (always outputs 1)
+#' always_one <- make.traits(process = function(x0 = 0, edge.length = 1) {return(1)},
+#'                           trait.names = "one")
+#' ## Setting up a Brownian motion trait
+#' BM_trait <- make.traits(trait.names = "BM")
+#'
+#' ## Setting a condition list to link all traits
+#' ## (if discrete trait is 0, simulate a BM trait)
+#' ## (if discrete trait is 1, simulate the always one trait)
+#' conditions <- list("choose.BM"  = function(x1) {x1 == 0},
+#'                    "choose.one" = function(x1) {x1 == 1}) 
+#'
+#' ## Creating the linked trait
+#' conditional <- link.trait(base.trait = discrete_trait,
+#'                           next.trait = list(BM_trait, always_one),
+#'                           link.type  = "conditional",
+#'                           link.args  = conditions)
+#'
+#' ## Simulating a tree using this trait
+#' treats(stop.rule = list(max.living = 200),
+#'        traits    = conditional)
 #'
 #' @seealso \code{\link{treats}} \code{\link{trait.process}} \code{\link{make.traits}}
 #' 
