@@ -336,6 +336,91 @@ plot(tree_steps)
 abline(v = 3 - c(1/3, 1, 2), lwd = 0.5, col = "grey")
 ```
 
+## Linking traits together with `link.traits`
+
+In the `treats` algorithm, traits are simulated in parallel for improving performances.
+Most of the cases this is a (really) good thing!
+However, in some cases you might need some of your traits to be simulated sequentially.
+For example if you want a specific trait process or options to be dependent on the result of another trait.
+You can set up these linked traits using the `link.traits` function.
+This function takes `base.trait`, a `"treats"` `"traits"` object created using `make.traits` that will be the first trait simulated and the `next.trait`, a list of  `"treats"` `"traits"` objects that will be simulated after the `base.trait` depending on the link type (`link.type`) and some other arguments (`link.args`).
+So far the `link.traits` function only accommodates `link.type = "conditional"` for conditional traits.
+
+### Conditional traits
+
+Say for example that you have a primary trait (`base.trait`) that is a discrete binary trait that generates values `0` or `1`.
+This can correspond to some abiotic trait for example (e.g. "is the lineage on an island or on the mainland").
+You can first generate this trait using the `make.traits` function as detailed above (note here we're using a transition matrix as a specific argument that makes the changes from state 0 to state 1 relatively rare and the reversal even more rare).
+
+```{r}
+## Setting up a discrete trait
+discrete_trait <- make.traits(discrete.process,
+       process.args = list(transitions = matrix(c(3, 0.2, 0.05, 3), 2, 2)),
+       trait.names  = "discrete")
+```
+
+Following this trait value, we can create another trait that is conditional to the outcome of this first discrete trait simulation.
+In other words we can specify a choice between two processes depending on the result of the `base.trait`.
+For example, we can say that if the lineage evolves on an island (state `"1"`) it will evolve using a Brownian motion process but if it evolves on the mainland (state `"0"`), it will evolve using an OU process.
+
+We'll need to first generate these two traits independently using `make.traits` (using different options):
+
+```{r}
+## A standard Brownian Motion trait
+BM_trait <- make.traits(process = BM.process)
+## An OU trait with a strong alpha
+OU_trait <- make.traits(process = OU.process, process.args = list(alpha = 10))
+## Combining both traits into a list
+continuous_trait <- list("mainland_case" = BM_trait,
+                         "island_case"   = OU_trait)
+```
+
+We then need to create a list of functions to interpret the results of the first trait (`discrete_trait`) so that if the results of `discrete_trait` is `0`, `BM_trait` is used, if it's `1` `OU_trait` is used.
+This is done by creating a list of functions that evaluate `x1`, the outcome of `discrete_trait`, and return a logical (`TRUE` or `FALSE`).
+For example `function(x1) {x1 != 0}` will return `TRUE` if the `discrete_trait` is not state `0`:
+
+```{r}
+## Creating a list of functions to choose between either case for the continuous trait
+select_continuous <- list("is.mainland" = function(x1) {x1 == 0},
+                          "is.island"   = function(x1) {x1 == 1})
+```
+
+Note that this list must be in the same order as the `continuous_trait`: the functions will be evaluated sequentially (i.e. test the function `is.mainland`, then `is.island`) and the first one to return `TRUE` will be used to select the function in `continuous_trait`.
+For example in our case if the score of `discrete_trait` is `1`, the second function from `select_continuous` is `TRUE` so the second element from `continuous_trait` is used (the `OU_trait`).
+
+We can then combine all that using `link.traits`:
+
+```{r}
+## Link these traits
+conditional_trait <- link.traits(# The first trait to be evaluated
+                                 base.trait = discrete_trait,
+                                 # The other traits to be evaluated next
+                                 # (here a list of two traits)
+                                 next.trait = continuous_trait,
+                                 link.type  = "conditional",
+                                 # The functions to choose between either
+                                 # continuous traits 
+                                 link.args  = select_continuous)
+```
+
+And run the usual simulation pipeline with `treats`:
+
+```{r, fig.height = 6, fig.width = 12}
+## Running a tree with this conditional trait
+set.seed(123)
+my_conditional_tree <- treats(stop.rule = list(max.taxa = 200),
+                              traits    = conditional_trait)
+
+op <- par(mfrow = c(1,2))
+plot(my_conditional_tree, trait = 1, main = "The conditional trait")
+plot(my_conditional_tree, trait = 2, main = "The conditioned trait")
+par(op)
+## The clumpy bit around the value 0 corresponds to the OU trait
+```
+
+Of course, you can combine linked traits with other traits like any other traits in `treats` using `make.traits` (for example: `make.traits(process = my_new_trait, add = conditional_trait)` to generate more complex traits.
+In this case the traits are generated in parallel (for speed) apart for the specified linked ones.
+
 ## Traits implemented in `treats`
 
 If you don't want to design your own trait process, you can use one of the following trait processes that are currently implemented in `treats`. You can find more information about their many options using their specific manuals in R or the generic `?trait.process`:
