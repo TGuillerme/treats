@@ -1,12 +1,12 @@
-treats v1.0.6 (2024-06-26) 
+treats v1.0.6 (2024-07-04) 
 =========================
 
 ### NEW FEATURES
 
  * New function: `link.traits` to link several traits to each other
-    - [ ] test
-    - [ ] example
-    - [ ] manual
+    - [ ] test: TODO needs test update
+    - [x] example
+    - [x] manual
  * New S3 function: `drop.tip` and `keep.tip` from `ape` now work on `"treats"` objects
 
 ### MINOR IMPROVEMENTS

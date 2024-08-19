@@ -104,8 +104,8 @@ Of course, if you're simulating multiple traits, you can always plot different o
 my_3D_trait <- make.traits(n = 3, )
 ## Simulating a birth-death tree with that 3D trait
 my_data <- treats(bd.params = list(extinction = 0.2),
-                stop.rule = list(max.living = 50),
-                traits    = my_3D_trait)
+                  stop.rule = list(max.living = 50),
+                  traits    = my_3D_trait)
 ```
 
 You can toggle which trait to plot using the `trait` option, either by providing a single value to plot that specific trait against time or by providing two traits.
@@ -151,3 +151,11 @@ plot(my_data, trait = c(1, 2, 3), use.3D = TRUE,
      col = grDevices::heat.colors, type = "s", radius = 0.1)
 rglwidget()
 ```
+
+## Using `plot.treats` to plot non-treats objects
+
+If you like the plotting style of `treats` trees and data, you can always use the `make.traits` function to plot a tree and some traits as a `"treats"` object.
+
+### Discrete plots
+
+### Continuous plots (with [mapping](#map.traits))

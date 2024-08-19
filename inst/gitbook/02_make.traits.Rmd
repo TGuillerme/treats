@@ -474,7 +474,7 @@ We highly suggest leaving `test = TRUE` so that `make.traits` returns an error i
 `make.traits` will send an error if the trait cannot be directly passed to `treats`.
 However, in some specific cases (again, probably mainly for development and debugging) it could be useful to skip the tests using `test = FALSE`.
 
-## Mapping traits on a tree: `map.traits`
+## Mapping traits on a tree: `map.traits` {#map.traits}
 
 Although `make.traits` is mainly designed for `treats` simulations, i.e. simulating both the trees AND the traits at the same time, it is possible to use an already simulated or estimated tree and generating one or more traits on it using the `map.traits` function. This function takes the trait input as a `"traits"` object (from `make.traits`) and a tree topology with branch length. Note that you can also use `"traits"` objects with multiple or multi-dimensional traits as well as multiple phylogenies (`"multiPhylo"`).
 
