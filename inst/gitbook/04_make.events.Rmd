@@ -1,13 +1,12 @@
 ---
-title: "`make.events`"
-author: "Thomas Guillerme (guillert@tcd.ie)"
+title: "treats manual"
+author: "Thomas Guillerme (t.guillerme@sheffield.ac.uk)"
 date: "`r Sys.Date()`"
-bibliography: [../references.bib]
+bibliography: [../References.bib]
 output:
   html_document: default
   pdf_document: default
 ---
-
 
 ```{r, echo = FALSE}
 library(rgl)
@@ -135,8 +134,8 @@ So the function `update.X` applies the update to the object `X` when the event h
 The following `event` updates the `bd.params` object by setting the extinction parameter to 1/3 when reaching a 10 species:
 
 ```{r, eval = FALSE}
-make.events(target = "bd.params",
-            condition = taxa.condition(10, condition = `>=`),
+make.events(target       = "bd.params",
+            condition    = taxa.condition(10, condition = `>=`),
             modification = bd.params.update(extinction = 1/3))
 ```
 
@@ -150,8 +149,8 @@ For a simple example, we can create a extinction event that will remove 80% of s
 ```{r}
 ## 80% mass extinction at time 4
 mass_extinction <- make.events(
-                      target = "taxa",
-                      condition = age.condition(4),
+                      target       = "taxa",
+                      condition    = age.condition(4),
                       modification = random.extinction(0.8))
 
 ## Simulation parameters
@@ -161,8 +160,8 @@ bd.params <- list(extinction = 0, speciation = 1)
 ## Running the simulations
 set.seed(123)
 results <- treats(bd.params = bd.params,
-                stop.rule = stop.rule,
-                events = mass_extinction)
+                  stop.rule = stop.rule,
+                  events    = mass_extinction)
 ## Plotting the results
 plot(results, show.tip.label = FALSE)
 axisPhylo()
@@ -177,9 +176,9 @@ upper.95 <- function(x) {
 } 
 ## Create an event to change the trait process
 change_process <- make.events(
-                  target = "traits",
+                  target       = "traits",
                   ## condition is triggered if(upper.95(x) > 3)
-                  condition = trait.condition(3, condition = `>`, what = upper.95),
+                  condition    = trait.condition(3, condition = `>`, what = upper.95),
                   modification = traits.update(process = OU.process))
 
 ## Set the simulation parameters
@@ -190,13 +189,13 @@ traits    <- make.traits()
 ## Run the simulations
 set.seed(1)
 no_change <- treats(bd.params = bd.params,
-                  stop.rule = stop.rule,
-                  traits = traits)
+                    stop.rule = stop.rule,
+                    traits = traits)
 set.seed(1)
 process_change <- treats(bd.params = bd.params,
-                       stop.rule = stop.rule,
-                       traits = traits,
-                       events = change_process)
+                         stop.rule = stop.rule,
+                         traits    = traits,
+                         events    = change_process)
 ## Plot the results
 par(mfrow = c(1,2))
 plot(no_change, ylim = c(-7, 7))
@@ -224,8 +223,8 @@ bd.params <- make.bd.params(speciation = 1, extinction = 0.3)
 
 ## Events that generate a new process (founding tree - with no extinction)
 founding_event <- make.events(
-                  target = "founding",
-                  condition = taxa.condition(10),
+                  target       = "founding",
+                  condition    = taxa.condition(10),
                   modification = founding.event(
                                     bd.params = make.bd.params(speciation = 2,
                                                                extinction = 0)),
@@ -234,8 +233,8 @@ founding_event <- make.events(
 ## Simulations
 set.seed(11)
 founding_tree <- treats(bd.params = bd.params,
-                      stop.rule = stop.rule,
-                      events = founding_event)
+                        stop.rule = stop.rule,
+                        events    = founding_event)
 plot(founding_tree, cex = 0.4)
 ```
 

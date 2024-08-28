@@ -1,8 +1,8 @@
 ---
 title: "treats manual"
-author: "Thomas Guillerme (guillert@tcd.ie)"
+author: "Thomas Guillerme (t.guillerme@sheffield.ac.uk)"
 date: "`r Sys.Date()`"
-# bibliography: [../References.bib, ../packages.bib]
+bibliography: [../References.bib]
 output:
   html_document: default
   pdf_document: default

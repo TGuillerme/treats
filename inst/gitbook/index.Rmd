@@ -1,11 +1,11 @@
 --- 
 title: "treats manual"
-author: "Thomas Guillerme (guillert@tcd.ie)"
+author: "Thomas Guillerme (t.guillerme@sheffield.ac.uk)"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
-bibliography: [../references.bib]
+bibliography: [../References.bib]
 link-citations: yes
 github-repo: TGuillerme/treats
 description: "treats R package manual"

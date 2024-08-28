@@ -1,8 +1,8 @@
 ---
-title: "`make.modifiers`"
-author: "Thomas Guillerme (guillert@tcd.ie)"
+title: "treats manual"
+author: "Thomas Guillerme (t.guillerme@sheffield.ac.uk)"
 date: "`r Sys.Date()`"
-bibliography: [../references.bib]
+bibliography: [../References.bib]
 output:
   html_document: default
   pdf_document: default
@@ -101,8 +101,8 @@ stop_rule <- list(max.living = 20)
 ## Generating a tree with the default branch length parameter
 set.seed(0)
 default_tree <- treats(bd.params = bd_params,
-                     stop.rule = stop_rule,
-                     modifiers = default_modifiers)
+                       stop.rule = stop_rule,
+                       modifiers = default_modifiers)
 ```
 
 Of course, the point of the modularity here is that you can provide your own function for generating branch length.
@@ -122,8 +122,8 @@ constant_modifier <- make.modifiers(branch.length = constant.brlen)
 ## Generating a new tree with this modifier
 set.seed(0)
 modified_tree <- treats(bd.params = bd_params,
-                      stop.rule = stop_rule,
-                      modifiers = constant_modifier)
+                        stop.rule = stop_rule,
+                        modifiers = constant_modifier)
 ``` 
 
 And we can visualise the difference between both resulting trees:
@@ -194,8 +194,8 @@ increasing_modifier <- make.modifiers(branch.length = increasing.brlen)
 ## Generating a new tree with this modifier
 set.seed(0)
 increasing_tree <- treats(bd.params = bd_params,
-                        stop.rule = stop_rule,
-                        modifiers = increasing_modifier)
+                          stop.rule = stop_rule,
+                          modifiers = increasing_modifier)
 ``` 
 
 And we can visualise the difference between the resulting trees:
@@ -234,8 +234,8 @@ ladderised_modifier <- make.modifiers(selection = select.last)
 ## Generating a new tree with this modifier
 set.seed(0)
 ladderised_tree <- treats(bd.params = bd_params,
-                        stop.rule = stop_rule,
-                        modifiers = ladderised_modifier)
+                          stop.rule = stop_rule,
+                          modifiers = ladderised_modifier)
 ## Displaying the results
 par(mfrow = c(1,2))
 plot(default_tree,    main = "Default modifier")
@@ -273,15 +273,15 @@ BM_trait <- make.traits()
 ## Simulate a tree and trait with no modifier
 set.seed(1)
 default_treats <- treats(bd.params = bd_params,
-                     stop.rule = stop_rule,
-                     traits = BM_trait)
+                         stop.rule = stop_rule,
+                         traits    = BM_trait)
 
 ## Simulate a tree and trait with the modifier
 set.seed(1)
 skewed_trait_treats <- treats(bd.params = bd_params,
-                          stop.rule = stop_rule,
-                          traits = BM_trait,
-                          modifiers = positive_skew)
+                              stop.rule = stop_rule,
+                              traits    = BM_trait,
+                              modifiers = positive_skew)
 
 ## Plotting the differences in trees and traits
 par(mfrow = c(1, 2))
@@ -320,8 +320,8 @@ random_extinction <- make.modifiers(speciation = random.extinct)
 ## Generating a new tree with this modifier
 set.seed(2)
 modified_tree <- treats(bd.params = bd_params,
-                      stop.rule = stop_rule,
-                      modifiers = random_extinction)
+                        stop.rule = stop_rule,
+                        modifiers = random_extinction)
 
 par(mfrow = c(1,2))
 plot(default_tree,  main = "Default modifier")
@@ -351,9 +351,9 @@ modified_trait <- make.modifiers(speciation = modify.trait)
 ## Simulate a tree and trait with the modifier
 set.seed(1)
 modified_trait_treats <- treats(bd.params = bd_params,
-                          stop.rule = stop_rule,
-                          traits    = BM_trait,
-                          modifiers = modified_trait)
+                                stop.rule = stop_rule,
+                                traits    = BM_trait,
+                                modifiers = modified_trait)
 
 ## Plotting the differences in trees and traits
 par(mfrow = c(1, 2))
