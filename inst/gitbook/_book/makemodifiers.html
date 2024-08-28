@@ -20,10 +20,10 @@
   <meta name="twitter:description" content="treats R package manual" />
   
 
-<meta name="author" content="Thomas Guillerme (guillert@tcd.ie)" />
+<meta name="author" content="Thomas Guillerme (t.guillerme@sheffield.ac.uk)" />
 
 
-<meta name="date" content="2024-05-15" />
+<meta name="date" content="2024-08-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -208,13 +208,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.6" data-path="maketraits.html"><a href="maketraits.html#combining-multiple-traits-with-add"><i class="fa fa-check"></i><b>3.6</b> Combining multiple traits with <code>add</code></a></li>
 <li class="chapter" data-level="3.7" data-path="maketraits.html"><a href="maketraits.html#using-a-background-trait"><i class="fa fa-check"></i><b>3.7</b> Using a background trait</a></li>
 <li class="chapter" data-level="3.8" data-path="maketraits.html"><a href="maketraits.html#saving-trait-values-at-different-time-steps"><i class="fa fa-check"></i><b>3.8</b> Saving trait values at different time steps</a></li>
-<li class="chapter" data-level="3.9" data-path="maketraits.html"><a href="maketraits.html#traits-implemented-in-treats"><i class="fa fa-check"></i><b>3.9</b> Traits implemented in <code>treats</code></a></li>
-<li class="chapter" data-level="3.10" data-path="maketraits.html"><a href="maketraits.html#testing-the-traits-with-test"><i class="fa fa-check"></i><b>3.10</b> Testing the traits with <code>test</code></a></li>
-<li class="chapter" data-level="3.11" data-path="maketraits.html"><a href="maketraits.html#mapping-traits-on-a-tree-map.traits"><i class="fa fa-check"></i><b>3.11</b> Mapping traits on a tree: <code>map.traits</code></a></li>
-<li class="chapter" data-level="3.12" data-path="maketraits.html"><a href="maketraits.html#templates-for-making-your-very-own-process"><i class="fa fa-check"></i><b>3.12</b> Templates for making your very own process</a>
+<li class="chapter" data-level="3.9" data-path="maketraits.html"><a href="maketraits.html#linking-traits-together-with-link.traits"><i class="fa fa-check"></i><b>3.9</b> Linking traits together with <code>link.traits</code></a>
 <ul>
-<li class="chapter" data-level="3.12.1" data-path="maketraits.html"><a href="maketraits.html#a-simple-brownian-motion-process-template"><i class="fa fa-check"></i><b>3.12.1</b> A simple Brownian Motion process template</a></li>
-<li class="chapter" data-level="3.12.2" data-path="maketraits.html"><a href="maketraits.html#a-simple-ornstein-uhlenbeck-process-template"><i class="fa fa-check"></i><b>3.12.2</b> A simple Ornstein-Uhlenbeck process template</a></li>
+<li class="chapter" data-level="3.9.1" data-path="maketraits.html"><a href="maketraits.html#conditional-traits"><i class="fa fa-check"></i><b>3.9.1</b> Conditional traits</a></li>
+</ul></li>
+<li class="chapter" data-level="3.10" data-path="maketraits.html"><a href="maketraits.html#traits-implemented-in-treats"><i class="fa fa-check"></i><b>3.10</b> Traits implemented in <code>treats</code></a></li>
+<li class="chapter" data-level="3.11" data-path="maketraits.html"><a href="maketraits.html#testing-the-traits-with-test"><i class="fa fa-check"></i><b>3.11</b> Testing the traits with <code>test</code></a></li>
+<li class="chapter" data-level="3.12" data-path="maketraits.html"><a href="maketraits.html#map.traits"><i class="fa fa-check"></i><b>3.12</b> Mapping traits on a tree: <code>map.traits</code></a></li>
+<li class="chapter" data-level="3.13" data-path="maketraits.html"><a href="maketraits.html#templates-for-making-your-very-own-process"><i class="fa fa-check"></i><b>3.13</b> Templates for making your very own process</a>
+<ul>
+<li class="chapter" data-level="3.13.1" data-path="maketraits.html"><a href="maketraits.html#a-simple-brownian-motion-process-template"><i class="fa fa-check"></i><b>3.13.1</b> A simple Brownian Motion process template</a></li>
+<li class="chapter" data-level="3.13.2" data-path="maketraits.html"><a href="maketraits.html#a-simple-ornstein-uhlenbeck-process-template"><i class="fa fa-check"></i><b>3.13.2</b> A simple Ornstein-Uhlenbeck process template</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="makemodifiers.html"><a href="makemodifiers.html"><i class="fa fa-check"></i><b>4</b> Modifying the birth-death process</a>
@@ -252,6 +256,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="7.2.1" data-path="plots.html"><a href="plots.html#adding-dimensions-not-necessary-but-fun"><i class="fa fa-check"></i><b>7.2.1</b> Adding dimensions! Not necessary, but fun!</a></li>
 </ul></li>
+<li class="chapter" data-level="7.3" data-path="plots.html"><a href="plots.html#using-plot.treats-to-plot-non-treats-objects"><i class="fa fa-check"></i><b>7.3</b> Using <code>plot.treats</code> to plot non-treats objects</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="specific-examples.html"><a href="specific-examples.html"><i class="fa fa-check"></i><b>8</b> Specific examples</a>
 <ul>
@@ -289,9 +294,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="makemodifiers" class="section level1 hasAnchor" number="4">
 <h1><span class="header-section-number">4</span> Modifying the birth-death process<a href="makemodifiers.html#makemodifiers" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p><code>"modifiers"</code> have a similar structure than <code>"traits"</code> where you can design an object with increasing complexity, starting with the simplest modifiers that doesn’t modify anything (using the default arguments):</p>
-<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="makemodifiers.html#cb108-1" aria-hidden="true"></a><span class="co">## Making a default modifier (no modification)</span></span>
-<span id="cb108-2"><a href="makemodifiers.html#cb108-2" aria-hidden="true"></a>my_default_modifiers &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>()</span>
-<span id="cb108-3"><a href="makemodifiers.html#cb108-3" aria-hidden="true"></a>my_default_modifiers</span></code></pre></div>
+<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="makemodifiers.html#cb114-1" aria-hidden="true"></a><span class="co">## Making a default modifier (no modification)</span></span>
+<span id="cb114-2"><a href="makemodifiers.html#cb114-2" aria-hidden="true"></a>my_default_modifiers &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>()</span>
+<span id="cb114-3"><a href="makemodifiers.html#cb114-3" aria-hidden="true"></a>my_default_modifiers</span></code></pre></div>
 <pre><code>##  ---- treats modifiers object ---- 
 ## No modifiers applied to the branch length, selection and speciation processes (default).</code></pre>
 <p>Similarly to <code>"traits"</code> objects, <code>"modifiers"</code> are also printed by default using <code>print.treats</code>.
@@ -398,15 +403,15 @@ However, contrary to <code>"traits"</code>, you cannot plot <code>"modifiers"</c
 <h2><span class="header-section-number">4.1</span> The default modifier (how the process is working)<a href="makemodifiers.html#the-default-modifier-how-the-process-is-working" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>The modifiers modify the core of the birth-death process as implemented in <code>treats</code>.
 By default, the birth-death process in <code>treats</code> uses this modifier:</p>
-<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="makemodifiers.html#cb110-1" aria-hidden="true"></a><span class="co">## What is actually in the default modifier?</span></span>
-<span id="cb110-2"><a href="makemodifiers.html#cb110-2" aria-hidden="true"></a><span class="kw">print</span>(<span class="kw">make.modifiers</span>(), <span class="dt">all =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="makemodifiers.html#cb116-1" aria-hidden="true"></a><span class="co">## What is actually in the default modifier?</span></span>
+<span id="cb116-2"><a href="makemodifiers.html#cb116-2" aria-hidden="true"></a><span class="kw">print</span>(<span class="kw">make.modifiers</span>(), <span class="dt">all =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <pre><code>## $waiting
 ## $waiting$fun
 ## function (bd.params, lineage = NULL, trait.values = NULL, modify.fun = NULL) 
 ## {
 ##     return(rexp(1, sum(lineage$n * (bd.params$speciation + bd.params$extinction))))
 ## }
-## &lt;bytecode: 0x5d1993e21ff0&gt;
+## &lt;bytecode: 0x5bdff6420208&gt;
 ## &lt;environment: namespace:treats&gt;
 ## 
 ## $waiting$internal
@@ -419,7 +424,7 @@ By default, the birth-death process in <code>treats</code> uses this modifier:</
 ## {
 ##     return(sample(lineage$n, 1))
 ## }
-## &lt;bytecode: 0x5d1993e211b8&gt;
+## &lt;bytecode: 0x5bdff6423270&gt;
 ## &lt;environment: namespace:treats&gt;
 ## 
 ## $selecting$internal
@@ -433,7 +438,7 @@ By default, the birth-death process in <code>treats</code> uses this modifier:</
 ##     return(runif(1) &lt;= (bd.params$speciation/(bd.params$speciation + 
 ##         bd.params$extinction)))
 ## }
-## &lt;bytecode: 0x5d1993e20700&gt;
+## &lt;bytecode: 0x5bdff64227f0&gt;
 ## &lt;environment: namespace:treats&gt;
 ## 
 ## $speciating$internal
@@ -458,16 +463,16 @@ By default, the birth-death process in <code>treats</code> uses this modifier:</
 <ol style="list-style-type: decimal">
 <li><code>"waiting$fun"</code> is the branch length function (defined in detail below) which returns a randomly drawn number from an exponential distribution with the rate of the number of taxa multiplied by the speciation and extinction rate: <span class="math inline">\(n \times (\lambda + \mu)\)</span> (here is uses the extra function <code>sum</code> for internal modularity reasons). <strong>This function is responsible for the growth of the length/age of the tree</strong></li>
 </ol>
-<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="makemodifiers.html#cb112-1" aria-hidden="true"></a><span class="kw">rexp</span>(<span class="dv">1</span>, <span class="kw">sum</span>(lineage<span class="op">$</span>n <span class="op">*</span><span class="st"> </span>(bd.params<span class="op">$</span>speciation <span class="op">+</span><span class="st"> </span>bd.params<span class="op">$</span>extinction)))</span></code></pre></div>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="makemodifiers.html#cb118-1" aria-hidden="true"></a><span class="kw">rexp</span>(<span class="dv">1</span>, <span class="kw">sum</span>(lineage<span class="op">$</span>n <span class="op">*</span><span class="st"> </span>(bd.params<span class="op">$</span>speciation <span class="op">+</span><span class="st"> </span>bd.params<span class="op">$</span>extinction)))</span></code></pre></div>
 <p>With <code>lineage$n</code> being the number of lineages and <code>bd.params$speciation</code> and <code>bd.params$extinction</code> the speciation and extinction parameters (these specific terms are defined in detail below).</p>
 <ol start="2" style="list-style-type: decimal">
 <li><code>"selecting$fun"</code> is the selection function (defined in detail below) which, after the waiting time defined above returns a randomly selected lineage (a tip) among the existing ones. <strong>This function is responsible for the branch selection</strong>.</li>
 </ol>
-<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="makemodifiers.html#cb113-1" aria-hidden="true"></a><span class="kw">sample</span>(lineage<span class="op">$</span>n, <span class="dv">1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="makemodifiers.html#cb119-1" aria-hidden="true"></a><span class="kw">sample</span>(lineage<span class="op">$</span>n, <span class="dv">1</span>)</span></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
 <li><code>"speciating$fun"</code> is the speciation function (defined in detail below) which randomly draws a number (<code>runif(1)</code>) and depending on the speciation and extinction parameters makes the selected lineage (from 2.) speciate (<code>TRUE</code>) or go extinct (<code>FALSE</code>). <strong>This function is responsible for the speciation or extinction of species</strong>.</li>
 </ol>
-<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="makemodifiers.html#cb114-1" aria-hidden="true"></a><span class="kw">runif</span>(<span class="dv">1</span>) <span class="op">&lt;</span><span class="st"> </span>(bd.params<span class="op">$</span>speciation<span class="op">/</span>(bd.params<span class="op">$</span>speciation <span class="op">+</span><span class="st"> </span>bd.params<span class="op">$</span>extinction))</span></code></pre></div>
+<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="makemodifiers.html#cb120-1" aria-hidden="true"></a><span class="kw">runif</span>(<span class="dv">1</span>) <span class="op">&lt;</span><span class="st"> </span>(bd.params<span class="op">$</span>speciation<span class="op">/</span>(bd.params<span class="op">$</span>speciation <span class="op">+</span><span class="st"> </span>bd.params<span class="op">$</span>extinction))</span></code></pre></div>
 <p>We will have a look at all these aspects below in more detail which should make things clearer (but you can always refer to the default here for information).</p>
 </div>
 <div id="the-branch-length-function-branch.length" class="section level2 hasAnchor" number="4.2">
@@ -478,41 +483,41 @@ In other words, the <code>branch.length</code> function just affects waiting tim
 These taxa can then either go extinct (stopping the “growth” of its branch length) or survive (continuing the “growth”).</p>
 <p>By default, branch length (or waiting/growth) is a randomly drawn number from an exponential distribution with the rate of the number of taxa multiplied by the speciation and extinction rate: <span class="math inline">\(n \times (\lambda + \mu)\)</span> (where <span class="math inline">\(n\)</span> is the number of taxa currently present in the simulation, <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\mu\)</span> are respectively the speciation and extinction rates).
 This default function is simply called <code>branch.length</code> in <code>treats</code> and can be used as a modifier as follows:</p>
-<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="makemodifiers.html#cb115-1" aria-hidden="true"></a><span class="co">## Specifying the default modifier</span></span>
-<span id="cb115-2"><a href="makemodifiers.html#cb115-2" aria-hidden="true"></a>default_modifiers &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">branch.length =</span> branch.length)</span>
-<span id="cb115-3"><a href="makemodifiers.html#cb115-3" aria-hidden="true"></a></span>
-<span id="cb115-4"><a href="makemodifiers.html#cb115-4" aria-hidden="true"></a><span class="co">## Setting some parameters for generating trees</span></span>
-<span id="cb115-5"><a href="makemodifiers.html#cb115-5" aria-hidden="true"></a>bd_params &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">extinction =</span> <span class="dv">0</span>)</span>
-<span id="cb115-6"><a href="makemodifiers.html#cb115-6" aria-hidden="true"></a>stop_rule &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">max.living =</span> <span class="dv">20</span>)</span>
-<span id="cb115-7"><a href="makemodifiers.html#cb115-7" aria-hidden="true"></a></span>
-<span id="cb115-8"><a href="makemodifiers.html#cb115-8" aria-hidden="true"></a><span class="co">## Generating a tree with the default branch length parameter</span></span>
-<span id="cb115-9"><a href="makemodifiers.html#cb115-9" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">0</span>)</span>
-<span id="cb115-10"><a href="makemodifiers.html#cb115-10" aria-hidden="true"></a>default_tree &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd_params,</span>
-<span id="cb115-11"><a href="makemodifiers.html#cb115-11" aria-hidden="true"></a>                     <span class="dt">stop.rule =</span> stop_rule,</span>
-<span id="cb115-12"><a href="makemodifiers.html#cb115-12" aria-hidden="true"></a>                     <span class="dt">modifiers =</span> default_modifiers)</span></code></pre></div>
+<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb121-1"><a href="makemodifiers.html#cb121-1" aria-hidden="true"></a><span class="co">## Specifying the default modifier</span></span>
+<span id="cb121-2"><a href="makemodifiers.html#cb121-2" aria-hidden="true"></a>default_modifiers &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">branch.length =</span> branch.length)</span>
+<span id="cb121-3"><a href="makemodifiers.html#cb121-3" aria-hidden="true"></a></span>
+<span id="cb121-4"><a href="makemodifiers.html#cb121-4" aria-hidden="true"></a><span class="co">## Setting some parameters for generating trees</span></span>
+<span id="cb121-5"><a href="makemodifiers.html#cb121-5" aria-hidden="true"></a>bd_params &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">extinction =</span> <span class="dv">0</span>)</span>
+<span id="cb121-6"><a href="makemodifiers.html#cb121-6" aria-hidden="true"></a>stop_rule &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">max.living =</span> <span class="dv">20</span>)</span>
+<span id="cb121-7"><a href="makemodifiers.html#cb121-7" aria-hidden="true"></a></span>
+<span id="cb121-8"><a href="makemodifiers.html#cb121-8" aria-hidden="true"></a><span class="co">## Generating a tree with the default branch length parameter</span></span>
+<span id="cb121-9"><a href="makemodifiers.html#cb121-9" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">0</span>)</span>
+<span id="cb121-10"><a href="makemodifiers.html#cb121-10" aria-hidden="true"></a>default_tree &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd_params,</span>
+<span id="cb121-11"><a href="makemodifiers.html#cb121-11" aria-hidden="true"></a>                       <span class="dt">stop.rule =</span> stop_rule,</span>
+<span id="cb121-12"><a href="makemodifiers.html#cb121-12" aria-hidden="true"></a>                       <span class="dt">modifiers =</span> default_modifiers)</span></code></pre></div>
 <p>Of course, the point of the modularity here is that you can provide your own function for generating branch length.
 For example, we might be interested in what our tree would look like if we use a simple constant branch length generation (instead of randomly drawing it from an exponential distribution).
 We can do so by declaring our own <code>branch.length</code> function and adding it to a <code>"modifiers"</code> object.</p>
-<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="makemodifiers.html#cb116-1" aria-hidden="true"></a><span class="co">## A constant branch length generator</span></span>
-<span id="cb116-2"><a href="makemodifiers.html#cb116-2" aria-hidden="true"></a><span class="co">## (note that the output must be numeric, not integer)</span></span>
-<span id="cb116-3"><a href="makemodifiers.html#cb116-3" aria-hidden="true"></a>constant.brlen &lt;-<span class="st"> </span><span class="cf">function</span>() {</span>
-<span id="cb116-4"><a href="makemodifiers.html#cb116-4" aria-hidden="true"></a>    <span class="kw">return</span>(<span class="kw">as.numeric</span>(<span class="dv">1</span>))</span>
-<span id="cb116-5"><a href="makemodifiers.html#cb116-5" aria-hidden="true"></a>}</span>
-<span id="cb116-6"><a href="makemodifiers.html#cb116-6" aria-hidden="true"></a></span>
-<span id="cb116-7"><a href="makemodifiers.html#cb116-7" aria-hidden="true"></a><span class="co">## Creating the modifiers object</span></span>
-<span id="cb116-8"><a href="makemodifiers.html#cb116-8" aria-hidden="true"></a>constant_modifier &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">branch.length =</span> constant.brlen)</span>
-<span id="cb116-9"><a href="makemodifiers.html#cb116-9" aria-hidden="true"></a></span>
-<span id="cb116-10"><a href="makemodifiers.html#cb116-10" aria-hidden="true"></a><span class="co">## Generating a new tree with this modifier</span></span>
-<span id="cb116-11"><a href="makemodifiers.html#cb116-11" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">0</span>)</span>
-<span id="cb116-12"><a href="makemodifiers.html#cb116-12" aria-hidden="true"></a>modified_tree &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd_params,</span>
-<span id="cb116-13"><a href="makemodifiers.html#cb116-13" aria-hidden="true"></a>                      <span class="dt">stop.rule =</span> stop_rule,</span>
-<span id="cb116-14"><a href="makemodifiers.html#cb116-14" aria-hidden="true"></a>                      <span class="dt">modifiers =</span> constant_modifier)</span></code></pre></div>
+<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="makemodifiers.html#cb122-1" aria-hidden="true"></a><span class="co">## A constant branch length generator</span></span>
+<span id="cb122-2"><a href="makemodifiers.html#cb122-2" aria-hidden="true"></a><span class="co">## (note that the output must be numeric, not integer)</span></span>
+<span id="cb122-3"><a href="makemodifiers.html#cb122-3" aria-hidden="true"></a>constant.brlen &lt;-<span class="st"> </span><span class="cf">function</span>() {</span>
+<span id="cb122-4"><a href="makemodifiers.html#cb122-4" aria-hidden="true"></a>    <span class="kw">return</span>(<span class="kw">as.numeric</span>(<span class="dv">1</span>))</span>
+<span id="cb122-5"><a href="makemodifiers.html#cb122-5" aria-hidden="true"></a>}</span>
+<span id="cb122-6"><a href="makemodifiers.html#cb122-6" aria-hidden="true"></a></span>
+<span id="cb122-7"><a href="makemodifiers.html#cb122-7" aria-hidden="true"></a><span class="co">## Creating the modifiers object</span></span>
+<span id="cb122-8"><a href="makemodifiers.html#cb122-8" aria-hidden="true"></a>constant_modifier &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">branch.length =</span> constant.brlen)</span>
+<span id="cb122-9"><a href="makemodifiers.html#cb122-9" aria-hidden="true"></a></span>
+<span id="cb122-10"><a href="makemodifiers.html#cb122-10" aria-hidden="true"></a><span class="co">## Generating a new tree with this modifier</span></span>
+<span id="cb122-11"><a href="makemodifiers.html#cb122-11" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">0</span>)</span>
+<span id="cb122-12"><a href="makemodifiers.html#cb122-12" aria-hidden="true"></a>modified_tree &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd_params,</span>
+<span id="cb122-13"><a href="makemodifiers.html#cb122-13" aria-hidden="true"></a>                        <span class="dt">stop.rule =</span> stop_rule,</span>
+<span id="cb122-14"><a href="makemodifiers.html#cb122-14" aria-hidden="true"></a>                        <span class="dt">modifiers =</span> constant_modifier)</span></code></pre></div>
 <p>And we can visualise the difference between both resulting trees:</p>
-<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="makemodifiers.html#cb117-1" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
-<span id="cb117-2"><a href="makemodifiers.html#cb117-2" aria-hidden="true"></a><span class="kw">plot</span>(default_tree,  <span class="dt">main =</span> <span class="st">&quot;Default modifier&quot;</span>)</span>
-<span id="cb117-3"><a href="makemodifiers.html#cb117-3" aria-hidden="true"></a><span class="kw">plot</span>(modified_tree, <span class="dt">main =</span> <span class="st">&quot;Constant branch length</span><span class="ch">\n</span><span class="st">modifier&quot;</span>)</span></code></pre></div>
-<p><img src="treats_manual_files/figure-html/unnamed-chunk-73-1.png" width="672" /></p>
-<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="makemodifiers.html#cb118-1" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb123-1"><a href="makemodifiers.html#cb123-1" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb123-2"><a href="makemodifiers.html#cb123-2" aria-hidden="true"></a><span class="kw">plot</span>(default_tree,  <span class="dt">main =</span> <span class="st">&quot;Default modifier&quot;</span>)</span>
+<span id="cb123-3"><a href="makemodifiers.html#cb123-3" aria-hidden="true"></a><span class="kw">plot</span>(modified_tree, <span class="dt">main =</span> <span class="st">&quot;Constant branch length</span><span class="ch">\n</span><span class="st">modifier&quot;</span>)</span></code></pre></div>
+<p><img src="treats_manual_files/figure-html/unnamed-chunk-78-1.png" width="672" /></p>
+<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="makemodifiers.html#cb124-1" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code></pre></div>
 <p>It is of course possible to use more complex branch length modifiers that take different conditions and specific modification rather than simply always outputing a value of one.</p>
 <div id="allowarguments" class="section level3 hasAnchor" number="4.2.1">
 <h3><span class="header-section-number">4.2.1</span> The modifier arguments<a href="makemodifiers.html#allowarguments" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -535,44 +540,44 @@ We can do so by declaring our own <code>branch.length</code> function and adding
 <p>In general, unless you know what you’re doing, you can ignore most arguments for specific modifiers since they are handled automatically within the <code>treats</code> function.
 Therefore any argument can be left undeclared or missing and is always handled internally. For example, if you did not declare <code>lineage$n</code> as a function argument but are using <code>lineage$n</code> in the function, <code>lineage$n</code> will be detected and treated as a current argument automatically as set accordingly within the birth-death process (e.g. <code>lineage$n</code> will be set to the current number of taxa every iteration of the process).</p>
 <p>For example, we can create a function that increases branch length proportional to the number of species “alive” at each time of the simulation in a discrete way, i.e. for discrete numbers of taxa, the branch length increases by jumps (ten fold) every five taxa:</p>
-<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="makemodifiers.html#cb119-1" aria-hidden="true"></a><span class="co">## A more complex binned.branch.length function</span></span>
-<span id="cb119-2"><a href="makemodifiers.html#cb119-2" aria-hidden="true"></a>increasing.brlen &lt;-<span class="st"> </span><span class="cf">function</span>(bd.params, lineage) {</span>
-<span id="cb119-3"><a href="makemodifiers.html#cb119-3" aria-hidden="true"></a></span>
-<span id="cb119-4"><a href="makemodifiers.html#cb119-4" aria-hidden="true"></a>    <span class="co">## Setting the cumulated birth and death</span></span>
-<span id="cb119-5"><a href="makemodifiers.html#cb119-5" aria-hidden="true"></a>    birth_death &lt;-<span class="st"> </span>bd.params<span class="op">$</span>speciation <span class="op">+</span><span class="st"> </span>bd.params<span class="op">$</span>extinction</span>
-<span id="cb119-6"><a href="makemodifiers.html#cb119-6" aria-hidden="true"></a></span>
-<span id="cb119-7"><a href="makemodifiers.html#cb119-7" aria-hidden="true"></a>    <span class="co">## Returning branch lengths depending on different number of taxa</span></span>
-<span id="cb119-8"><a href="makemodifiers.html#cb119-8" aria-hidden="true"></a>    <span class="cf">if</span>(lineage<span class="op">$</span>n <span class="op">&lt;=</span><span class="st"> </span><span class="dv">5</span>) {</span>
-<span id="cb119-9"><a href="makemodifiers.html#cb119-9" aria-hidden="true"></a>        <span class="kw">return</span>(<span class="dv">1</span>    <span class="op">*</span><span class="st"> </span><span class="kw">rexp</span>(<span class="dv">1</span>, <span class="kw">sum</span>(<span class="dv">5</span> <span class="op">*</span><span class="st"> </span>birth_death)))</span>
-<span id="cb119-10"><a href="makemodifiers.html#cb119-10" aria-hidden="true"></a>    }</span>
-<span id="cb119-11"><a href="makemodifiers.html#cb119-11" aria-hidden="true"></a>    <span class="cf">if</span>(lineage<span class="op">$</span>n <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span>) {</span>
-<span id="cb119-12"><a href="makemodifiers.html#cb119-12" aria-hidden="true"></a>        <span class="kw">return</span>(<span class="dv">10</span>   <span class="op">*</span><span class="st"> </span><span class="kw">rexp</span>(<span class="dv">1</span>, <span class="kw">sum</span>(<span class="dv">10</span> <span class="op">*</span><span class="st"> </span>birth_death)))   </span>
-<span id="cb119-13"><a href="makemodifiers.html#cb119-13" aria-hidden="true"></a>    }</span>
-<span id="cb119-14"><a href="makemodifiers.html#cb119-14" aria-hidden="true"></a>    <span class="cf">if</span>(lineage<span class="op">$</span>n <span class="op">&lt;=</span><span class="st"> </span><span class="dv">15</span>) {</span>
-<span id="cb119-15"><a href="makemodifiers.html#cb119-15" aria-hidden="true"></a>        <span class="kw">return</span>(<span class="dv">100</span>  <span class="op">*</span><span class="st"> </span><span class="kw">rexp</span>(<span class="dv">1</span>, <span class="kw">sum</span>(<span class="dv">15</span> <span class="op">*</span><span class="st"> </span>birth_death)))      </span>
-<span id="cb119-16"><a href="makemodifiers.html#cb119-16" aria-hidden="true"></a>    }</span>
-<span id="cb119-17"><a href="makemodifiers.html#cb119-17" aria-hidden="true"></a>    <span class="cf">if</span>(lineage<span class="op">$</span>n <span class="op">&lt;=</span><span class="st"> </span><span class="dv">20</span>) {</span>
-<span id="cb119-18"><a href="makemodifiers.html#cb119-18" aria-hidden="true"></a>        <span class="kw">return</span>(<span class="dv">1000</span> <span class="op">*</span><span class="st"> </span><span class="kw">rexp</span>(<span class="dv">1</span>, <span class="kw">sum</span>(<span class="dv">20</span> <span class="op">*</span><span class="st"> </span>birth_death)))</span>
-<span id="cb119-19"><a href="makemodifiers.html#cb119-19" aria-hidden="true"></a>    } <span class="cf">else</span> {</span>
-<span id="cb119-20"><a href="makemodifiers.html#cb119-20" aria-hidden="true"></a>        <span class="kw">return</span>(<span class="dv">1000</span> <span class="op">*</span><span class="st"> </span><span class="kw">rexp</span>(<span class="dv">1</span>, <span class="kw">sum</span>(lineage<span class="op">$</span>n <span class="op">*</span><span class="st"> </span>birth_death)))</span>
-<span id="cb119-21"><a href="makemodifiers.html#cb119-21" aria-hidden="true"></a>    }</span>
-<span id="cb119-22"><a href="makemodifiers.html#cb119-22" aria-hidden="true"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb125"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb125-1"><a href="makemodifiers.html#cb125-1" aria-hidden="true"></a><span class="co">## A more complex binned.branch.length function</span></span>
+<span id="cb125-2"><a href="makemodifiers.html#cb125-2" aria-hidden="true"></a>increasing.brlen &lt;-<span class="st"> </span><span class="cf">function</span>(bd.params, lineage) {</span>
+<span id="cb125-3"><a href="makemodifiers.html#cb125-3" aria-hidden="true"></a></span>
+<span id="cb125-4"><a href="makemodifiers.html#cb125-4" aria-hidden="true"></a>    <span class="co">## Setting the cumulated birth and death</span></span>
+<span id="cb125-5"><a href="makemodifiers.html#cb125-5" aria-hidden="true"></a>    birth_death &lt;-<span class="st"> </span>bd.params<span class="op">$</span>speciation <span class="op">+</span><span class="st"> </span>bd.params<span class="op">$</span>extinction</span>
+<span id="cb125-6"><a href="makemodifiers.html#cb125-6" aria-hidden="true"></a></span>
+<span id="cb125-7"><a href="makemodifiers.html#cb125-7" aria-hidden="true"></a>    <span class="co">## Returning branch lengths depending on different number of taxa</span></span>
+<span id="cb125-8"><a href="makemodifiers.html#cb125-8" aria-hidden="true"></a>    <span class="cf">if</span>(lineage<span class="op">$</span>n <span class="op">&lt;=</span><span class="st"> </span><span class="dv">5</span>) {</span>
+<span id="cb125-9"><a href="makemodifiers.html#cb125-9" aria-hidden="true"></a>        <span class="kw">return</span>(<span class="dv">1</span>    <span class="op">*</span><span class="st"> </span><span class="kw">rexp</span>(<span class="dv">1</span>, <span class="kw">sum</span>(<span class="dv">5</span> <span class="op">*</span><span class="st"> </span>birth_death)))</span>
+<span id="cb125-10"><a href="makemodifiers.html#cb125-10" aria-hidden="true"></a>    }</span>
+<span id="cb125-11"><a href="makemodifiers.html#cb125-11" aria-hidden="true"></a>    <span class="cf">if</span>(lineage<span class="op">$</span>n <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span>) {</span>
+<span id="cb125-12"><a href="makemodifiers.html#cb125-12" aria-hidden="true"></a>        <span class="kw">return</span>(<span class="dv">10</span>   <span class="op">*</span><span class="st"> </span><span class="kw">rexp</span>(<span class="dv">1</span>, <span class="kw">sum</span>(<span class="dv">10</span> <span class="op">*</span><span class="st"> </span>birth_death)))   </span>
+<span id="cb125-13"><a href="makemodifiers.html#cb125-13" aria-hidden="true"></a>    }</span>
+<span id="cb125-14"><a href="makemodifiers.html#cb125-14" aria-hidden="true"></a>    <span class="cf">if</span>(lineage<span class="op">$</span>n <span class="op">&lt;=</span><span class="st"> </span><span class="dv">15</span>) {</span>
+<span id="cb125-15"><a href="makemodifiers.html#cb125-15" aria-hidden="true"></a>        <span class="kw">return</span>(<span class="dv">100</span>  <span class="op">*</span><span class="st"> </span><span class="kw">rexp</span>(<span class="dv">1</span>, <span class="kw">sum</span>(<span class="dv">15</span> <span class="op">*</span><span class="st"> </span>birth_death)))      </span>
+<span id="cb125-16"><a href="makemodifiers.html#cb125-16" aria-hidden="true"></a>    }</span>
+<span id="cb125-17"><a href="makemodifiers.html#cb125-17" aria-hidden="true"></a>    <span class="cf">if</span>(lineage<span class="op">$</span>n <span class="op">&lt;=</span><span class="st"> </span><span class="dv">20</span>) {</span>
+<span id="cb125-18"><a href="makemodifiers.html#cb125-18" aria-hidden="true"></a>        <span class="kw">return</span>(<span class="dv">1000</span> <span class="op">*</span><span class="st"> </span><span class="kw">rexp</span>(<span class="dv">1</span>, <span class="kw">sum</span>(<span class="dv">20</span> <span class="op">*</span><span class="st"> </span>birth_death)))</span>
+<span id="cb125-19"><a href="makemodifiers.html#cb125-19" aria-hidden="true"></a>    } <span class="cf">else</span> {</span>
+<span id="cb125-20"><a href="makemodifiers.html#cb125-20" aria-hidden="true"></a>        <span class="kw">return</span>(<span class="dv">1000</span> <span class="op">*</span><span class="st"> </span><span class="kw">rexp</span>(<span class="dv">1</span>, <span class="kw">sum</span>(lineage<span class="op">$</span>n <span class="op">*</span><span class="st"> </span>birth_death)))</span>
+<span id="cb125-21"><a href="makemodifiers.html#cb125-21" aria-hidden="true"></a>    }</span>
+<span id="cb125-22"><a href="makemodifiers.html#cb125-22" aria-hidden="true"></a>}</span></code></pre></div>
 <p>We can then create it as a <code>"modifiers"</code> object and run a new simulation:</p>
-<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="makemodifiers.html#cb120-1" aria-hidden="true"></a><span class="co">## Creating a modifiers</span></span>
-<span id="cb120-2"><a href="makemodifiers.html#cb120-2" aria-hidden="true"></a>increasing_modifier &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">branch.length =</span> increasing.brlen)</span>
-<span id="cb120-3"><a href="makemodifiers.html#cb120-3" aria-hidden="true"></a></span>
-<span id="cb120-4"><a href="makemodifiers.html#cb120-4" aria-hidden="true"></a><span class="co">## Generating a new tree with this modifier</span></span>
-<span id="cb120-5"><a href="makemodifiers.html#cb120-5" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">0</span>)</span>
-<span id="cb120-6"><a href="makemodifiers.html#cb120-6" aria-hidden="true"></a>increasing_tree &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd_params,</span>
-<span id="cb120-7"><a href="makemodifiers.html#cb120-7" aria-hidden="true"></a>                        <span class="dt">stop.rule =</span> stop_rule,</span>
-<span id="cb120-8"><a href="makemodifiers.html#cb120-8" aria-hidden="true"></a>                        <span class="dt">modifiers =</span> increasing_modifier)</span></code></pre></div>
+<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="makemodifiers.html#cb126-1" aria-hidden="true"></a><span class="co">## Creating a modifiers</span></span>
+<span id="cb126-2"><a href="makemodifiers.html#cb126-2" aria-hidden="true"></a>increasing_modifier &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">branch.length =</span> increasing.brlen)</span>
+<span id="cb126-3"><a href="makemodifiers.html#cb126-3" aria-hidden="true"></a></span>
+<span id="cb126-4"><a href="makemodifiers.html#cb126-4" aria-hidden="true"></a><span class="co">## Generating a new tree with this modifier</span></span>
+<span id="cb126-5"><a href="makemodifiers.html#cb126-5" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">0</span>)</span>
+<span id="cb126-6"><a href="makemodifiers.html#cb126-6" aria-hidden="true"></a>increasing_tree &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd_params,</span>
+<span id="cb126-7"><a href="makemodifiers.html#cb126-7" aria-hidden="true"></a>                          <span class="dt">stop.rule =</span> stop_rule,</span>
+<span id="cb126-8"><a href="makemodifiers.html#cb126-8" aria-hidden="true"></a>                          <span class="dt">modifiers =</span> increasing_modifier)</span></code></pre></div>
 <p>And we can visualise the difference between the resulting trees:</p>
-<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb121-1"><a href="makemodifiers.html#cb121-1" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))</span>
-<span id="cb121-2"><a href="makemodifiers.html#cb121-2" aria-hidden="true"></a><span class="kw">plot</span>(default_tree,    <span class="dt">main =</span> <span class="st">&quot;Default modifier&quot;</span>)</span>
-<span id="cb121-3"><a href="makemodifiers.html#cb121-3" aria-hidden="true"></a><span class="kw">plot</span>(modified_tree,   <span class="dt">main =</span> <span class="st">&quot;Constant branch length</span><span class="ch">\n</span><span class="st">modifier&quot;</span>)</span>
-<span id="cb121-4"><a href="makemodifiers.html#cb121-4" aria-hidden="true"></a><span class="kw">plot</span>(increasing_tree, <span class="dt">main =</span> <span class="st">&quot;Increasing branch length</span><span class="ch">\n</span><span class="st">modifier (binned)&quot;</span>)</span></code></pre></div>
-<p><img src="treats_manual_files/figure-html/unnamed-chunk-76-1.png" width="672" /></p>
-<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="makemodifiers.html#cb122-1" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb127"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb127-1"><a href="makemodifiers.html#cb127-1" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))</span>
+<span id="cb127-2"><a href="makemodifiers.html#cb127-2" aria-hidden="true"></a><span class="kw">plot</span>(default_tree,    <span class="dt">main =</span> <span class="st">&quot;Default modifier&quot;</span>)</span>
+<span id="cb127-3"><a href="makemodifiers.html#cb127-3" aria-hidden="true"></a><span class="kw">plot</span>(modified_tree,   <span class="dt">main =</span> <span class="st">&quot;Constant branch length</span><span class="ch">\n</span><span class="st">modifier&quot;</span>)</span>
+<span id="cb127-4"><a href="makemodifiers.html#cb127-4" aria-hidden="true"></a><span class="kw">plot</span>(increasing_tree, <span class="dt">main =</span> <span class="st">&quot;Increasing branch length</span><span class="ch">\n</span><span class="st">modifier (binned)&quot;</span>)</span></code></pre></div>
+<p><img src="treats_manual_files/figure-html/unnamed-chunk-81-1.png" width="672" /></p>
+<div class="sourceCode" id="cb128"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb128-1"><a href="makemodifiers.html#cb128-1" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code></pre></div>
 </div>
 </div>
 <div id="the-selection-function-selection" class="section level2 hasAnchor" number="4.3">
@@ -581,71 +586,71 @@ Therefore any argument can be left undeclared or missing and is always handled i
 By default, this function randomly selects one taxon that is currently not extinct (using: <code>sample(1:lineage$n, 1))</code>.
 Similarly to <code>branch.length</code>, it is possible to modify this part of the birth-death process.
 For example, we could simply select the last created lineage to create a “ladder” or most asymmetric tree:</p>
-<div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb123-1"><a href="makemodifiers.html#cb123-1" aria-hidden="true"></a><span class="co">## Our function to always select the last taxon</span></span>
-<span id="cb123-2"><a href="makemodifiers.html#cb123-2" aria-hidden="true"></a><span class="co">## (making sure it returns an integer)</span></span>
-<span id="cb123-3"><a href="makemodifiers.html#cb123-3" aria-hidden="true"></a>select.last &lt;-<span class="st"> </span><span class="cf">function</span>(lineage) {</span>
-<span id="cb123-4"><a href="makemodifiers.html#cb123-4" aria-hidden="true"></a>    <span class="kw">return</span>(<span class="kw">as.integer</span>(lineage<span class="op">$</span>n))</span>
-<span id="cb123-5"><a href="makemodifiers.html#cb123-5" aria-hidden="true"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb129-1"><a href="makemodifiers.html#cb129-1" aria-hidden="true"></a><span class="co">## Our function to always select the last taxon</span></span>
+<span id="cb129-2"><a href="makemodifiers.html#cb129-2" aria-hidden="true"></a><span class="co">## (making sure it returns an integer)</span></span>
+<span id="cb129-3"><a href="makemodifiers.html#cb129-3" aria-hidden="true"></a>select.last &lt;-<span class="st"> </span><span class="cf">function</span>(lineage) {</span>
+<span id="cb129-4"><a href="makemodifiers.html#cb129-4" aria-hidden="true"></a>    <span class="kw">return</span>(<span class="kw">as.integer</span>(lineage<span class="op">$</span>n))</span>
+<span id="cb129-5"><a href="makemodifiers.html#cb129-5" aria-hidden="true"></a>}</span></code></pre></div>
 <blockquote>
 <p>Note that here the function can only take the <a href="makemodifiers.html#allowarguments">allowed arguments as described above</a> (here <code>lineage$n</code>: the number of current living taxa).</p>
 </blockquote>
 <p>We can then create a <code>"modifiers"</code> object the same way as before this time using the <code>selection</code> argument:</p>
-<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="makemodifiers.html#cb124-1" aria-hidden="true"></a><span class="co">## A modifier for selection</span></span>
-<span id="cb124-2"><a href="makemodifiers.html#cb124-2" aria-hidden="true"></a>ladderised_modifier &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">selection =</span> select.last)</span>
-<span id="cb124-3"><a href="makemodifiers.html#cb124-3" aria-hidden="true"></a><span class="co">## Generating a new tree with this modifier</span></span>
-<span id="cb124-4"><a href="makemodifiers.html#cb124-4" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">0</span>)</span>
-<span id="cb124-5"><a href="makemodifiers.html#cb124-5" aria-hidden="true"></a>ladderised_tree &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd_params,</span>
-<span id="cb124-6"><a href="makemodifiers.html#cb124-6" aria-hidden="true"></a>                        <span class="dt">stop.rule =</span> stop_rule,</span>
-<span id="cb124-7"><a href="makemodifiers.html#cb124-7" aria-hidden="true"></a>                        <span class="dt">modifiers =</span> ladderised_modifier)</span>
-<span id="cb124-8"><a href="makemodifiers.html#cb124-8" aria-hidden="true"></a><span class="co">## Displaying the results</span></span>
-<span id="cb124-9"><a href="makemodifiers.html#cb124-9" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
-<span id="cb124-10"><a href="makemodifiers.html#cb124-10" aria-hidden="true"></a><span class="kw">plot</span>(default_tree,    <span class="dt">main =</span> <span class="st">&quot;Default modifier&quot;</span>)</span>
-<span id="cb124-11"><a href="makemodifiers.html#cb124-11" aria-hidden="true"></a><span class="kw">plot</span>(ladderised_tree, <span class="dt">main =</span> <span class="st">&quot;Ladderising modifier&quot;</span>)</span></code></pre></div>
-<p><img src="treats_manual_files/figure-html/unnamed-chunk-78-1.png" width="672" /></p>
-<div class="sourceCode" id="cb125"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb125-1"><a href="makemodifiers.html#cb125-1" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb130-1"><a href="makemodifiers.html#cb130-1" aria-hidden="true"></a><span class="co">## A modifier for selection</span></span>
+<span id="cb130-2"><a href="makemodifiers.html#cb130-2" aria-hidden="true"></a>ladderised_modifier &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">selection =</span> select.last)</span>
+<span id="cb130-3"><a href="makemodifiers.html#cb130-3" aria-hidden="true"></a><span class="co">## Generating a new tree with this modifier</span></span>
+<span id="cb130-4"><a href="makemodifiers.html#cb130-4" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">0</span>)</span>
+<span id="cb130-5"><a href="makemodifiers.html#cb130-5" aria-hidden="true"></a>ladderised_tree &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd_params,</span>
+<span id="cb130-6"><a href="makemodifiers.html#cb130-6" aria-hidden="true"></a>                          <span class="dt">stop.rule =</span> stop_rule,</span>
+<span id="cb130-7"><a href="makemodifiers.html#cb130-7" aria-hidden="true"></a>                          <span class="dt">modifiers =</span> ladderised_modifier)</span>
+<span id="cb130-8"><a href="makemodifiers.html#cb130-8" aria-hidden="true"></a><span class="co">## Displaying the results</span></span>
+<span id="cb130-9"><a href="makemodifiers.html#cb130-9" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb130-10"><a href="makemodifiers.html#cb130-10" aria-hidden="true"></a><span class="kw">plot</span>(default_tree,    <span class="dt">main =</span> <span class="st">&quot;Default modifier&quot;</span>)</span>
+<span id="cb130-11"><a href="makemodifiers.html#cb130-11" aria-hidden="true"></a><span class="kw">plot</span>(ladderised_tree, <span class="dt">main =</span> <span class="st">&quot;Ladderising modifier&quot;</span>)</span></code></pre></div>
+<p><img src="treats_manual_files/figure-html/unnamed-chunk-83-1.png" width="672" /></p>
+<div class="sourceCode" id="cb131"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb131-1"><a href="makemodifiers.html#cb131-1" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code></pre></div>
 <p>Again, it is of course possible to make the modifier more complex and in combination with other elements of the tree.
 For example, we can create a <code>"treats"</code> object that also generates a BM trait and add to it this object a <code>selection</code> modifier that only selects tips with positive trait values (only species with positive trait values will speciate).</p>
-<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="makemodifiers.html#cb126-1" aria-hidden="true"></a><span class="co">## Our function that only select taxa with positive trait values</span></span>
-<span id="cb126-2"><a href="makemodifiers.html#cb126-2" aria-hidden="true"></a>select.positive &lt;-<span class="st"> </span><span class="cf">function</span>(trait.values, lineage) {</span>
-<span id="cb126-3"><a href="makemodifiers.html#cb126-3" aria-hidden="true"></a></span>
-<span id="cb126-4"><a href="makemodifiers.html#cb126-4" aria-hidden="true"></a>    <span class="co">## Selecting the taxa names with positive values for the first trait</span></span>
-<span id="cb126-5"><a href="makemodifiers.html#cb126-5" aria-hidden="true"></a>    positives &lt;-<span class="st"> </span><span class="kw">as.integer</span>(<span class="kw">rownames</span>(trait.values)[<span class="kw">which</span>(trait.values[, <span class="dv">1</span>] <span class="op">&gt;=</span><span class="st"> </span><span class="dv">0</span>)])</span>
-<span id="cb126-6"><a href="makemodifiers.html#cb126-6" aria-hidden="true"></a></span>
-<span id="cb126-7"><a href="makemodifiers.html#cb126-7" aria-hidden="true"></a>    <span class="co">## Combine the descendants of the current lineages (lineage$parents)</span></span>
-<span id="cb126-8"><a href="makemodifiers.html#cb126-8" aria-hidden="true"></a>    <span class="co">## with the species that have speciated (seq_along(lineages$split))</span></span>
-<span id="cb126-9"><a href="makemodifiers.html#cb126-9" aria-hidden="true"></a>    <span class="co">## to have a table of pairs of parents/splits</span></span>
-<span id="cb126-10"><a href="makemodifiers.html#cb126-10" aria-hidden="true"></a>    parents_split_table &lt;-<span class="st"> </span><span class="kw">cbind</span>(lineage<span class="op">$</span>parents, <span class="kw">seq_along</span>(lineage<span class="op">$</span>split))</span>
-<span id="cb126-11"><a href="makemodifiers.html#cb126-11" aria-hidden="true"></a>    <span class="co">## Select the current taxa that descend from a node with a positive value</span></span>
-<span id="cb126-12"><a href="makemodifiers.html#cb126-12" aria-hidden="true"></a>    positive_living &lt;-<span class="st"> </span>parents_split_table[<span class="kw">which</span>(lineage<span class="op">$</span>parents <span class="op">%in%</span><span class="st"> </span>positives), <span class="dv">2</span>]</span>
-<span id="cb126-13"><a href="makemodifiers.html#cb126-13" aria-hidden="true"></a></span>
-<span id="cb126-14"><a href="makemodifiers.html#cb126-14" aria-hidden="true"></a>    <span class="co">## Select one tip randomly in the ones with descendants with positive values</span></span>
-<span id="cb126-15"><a href="makemodifiers.html#cb126-15" aria-hidden="true"></a>    <span class="kw">return</span>(<span class="kw">sample</span>(<span class="kw">which</span>(lineage<span class="op">$</span>livings <span class="op">%in%</span><span class="st"> </span>positive_living), <span class="dv">1</span>))</span>
-<span id="cb126-16"><a href="makemodifiers.html#cb126-16" aria-hidden="true"></a>}</span>
-<span id="cb126-17"><a href="makemodifiers.html#cb126-17" aria-hidden="true"></a></span>
-<span id="cb126-18"><a href="makemodifiers.html#cb126-18" aria-hidden="true"></a><span class="co">## Creating the modifier</span></span>
-<span id="cb126-19"><a href="makemodifiers.html#cb126-19" aria-hidden="true"></a>positive_skew &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">selection =</span> select.positive)</span>
-<span id="cb126-20"><a href="makemodifiers.html#cb126-20" aria-hidden="true"></a></span>
-<span id="cb126-21"><a href="makemodifiers.html#cb126-21" aria-hidden="true"></a><span class="co">## Creating a (default) trait object</span></span>
-<span id="cb126-22"><a href="makemodifiers.html#cb126-22" aria-hidden="true"></a>BM_trait &lt;-<span class="st"> </span><span class="kw">make.traits</span>()</span>
-<span id="cb126-23"><a href="makemodifiers.html#cb126-23" aria-hidden="true"></a></span>
-<span id="cb126-24"><a href="makemodifiers.html#cb126-24" aria-hidden="true"></a><span class="co">## Simulate a tree and trait with no modifier</span></span>
-<span id="cb126-25"><a href="makemodifiers.html#cb126-25" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb126-26"><a href="makemodifiers.html#cb126-26" aria-hidden="true"></a>default_treats &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd_params,</span>
-<span id="cb126-27"><a href="makemodifiers.html#cb126-27" aria-hidden="true"></a>                     <span class="dt">stop.rule =</span> stop_rule,</span>
-<span id="cb126-28"><a href="makemodifiers.html#cb126-28" aria-hidden="true"></a>                     <span class="dt">traits =</span> BM_trait)</span>
-<span id="cb126-29"><a href="makemodifiers.html#cb126-29" aria-hidden="true"></a></span>
-<span id="cb126-30"><a href="makemodifiers.html#cb126-30" aria-hidden="true"></a><span class="co">## Simulate a tree and trait with the modifier</span></span>
-<span id="cb126-31"><a href="makemodifiers.html#cb126-31" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb126-32"><a href="makemodifiers.html#cb126-32" aria-hidden="true"></a>skewed_trait_treats &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd_params,</span>
-<span id="cb126-33"><a href="makemodifiers.html#cb126-33" aria-hidden="true"></a>                          <span class="dt">stop.rule =</span> stop_rule,</span>
-<span id="cb126-34"><a href="makemodifiers.html#cb126-34" aria-hidden="true"></a>                          <span class="dt">traits =</span> BM_trait,</span>
-<span id="cb126-35"><a href="makemodifiers.html#cb126-35" aria-hidden="true"></a>                          <span class="dt">modifiers =</span> positive_skew)</span>
-<span id="cb126-36"><a href="makemodifiers.html#cb126-36" aria-hidden="true"></a></span>
-<span id="cb126-37"><a href="makemodifiers.html#cb126-37" aria-hidden="true"></a><span class="co">## Plotting the differences in trees and traits</span></span>
-<span id="cb126-38"><a href="makemodifiers.html#cb126-38" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
-<span id="cb126-39"><a href="makemodifiers.html#cb126-39" aria-hidden="true"></a><span class="kw">plot</span>(default_treats, <span class="dt">main =</span> <span class="st">&quot;Default trait and tree&quot;</span>)</span>
-<span id="cb126-40"><a href="makemodifiers.html#cb126-40" aria-hidden="true"></a><span class="kw">plot</span>(skewed_trait_treats, <span class="dt">main =</span> <span class="st">&quot;Skewed trait and tree&quot;</span>)</span></code></pre></div>
-<p><img src="treats_manual_files/figure-html/unnamed-chunk-79-1.png" width="672" /></p>
+<div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb132-1"><a href="makemodifiers.html#cb132-1" aria-hidden="true"></a><span class="co">## Our function that only select taxa with positive trait values</span></span>
+<span id="cb132-2"><a href="makemodifiers.html#cb132-2" aria-hidden="true"></a>select.positive &lt;-<span class="st"> </span><span class="cf">function</span>(trait.values, lineage) {</span>
+<span id="cb132-3"><a href="makemodifiers.html#cb132-3" aria-hidden="true"></a></span>
+<span id="cb132-4"><a href="makemodifiers.html#cb132-4" aria-hidden="true"></a>    <span class="co">## Selecting the taxa names with positive values for the first trait</span></span>
+<span id="cb132-5"><a href="makemodifiers.html#cb132-5" aria-hidden="true"></a>    positives &lt;-<span class="st"> </span><span class="kw">as.integer</span>(<span class="kw">rownames</span>(trait.values)[<span class="kw">which</span>(trait.values[, <span class="dv">1</span>] <span class="op">&gt;=</span><span class="st"> </span><span class="dv">0</span>)])</span>
+<span id="cb132-6"><a href="makemodifiers.html#cb132-6" aria-hidden="true"></a></span>
+<span id="cb132-7"><a href="makemodifiers.html#cb132-7" aria-hidden="true"></a>    <span class="co">## Combine the descendants of the current lineages (lineage$parents)</span></span>
+<span id="cb132-8"><a href="makemodifiers.html#cb132-8" aria-hidden="true"></a>    <span class="co">## with the species that have speciated (seq_along(lineages$split))</span></span>
+<span id="cb132-9"><a href="makemodifiers.html#cb132-9" aria-hidden="true"></a>    <span class="co">## to have a table of pairs of parents/splits</span></span>
+<span id="cb132-10"><a href="makemodifiers.html#cb132-10" aria-hidden="true"></a>    parents_split_table &lt;-<span class="st"> </span><span class="kw">cbind</span>(lineage<span class="op">$</span>parents, <span class="kw">seq_along</span>(lineage<span class="op">$</span>split))</span>
+<span id="cb132-11"><a href="makemodifiers.html#cb132-11" aria-hidden="true"></a>    <span class="co">## Select the current taxa that descend from a node with a positive value</span></span>
+<span id="cb132-12"><a href="makemodifiers.html#cb132-12" aria-hidden="true"></a>    positive_living &lt;-<span class="st"> </span>parents_split_table[<span class="kw">which</span>(lineage<span class="op">$</span>parents <span class="op">%in%</span><span class="st"> </span>positives), <span class="dv">2</span>]</span>
+<span id="cb132-13"><a href="makemodifiers.html#cb132-13" aria-hidden="true"></a></span>
+<span id="cb132-14"><a href="makemodifiers.html#cb132-14" aria-hidden="true"></a>    <span class="co">## Select one tip randomly in the ones with descendants with positive values</span></span>
+<span id="cb132-15"><a href="makemodifiers.html#cb132-15" aria-hidden="true"></a>    <span class="kw">return</span>(<span class="kw">sample</span>(<span class="kw">which</span>(lineage<span class="op">$</span>livings <span class="op">%in%</span><span class="st"> </span>positive_living), <span class="dv">1</span>))</span>
+<span id="cb132-16"><a href="makemodifiers.html#cb132-16" aria-hidden="true"></a>}</span>
+<span id="cb132-17"><a href="makemodifiers.html#cb132-17" aria-hidden="true"></a></span>
+<span id="cb132-18"><a href="makemodifiers.html#cb132-18" aria-hidden="true"></a><span class="co">## Creating the modifier</span></span>
+<span id="cb132-19"><a href="makemodifiers.html#cb132-19" aria-hidden="true"></a>positive_skew &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">selection =</span> select.positive)</span>
+<span id="cb132-20"><a href="makemodifiers.html#cb132-20" aria-hidden="true"></a></span>
+<span id="cb132-21"><a href="makemodifiers.html#cb132-21" aria-hidden="true"></a><span class="co">## Creating a (default) trait object</span></span>
+<span id="cb132-22"><a href="makemodifiers.html#cb132-22" aria-hidden="true"></a>BM_trait &lt;-<span class="st"> </span><span class="kw">make.traits</span>()</span>
+<span id="cb132-23"><a href="makemodifiers.html#cb132-23" aria-hidden="true"></a></span>
+<span id="cb132-24"><a href="makemodifiers.html#cb132-24" aria-hidden="true"></a><span class="co">## Simulate a tree and trait with no modifier</span></span>
+<span id="cb132-25"><a href="makemodifiers.html#cb132-25" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb132-26"><a href="makemodifiers.html#cb132-26" aria-hidden="true"></a>default_treats &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd_params,</span>
+<span id="cb132-27"><a href="makemodifiers.html#cb132-27" aria-hidden="true"></a>                         <span class="dt">stop.rule =</span> stop_rule,</span>
+<span id="cb132-28"><a href="makemodifiers.html#cb132-28" aria-hidden="true"></a>                         <span class="dt">traits    =</span> BM_trait)</span>
+<span id="cb132-29"><a href="makemodifiers.html#cb132-29" aria-hidden="true"></a></span>
+<span id="cb132-30"><a href="makemodifiers.html#cb132-30" aria-hidden="true"></a><span class="co">## Simulate a tree and trait with the modifier</span></span>
+<span id="cb132-31"><a href="makemodifiers.html#cb132-31" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb132-32"><a href="makemodifiers.html#cb132-32" aria-hidden="true"></a>skewed_trait_treats &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd_params,</span>
+<span id="cb132-33"><a href="makemodifiers.html#cb132-33" aria-hidden="true"></a>                              <span class="dt">stop.rule =</span> stop_rule,</span>
+<span id="cb132-34"><a href="makemodifiers.html#cb132-34" aria-hidden="true"></a>                              <span class="dt">traits    =</span> BM_trait,</span>
+<span id="cb132-35"><a href="makemodifiers.html#cb132-35" aria-hidden="true"></a>                              <span class="dt">modifiers =</span> positive_skew)</span>
+<span id="cb132-36"><a href="makemodifiers.html#cb132-36" aria-hidden="true"></a></span>
+<span id="cb132-37"><a href="makemodifiers.html#cb132-37" aria-hidden="true"></a><span class="co">## Plotting the differences in trees and traits</span></span>
+<span id="cb132-38"><a href="makemodifiers.html#cb132-38" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb132-39"><a href="makemodifiers.html#cb132-39" aria-hidden="true"></a><span class="kw">plot</span>(default_treats, <span class="dt">main =</span> <span class="st">&quot;Default trait and tree&quot;</span>)</span>
+<span id="cb132-40"><a href="makemodifiers.html#cb132-40" aria-hidden="true"></a><span class="kw">plot</span>(skewed_trait_treats, <span class="dt">main =</span> <span class="st">&quot;Skewed trait and tree&quot;</span>)</span></code></pre></div>
+<p><img src="treats_manual_files/figure-html/unnamed-chunk-84-1.png" width="672" /></p>
 </div>
 <div id="the-speciation-function-speciation" class="section level2 hasAnchor" number="4.4">
 <h2><span class="header-section-number">4.4</span> The speciation function (<code>speciation</code>)<a href="makemodifiers.html#the-speciation-function-speciation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -656,59 +661,59 @@ This one is used during the birth-death process to decide whether a lineage spec
 The then surviving lineages are all automatically transformed into tips.</p>
 </blockquote>
 <p>By default, the <code>speciation</code> function is trigger a speciation even if a number randomly drawn from a uniform distribution is lower than the ratio between the speciation and the speciation and extinction parameter. If the randomly drawn number is higher, the lineage goes extinct.</p>
-<div class="sourceCode" id="cb127"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb127-1"><a href="makemodifiers.html#cb127-1" aria-hidden="true"></a><span class="co">## The speciation in pseudo-code:</span></span>
-<span id="cb127-2"><a href="makemodifiers.html#cb127-2" aria-hidden="true"></a><span class="kw">runif</span>(<span class="dv">1</span>) <span class="op">&lt;</span><span class="st"> </span>speciation<span class="op">/</span><span class="st"> </span>(speciation <span class="op">+</span><span class="st"> </span>extinction)</span></code></pre></div>
+<div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb133-1"><a href="makemodifiers.html#cb133-1" aria-hidden="true"></a><span class="co">## The speciation in pseudo-code:</span></span>
+<span id="cb133-2"><a href="makemodifiers.html#cb133-2" aria-hidden="true"></a><span class="kw">runif</span>(<span class="dv">1</span>) <span class="op">&lt;</span><span class="st"> </span>speciation<span class="op">/</span><span class="st"> </span>(speciation <span class="op">+</span><span class="st"> </span>extinction)</span></code></pre></div>
 <p>Creating <code>"modifiers"</code> with a <code>speciation</code> function works the same way as for <code>branch.length</code> and <code>selection</code> but the function that will be used needs to output a logical value (see table <a href="makemodifiers.html#summarymodifiers">below</a>).
 Once the function is created simply input your function for speciation in the modifier and run the <code>treats</code> function with that modifier:</p>
-<div class="sourceCode" id="cb128"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb128-1"><a href="makemodifiers.html#cb128-1" aria-hidden="true"></a><span class="co">## Speciating or going extinct randomly</span></span>
-<span id="cb128-2"><a href="makemodifiers.html#cb128-2" aria-hidden="true"></a><span class="co">## (regardless of the extinction parameter)</span></span>
-<span id="cb128-3"><a href="makemodifiers.html#cb128-3" aria-hidden="true"></a>random.extinct  &lt;-<span class="st"> </span><span class="cf">function</span>() {</span>
-<span id="cb128-4"><a href="makemodifiers.html#cb128-4" aria-hidden="true"></a>    <span class="kw">return</span>(<span class="kw">sample</span>(<span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">FALSE</span>), <span class="dv">1</span>))</span>
-<span id="cb128-5"><a href="makemodifiers.html#cb128-5" aria-hidden="true"></a>}</span>
-<span id="cb128-6"><a href="makemodifiers.html#cb128-6" aria-hidden="true"></a></span>
-<span id="cb128-7"><a href="makemodifiers.html#cb128-7" aria-hidden="true"></a><span class="co">## Creating the modifiers object</span></span>
-<span id="cb128-8"><a href="makemodifiers.html#cb128-8" aria-hidden="true"></a>random_extinction &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">speciation =</span> random.extinct)</span>
-<span id="cb128-9"><a href="makemodifiers.html#cb128-9" aria-hidden="true"></a></span>
-<span id="cb128-10"><a href="makemodifiers.html#cb128-10" aria-hidden="true"></a><span class="co">## Generating a new tree with this modifier</span></span>
-<span id="cb128-11"><a href="makemodifiers.html#cb128-11" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb128-12"><a href="makemodifiers.html#cb128-12" aria-hidden="true"></a>modified_tree &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd_params,</span>
-<span id="cb128-13"><a href="makemodifiers.html#cb128-13" aria-hidden="true"></a>                      <span class="dt">stop.rule =</span> stop_rule,</span>
-<span id="cb128-14"><a href="makemodifiers.html#cb128-14" aria-hidden="true"></a>                      <span class="dt">modifiers =</span> random_extinction)</span>
-<span id="cb128-15"><a href="makemodifiers.html#cb128-15" aria-hidden="true"></a></span>
-<span id="cb128-16"><a href="makemodifiers.html#cb128-16" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
-<span id="cb128-17"><a href="makemodifiers.html#cb128-17" aria-hidden="true"></a><span class="kw">plot</span>(default_tree,  <span class="dt">main =</span> <span class="st">&quot;Default modifier&quot;</span>)</span>
-<span id="cb128-18"><a href="makemodifiers.html#cb128-18" aria-hidden="true"></a><span class="kw">plot</span>(modified_tree, <span class="dt">main =</span> <span class="st">&quot;Random extinction</span><span class="ch">\n</span><span class="st">modifier&quot;</span>)</span>
-<span id="cb128-19"><a href="makemodifiers.html#cb128-19" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb134-1"><a href="makemodifiers.html#cb134-1" aria-hidden="true"></a><span class="co">## Speciating or going extinct randomly</span></span>
+<span id="cb134-2"><a href="makemodifiers.html#cb134-2" aria-hidden="true"></a><span class="co">## (regardless of the extinction parameter)</span></span>
+<span id="cb134-3"><a href="makemodifiers.html#cb134-3" aria-hidden="true"></a>random.extinct  &lt;-<span class="st"> </span><span class="cf">function</span>() {</span>
+<span id="cb134-4"><a href="makemodifiers.html#cb134-4" aria-hidden="true"></a>    <span class="kw">return</span>(<span class="kw">sample</span>(<span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">FALSE</span>), <span class="dv">1</span>))</span>
+<span id="cb134-5"><a href="makemodifiers.html#cb134-5" aria-hidden="true"></a>}</span>
+<span id="cb134-6"><a href="makemodifiers.html#cb134-6" aria-hidden="true"></a></span>
+<span id="cb134-7"><a href="makemodifiers.html#cb134-7" aria-hidden="true"></a><span class="co">## Creating the modifiers object</span></span>
+<span id="cb134-8"><a href="makemodifiers.html#cb134-8" aria-hidden="true"></a>random_extinction &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">speciation =</span> random.extinct)</span>
+<span id="cb134-9"><a href="makemodifiers.html#cb134-9" aria-hidden="true"></a></span>
+<span id="cb134-10"><a href="makemodifiers.html#cb134-10" aria-hidden="true"></a><span class="co">## Generating a new tree with this modifier</span></span>
+<span id="cb134-11"><a href="makemodifiers.html#cb134-11" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb134-12"><a href="makemodifiers.html#cb134-12" aria-hidden="true"></a>modified_tree &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd_params,</span>
+<span id="cb134-13"><a href="makemodifiers.html#cb134-13" aria-hidden="true"></a>                        <span class="dt">stop.rule =</span> stop_rule,</span>
+<span id="cb134-14"><a href="makemodifiers.html#cb134-14" aria-hidden="true"></a>                        <span class="dt">modifiers =</span> random_extinction)</span>
+<span id="cb134-15"><a href="makemodifiers.html#cb134-15" aria-hidden="true"></a></span>
+<span id="cb134-16"><a href="makemodifiers.html#cb134-16" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb134-17"><a href="makemodifiers.html#cb134-17" aria-hidden="true"></a><span class="kw">plot</span>(default_tree,  <span class="dt">main =</span> <span class="st">&quot;Default modifier&quot;</span>)</span>
+<span id="cb134-18"><a href="makemodifiers.html#cb134-18" aria-hidden="true"></a><span class="kw">plot</span>(modified_tree, <span class="dt">main =</span> <span class="st">&quot;Random extinction</span><span class="ch">\n</span><span class="st">modifier&quot;</span>)</span>
+<span id="cb134-19"><a href="makemodifiers.html#cb134-19" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code></pre></div>
 <blockquote>
 <p>Note how loads of lineages go extinct even if the extinction parameter is set to 0!</p>
 </blockquote>
 <p>And again, we can make some more advanced modifiers: for example, one where a tip always goes extinct if their ancestor has a negative trait value. Here we will also introduce the utility function <code>parent.trait</code> that automatically selects the trait values of the parent of the current lineage.</p>
-<div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb129-1"><a href="makemodifiers.html#cb129-1" aria-hidden="true"></a><span class="co">## A modifier for removing tips with negative values</span></span>
-<span id="cb129-2"><a href="makemodifiers.html#cb129-2" aria-hidden="true"></a>modify.trait &lt;-<span class="st"> </span><span class="cf">function</span>(trait.values, lineage) {</span>
-<span id="cb129-3"><a href="makemodifiers.html#cb129-3" aria-hidden="true"></a>    <span class="cf">if</span>(<span class="kw">parent.traits</span>(trait.values, lineage) <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) {</span>
-<span id="cb129-4"><a href="makemodifiers.html#cb129-4" aria-hidden="true"></a>        <span class="co">## Go extinct!</span></span>
-<span id="cb129-5"><a href="makemodifiers.html#cb129-5" aria-hidden="true"></a>        <span class="kw">return</span>(<span class="ot">FALSE</span>)</span>
-<span id="cb129-6"><a href="makemodifiers.html#cb129-6" aria-hidden="true"></a>    } <span class="cf">else</span> {</span>
-<span id="cb129-7"><a href="makemodifiers.html#cb129-7" aria-hidden="true"></a>        <span class="co">## Speciate!</span></span>
-<span id="cb129-8"><a href="makemodifiers.html#cb129-8" aria-hidden="true"></a>        <span class="kw">return</span>(<span class="ot">TRUE</span>)</span>
-<span id="cb129-9"><a href="makemodifiers.html#cb129-9" aria-hidden="true"></a>    }</span>
-<span id="cb129-10"><a href="makemodifiers.html#cb129-10" aria-hidden="true"></a>}</span>
-<span id="cb129-11"><a href="makemodifiers.html#cb129-11" aria-hidden="true"></a></span>
-<span id="cb129-12"><a href="makemodifiers.html#cb129-12" aria-hidden="true"></a><span class="co">## Creating the modifier</span></span>
-<span id="cb129-13"><a href="makemodifiers.html#cb129-13" aria-hidden="true"></a>modified_trait &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">speciation =</span> modify.trait)</span>
-<span id="cb129-14"><a href="makemodifiers.html#cb129-14" aria-hidden="true"></a></span>
-<span id="cb129-15"><a href="makemodifiers.html#cb129-15" aria-hidden="true"></a><span class="co">## Simulate a tree and trait with the modifier</span></span>
-<span id="cb129-16"><a href="makemodifiers.html#cb129-16" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb129-17"><a href="makemodifiers.html#cb129-17" aria-hidden="true"></a>modified_trait_treats &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd_params,</span>
-<span id="cb129-18"><a href="makemodifiers.html#cb129-18" aria-hidden="true"></a>                          <span class="dt">stop.rule =</span> stop_rule,</span>
-<span id="cb129-19"><a href="makemodifiers.html#cb129-19" aria-hidden="true"></a>                          <span class="dt">traits    =</span> BM_trait,</span>
-<span id="cb129-20"><a href="makemodifiers.html#cb129-20" aria-hidden="true"></a>                          <span class="dt">modifiers =</span> modified_trait)</span>
-<span id="cb129-21"><a href="makemodifiers.html#cb129-21" aria-hidden="true"></a></span>
-<span id="cb129-22"><a href="makemodifiers.html#cb129-22" aria-hidden="true"></a><span class="co">## Plotting the differences in trees and traits</span></span>
-<span id="cb129-23"><a href="makemodifiers.html#cb129-23" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
-<span id="cb129-24"><a href="makemodifiers.html#cb129-24" aria-hidden="true"></a><span class="kw">plot</span>(default_treats, <span class="dt">main =</span> <span class="st">&quot;Default trait and tree&quot;</span>)</span>
-<span id="cb129-25"><a href="makemodifiers.html#cb129-25" aria-hidden="true"></a><span class="kw">plot</span>(modified_trait_treats, <span class="dt">main =</span> <span class="st">&quot;Biased trait and tree&quot;</span>)</span></code></pre></div>
-<p><img src="treats_manual_files/figure-html/unnamed-chunk-82-1.png" width="672" /></p>
+<div class="sourceCode" id="cb135"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb135-1"><a href="makemodifiers.html#cb135-1" aria-hidden="true"></a><span class="co">## A modifier for removing tips with negative values</span></span>
+<span id="cb135-2"><a href="makemodifiers.html#cb135-2" aria-hidden="true"></a>modify.trait &lt;-<span class="st"> </span><span class="cf">function</span>(trait.values, lineage) {</span>
+<span id="cb135-3"><a href="makemodifiers.html#cb135-3" aria-hidden="true"></a>    <span class="cf">if</span>(<span class="kw">parent.traits</span>(trait.values, lineage) <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) {</span>
+<span id="cb135-4"><a href="makemodifiers.html#cb135-4" aria-hidden="true"></a>        <span class="co">## Go extinct!</span></span>
+<span id="cb135-5"><a href="makemodifiers.html#cb135-5" aria-hidden="true"></a>        <span class="kw">return</span>(<span class="ot">FALSE</span>)</span>
+<span id="cb135-6"><a href="makemodifiers.html#cb135-6" aria-hidden="true"></a>    } <span class="cf">else</span> {</span>
+<span id="cb135-7"><a href="makemodifiers.html#cb135-7" aria-hidden="true"></a>        <span class="co">## Speciate!</span></span>
+<span id="cb135-8"><a href="makemodifiers.html#cb135-8" aria-hidden="true"></a>        <span class="kw">return</span>(<span class="ot">TRUE</span>)</span>
+<span id="cb135-9"><a href="makemodifiers.html#cb135-9" aria-hidden="true"></a>    }</span>
+<span id="cb135-10"><a href="makemodifiers.html#cb135-10" aria-hidden="true"></a>}</span>
+<span id="cb135-11"><a href="makemodifiers.html#cb135-11" aria-hidden="true"></a></span>
+<span id="cb135-12"><a href="makemodifiers.html#cb135-12" aria-hidden="true"></a><span class="co">## Creating the modifier</span></span>
+<span id="cb135-13"><a href="makemodifiers.html#cb135-13" aria-hidden="true"></a>modified_trait &lt;-<span class="st"> </span><span class="kw">make.modifiers</span>(<span class="dt">speciation =</span> modify.trait)</span>
+<span id="cb135-14"><a href="makemodifiers.html#cb135-14" aria-hidden="true"></a></span>
+<span id="cb135-15"><a href="makemodifiers.html#cb135-15" aria-hidden="true"></a><span class="co">## Simulate a tree and trait with the modifier</span></span>
+<span id="cb135-16"><a href="makemodifiers.html#cb135-16" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb135-17"><a href="makemodifiers.html#cb135-17" aria-hidden="true"></a>modified_trait_treats &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> bd_params,</span>
+<span id="cb135-18"><a href="makemodifiers.html#cb135-18" aria-hidden="true"></a>                                <span class="dt">stop.rule =</span> stop_rule,</span>
+<span id="cb135-19"><a href="makemodifiers.html#cb135-19" aria-hidden="true"></a>                                <span class="dt">traits    =</span> BM_trait,</span>
+<span id="cb135-20"><a href="makemodifiers.html#cb135-20" aria-hidden="true"></a>                                <span class="dt">modifiers =</span> modified_trait)</span>
+<span id="cb135-21"><a href="makemodifiers.html#cb135-21" aria-hidden="true"></a></span>
+<span id="cb135-22"><a href="makemodifiers.html#cb135-22" aria-hidden="true"></a><span class="co">## Plotting the differences in trees and traits</span></span>
+<span id="cb135-23"><a href="makemodifiers.html#cb135-23" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb135-24"><a href="makemodifiers.html#cb135-24" aria-hidden="true"></a><span class="kw">plot</span>(default_treats, <span class="dt">main =</span> <span class="st">&quot;Default trait and tree&quot;</span>)</span>
+<span id="cb135-25"><a href="makemodifiers.html#cb135-25" aria-hidden="true"></a><span class="kw">plot</span>(modified_trait_treats, <span class="dt">main =</span> <span class="st">&quot;Biased trait and tree&quot;</span>)</span></code></pre></div>
+<p><img src="treats_manual_files/figure-html/unnamed-chunk-87-1.png" width="672" /></p>
 </div>
 <div id="summarymodifiers" class="section level2 hasAnchor" number="4.5">
 <h2><span class="header-section-number">4.5</span> Summary of the inputs and outputs for the <code>branch.length</code>, <code>selection</code> and <code>speciation</code> modifiers<a href="makemodifiers.html#summarymodifiers" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -747,45 +752,45 @@ It is however, possible to code the <code>"modifiers"</code> so that they can be
 <p>To do so, you can formally declare conditions (<code>condition</code>) and modifications (<code>modify</code>) as internal functions that can then be modified by an <code>"events"</code> object.
 <code>condition</code> and <code>modify</code> are hard coded in the <code>branch.length</code> function that they concern, i.e. they are variables (functions) within the function.</p>
 <p>For example in the <code>speciation</code> part of a modifier, the default is to trigger an event from a uniform distribution and then check if that value is smaller than (<span class="math inline">\(speciation/(speciation + extinction)\)</span>):</p>
-<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb130-1"><a href="makemodifiers.html#cb130-1" aria-hidden="true"></a><span class="co">## The default speciation algorithm</span></span>
-<span id="cb130-2"><a href="makemodifiers.html#cb130-2" aria-hidden="true"></a>speciation &lt;-<span class="st"> </span><span class="cf">function</span>(bd.params) {</span>
-<span id="cb130-3"><a href="makemodifiers.html#cb130-3" aria-hidden="true"></a>    <span class="co">## Randomly trigger an event</span></span>
-<span id="cb130-4"><a href="makemodifiers.html#cb130-4" aria-hidden="true"></a>    trigger_event &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>)</span>
-<span id="cb130-5"><a href="makemodifiers.html#cb130-5" aria-hidden="true"></a></span>
-<span id="cb130-6"><a href="makemodifiers.html#cb130-6" aria-hidden="true"></a>    <span class="co">## Speciate?</span></span>
-<span id="cb130-7"><a href="makemodifiers.html#cb130-7" aria-hidden="true"></a>    <span class="kw">return</span>(trigger_event <span class="op">&lt;</span><span class="st"> </span>(bd.params<span class="op">$</span>speciation<span class="op">/</span></span>
-<span id="cb130-8"><a href="makemodifiers.html#cb130-8" aria-hidden="true"></a><span class="st">                              </span>(bd.params<span class="op">$</span>speciation <span class="op">+</span><span class="st"> </span>bd.params<span class="op">$</span>extinction)))</span>
-<span id="cb130-9"><a href="makemodifiers.html#cb130-9" aria-hidden="true"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb136-1"><a href="makemodifiers.html#cb136-1" aria-hidden="true"></a><span class="co">## The default speciation algorithm</span></span>
+<span id="cb136-2"><a href="makemodifiers.html#cb136-2" aria-hidden="true"></a>speciation &lt;-<span class="st"> </span><span class="cf">function</span>(bd.params) {</span>
+<span id="cb136-3"><a href="makemodifiers.html#cb136-3" aria-hidden="true"></a>    <span class="co">## Randomly trigger an event</span></span>
+<span id="cb136-4"><a href="makemodifiers.html#cb136-4" aria-hidden="true"></a>    trigger_event &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>)</span>
+<span id="cb136-5"><a href="makemodifiers.html#cb136-5" aria-hidden="true"></a></span>
+<span id="cb136-6"><a href="makemodifiers.html#cb136-6" aria-hidden="true"></a>    <span class="co">## Speciate?</span></span>
+<span id="cb136-7"><a href="makemodifiers.html#cb136-7" aria-hidden="true"></a>    <span class="kw">return</span>(trigger_event <span class="op">&lt;</span><span class="st"> </span>(bd.params<span class="op">$</span>speciation<span class="op">/</span></span>
+<span id="cb136-8"><a href="makemodifiers.html#cb136-8" aria-hidden="true"></a><span class="st">                              </span>(bd.params<span class="op">$</span>speciation <span class="op">+</span><span class="st"> </span>bd.params<span class="op">$</span>extinction)))</span>
+<span id="cb136-9"><a href="makemodifiers.html#cb136-9" aria-hidden="true"></a>}</span></code></pre></div>
 <p>It is possible with some specific conditions to modify this trigger by providing a <code>condition</code> and <code>modify</code> function to the speciation function.
 That is, if the <code>condition</code> is met, apply the <code>modify</code> function to the algorithm.
 For example here we can edit the default speciation function to have a modification (<code>modify = double.the.trigger</code>: doubling the trigger value) happening half the time (<code>condition = half.the.time</code>):</p>
-<div class="sourceCode" id="cb131"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb131-1"><a href="makemodifiers.html#cb131-1" aria-hidden="true"></a><span class="co">## A conditional function that triggers half the time</span></span>
-<span id="cb131-2"><a href="makemodifiers.html#cb131-2" aria-hidden="true"></a>half.the.time &lt;-<span class="st"> </span><span class="cf">function</span>() <span class="kw">return</span>(<span class="kw">sample</span>(<span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">FALSE</span>), <span class="dv">1</span>))</span>
-<span id="cb131-3"><a href="makemodifiers.html#cb131-3" aria-hidden="true"></a><span class="co">## A modification that doubles the value to trigger the event</span></span>
-<span id="cb131-4"><a href="makemodifiers.html#cb131-4" aria-hidden="true"></a>double.the.trigger &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">return</span>(x<span class="op">*</span><span class="dv">2</span>)</span>
-<span id="cb131-5"><a href="makemodifiers.html#cb131-5" aria-hidden="true"></a><span class="co">## A conditional modifier</span></span>
-<span id="cb131-6"><a href="makemodifiers.html#cb131-6" aria-hidden="true"></a><span class="kw">make.modifiers</span>(<span class="dt">speciation =</span> speciation,</span>
-<span id="cb131-7"><a href="makemodifiers.html#cb131-7" aria-hidden="true"></a>               <span class="dt">condition  =</span> half.the.time, </span>
-<span id="cb131-8"><a href="makemodifiers.html#cb131-8" aria-hidden="true"></a>               <span class="dt">modify =</span> double.the.trigger)</span></code></pre></div>
+<div class="sourceCode" id="cb137"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb137-1"><a href="makemodifiers.html#cb137-1" aria-hidden="true"></a><span class="co">## A conditional function that triggers half the time</span></span>
+<span id="cb137-2"><a href="makemodifiers.html#cb137-2" aria-hidden="true"></a>half.the.time &lt;-<span class="st"> </span><span class="cf">function</span>() <span class="kw">return</span>(<span class="kw">sample</span>(<span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">FALSE</span>), <span class="dv">1</span>))</span>
+<span id="cb137-3"><a href="makemodifiers.html#cb137-3" aria-hidden="true"></a><span class="co">## A modification that doubles the value to trigger the event</span></span>
+<span id="cb137-4"><a href="makemodifiers.html#cb137-4" aria-hidden="true"></a>double.the.trigger &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">return</span>(x<span class="op">*</span><span class="dv">2</span>)</span>
+<span id="cb137-5"><a href="makemodifiers.html#cb137-5" aria-hidden="true"></a><span class="co">## A conditional modifier</span></span>
+<span id="cb137-6"><a href="makemodifiers.html#cb137-6" aria-hidden="true"></a><span class="kw">make.modifiers</span>(<span class="dt">speciation =</span> speciation,</span>
+<span id="cb137-7"><a href="makemodifiers.html#cb137-7" aria-hidden="true"></a>               <span class="dt">condition  =</span> half.the.time, </span>
+<span id="cb137-8"><a href="makemodifiers.html#cb137-8" aria-hidden="true"></a>               <span class="dt">modify =</span> double.the.trigger)</span></code></pre></div>
 <pre><code>##  ---- treats modifiers object ---- 
 ## Default branch length process.
 ## Default selection process.
 ## Speciation process is set to speciation with a condition (half.the.time) and a modifier (double.the.trigger).</code></pre>
 <p>Effectively, this will internally modify the speciation function as follows:</p>
-<div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb133-1"><a href="makemodifiers.html#cb133-1" aria-hidden="true"></a><span class="co">## The default speciation algorithm</span></span>
-<span id="cb133-2"><a href="makemodifiers.html#cb133-2" aria-hidden="true"></a>speciation &lt;-<span class="st"> </span><span class="cf">function</span>(bd.params) {</span>
-<span id="cb133-3"><a href="makemodifiers.html#cb133-3" aria-hidden="true"></a>    <span class="co">## Randomly trigger an event</span></span>
-<span id="cb133-4"><a href="makemodifiers.html#cb133-4" aria-hidden="true"></a>    trigger_event &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>)</span>
-<span id="cb133-5"><a href="makemodifiers.html#cb133-5" aria-hidden="true"></a></span>
-<span id="cb133-6"><a href="makemodifiers.html#cb133-6" aria-hidden="true"></a>    <span class="co">## Modify the triggering</span></span>
-<span id="cb133-7"><a href="makemodifiers.html#cb133-7" aria-hidden="true"></a>    <span class="cf">if</span>(<span class="kw">half.the.time</span>()) { <span class="co">## This running the half.the.time function drawing TRUE or FALSE randomly</span></span>
-<span id="cb133-8"><a href="makemodifiers.html#cb133-8" aria-hidden="true"></a>        trigger_event &lt;-<span class="st"> </span><span class="kw">double.the.trigger</span>(trigger_event) <span class="co">## This will double the random value trigger_event</span></span>
-<span id="cb133-9"><a href="makemodifiers.html#cb133-9" aria-hidden="true"></a>    }</span>
-<span id="cb133-10"><a href="makemodifiers.html#cb133-10" aria-hidden="true"></a></span>
-<span id="cb133-11"><a href="makemodifiers.html#cb133-11" aria-hidden="true"></a>    <span class="co">## Speciate?</span></span>
-<span id="cb133-12"><a href="makemodifiers.html#cb133-12" aria-hidden="true"></a>    <span class="kw">return</span>(trigger_event <span class="op">&lt;</span><span class="st"> </span>(bd.params<span class="op">$</span>speciation<span class="op">/</span></span>
-<span id="cb133-13"><a href="makemodifiers.html#cb133-13" aria-hidden="true"></a><span class="st">                              </span>(bd.params<span class="op">$</span>speciation <span class="op">+</span><span class="st"> </span>bd.params<span class="op">$</span>extinction)))</span>
-<span id="cb133-14"><a href="makemodifiers.html#cb133-14" aria-hidden="true"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb139-1"><a href="makemodifiers.html#cb139-1" aria-hidden="true"></a><span class="co">## The default speciation algorithm</span></span>
+<span id="cb139-2"><a href="makemodifiers.html#cb139-2" aria-hidden="true"></a>speciation &lt;-<span class="st"> </span><span class="cf">function</span>(bd.params) {</span>
+<span id="cb139-3"><a href="makemodifiers.html#cb139-3" aria-hidden="true"></a>    <span class="co">## Randomly trigger an event</span></span>
+<span id="cb139-4"><a href="makemodifiers.html#cb139-4" aria-hidden="true"></a>    trigger_event &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>)</span>
+<span id="cb139-5"><a href="makemodifiers.html#cb139-5" aria-hidden="true"></a></span>
+<span id="cb139-6"><a href="makemodifiers.html#cb139-6" aria-hidden="true"></a>    <span class="co">## Modify the triggering</span></span>
+<span id="cb139-7"><a href="makemodifiers.html#cb139-7" aria-hidden="true"></a>    <span class="cf">if</span>(<span class="kw">half.the.time</span>()) { <span class="co">## This running the half.the.time function drawing TRUE or FALSE randomly</span></span>
+<span id="cb139-8"><a href="makemodifiers.html#cb139-8" aria-hidden="true"></a>        trigger_event &lt;-<span class="st"> </span><span class="kw">double.the.trigger</span>(trigger_event) <span class="co">## This will double the random value trigger_event</span></span>
+<span id="cb139-9"><a href="makemodifiers.html#cb139-9" aria-hidden="true"></a>    }</span>
+<span id="cb139-10"><a href="makemodifiers.html#cb139-10" aria-hidden="true"></a></span>
+<span id="cb139-11"><a href="makemodifiers.html#cb139-11" aria-hidden="true"></a>    <span class="co">## Speciate?</span></span>
+<span id="cb139-12"><a href="makemodifiers.html#cb139-12" aria-hidden="true"></a>    <span class="kw">return</span>(trigger_event <span class="op">&lt;</span><span class="st"> </span>(bd.params<span class="op">$</span>speciation<span class="op">/</span></span>
+<span id="cb139-13"><a href="makemodifiers.html#cb139-13" aria-hidden="true"></a><span class="st">                              </span>(bd.params<span class="op">$</span>speciation <span class="op">+</span><span class="st"> </span>bd.params<span class="op">$</span>extinction)))</span>
+<span id="cb139-14"><a href="makemodifiers.html#cb139-14" aria-hidden="true"></a>}</span></code></pre></div>
 <p>These <code>condition</code> and <code>modify</code> functions can be applied to all the <code>modifiers</code> elements (<code>selection</code>, <code>branch.length</code> and <code>speciation</code>).
 However, they are typically used in <code>events</code> that will modify the <code>modifiers</code> (<a href="makeevents.html#makeevents">see the <code>events</code> section</a>)!</p>
 

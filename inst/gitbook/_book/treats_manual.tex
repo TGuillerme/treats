@@ -37,7 +37,7 @@
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
   pdftitle={treats manual},
-  pdfauthor={Thomas Guillerme (guillert@tcd.ie)},
+  pdfauthor={Thomas Guillerme (t.guillerme@sheffield.ac.uk)},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
@@ -112,8 +112,8 @@
 \bibliographystyle{plainnat}
 
 \title{treats manual}
-\author{Thomas Guillerme (\href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}})}
-\date{2024-05-15}
+\author{Thomas Guillerme (\href{mailto:t.guillerme@sheffield.ac.uk}{\nolinkurl{t.guillerme@sheffield.ac.uk}})}
+\date{2024-08-28}
 
 \begin{document}
 \maketitle
@@ -443,9 +443,10 @@ If this is what the process should look like (theoretically) you can then add it
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\#\# Simulate disparity and diversity}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{43}\NormalTok{)}
 \NormalTok{my\_data \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ my\_params,}
-                \DataTypeTok{stop.rule =}\NormalTok{ my\_stop\_rule,}
-                \DataTypeTok{traits    =}\NormalTok{ my\_trait)}
+                  \DataTypeTok{stop.rule =}\NormalTok{ my\_stop\_rule,}
+                  \DataTypeTok{traits    =}\NormalTok{ my\_trait)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -574,9 +575,9 @@ This will not do anything to our simulations compared to the previous trait and 
 
 \CommentTok{\#\# Simulate disparity and diversity}
 \NormalTok{default\_data \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ extinction\_}\DecValTok{02}\NormalTok{,}
-                     \DataTypeTok{stop.rule =}\NormalTok{ living\_}\DecValTok{20}\NormalTok{,}
-                     \DataTypeTok{traits    =}\NormalTok{ BM\_trait,}
-                     \DataTypeTok{modifiers =}\NormalTok{ default\_modifiers)}
+                       \DataTypeTok{stop.rule =}\NormalTok{ living\_}\DecValTok{20}\NormalTok{,}
+                       \DataTypeTok{traits    =}\NormalTok{ BM\_trait,}
+                       \DataTypeTok{modifiers =}\NormalTok{ default\_modifiers)}
 \NormalTok{default\_data}
 \end{Highlighting}
 \end{Shaded}
@@ -730,7 +731,7 @@ You can find much more about how to design modifiers in the \protect\hyperlink{m
 
 Bib is studying the evolution of mammalian disparity (i.e.~diversity of shapes) across the Cretaceous-Palaeogene mass extinction event (K-Pg - 66 million years ago).
 
-They use a dataset from \citet{beckancient2014} that is a discrete morphological space containing the ordination of the around 400 morphological characters for 50 species and estimated for their 49 descendants into an ordinated shapespace of 99 elements and 97 dimensions.
+They use a dataset from \citet{beck2014ancient} that is a discrete morphological space containing the ordination of the around 400 morphological characters for 50 species and estimated for their 49 descendants into an ordinated shapespace of 99 elements and 97 dimensions.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1396,14 +1397,16 @@ Note that you can see the multiple options for plotting the trait process by loo
 ## $main
 ## $main$A
 ## $main$A$process
+## $main$A$process[[1]]
 ## function (x0 = 0, edge.length = 1, Sigma = diag(length(x0)), 
 ##     ...) 
 ## {
 ##     return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = Sigma * edge.length, 
 ##         ...)))
 ## }
-## <bytecode: 0x609b29299e58>
+## <bytecode: 0x56f306f1ce80>
 ## <environment: namespace:treats>
+## 
 ## 
 ## $main$A$start
 ## [1] 0
@@ -1609,7 +1612,7 @@ For example, the inbuilt process \texttt{no.process} (that is just a number gene
 \begin{verbatim}
 ##  ---- treats traits object ---- 
 ## 1 trait for 1 process (A) with one starting value (0).
-## process A uses the following extra argument: fun;
+## process A uses the following extra argument: fun.
 \end{verbatim}
 
 \begin{Shaded}
@@ -1623,7 +1626,7 @@ For example, the inbuilt process \texttt{no.process} (that is just a number gene
 \begin{verbatim}
 ##  ---- treats traits object ---- 
 ## 1 trait for 1 process (A) with one starting value (0).
-## process A uses the following extra arguments: fun,min,max;
+## process A uses the following extra argument: c("fun", "min", "max").
 \end{verbatim}
 
 You can also add multiple extra arguments for multiple processes giving them as a list.
@@ -1640,8 +1643,8 @@ You can also add multiple extra arguments for multiple processes giving them as 
 \begin{verbatim}
 ##  ---- treats traits object ---- 
 ## 2 traits for 2 processes (A, B) with one starting value (0).
-## process A uses the following extra argument: fun;
-## process B uses the following extra arguments: fun,min,max;
+## process A uses the following extra argument: fun.
+## process B uses the following extra argument: c("fun", "min", "max").
 \end{verbatim}
 
 If one process does not need extra argument you must still give it an extra \texttt{NULL} process argument:
@@ -1663,8 +1666,8 @@ If one process does not need extra argument you must still give it an extra \tex
 \begin{verbatim}
 ##  ---- treats traits object ---- 
 ## 3 traits for 3 processes (A, B, C) with one starting value (0).
-## process B uses the following extra argument: fun;
-## process C uses the following extra arguments: fun,min,max;
+## process B uses the following extra argument: fun.
+## process C uses the following extra argument: c("fun", "min", "max").
 \end{verbatim}
 
 \hypertarget{naming-the-traits-with-trait.names}{%
@@ -1707,8 +1710,8 @@ This becomes more useful if we use the complex example above:
 \begin{verbatim}
 ##  ---- treats traits object ---- 
 ## 3 traits for 3 processes (Normal, LogNormal, Uniform(1,100)) with one starting value (0).
-## process LogNormal uses the following extra argument: fun;
-## process Uniform(1,100) uses the following extra arguments: fun,min,max;
+## process LogNormal uses the following extra argument: fun.
+## process Uniform(1,100) uses the following extra argument: c("fun", "min", "max").
 \end{verbatim}
 
 \hypertarget{combining-multiple-traits-with-add}{%
@@ -1777,7 +1780,7 @@ You can remove these nodes using the \protect\hyperlink{dropthings}{\texttt{drop
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
 \CommentTok{\#\# Generating a pure birth tree with the background trait}
 \NormalTok{tree\_bkg \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{stop.rule =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{max.taxa =} \DecValTok{20}\NormalTok{),}
-                 \DataTypeTok{traits =}\NormalTok{ my\_trait)}
+                   \DataTypeTok{traits =}\NormalTok{ my\_trait)}
 \CommentTok{\#\# This tree has many internal singleton nodes}
 \KeywordTok{plot}\NormalTok{(tree\_bkg)}
 \end{Highlighting}
@@ -1797,9 +1800,9 @@ These time steps can be either regular by providing a single numeric value; e.g.
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
 \CommentTok{\#\# Generating a birth{-}death tree with a BM trait and saving steps at specific times}
 \NormalTok{tree\_steps \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{stop.rule  =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{max.time =} \DecValTok{3}\NormalTok{),}
-                   \DataTypeTok{bd.params  =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{speciation =} \DecValTok{1}\NormalTok{, }\DataTypeTok{extinction =} \FloatTok{0.1}\NormalTok{),}
-                   \DataTypeTok{traits     =} \KeywordTok{make.traits}\NormalTok{(),}
-                   \DataTypeTok{save.steps =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{/}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+                     \DataTypeTok{bd.params  =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{speciation =} \DecValTok{1}\NormalTok{, }\DataTypeTok{extinction =} \FloatTok{0.1}\NormalTok{),}
+                     \DataTypeTok{traits     =} \KeywordTok{make.traits}\NormalTok{(),}
+                     \DataTypeTok{save.steps =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{/}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
 \CommentTok{\#\# This also creates internal singleton nodes}
 \KeywordTok{plot}\NormalTok{(tree\_steps)}
 \KeywordTok{abline}\NormalTok{(}\DataTypeTok{v =} \DecValTok{3} \OperatorTok{{-}}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{/}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{), }\DataTypeTok{lwd =} \FloatTok{0.5}\NormalTok{, }\DataTypeTok{col =} \StringTok{"grey"}\NormalTok{)}
@@ -1807,6 +1810,110 @@ These time steps can be either regular by providing a single numeric value; e.g.
 \end{Shaded}
 
 \includegraphics{treats_manual_files/figure-latex/unnamed-chunk-55-1.pdf}
+
+\hypertarget{linking-traits-together-with-link.traits}{%
+\section{\texorpdfstring{Linking traits together with \texttt{link.traits}}{Linking traits together with link.traits}}\label{linking-traits-together-with-link.traits}}
+
+In the \texttt{treats} algorithm, traits are simulated in parallel for improving performances.
+Most of the cases this is a (really) good thing!
+However, in some cases you might need some of your traits to be simulated sequentially.
+For example if you want a specific trait process or options to be dependent on the result of another trait.
+You can set up these linked traits using the \texttt{link.traits} function.
+This function takes \texttt{base.trait}, a \texttt{"treats"} \texttt{"traits"} object created using \texttt{make.traits} that will be the first trait simulated and the \texttt{next.trait}, a list of \texttt{"treats"} \texttt{"traits"} objects that will be simulated after the \texttt{base.trait} depending on the link type (\texttt{link.type}) and some other arguments (\texttt{link.args}).
+So far the \texttt{link.traits} function only accommodates \texttt{link.type\ =\ "conditional"} for conditional traits.
+
+\hypertarget{conditional-traits}{%
+\subsection{Conditional traits}\label{conditional-traits}}
+
+Say for example that you have a primary trait (\texttt{base.trait}) that is a discrete binary trait that generates values \texttt{0} or \texttt{1}.
+This can correspond to some abiotic trait for example (e.g.~``is the lineage on an island or on the mainland'').
+You can first generate this trait using the \texttt{make.traits} function as detailed above (note here we're using a transition matrix as a specific argument that makes the changes from state 0 to state 1 relatively rare and the reversal even more rare).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# Setting up a discrete trait}
+\NormalTok{discrete\_trait \textless{}{-}}\StringTok{ }\KeywordTok{make.traits}\NormalTok{(discrete.process,}
+       \DataTypeTok{process.args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{transitions =} \KeywordTok{matrix}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\FloatTok{0.2}\NormalTok{, }\FloatTok{0.05}\NormalTok{, }\DecValTok{3}\NormalTok{), }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{)),}
+       \DataTypeTok{trait.names  =} \StringTok{"discrete"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Following this trait value, we can create another trait that is conditional to the outcome of this first discrete trait simulation.
+In other words we can specify a choice between two processes depending on the result of the \texttt{base.trait}.
+For example, we can say that if the lineage evolves on an island (state \texttt{"1"}) it will evolve using a Brownian motion process but if it evolves on the mainland (state \texttt{"0"}), it will evolve using an OU process.
+
+We'll need to first generate these two traits independently using \texttt{make.traits} (using different options):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# A standard Brownian Motion trait}
+\NormalTok{BM\_trait \textless{}{-}}\StringTok{ }\KeywordTok{make.traits}\NormalTok{(}\DataTypeTok{process =}\NormalTok{ BM.process)}
+\CommentTok{\#\# An OU trait with a strong alpha}
+\NormalTok{OU\_trait \textless{}{-}}\StringTok{ }\KeywordTok{make.traits}\NormalTok{(}\DataTypeTok{process =}\NormalTok{ OU.process, }\DataTypeTok{process.args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{alpha =} \DecValTok{10}\NormalTok{))}
+\CommentTok{\#\# Combining both traits into a list}
+\NormalTok{continuous\_trait \textless{}{-}}\StringTok{ }\KeywordTok{list}\NormalTok{(}\StringTok{"mainland\_case"}\NormalTok{ =}\StringTok{ }\NormalTok{BM\_trait,}
+                         \StringTok{"island\_case"}\NormalTok{   =}\StringTok{ }\NormalTok{OU\_trait)}
+\end{Highlighting}
+\end{Shaded}
+
+We then need to create a list of functions to interpret the results of the first trait (\texttt{discrete\_trait}) so that if the results of \texttt{discrete\_trait} is \texttt{0}, \texttt{BM\_trait} is used, if it's \texttt{1} \texttt{OU\_trait} is used.
+This is done by creating a list of functions that evaluate \texttt{x1}, the outcome of \texttt{discrete\_trait}, and return a logical (\texttt{TRUE} or \texttt{FALSE}).
+For example \texttt{function(x1)\ \{x1\ !=\ 0\}} will return \texttt{TRUE} if the \texttt{discrete\_trait} is not state \texttt{0}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# Creating a list of functions to choose between either case for the continuous trait}
+\NormalTok{select\_continuous \textless{}{-}}\StringTok{ }\KeywordTok{list}\NormalTok{(}\StringTok{"is.mainland"}\NormalTok{ =}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x1) \{x1 }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{\},}
+                          \StringTok{"is.island"}\NormalTok{   =}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x1) \{x1 }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{\})}
+\end{Highlighting}
+\end{Shaded}
+
+Note that this list must be in the same order as the \texttt{continuous\_trait}: the functions will be evaluated sequentially (i.e.~test the function \texttt{is.mainland}, then \texttt{is.island}) and the first one to return \texttt{TRUE} will be used to select the function in \texttt{continuous\_trait}.
+For example in our case if the score of \texttt{discrete\_trait} is \texttt{1}, the second function from \texttt{select\_continuous} is \texttt{TRUE} so the second element from \texttt{continuous\_trait} is used (the \texttt{OU\_trait}).
+
+We can then combine all that using \texttt{link.traits}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# Link these traits}
+\NormalTok{conditional\_trait \textless{}{-}}\StringTok{ }\KeywordTok{link.traits}\NormalTok{(}\CommentTok{\# The first trait to be evaluated}
+                                 \DataTypeTok{base.trait =}\NormalTok{ discrete\_trait,}
+                                 \CommentTok{\# The other traits to be evaluated next}
+                                 \CommentTok{\# (here a list of two traits)}
+                                 \DataTypeTok{next.trait =}\NormalTok{ continuous\_trait,}
+                                 \DataTypeTok{link.type  =} \StringTok{"conditional"}\NormalTok{,}
+                                 \CommentTok{\# The functions to choose between either}
+                                 \CommentTok{\# continuous traits }
+                                 \DataTypeTok{link.args  =}\NormalTok{ select\_continuous)}
+\end{Highlighting}
+\end{Shaded}
+
+And run the usual simulation pipeline with \texttt{treats}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# Running a tree with this conditional trait}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
+\NormalTok{my\_conditional\_tree \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{stop.rule =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{max.taxa =} \DecValTok{200}\NormalTok{),}
+                              \DataTypeTok{traits    =}\NormalTok{ conditional\_trait)}
+
+\NormalTok{op \textless{}{-}}\StringTok{ }\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(my\_conditional\_tree, }\DataTypeTok{trait =} \DecValTok{1}\NormalTok{, }\DataTypeTok{main =} \StringTok{"The conditional trait"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(my\_conditional\_tree, }\DataTypeTok{trait =} \DecValTok{2}\NormalTok{, }\DataTypeTok{main =} \StringTok{"The conditioned trait"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-60-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{par}\NormalTok{(op)}
+\CommentTok{\#\# The clumpy bit around the value 0 corresponds to the OU trait}
+\end{Highlighting}
+\end{Shaded}
+
+Of course, you can combine linked traits with other traits like any other traits in \texttt{treats} using \texttt{make.traits} (for example: \texttt{make.traits(process\ =\ my\_new\_trait,\ add\ =\ conditional\_trait)} to generate more complex traits.
+In this case the traits are generated in parallel (for speed) apart for the specified linked ones.
 
 \hypertarget{traits-implemented-in-treats}{%
 \section{\texorpdfstring{Traits implemented in \texttt{treats}}{Traits implemented in treats}}\label{traits-implemented-in-treats}}
@@ -1819,7 +1926,7 @@ If you don't want to design your own trait process, you can use one of the follo
   \texttt{BM.process}: this is the well known \href{https://en.wikipedia.org/wiki/Brownian_motion}{Brownian motion process}.
 \end{itemize}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-56-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-61-1.pdf}
 
 \begin{itemize}
 \tightlist
@@ -1827,7 +1934,7 @@ If you don't want to design your own trait process, you can use one of the follo
   \texttt{OU.process}: this is the equally famous \href{https://en.wikipedia.org/wiki/Ornstein\%E2\%80\%93Uhlenbeck_process}{Ornstein--Uhlenbeck process}.
 \end{itemize}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-57-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-62-1.pdf}
 
 \begin{itemize}
 \tightlist
@@ -1835,7 +1942,7 @@ If you don't want to design your own trait process, you can use one of the follo
   \texttt{no.process}: this process has\ldots{} no process. In other words, this is a non time dependent process; the simulated value does not depends on the ancestors' value nor the branch length. It's basically a place holder for a random sampling function like \texttt{rnorm} (default), \texttt{runif}, \texttt{rlnorm}, etc.
 \end{itemize}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-58-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-63-1.pdf}
 
 \begin{itemize}
 \tightlist
@@ -1843,7 +1950,7 @@ If you don't want to design your own trait process, you can use one of the follo
   \texttt{multi.peak.process}: this process is a modified version of the \texttt{OU.process} that can take multiple local long-term mean values. The default OU process has one long-term mean towards which the values are drawn with the alpha parameter (the elastic band). The single long-term mean is usually 0. However, with this \texttt{multi.peak.process} we can set multiple values towards which values can be attracted with the same alpha parameter.
 \end{itemize}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-59-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-64-1.pdf}
 
 \begin{itemize}
 \tightlist
@@ -1851,7 +1958,7 @@ If you don't want to design your own trait process, you can use one of the follo
   \texttt{repulsion.process}: this is a modified version of the \texttt{BM.process} where instead of accumulating gradually through time, new trait values are more likely to be different to the traits of their ancestor following a \texttt{repulsion} parameter.
 \end{itemize}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-60-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-65-1.pdf}
 
 \begin{itemize}
 \tightlist
@@ -1859,7 +1966,7 @@ If you don't want to design your own trait process, you can use one of the follo
   \texttt{discrete.process}: this one generates discrete trait values based on a transition matrix (you can use the utility function \texttt{transition.matrix} to generate one).
 \end{itemize}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-61-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-66-1.pdf}
 
 Of course here the plotting of a discrete trait is not that informative\ldots{}
 
@@ -1871,8 +1978,8 @@ We highly suggest leaving \texttt{test\ =\ TRUE} so that \texttt{make.traits} re
 \texttt{make.traits} will send an error if the trait cannot be directly passed to \texttt{treats}.
 However, in some specific cases (again, probably mainly for development and debugging) it could be useful to skip the tests using \texttt{test\ =\ FALSE}.
 
-\hypertarget{mapping-traits-on-a-tree-map.traits}{%
-\section{\texorpdfstring{Mapping traits on a tree: \texttt{map.traits}}{Mapping traits on a tree: map.traits}}\label{mapping-traits-on-a-tree-map.traits}}
+\hypertarget{map.traits}{%
+\section{\texorpdfstring{Mapping traits on a tree: \texttt{map.traits}}{Mapping traits on a tree: map.traits}}\label{map.traits}}
 
 Although \texttt{make.traits} is mainly designed for \texttt{treats} simulations, i.e.~simulating both the trees AND the traits at the same time, it is possible to use an already simulated or estimated tree and generating one or more traits on it using the \texttt{map.traits} function. This function takes the trait input as a \texttt{"traits"} object (from \texttt{make.traits}) and a tree topology with branch length. Note that you can also use \texttt{"traits"} objects with multiple or multi-dimensional traits as well as multiple phylogenies (\texttt{"multiPhylo"}).
 
@@ -1903,7 +2010,7 @@ Although \texttt{make.traits} is mainly designed for \texttt{treats} simulations
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-62-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-67-1.pdf}
 
 \hypertarget{templates-for-making-your-very-own-process}{%
 \section{Templates for making your very own process}\label{templates-for-making-your-very-own-process}}
@@ -2131,7 +2238,7 @@ By default, the birth-death process in \texttt{treats} uses this modifier:
 ## {
 ##     return(rexp(1, sum(lineage$n * (bd.params$speciation + bd.params$extinction))))
 ## }
-## <bytecode: 0x609b211b6680>
+## <bytecode: 0x56f30a0bdef0>
 ## <environment: namespace:treats>
 ## 
 ## $waiting$internal
@@ -2144,7 +2251,7 @@ By default, the birth-death process in \texttt{treats} uses this modifier:
 ## {
 ##     return(sample(lineage$n, 1))
 ## }
-## <bytecode: 0x609b211694e0>
+## <bytecode: 0x56f30a0c0e78>
 ## <environment: namespace:treats>
 ## 
 ## $selecting$internal
@@ -2158,7 +2265,7 @@ By default, the birth-death process in \texttt{treats} uses this modifier:
 ##     return(runif(1) <= (bd.params$speciation/(bd.params$speciation + 
 ##         bd.params$extinction)))
 ## }
-## <bytecode: 0x609b21164168>
+## <bytecode: 0x56f30a0c0388>
 ## <environment: namespace:treats>
 ## 
 ## $speciating$internal
@@ -2251,8 +2358,8 @@ This default function is simply called \texttt{branch.length} in \texttt{treats}
 \CommentTok{\#\# Generating a tree with the default branch length parameter}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{0}\NormalTok{)}
 \NormalTok{default\_tree \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd\_params,}
-                     \DataTypeTok{stop.rule =}\NormalTok{ stop\_rule,}
-                     \DataTypeTok{modifiers =}\NormalTok{ default\_modifiers)}
+                       \DataTypeTok{stop.rule =}\NormalTok{ stop\_rule,}
+                       \DataTypeTok{modifiers =}\NormalTok{ default\_modifiers)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -2274,8 +2381,8 @@ We can do so by declaring our own \texttt{branch.length} function and adding it 
 \CommentTok{\#\# Generating a new tree with this modifier}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{0}\NormalTok{)}
 \NormalTok{modified\_tree \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd\_params,}
-                      \DataTypeTok{stop.rule =}\NormalTok{ stop\_rule,}
-                      \DataTypeTok{modifiers =}\NormalTok{ constant\_modifier)}
+                        \DataTypeTok{stop.rule =}\NormalTok{ stop\_rule,}
+                        \DataTypeTok{modifiers =}\NormalTok{ constant\_modifier)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -2289,7 +2396,7 @@ And we can visualise the difference between both resulting trees:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-73-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-78-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2376,8 +2483,8 @@ We can then create it as a \texttt{"modifiers"} object and run a new simulation:
 \CommentTok{\#\# Generating a new tree with this modifier}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{0}\NormalTok{)}
 \NormalTok{increasing\_tree \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd\_params,}
-                        \DataTypeTok{stop.rule =}\NormalTok{ stop\_rule,}
-                        \DataTypeTok{modifiers =}\NormalTok{ increasing\_modifier)}
+                          \DataTypeTok{stop.rule =}\NormalTok{ stop\_rule,}
+                          \DataTypeTok{modifiers =}\NormalTok{ increasing\_modifier)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -2392,7 +2499,7 @@ And we can visualise the difference between the resulting trees:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-76-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-81-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2431,8 +2538,8 @@ We can then create a \texttt{"modifiers"} object the same way as before this tim
 \CommentTok{\#\# Generating a new tree with this modifier}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{0}\NormalTok{)}
 \NormalTok{ladderised\_tree \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd\_params,}
-                        \DataTypeTok{stop.rule =}\NormalTok{ stop\_rule,}
-                        \DataTypeTok{modifiers =}\NormalTok{ ladderised\_modifier)}
+                          \DataTypeTok{stop.rule =}\NormalTok{ stop\_rule,}
+                          \DataTypeTok{modifiers =}\NormalTok{ ladderised\_modifier)}
 \CommentTok{\#\# Displaying the results}
 \KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
 \KeywordTok{plot}\NormalTok{(default\_tree,    }\DataTypeTok{main =} \StringTok{"Default modifier"}\NormalTok{)}
@@ -2440,7 +2547,7 @@ We can then create a \texttt{"modifiers"} object the same way as before this tim
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-78-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-83-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2479,15 +2586,15 @@ For example, we can create a \texttt{"treats"} object that also generates a BM t
 \CommentTok{\#\# Simulate a tree and trait with no modifier}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
 \NormalTok{default\_treats \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd\_params,}
-                     \DataTypeTok{stop.rule =}\NormalTok{ stop\_rule,}
-                     \DataTypeTok{traits =}\NormalTok{ BM\_trait)}
+                         \DataTypeTok{stop.rule =}\NormalTok{ stop\_rule,}
+                         \DataTypeTok{traits    =}\NormalTok{ BM\_trait)}
 
 \CommentTok{\#\# Simulate a tree and trait with the modifier}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
 \NormalTok{skewed\_trait\_treats \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd\_params,}
-                          \DataTypeTok{stop.rule =}\NormalTok{ stop\_rule,}
-                          \DataTypeTok{traits =}\NormalTok{ BM\_trait,}
-                          \DataTypeTok{modifiers =}\NormalTok{ positive\_skew)}
+                              \DataTypeTok{stop.rule =}\NormalTok{ stop\_rule,}
+                              \DataTypeTok{traits    =}\NormalTok{ BM\_trait,}
+                              \DataTypeTok{modifiers =}\NormalTok{ positive\_skew)}
 
 \CommentTok{\#\# Plotting the differences in trees and traits}
 \KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
@@ -2496,7 +2603,7 @@ For example, we can create a \texttt{"treats"} object that also generates a BM t
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-79-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-84-1.pdf}
 
 \hypertarget{the-speciation-function-speciation}{%
 \section{\texorpdfstring{The speciation function (\texttt{speciation})}{The speciation function (speciation)}}\label{the-speciation-function-speciation}}
@@ -2535,8 +2642,8 @@ Once the function is created simply input your function for speciation in the mo
 \CommentTok{\#\# Generating a new tree with this modifier}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{2}\NormalTok{)}
 \NormalTok{modified\_tree \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd\_params,}
-                      \DataTypeTok{stop.rule =}\NormalTok{ stop\_rule,}
-                      \DataTypeTok{modifiers =}\NormalTok{ random\_extinction)}
+                        \DataTypeTok{stop.rule =}\NormalTok{ stop\_rule,}
+                        \DataTypeTok{modifiers =}\NormalTok{ random\_extinction)}
 
 \KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
 \KeywordTok{plot}\NormalTok{(default\_tree,  }\DataTypeTok{main =} \StringTok{"Default modifier"}\NormalTok{)}
@@ -2570,9 +2677,9 @@ And again, we can make some more advanced modifiers: for example, one where a ti
 \CommentTok{\#\# Simulate a tree and trait with the modifier}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
 \NormalTok{modified\_trait\_treats \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd\_params,}
-                          \DataTypeTok{stop.rule =}\NormalTok{ stop\_rule,}
-                          \DataTypeTok{traits    =}\NormalTok{ BM\_trait,}
-                          \DataTypeTok{modifiers =}\NormalTok{ modified\_trait)}
+                                \DataTypeTok{stop.rule =}\NormalTok{ stop\_rule,}
+                                \DataTypeTok{traits    =}\NormalTok{ BM\_trait,}
+                                \DataTypeTok{modifiers =}\NormalTok{ modified\_trait)}
 
 \CommentTok{\#\# Plotting the differences in trees and traits}
 \KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
@@ -2581,7 +2688,7 @@ And again, we can make some more advanced modifiers: for example, one where a ti
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-82-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-87-1.pdf}
 
 \hypertarget{summarymodifiers}{%
 \section{\texorpdfstring{Summary of the inputs and outputs for the \texttt{branch.length}, \texttt{selection} and \texttt{speciation} modifiers}{Summary of the inputs and outputs for the branch.length, selection and speciation modifiers}}\label{summarymodifiers}}
@@ -3015,8 +3122,8 @@ The following \texttt{event} updates the \texttt{bd.params} object by setting th
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{make.events}\NormalTok{(}\DataTypeTok{target =} \StringTok{"bd.params"}\NormalTok{,}
-            \DataTypeTok{condition =} \KeywordTok{taxa.condition}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DataTypeTok{condition =} \StringTok{\textasciigrave{}}\DataTypeTok{\textgreater{}=}\StringTok{\textasciigrave{}}\NormalTok{),}
+\KeywordTok{make.events}\NormalTok{(}\DataTypeTok{target       =} \StringTok{"bd.params"}\NormalTok{,}
+            \DataTypeTok{condition    =} \KeywordTok{taxa.condition}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DataTypeTok{condition =} \StringTok{\textasciigrave{}}\DataTypeTok{\textgreater{}=}\StringTok{\textasciigrave{}}\NormalTok{),}
             \DataTypeTok{modification =} \KeywordTok{bd.params.update}\NormalTok{(}\DataTypeTok{extinction =} \DecValTok{1}\OperatorTok{/}\DecValTok{3}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
@@ -3035,8 +3142,8 @@ For a simple example, we can create a extinction event that will remove 80\% of 
 \begin{Highlighting}[]
 \CommentTok{\#\# 80\% mass extinction at time 4}
 \NormalTok{mass\_extinction \textless{}{-}}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
-                      \DataTypeTok{target =} \StringTok{"taxa"}\NormalTok{,}
-                      \DataTypeTok{condition =} \KeywordTok{age.condition}\NormalTok{(}\DecValTok{4}\NormalTok{),}
+                      \DataTypeTok{target       =} \StringTok{"taxa"}\NormalTok{,}
+                      \DataTypeTok{condition    =} \KeywordTok{age.condition}\NormalTok{(}\DecValTok{4}\NormalTok{),}
                       \DataTypeTok{modification =} \KeywordTok{random.extinction}\NormalTok{(}\FloatTok{0.8}\NormalTok{))}
 
 \CommentTok{\#\# Simulation parameters}
@@ -3046,15 +3153,15 @@ For a simple example, we can create a extinction event that will remove 80\% of 
 \CommentTok{\#\# Running the simulations}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
 \NormalTok{results \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
-                \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
-                \DataTypeTok{events =}\NormalTok{ mass\_extinction)}
+                  \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
+                  \DataTypeTok{events    =}\NormalTok{ mass\_extinction)}
 \CommentTok{\#\# Plotting the results}
 \KeywordTok{plot}\NormalTok{(results, }\DataTypeTok{show.tip.label =} \OtherTok{FALSE}\NormalTok{)}
 \KeywordTok{axisPhylo}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-90-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-95-1.pdf}
 
 Or for a slightly more complex example, we can can change the trait process from a BM to an OU when the trait values reaches an upper 95\% quantile value above 2:
 
@@ -3066,9 +3173,9 @@ Or for a slightly more complex example, we can can change the trait process from
 \NormalTok{\} }
 \CommentTok{\#\# Create an event to change the trait process}
 \NormalTok{change\_process \textless{}{-}}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
-                  \DataTypeTok{target =} \StringTok{"traits"}\NormalTok{,}
+                  \DataTypeTok{target       =} \StringTok{"traits"}\NormalTok{,}
                   \CommentTok{\#\# condition is triggered if(upper.95(x) \textgreater{} 3)}
-                  \DataTypeTok{condition =} \KeywordTok{trait.condition}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DataTypeTok{condition =} \StringTok{\textasciigrave{}}\DataTypeTok{\textgreater{}}\StringTok{\textasciigrave{}}\NormalTok{, }\DataTypeTok{what =}\NormalTok{ upper}\FloatTok{.95}\NormalTok{),}
+                  \DataTypeTok{condition    =} \KeywordTok{trait.condition}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DataTypeTok{condition =} \StringTok{\textasciigrave{}}\DataTypeTok{\textgreater{}}\StringTok{\textasciigrave{}}\NormalTok{, }\DataTypeTok{what =}\NormalTok{ upper}\FloatTok{.95}\NormalTok{),}
                   \DataTypeTok{modification =} \KeywordTok{traits.update}\NormalTok{(}\DataTypeTok{process =}\NormalTok{ OU.process))}
 
 \CommentTok{\#\# Set the simulation parameters}
@@ -3079,13 +3186,13 @@ Or for a slightly more complex example, we can can change the trait process from
 \CommentTok{\#\# Run the simulations}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
 \NormalTok{no\_change \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
-                  \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
-                  \DataTypeTok{traits =}\NormalTok{ traits)}
+                    \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
+                    \DataTypeTok{traits =}\NormalTok{ traits)}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
 \NormalTok{process\_change \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
-                       \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
-                       \DataTypeTok{traits =}\NormalTok{ traits,}
-                       \DataTypeTok{events =}\NormalTok{ change\_process)}
+                         \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
+                         \DataTypeTok{traits    =}\NormalTok{ traits,}
+                         \DataTypeTok{events    =}\NormalTok{ change\_process)}
 \CommentTok{\#\# Plot the results}
 \KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
 \KeywordTok{plot}\NormalTok{(no\_change, }\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\OperatorTok{{-}}\DecValTok{7}\NormalTok{, }\DecValTok{7}\NormalTok{))}
@@ -3093,7 +3200,7 @@ Or for a slightly more complex example, we can can change the trait process from
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-91-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-96-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3122,8 +3229,8 @@ Additionally, we will use the \texttt{additional.args} argument from \texttt{mak
 
 \CommentTok{\#\# Events that generate a new process (founding tree {-} with no extinction)}
 \NormalTok{founding\_event \textless{}{-}}\StringTok{ }\KeywordTok{make.events}\NormalTok{(}
-                  \DataTypeTok{target =} \StringTok{"founding"}\NormalTok{,}
-                  \DataTypeTok{condition =} \KeywordTok{taxa.condition}\NormalTok{(}\DecValTok{10}\NormalTok{),}
+                  \DataTypeTok{target       =} \StringTok{"founding"}\NormalTok{,}
+                  \DataTypeTok{condition    =} \KeywordTok{taxa.condition}\NormalTok{(}\DecValTok{10}\NormalTok{),}
                   \DataTypeTok{modification =} \KeywordTok{founding.event}\NormalTok{(}
                                     \DataTypeTok{bd.params =} \KeywordTok{make.bd.params}\NormalTok{(}\DataTypeTok{speciation =} \DecValTok{2}\NormalTok{,}
                                                                \DataTypeTok{extinction =} \DecValTok{0}\NormalTok{)),}
@@ -3132,13 +3239,13 @@ Additionally, we will use the \texttt{additional.args} argument from \texttt{mak
 \CommentTok{\#\# Simulations}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{11}\NormalTok{)}
 \NormalTok{founding\_tree \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{bd.params =}\NormalTok{ bd.params,}
-                      \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
-                      \DataTypeTok{events =}\NormalTok{ founding\_event)}
+                        \DataTypeTok{stop.rule =}\NormalTok{ stop.rule,}
+                        \DataTypeTok{events    =}\NormalTok{ founding\_event)}
 \KeywordTok{plot}\NormalTok{(founding\_tree, }\DataTypeTok{cex =} \FloatTok{0.4}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-92-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-97-1.pdf}
 
 Note that the nestedness here is potentially endless, for example, you can pass an \texttt{event} argument to the \texttt{founding.event} that will generate another founding event, etc.
 
@@ -3163,7 +3270,7 @@ You can do this using the \texttt{make.bd.params} function to provide either a \
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-94-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-99-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3264,7 +3371,7 @@ The function will sample from the \texttt{bd.params} object and show the results
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-99-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-104-1.pdf}
 
 \hypertarget{dropthings}{%
 \section{\texorpdfstring{\texttt{drop.things}}{drop.things}}\label{dropthings}}
@@ -3277,8 +3384,8 @@ Alternatively you can use the function aliases \texttt{drop.fossils}, \texttt{dr
 \CommentTok{\#\# A random tree with fossils and traits and internal nodes every 0.5 times}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{3}\NormalTok{)}
 \NormalTok{my\_data \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{stop.rule =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{max.taxa =} \DecValTok{20}\NormalTok{),}
-                \DataTypeTok{bd.params =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{speciation =} \DecValTok{1}\NormalTok{, }\DataTypeTok{extinction =} \DecValTok{1}\OperatorTok{/}\DecValTok{3}\NormalTok{),}
-                \DataTypeTok{traits    =} \KeywordTok{make.traits}\NormalTok{(), }\DataTypeTok{save.steps =} \FloatTok{0.5}\NormalTok{)}
+                  \DataTypeTok{bd.params =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{speciation =} \DecValTok{1}\NormalTok{, }\DataTypeTok{extinction =} \DecValTok{1}\OperatorTok{/}\DecValTok{3}\NormalTok{),}
+                  \DataTypeTok{traits    =} \KeywordTok{make.traits}\NormalTok{(), }\DataTypeTok{save.steps =} \FloatTok{0.5}\NormalTok{)}
 
 \CommentTok{\#\# A tree with 20 tips and 54 nodes}
 \NormalTok{my\_data}\OperatorTok{$}\NormalTok{tree}
@@ -3484,7 +3591,8 @@ You can use \texttt{plot.treats} to plot them by choosing which specific trait t
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\#\# Making a list of three traits}
-\NormalTok{list\_of\_traits \textless{}{-}}\StringTok{ }\KeywordTok{make.traits}\NormalTok{(}\DataTypeTok{process =} \KeywordTok{c}\NormalTok{(no.process, BM.process, OU.process), }\DataTypeTok{trait.names =} \KeywordTok{c}\NormalTok{(}\StringTok{"No process (normal)"}\NormalTok{, }\StringTok{"Brownian motion"}\NormalTok{, }\StringTok{"Ornstein{-}Uhlenbeck"}\NormalTok{))}
+\NormalTok{list\_of\_traits \textless{}{-}}\StringTok{ }\KeywordTok{make.traits}\NormalTok{(}\DataTypeTok{process =} \KeywordTok{c}\NormalTok{(no.process, BM.process, OU.process),}
+                              \DataTypeTok{trait.names =} \KeywordTok{c}\NormalTok{(}\StringTok{"No process (normal)"}\NormalTok{, }\StringTok{"Brownian motion"}\NormalTok{, }\StringTok{"Ornstein{-}Uhlenbeck"}\NormalTok{))}
 \CommentTok{\#\# Plotting each trait separately}
 \KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
 \KeywordTok{plot}\NormalTok{(list\_of\_traits, }\DataTypeTok{trait =} \DecValTok{1}\NormalTok{)}
@@ -3497,7 +3605,7 @@ You can use \texttt{plot.treats} to plot them by choosing which specific trait t
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-102-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-107-1.pdf}
 
 You can also control the number of replicates in the simulation by using the \texttt{simulations} option (the default is 50).
 Bigger numbers lead to more time but smoother looking plots while smaller ones are more stochastic:
@@ -3510,7 +3618,7 @@ Bigger numbers lead to more time but smoother looking plots while smaller ones a
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-103-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-108-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3532,7 +3640,7 @@ You'll find all the tree plotting options in the \texttt{?plot.phylo} manual pag
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-104-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-109-1.pdf}
 
 However, if you also simulated a trait along with the tree you can use the \texttt{plot.treats} function to plot both the tree and the trait:
 
@@ -3545,7 +3653,7 @@ However, if you also simulated a trait along with the tree you can use the \text
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-105-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-110-1.pdf}
 
 By default, elements are coloured as follows: nodes and tips are points and coloured in blue if they are tips (light blue if they are fossils) and nodes are in orange.
 Branches linking them are grey lines.
@@ -3565,7 +3673,7 @@ Furthermore, time is plotted conventionally from left to right (left is towards 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-106-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-111-1.pdf}
 
 \begin{quote}
 Note that in \texttt{plot.treats} you can modify colours using the \texttt{col} argument by providing a clear indication of what you want to colour (e.g.~\texttt{col\ =\ c(tips\ =\ "blue",\ fossils\ =\ "orange")} will apply the colours to the unambiguously named elements) or by providing a function that will scale the colours with time (e.g.~\texttt{col\ =\ grDevices::heat.colors} will use the specified function to change the colours of the elements through time).
@@ -3580,7 +3688,7 @@ You can add a default legend by using \texttt{legend\ =\ TRUE} (if you don't wan
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-107-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-112-1.pdf}
 
 \hypertarget{adding-dimensions-not-necessary-but-fun}{%
 \subsection{Adding dimensions! Not necessary, but fun!}\label{adding-dimensions-not-necessary-but-fun}}
@@ -3590,13 +3698,18 @@ Of course, if you're simulating multiple traits, you can always plot different o
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\#\# Specifying a 3D trait process}
-\NormalTok{my\_3D\_trait \textless{}{-}}\StringTok{ }\KeywordTok{make.traits}\NormalTok{(}\DataTypeTok{n =} \DecValTok{3}\NormalTok{, )}
+\NormalTok{my\_3D\_trait \textless{}{-}}\StringTok{ }\KeywordTok{make.traits}\NormalTok{(}\DataTypeTok{n =} \DecValTok{3}\NormalTok{)}
 \CommentTok{\#\# Simulating a birth{-}death tree with that 3D trait}
-\NormalTok{my\_data \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{bd.params =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{extinction =} \FloatTok{0.2}\NormalTok{),}
-                \DataTypeTok{stop.rule =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{max.living =} \DecValTok{50}\NormalTok{),}
-                \DataTypeTok{traits    =}\NormalTok{ my\_3D\_trait)}
+\NormalTok{my\_data \textless{}{-}}\StringTok{ }\KeywordTok{treats}\NormalTok{(}\DataTypeTok{bd.params  =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{extinction =} \FloatTok{0.2}\NormalTok{),}
+                  \DataTypeTok{stop.rule  =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{max.living =} \DecValTok{50}\NormalTok{),}
+                  \DataTypeTok{traits     =}\NormalTok{ my\_3D\_trait,}
+                  \DataTypeTok{null.error =} \DecValTok{100}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## Building the tree:..Done.
+\end{verbatim}
 
 You can toggle which trait to plot using the \texttt{trait} option, either by providing a single value to plot that specific trait against time or by providing two traits.
 
@@ -3610,7 +3723,7 @@ You can toggle which trait to plot using the \texttt{trait} option, either by pr
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-109-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-114-1.pdf}
 
 As mentioned above, the \texttt{col} argument can take a function for scaling the elements colours with time.
 This can be useful for adding time a third dimension to these 2D plots:
@@ -3626,7 +3739,7 @@ This can be useful for adding time a third dimension to these 2D plots:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-110-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-115-1.pdf}
 
 But there's more! You can also plot these results using actual 3D plots that you can spin and all that!
 This is done through the \texttt{rgl} package and activated in \texttt{treats} using the option \texttt{use.3D\ =\ TRUE}.
@@ -3652,7 +3765,7 @@ If two traits are provided, the 3rd dimension is going to be time by default:
 ## snapshots
 \end{verbatim}
 
-\includegraphics[width=6.5in]{../../../../../../tmp/RtmpcKuqE6/file37eb79e5b154}
+\includegraphics[width=6.5in]{../../../../../../tmp/RtmpNKmbbM/file9d7231f94b74}
 
 If three traits are provide, you can set up a fourth coloured dimension as time (similarly to the 2D plots with the colour gradients).
 This uses the \texttt{rgl} functions, namely \texttt{lines3d}, \texttt{points3d} (if \texttt{type\ =\ "p"}; default) or \texttt{sphere3d} (if \texttt{type\ =\ "s"}).
@@ -3678,7 +3791,51 @@ The additional arguments \texttt{...} are directly handled and attributed to the
 ## snapshots
 \end{verbatim}
 
-\includegraphics[width=6.5in]{../../../../../../tmp/RtmpcKuqE6/file37eb42b1cdb9}
+\includegraphics[width=6.5in]{../../../../../../tmp/RtmpNKmbbM/file9d724094c3af}
+
+\hypertarget{using-plot.treats-to-plot-non-treats-objects}{%
+\section{\texorpdfstring{Using \texttt{plot.treats} to plot non-treats objects}{Using plot.treats to plot non-treats objects}}\label{using-plot.treats-to-plot-non-treats-objects}}
+
+If you like the plotting style of \texttt{treats} trees and data, you can always use the \texttt{make.treats} function to plot a tree and some traits as a \texttt{"treats"} object.
+If you have a dataset that contains trait data for tips and nodes you can transform it into a \texttt{"treats"} object and plot it using the generic \texttt{plot.treats} function:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\CommentTok{\#\# Generating some random tree}
+\NormalTok{my\_tree \textless{}{-}}\StringTok{ }\KeywordTok{makeNodeLabel}\NormalTok{(}\KeywordTok{rcoal}\NormalTok{(}\DecValTok{20}\NormalTok{))}
+
+\CommentTok{\#\# Generating some random discrete data}
+\NormalTok{discrete\_data \textless{}{-}}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), }\DecValTok{39}\NormalTok{, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{)}
+\KeywordTok{names}\NormalTok{(discrete\_data) \textless{}{-}}\StringTok{ }\KeywordTok{c}\NormalTok{(my\_tree}\OperatorTok{$}\NormalTok{tip.label, my\_tree}\OperatorTok{$}\NormalTok{node.label)}
+
+\CommentTok{\#\# Creating a treats object with this data}
+\NormalTok{discrete\_treats \textless{}{-}}\StringTok{ }\KeywordTok{make.treats}\NormalTok{(}\DataTypeTok{tree =}\NormalTok{ my\_tree, }\DataTypeTok{data =}\NormalTok{ discrete\_data)}
+
+\CommentTok{\#\# Plot the data together}
+\KeywordTok{plot}\NormalTok{(discrete\_treats, }\DataTypeTok{legend =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-118-1.pdf}
+
+The same goes for continuous data:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# Generating some random continuous data}
+\NormalTok{continuous\_data \textless{}{-}}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DecValTok{39}\NormalTok{)}
+\KeywordTok{names}\NormalTok{(continuous\_data) \textless{}{-}}\StringTok{ }\KeywordTok{c}\NormalTok{(my\_tree}\OperatorTok{$}\NormalTok{tip.label, my\_tree}\OperatorTok{$}\NormalTok{node.label)}
+
+\CommentTok{\#\# Creating a treats object with this data}
+\NormalTok{continuous\_treats \textless{}{-}}\StringTok{ }\KeywordTok{make.treats}\NormalTok{(}\DataTypeTok{tree =}\NormalTok{ my\_tree, }\DataTypeTok{data =}\NormalTok{ continuous\_data)}
+
+\CommentTok{\#\# Plot the data together}
+\KeywordTok{plot}\NormalTok{(continuous\_treats)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-119-1.pdf}
 
 \hypertarget{specific-examples}{%
 \chapter{Specific examples}\label{specific-examples}}
@@ -3827,7 +3984,7 @@ Once these parameters are defined, we can run the simulations and plot the resul
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-116-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-123-1.pdf}
 
 \hypertarget{EGneg_ext}{%
 \section{Species with negative trait values go extinct after a certain time}\label{EGneg_ext}}
@@ -3884,7 +4041,7 @@ Once these parameters are defined, we can run the simulations and plot the resul
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-120-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-127-1.pdf}
 
 \hypertarget{EGbg_ext}{%
 \section{Adding a background extinction after reaching a number of living taxa}\label{EGbg_ext}}
@@ -3929,7 +4086,7 @@ Once these parameters are defined, we can run the simulations and plot the resul
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-123-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-130-1.pdf}
 
 \hypertarget{EGred_spec}{%
 \section{Reducing speciation rate after a certain time}\label{EGred_spec}}
@@ -3988,7 +4145,7 @@ We can contrast the results with the scenario without an event (but same random 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-126-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-133-1.pdf}
 
 \hypertarget{EG_change_trait}{%
 \section{Changing the trait process after some time}\label{EG_change_trait}}
@@ -4051,7 +4208,7 @@ We can contrast the results with the scenario without an event (but same random 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-130-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-137-1.pdf}
 
 \hypertarget{EG_change_correlation}{%
 \section{Changing trait correlation after reaching a trait value}\label{EG_change_correlation}}
@@ -4121,7 +4278,7 @@ We can contrast the results with the scenario without an event (but same random 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-134-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-141-1.pdf}
 
 And we can visualise this change through time:
 
@@ -4144,7 +4301,7 @@ And we can visualise this change through time:
 ## snapshots
 \end{verbatim}
 
-\includegraphics[width=6.5in]{../../../../../../tmp/RtmpcKuqE6/file37eb202f55d4}
+\includegraphics[width=6.5in]{../../../../../../tmp/RtmpNKmbbM/file9d727fb11a9c}
 
 \hypertarget{EG_change_modif}{%
 \section{Event for changing a modifier: extinction event increase for species with negative values}\label{EG_change_modif}}
@@ -4230,7 +4387,7 @@ We can contrast the results with the scenario without an event (but same random 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-140-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-147-1.pdf}
 
 \hypertarget{EG_modify_brlen}{%
 \section{Changing branch length when reaching n taxa}\label{EG_modify_brlen}}
@@ -4301,7 +4458,7 @@ We can contrast the results with the scenario without an event (but same random 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-144-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-151-1.pdf}
 
 \hypertarget{EG_founding_purebirth}{%
 \section{Founding event: generating a subtree with no fossils}\label{EG_founding_purebirth}}
@@ -4362,7 +4519,7 @@ Once these parameters are defined, we can run the simulations and plot the resul
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-147-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-154-1.pdf}
 
 \hypertarget{EG_founding_traits}{%
 \section{Founding event: generating a subtree a different process}\label{EG_founding_traits}}
@@ -4426,8 +4583,8 @@ Once these parameters are defined, we can run the simulations and plot the resul
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-151-1.pdf}
+\includegraphics{treats_manual_files/figure-latex/unnamed-chunk-158-1.pdf}
 
-  \bibliography{../references.bib}
+  \bibliography{../References.bib}
 
 \end{document}
