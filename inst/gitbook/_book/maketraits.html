@@ -20,10 +20,10 @@
   <meta name="twitter:description" content="treats R package manual" />
   
 
-<meta name="author" content="Thomas Guillerme (guillert@tcd.ie)" />
+<meta name="author" content="Thomas Guillerme (t.guillerme@sheffield.ac.uk)" />
 
 
-<meta name="date" content="2024-05-15" />
+<meta name="date" content="2024-08-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -208,13 +208,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.6" data-path="maketraits.html"><a href="maketraits.html#combining-multiple-traits-with-add"><i class="fa fa-check"></i><b>3.6</b> Combining multiple traits with <code>add</code></a></li>
 <li class="chapter" data-level="3.7" data-path="maketraits.html"><a href="maketraits.html#using-a-background-trait"><i class="fa fa-check"></i><b>3.7</b> Using a background trait</a></li>
 <li class="chapter" data-level="3.8" data-path="maketraits.html"><a href="maketraits.html#saving-trait-values-at-different-time-steps"><i class="fa fa-check"></i><b>3.8</b> Saving trait values at different time steps</a></li>
-<li class="chapter" data-level="3.9" data-path="maketraits.html"><a href="maketraits.html#traits-implemented-in-treats"><i class="fa fa-check"></i><b>3.9</b> Traits implemented in <code>treats</code></a></li>
-<li class="chapter" data-level="3.10" data-path="maketraits.html"><a href="maketraits.html#testing-the-traits-with-test"><i class="fa fa-check"></i><b>3.10</b> Testing the traits with <code>test</code></a></li>
-<li class="chapter" data-level="3.11" data-path="maketraits.html"><a href="maketraits.html#mapping-traits-on-a-tree-map.traits"><i class="fa fa-check"></i><b>3.11</b> Mapping traits on a tree: <code>map.traits</code></a></li>
-<li class="chapter" data-level="3.12" data-path="maketraits.html"><a href="maketraits.html#templates-for-making-your-very-own-process"><i class="fa fa-check"></i><b>3.12</b> Templates for making your very own process</a>
+<li class="chapter" data-level="3.9" data-path="maketraits.html"><a href="maketraits.html#linking-traits-together-with-link.traits"><i class="fa fa-check"></i><b>3.9</b> Linking traits together with <code>link.traits</code></a>
 <ul>
-<li class="chapter" data-level="3.12.1" data-path="maketraits.html"><a href="maketraits.html#a-simple-brownian-motion-process-template"><i class="fa fa-check"></i><b>3.12.1</b> A simple Brownian Motion process template</a></li>
-<li class="chapter" data-level="3.12.2" data-path="maketraits.html"><a href="maketraits.html#a-simple-ornstein-uhlenbeck-process-template"><i class="fa fa-check"></i><b>3.12.2</b> A simple Ornstein-Uhlenbeck process template</a></li>
+<li class="chapter" data-level="3.9.1" data-path="maketraits.html"><a href="maketraits.html#conditional-traits"><i class="fa fa-check"></i><b>3.9.1</b> Conditional traits</a></li>
+</ul></li>
+<li class="chapter" data-level="3.10" data-path="maketraits.html"><a href="maketraits.html#traits-implemented-in-treats"><i class="fa fa-check"></i><b>3.10</b> Traits implemented in <code>treats</code></a></li>
+<li class="chapter" data-level="3.11" data-path="maketraits.html"><a href="maketraits.html#testing-the-traits-with-test"><i class="fa fa-check"></i><b>3.11</b> Testing the traits with <code>test</code></a></li>
+<li class="chapter" data-level="3.12" data-path="maketraits.html"><a href="maketraits.html#map.traits"><i class="fa fa-check"></i><b>3.12</b> Mapping traits on a tree: <code>map.traits</code></a></li>
+<li class="chapter" data-level="3.13" data-path="maketraits.html"><a href="maketraits.html#templates-for-making-your-very-own-process"><i class="fa fa-check"></i><b>3.13</b> Templates for making your very own process</a>
+<ul>
+<li class="chapter" data-level="3.13.1" data-path="maketraits.html"><a href="maketraits.html#a-simple-brownian-motion-process-template"><i class="fa fa-check"></i><b>3.13.1</b> A simple Brownian Motion process template</a></li>
+<li class="chapter" data-level="3.13.2" data-path="maketraits.html"><a href="maketraits.html#a-simple-ornstein-uhlenbeck-process-template"><i class="fa fa-check"></i><b>3.13.2</b> A simple Ornstein-Uhlenbeck process template</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="makemodifiers.html"><a href="makemodifiers.html"><i class="fa fa-check"></i><b>4</b> Modifying the birth-death process</a>
@@ -252,6 +256,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="7.2.1" data-path="plots.html"><a href="plots.html#adding-dimensions-not-necessary-but-fun"><i class="fa fa-check"></i><b>7.2.1</b> Adding dimensions! Not necessary, but fun!</a></li>
 </ul></li>
+<li class="chapter" data-level="7.3" data-path="plots.html"><a href="plots.html#using-plot.treats-to-plot-non-treats-objects"><i class="fa fa-check"></i><b>7.3</b> Using <code>plot.treats</code> to plot non-treats objects</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="specific-examples.html"><a href="specific-examples.html"><i class="fa fa-check"></i><b>8</b> Specific examples</a>
 <ul>
@@ -452,14 +457,16 @@ You can find the list of implemented processes by looking at the <code>?trait.pr
 <pre><code>## $main
 ## $main$A
 ## $main$A$process
+## $main$A$process[[1]]
 ## function (x0 = 0, edge.length = 1, Sigma = diag(length(x0)), 
 ##     ...) 
 ## {
 ##     return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = Sigma * edge.length, 
 ##         ...)))
 ## }
-## &lt;bytecode: 0x5d199791a170&gt;
+## &lt;bytecode: 0x5bdff95336a8&gt;
 ## &lt;environment: namespace:treats&gt;
+## 
 ## 
 ## $main$A$start
 ## [1] 0
@@ -564,13 +571,13 @@ For example, the inbuilt process <code>no.process</code> (that is just a number 
 <span id="cb86-2"><a href="maketraits.html#cb86-2" aria-hidden="true"></a><span class="kw">make.traits</span>(no.process, <span class="dt">process.args =</span> <span class="kw">list</span>(<span class="dt">fun =</span> rnorm))</span></code></pre></div>
 <pre><code>##  ---- treats traits object ---- 
 ## 1 trait for 1 process (A) with one starting value (0).
-## process A uses the following extra argument: fun;</code></pre>
+## process A uses the following extra argument: fun.</code></pre>
 <div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="maketraits.html#cb88-1" aria-hidden="true"></a><span class="co">## no process trait using the uniform distribution</span></span>
 <span id="cb88-2"><a href="maketraits.html#cb88-2" aria-hidden="true"></a><span class="co">## bounded between 1 and 100</span></span>
 <span id="cb88-3"><a href="maketraits.html#cb88-3" aria-hidden="true"></a><span class="kw">make.traits</span>(no.process, <span class="dt">process.args =</span> <span class="kw">list</span>(<span class="dt">fun =</span> runif, <span class="dt">min =</span> <span class="dv">1</span>, <span class="dt">max =</span> <span class="dv">100</span>))</span></code></pre></div>
 <pre><code>##  ---- treats traits object ---- 
 ## 1 trait for 1 process (A) with one starting value (0).
-## process A uses the following extra arguments: fun,min,max;</code></pre>
+## process A uses the following extra argument: c(&quot;fun&quot;, &quot;min&quot;, &quot;max&quot;).</code></pre>
 <p>You can also add multiple extra arguments for multiple processes giving them as a list.</p>
 <div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="maketraits.html#cb90-1" aria-hidden="true"></a><span class="co">## Two traits with no process:one normal and one uniform (1,100)</span></span>
 <span id="cb90-2"><a href="maketraits.html#cb90-2" aria-hidden="true"></a><span class="kw">make.traits</span>(<span class="dt">process =</span> <span class="kw">c</span>(no.process, no.process),</span>
@@ -578,8 +585,8 @@ For example, the inbuilt process <code>no.process</code> (that is just a number 
 <span id="cb90-4"><a href="maketraits.html#cb90-4" aria-hidden="true"></a>                                <span class="kw">list</span>(<span class="dt">fun =</span> runif, <span class="dt">min =</span> <span class="dv">1</span>, <span class="dt">max =</span> <span class="dv">100</span>)))</span></code></pre></div>
 <pre><code>##  ---- treats traits object ---- 
 ## 2 traits for 2 processes (A, B) with one starting value (0).
-## process A uses the following extra argument: fun;
-## process B uses the following extra arguments: fun,min,max;</code></pre>
+## process A uses the following extra argument: fun.
+## process B uses the following extra argument: c(&quot;fun&quot;, &quot;min&quot;, &quot;max&quot;).</code></pre>
 <p>If one process does not need extra argument you must still give it an extra <code>NULL</code> process argument:</p>
 <div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="maketraits.html#cb92-1" aria-hidden="true"></a><span class="co">## Three traits with no process:</span></span>
 <span id="cb92-2"><a href="maketraits.html#cb92-2" aria-hidden="true"></a><span class="co">## one default, one lognormal and one uniform (1,100)</span></span>
@@ -592,8 +599,8 @@ For example, the inbuilt process <code>no.process</code> (that is just a number 
 <span id="cb92-9"><a href="maketraits.html#cb92-9" aria-hidden="true"></a>                                <span class="kw">list</span>(<span class="dt">fun =</span> runif, <span class="dt">min =</span> <span class="dv">1</span>, <span class="dt">max =</span> <span class="dv">100</span>)))</span></code></pre></div>
 <pre><code>##  ---- treats traits object ---- 
 ## 3 traits for 3 processes (A, B, C) with one starting value (0).
-## process B uses the following extra argument: fun;
-## process C uses the following extra arguments: fun,min,max;</code></pre>
+## process B uses the following extra argument: fun.
+## process C uses the following extra argument: c(&quot;fun&quot;, &quot;min&quot;, &quot;max&quot;).</code></pre>
 </div>
 <div id="naming-the-traits-with-trait.names" class="section level2 hasAnchor" number="3.5">
 <h2><span class="header-section-number">3.5</span> Naming the traits with <code>trait.names</code><a href="maketraits.html#naming-the-traits-with-trait.names" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -618,8 +625,8 @@ This is easily done using the <code>trait.names</code> argument that attributes 
 <span id="cb96-11"><a href="maketraits.html#cb96-11" aria-hidden="true"></a>            <span class="dt">trait.names  =</span> <span class="kw">c</span>(<span class="st">&quot;Normal&quot;</span>, <span class="st">&quot;LogNormal&quot;</span>, <span class="st">&quot;Uniform(1,100)&quot;</span>))</span></code></pre></div>
 <pre><code>##  ---- treats traits object ---- 
 ## 3 traits for 3 processes (Normal, LogNormal, Uniform(1,100)) with one starting value (0).
-## process LogNormal uses the following extra argument: fun;
-## process Uniform(1,100) uses the following extra arguments: fun,min,max;</code></pre>
+## process LogNormal uses the following extra argument: fun.
+## process Uniform(1,100) uses the following extra argument: c(&quot;fun&quot;, &quot;min&quot;, &quot;max&quot;).</code></pre>
 </div>
 <div id="combining-multiple-traits-with-add" class="section level2 hasAnchor" number="3.6">
 <h2><span class="header-section-number">3.6</span> Combining multiple traits with <code>add</code><a href="maketraits.html#combining-multiple-traits-with-add" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -660,7 +667,7 @@ You can remove these nodes using the <a href="others.html#dropthings"><code>drop
 <div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="maketraits.html#cb103-1" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
 <span id="cb103-2"><a href="maketraits.html#cb103-2" aria-hidden="true"></a><span class="co">## Generating a pure birth tree with the background trait</span></span>
 <span id="cb103-3"><a href="maketraits.html#cb103-3" aria-hidden="true"></a>tree_bkg &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">stop.rule =</span> <span class="kw">list</span>(<span class="dt">max.taxa =</span> <span class="dv">20</span>),</span>
-<span id="cb103-4"><a href="maketraits.html#cb103-4" aria-hidden="true"></a>                 <span class="dt">traits =</span> my_trait)</span>
+<span id="cb103-4"><a href="maketraits.html#cb103-4" aria-hidden="true"></a>                   <span class="dt">traits =</span> my_trait)</span>
 <span id="cb103-5"><a href="maketraits.html#cb103-5" aria-hidden="true"></a><span class="co">## This tree has many internal singleton nodes</span></span>
 <span id="cb103-6"><a href="maketraits.html#cb103-6" aria-hidden="true"></a><span class="kw">plot</span>(tree_bkg)</span></code></pre></div>
 <p><img src="treats_manual_files/figure-html/unnamed-chunk-54-1.png" width="672" /></p>
@@ -673,114 +680,178 @@ These time steps can be either regular by providing a single numeric value; e.g.
 <div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="maketraits.html#cb104-1" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">123</span>)</span>
 <span id="cb104-2"><a href="maketraits.html#cb104-2" aria-hidden="true"></a><span class="co">## Generating a birth-death tree with a BM trait and saving steps at specific times</span></span>
 <span id="cb104-3"><a href="maketraits.html#cb104-3" aria-hidden="true"></a>tree_steps &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">stop.rule  =</span> <span class="kw">list</span>(<span class="dt">max.time =</span> <span class="dv">3</span>),</span>
-<span id="cb104-4"><a href="maketraits.html#cb104-4" aria-hidden="true"></a>                   <span class="dt">bd.params  =</span> <span class="kw">list</span>(<span class="dt">speciation =</span> <span class="dv">1</span>, <span class="dt">extinction =</span> <span class="fl">0.1</span>),</span>
-<span id="cb104-5"><a href="maketraits.html#cb104-5" aria-hidden="true"></a>                   <span class="dt">traits     =</span> <span class="kw">make.traits</span>(),</span>
-<span id="cb104-6"><a href="maketraits.html#cb104-6" aria-hidden="true"></a>                   <span class="dt">save.steps =</span> <span class="kw">c</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb104-4"><a href="maketraits.html#cb104-4" aria-hidden="true"></a>                     <span class="dt">bd.params  =</span> <span class="kw">list</span>(<span class="dt">speciation =</span> <span class="dv">1</span>, <span class="dt">extinction =</span> <span class="fl">0.1</span>),</span>
+<span id="cb104-5"><a href="maketraits.html#cb104-5" aria-hidden="true"></a>                     <span class="dt">traits     =</span> <span class="kw">make.traits</span>(),</span>
+<span id="cb104-6"><a href="maketraits.html#cb104-6" aria-hidden="true"></a>                     <span class="dt">save.steps =</span> <span class="kw">c</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">2</span>))</span>
 <span id="cb104-7"><a href="maketraits.html#cb104-7" aria-hidden="true"></a><span class="co">## This also creates internal singleton nodes</span></span>
 <span id="cb104-8"><a href="maketraits.html#cb104-8" aria-hidden="true"></a><span class="kw">plot</span>(tree_steps)</span>
 <span id="cb104-9"><a href="maketraits.html#cb104-9" aria-hidden="true"></a><span class="kw">abline</span>(<span class="dt">v =</span> <span class="dv">3</span> <span class="op">-</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">lwd =</span> <span class="fl">0.5</span>, <span class="dt">col =</span> <span class="st">&quot;grey&quot;</span>)</span></code></pre></div>
 <p><img src="treats_manual_files/figure-html/unnamed-chunk-55-1.png" width="672" /></p>
 </div>
-<div id="traits-implemented-in-treats" class="section level2 hasAnchor" number="3.9">
-<h2><span class="header-section-number">3.9</span> Traits implemented in <code>treats</code><a href="maketraits.html#traits-implemented-in-treats" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="linking-traits-together-with-link.traits" class="section level2 hasAnchor" number="3.9">
+<h2><span class="header-section-number">3.9</span> Linking traits together with <code>link.traits</code><a href="maketraits.html#linking-traits-together-with-link.traits" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In the <code>treats</code> algorithm, traits are simulated in parallel for improving performances.
+Most of the cases this is a (really) good thing!
+However, in some cases you might need some of your traits to be simulated sequentially.
+For example if you want a specific trait process or options to be dependent on the result of another trait.
+You can set up these linked traits using the <code>link.traits</code> function.
+This function takes <code>base.trait</code>, a <code>"treats"</code> <code>"traits"</code> object created using <code>make.traits</code> that will be the first trait simulated and the <code>next.trait</code>, a list of <code>"treats"</code> <code>"traits"</code> objects that will be simulated after the <code>base.trait</code> depending on the link type (<code>link.type</code>) and some other arguments (<code>link.args</code>).
+So far the <code>link.traits</code> function only accommodates <code>link.type = "conditional"</code> for conditional traits.</p>
+<div id="conditional-traits" class="section level3 hasAnchor" number="3.9.1">
+<h3><span class="header-section-number">3.9.1</span> Conditional traits<a href="maketraits.html#conditional-traits" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Say for example that you have a primary trait (<code>base.trait</code>) that is a discrete binary trait that generates values <code>0</code> or <code>1</code>.
+This can correspond to some abiotic trait for example (e.g. “is the lineage on an island or on the mainland”).
+You can first generate this trait using the <code>make.traits</code> function as detailed above (note here we’re using a transition matrix as a specific argument that makes the changes from state 0 to state 1 relatively rare and the reversal even more rare).</p>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="maketraits.html#cb105-1" aria-hidden="true"></a><span class="co">## Setting up a discrete trait</span></span>
+<span id="cb105-2"><a href="maketraits.html#cb105-2" aria-hidden="true"></a>discrete_trait &lt;-<span class="st"> </span><span class="kw">make.traits</span>(discrete.process,</span>
+<span id="cb105-3"><a href="maketraits.html#cb105-3" aria-hidden="true"></a>       <span class="dt">process.args =</span> <span class="kw">list</span>(<span class="dt">transitions =</span> <span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">3</span>, <span class="fl">0.2</span>, <span class="fl">0.05</span>, <span class="dv">3</span>), <span class="dv">2</span>, <span class="dv">2</span>)),</span>
+<span id="cb105-4"><a href="maketraits.html#cb105-4" aria-hidden="true"></a>       <span class="dt">trait.names  =</span> <span class="st">&quot;discrete&quot;</span>)</span></code></pre></div>
+<p>Following this trait value, we can create another trait that is conditional to the outcome of this first discrete trait simulation.
+In other words we can specify a choice between two processes depending on the result of the <code>base.trait</code>.
+For example, we can say that if the lineage evolves on an island (state <code>"1"</code>) it will evolve using a Brownian motion process but if it evolves on the mainland (state <code>"0"</code>), it will evolve using an OU process.</p>
+<p>We’ll need to first generate these two traits independently using <code>make.traits</code> (using different options):</p>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="maketraits.html#cb106-1" aria-hidden="true"></a><span class="co">## A standard Brownian Motion trait</span></span>
+<span id="cb106-2"><a href="maketraits.html#cb106-2" aria-hidden="true"></a>BM_trait &lt;-<span class="st"> </span><span class="kw">make.traits</span>(<span class="dt">process =</span> BM.process)</span>
+<span id="cb106-3"><a href="maketraits.html#cb106-3" aria-hidden="true"></a><span class="co">## An OU trait with a strong alpha</span></span>
+<span id="cb106-4"><a href="maketraits.html#cb106-4" aria-hidden="true"></a>OU_trait &lt;-<span class="st"> </span><span class="kw">make.traits</span>(<span class="dt">process =</span> OU.process, <span class="dt">process.args =</span> <span class="kw">list</span>(<span class="dt">alpha =</span> <span class="dv">10</span>))</span>
+<span id="cb106-5"><a href="maketraits.html#cb106-5" aria-hidden="true"></a><span class="co">## Combining both traits into a list</span></span>
+<span id="cb106-6"><a href="maketraits.html#cb106-6" aria-hidden="true"></a>continuous_trait &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;mainland_case&quot;</span> =<span class="st"> </span>BM_trait,</span>
+<span id="cb106-7"><a href="maketraits.html#cb106-7" aria-hidden="true"></a>                         <span class="st">&quot;island_case&quot;</span>   =<span class="st"> </span>OU_trait)</span></code></pre></div>
+<p>We then need to create a list of functions to interpret the results of the first trait (<code>discrete_trait</code>) so that if the results of <code>discrete_trait</code> is <code>0</code>, <code>BM_trait</code> is used, if it’s <code>1</code> <code>OU_trait</code> is used.
+This is done by creating a list of functions that evaluate <code>x1</code>, the outcome of <code>discrete_trait</code>, and return a logical (<code>TRUE</code> or <code>FALSE</code>).
+For example <code>function(x1) {x1 != 0}</code> will return <code>TRUE</code> if the <code>discrete_trait</code> is not state <code>0</code>:</p>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="maketraits.html#cb107-1" aria-hidden="true"></a><span class="co">## Creating a list of functions to choose between either case for the continuous trait</span></span>
+<span id="cb107-2"><a href="maketraits.html#cb107-2" aria-hidden="true"></a>select_continuous &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;is.mainland&quot;</span> =<span class="st"> </span><span class="cf">function</span>(x1) {x1 <span class="op">==</span><span class="st"> </span><span class="dv">0</span>},</span>
+<span id="cb107-3"><a href="maketraits.html#cb107-3" aria-hidden="true"></a>                          <span class="st">&quot;is.island&quot;</span>   =<span class="st"> </span><span class="cf">function</span>(x1) {x1 <span class="op">==</span><span class="st"> </span><span class="dv">1</span>})</span></code></pre></div>
+<p>Note that this list must be in the same order as the <code>continuous_trait</code>: the functions will be evaluated sequentially (i.e. test the function <code>is.mainland</code>, then <code>is.island</code>) and the first one to return <code>TRUE</code> will be used to select the function in <code>continuous_trait</code>.
+For example in our case if the score of <code>discrete_trait</code> is <code>1</code>, the second function from <code>select_continuous</code> is <code>TRUE</code> so the second element from <code>continuous_trait</code> is used (the <code>OU_trait</code>).</p>
+<p>We can then combine all that using <code>link.traits</code>:</p>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="maketraits.html#cb108-1" aria-hidden="true"></a><span class="co">## Link these traits</span></span>
+<span id="cb108-2"><a href="maketraits.html#cb108-2" aria-hidden="true"></a>conditional_trait &lt;-<span class="st"> </span><span class="kw">link.traits</span>(<span class="co"># The first trait to be evaluated</span></span>
+<span id="cb108-3"><a href="maketraits.html#cb108-3" aria-hidden="true"></a>                                 <span class="dt">base.trait =</span> discrete_trait,</span>
+<span id="cb108-4"><a href="maketraits.html#cb108-4" aria-hidden="true"></a>                                 <span class="co"># The other traits to be evaluated next</span></span>
+<span id="cb108-5"><a href="maketraits.html#cb108-5" aria-hidden="true"></a>                                 <span class="co"># (here a list of two traits)</span></span>
+<span id="cb108-6"><a href="maketraits.html#cb108-6" aria-hidden="true"></a>                                 <span class="dt">next.trait =</span> continuous_trait,</span>
+<span id="cb108-7"><a href="maketraits.html#cb108-7" aria-hidden="true"></a>                                 <span class="dt">link.type  =</span> <span class="st">&quot;conditional&quot;</span>,</span>
+<span id="cb108-8"><a href="maketraits.html#cb108-8" aria-hidden="true"></a>                                 <span class="co"># The functions to choose between either</span></span>
+<span id="cb108-9"><a href="maketraits.html#cb108-9" aria-hidden="true"></a>                                 <span class="co"># continuous traits </span></span>
+<span id="cb108-10"><a href="maketraits.html#cb108-10" aria-hidden="true"></a>                                 <span class="dt">link.args  =</span> select_continuous)</span></code></pre></div>
+<p>And run the usual simulation pipeline with <code>treats</code>:</p>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="maketraits.html#cb109-1" aria-hidden="true"></a><span class="co">## Running a tree with this conditional trait</span></span>
+<span id="cb109-2"><a href="maketraits.html#cb109-2" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb109-3"><a href="maketraits.html#cb109-3" aria-hidden="true"></a>my_conditional_tree &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">stop.rule =</span> <span class="kw">list</span>(<span class="dt">max.taxa =</span> <span class="dv">200</span>),</span>
+<span id="cb109-4"><a href="maketraits.html#cb109-4" aria-hidden="true"></a>                              <span class="dt">traits    =</span> conditional_trait)</span>
+<span id="cb109-5"><a href="maketraits.html#cb109-5" aria-hidden="true"></a></span>
+<span id="cb109-6"><a href="maketraits.html#cb109-6" aria-hidden="true"></a>op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb109-7"><a href="maketraits.html#cb109-7" aria-hidden="true"></a><span class="kw">plot</span>(my_conditional_tree, <span class="dt">trait =</span> <span class="dv">1</span>, <span class="dt">main =</span> <span class="st">&quot;The conditional trait&quot;</span>)</span>
+<span id="cb109-8"><a href="maketraits.html#cb109-8" aria-hidden="true"></a><span class="kw">plot</span>(my_conditional_tree, <span class="dt">trait =</span> <span class="dv">2</span>, <span class="dt">main =</span> <span class="st">&quot;The conditioned trait&quot;</span>)</span></code></pre></div>
+<p><img src="treats_manual_files/figure-html/unnamed-chunk-60-1.png" width="1152" /></p>
+<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="maketraits.html#cb110-1" aria-hidden="true"></a><span class="kw">par</span>(op)</span>
+<span id="cb110-2"><a href="maketraits.html#cb110-2" aria-hidden="true"></a><span class="co">## The clumpy bit around the value 0 corresponds to the OU trait</span></span></code></pre></div>
+<p>Of course, you can combine linked traits with other traits like any other traits in <code>treats</code> using <code>make.traits</code> (for example: <code>make.traits(process = my_new_trait, add = conditional_trait)</code> to generate more complex traits.
+In this case the traits are generated in parallel (for speed) apart for the specified linked ones.</p>
+</div>
+</div>
+<div id="traits-implemented-in-treats" class="section level2 hasAnchor" number="3.10">
+<h2><span class="header-section-number">3.10</span> Traits implemented in <code>treats</code><a href="maketraits.html#traits-implemented-in-treats" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>If you don’t want to design your own trait process, you can use one of the following trait processes that are currently implemented in <code>treats</code>. You can find more information about their many options using their specific manuals in R or the generic <code>?trait.process</code>:</p>
 <ul>
 <li><code>BM.process</code>: this is the well known <a href="https://en.wikipedia.org/wiki/Brownian_motion">Brownian motion process</a>.</li>
 </ul>
-<p><img src="treats_manual_files/figure-html/unnamed-chunk-56-1.png" width="672" /></p>
+<p><img src="treats_manual_files/figure-html/unnamed-chunk-61-1.png" width="672" /></p>
 <ul>
 <li><code>OU.process</code>: this is the equally famous <a href="https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process">Ornstein–Uhlenbeck process</a>.</li>
 </ul>
-<p><img src="treats_manual_files/figure-html/unnamed-chunk-57-1.png" width="672" /></p>
+<p><img src="treats_manual_files/figure-html/unnamed-chunk-62-1.png" width="672" /></p>
 <ul>
 <li><code>no.process</code>: this process has… no process. In other words, this is a non time dependent process; the simulated value does not depends on the ancestors’ value nor the branch length. It’s basically a place holder for a random sampling function like <code>rnorm</code> (default), <code>runif</code>, <code>rlnorm</code>, etc.</li>
 </ul>
-<p><img src="treats_manual_files/figure-html/unnamed-chunk-58-1.png" width="672" /></p>
+<p><img src="treats_manual_files/figure-html/unnamed-chunk-63-1.png" width="672" /></p>
 <ul>
 <li><code>multi.peak.process</code>: this process is a modified version of the <code>OU.process</code> that can take multiple local long-term mean values. The default OU process has one long-term mean towards which the values are drawn with the alpha parameter (the elastic band). The single long-term mean is usually 0. However, with this <code>multi.peak.process</code> we can set multiple values towards which values can be attracted with the same alpha parameter.</li>
 </ul>
-<p><img src="treats_manual_files/figure-html/unnamed-chunk-59-1.png" width="672" /></p>
+<p><img src="treats_manual_files/figure-html/unnamed-chunk-64-1.png" width="672" /></p>
 <ul>
 <li><code>repulsion.process</code>: this is a modified version of the <code>BM.process</code> where instead of accumulating gradually through time, new trait values are more likely to be different to the traits of their ancestor following a <code>repulsion</code> parameter.</li>
 </ul>
-<p><img src="treats_manual_files/figure-html/unnamed-chunk-60-1.png" width="672" /></p>
+<p><img src="treats_manual_files/figure-html/unnamed-chunk-65-1.png" width="672" /></p>
 <ul>
 <li><code>discrete.process</code>: this one generates discrete trait values based on a transition matrix (you can use the utility function <code>transition.matrix</code> to generate one).</li>
 </ul>
-<p><img src="treats_manual_files/figure-html/unnamed-chunk-61-1.png" width="672" /></p>
+<p><img src="treats_manual_files/figure-html/unnamed-chunk-66-1.png" width="672" /></p>
 <p>Of course here the plotting of a discrete trait is not that informative…</p>
 </div>
-<div id="testing-the-traits-with-test" class="section level2 hasAnchor" number="3.10">
-<h2><span class="header-section-number">3.10</span> Testing the traits with <code>test</code><a href="maketraits.html#testing-the-traits-with-test" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="testing-the-traits-with-test" class="section level2 hasAnchor" number="3.11">
+<h2><span class="header-section-number">3.11</span> Testing the traits with <code>test</code><a href="maketraits.html#testing-the-traits-with-test" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p><strong>This bit is still in development.</strong>
 We highly suggest leaving <code>test = TRUE</code> so that <code>make.traits</code> returns an error if a process or its additional arguments (<code>process.args</code>) are not formatted correctly.
 <code>make.traits</code> will send an error if the trait cannot be directly passed to <code>treats</code>.
 However, in some specific cases (again, probably mainly for development and debugging) it could be useful to skip the tests using <code>test = FALSE</code>.</p>
 </div>
-<div id="mapping-traits-on-a-tree-map.traits" class="section level2 hasAnchor" number="3.11">
-<h2><span class="header-section-number">3.11</span> Mapping traits on a tree: <code>map.traits</code><a href="maketraits.html#mapping-traits-on-a-tree-map.traits" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="map.traits" class="section level2 hasAnchor" number="3.12">
+<h2><span class="header-section-number">3.12</span> Mapping traits on a tree: <code>map.traits</code><a href="maketraits.html#map.traits" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Although <code>make.traits</code> is mainly designed for <code>treats</code> simulations, i.e. simulating both the trees AND the traits at the same time, it is possible to use an already simulated or estimated tree and generating one or more traits on it using the <code>map.traits</code> function. This function takes the trait input as a <code>"traits"</code> object (from <code>make.traits</code>) and a tree topology with branch length. Note that you can also use <code>"traits"</code> objects with multiple or multi-dimensional traits as well as multiple phylogenies (<code>"multiPhylo"</code>).</p>
-<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="maketraits.html#cb105-1" aria-hidden="true"></a><span class="co">## Simulating a random tree with branch length</span></span>
-<span id="cb105-2"><a href="maketraits.html#cb105-2" aria-hidden="true"></a>my_tree &lt;-<span class="st"> </span><span class="kw">rtree</span>(<span class="dv">20</span>)</span>
-<span id="cb105-3"><a href="maketraits.html#cb105-3" aria-hidden="true"></a></span>
-<span id="cb105-4"><a href="maketraits.html#cb105-4" aria-hidden="true"></a><span class="co">## Creating three different traits objects:</span></span>
-<span id="cb105-5"><a href="maketraits.html#cb105-5" aria-hidden="true"></a><span class="co">## A Brownian Motion</span></span>
-<span id="cb105-6"><a href="maketraits.html#cb105-6" aria-hidden="true"></a>bm_process &lt;-<span class="st"> </span><span class="kw">make.traits</span>(<span class="dt">process =</span> BM.process)</span>
-<span id="cb105-7"><a href="maketraits.html#cb105-7" aria-hidden="true"></a><span class="co">## An Ornstein-Uhlenbeck process</span></span>
-<span id="cb105-8"><a href="maketraits.html#cb105-8" aria-hidden="true"></a>ou_process &lt;-<span class="st"> </span><span class="kw">make.traits</span>(<span class="dt">process =</span> OU.process)</span>
-<span id="cb105-9"><a href="maketraits.html#cb105-9" aria-hidden="true"></a><span class="co">## No process (just randomly drawing values from a normal distribution)</span></span>
-<span id="cb105-10"><a href="maketraits.html#cb105-10" aria-hidden="true"></a>no_process &lt;-<span class="st"> </span><span class="kw">make.traits</span>(<span class="dt">process =</span> no.process)</span>
-<span id="cb105-11"><a href="maketraits.html#cb105-11" aria-hidden="true"></a></span>
-<span id="cb105-12"><a href="maketraits.html#cb105-12" aria-hidden="true"></a><span class="co">## Mapping the three traits on the phylogeny</span></span>
-<span id="cb105-13"><a href="maketraits.html#cb105-13" aria-hidden="true"></a>bm_traits &lt;-<span class="st"> </span><span class="kw">map.traits</span>(bm_process, my_tree)</span>
-<span id="cb105-14"><a href="maketraits.html#cb105-14" aria-hidden="true"></a>ou_traits &lt;-<span class="st"> </span><span class="kw">map.traits</span>(ou_process, my_tree)</span>
-<span id="cb105-15"><a href="maketraits.html#cb105-15" aria-hidden="true"></a>no_traits &lt;-<span class="st"> </span><span class="kw">map.traits</span>(no_process, my_tree)</span>
-<span id="cb105-16"><a href="maketraits.html#cb105-16" aria-hidden="true"></a></span>
-<span id="cb105-17"><a href="maketraits.html#cb105-17" aria-hidden="true"></a><span class="co">## Plotting the topology and the different traits</span></span>
-<span id="cb105-18"><a href="maketraits.html#cb105-18" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
-<span id="cb105-19"><a href="maketraits.html#cb105-19" aria-hidden="true"></a><span class="kw">plot</span>(my_tree, <span class="dt">main =</span> <span class="st">&quot;Base topology&quot;</span>)</span>
-<span id="cb105-20"><a href="maketraits.html#cb105-20" aria-hidden="true"></a><span class="kw">plot</span>(bm_traits, <span class="dt">main =</span> <span class="st">&quot;Mapped BM&quot;</span>)</span>
-<span id="cb105-21"><a href="maketraits.html#cb105-21" aria-hidden="true"></a><span class="kw">plot</span>(ou_traits, <span class="dt">main =</span> <span class="st">&quot;Mapped OU&quot;</span>)</span>
-<span id="cb105-22"><a href="maketraits.html#cb105-22" aria-hidden="true"></a><span class="kw">plot</span>(no_traits, <span class="dt">main =</span> <span class="st">&quot;Mapped normal trait&quot;</span>)</span></code></pre></div>
-<p><img src="treats_manual_files/figure-html/unnamed-chunk-62-1.png" width="672" /></p>
+<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="maketraits.html#cb111-1" aria-hidden="true"></a><span class="co">## Simulating a random tree with branch length</span></span>
+<span id="cb111-2"><a href="maketraits.html#cb111-2" aria-hidden="true"></a>my_tree &lt;-<span class="st"> </span><span class="kw">rtree</span>(<span class="dv">20</span>)</span>
+<span id="cb111-3"><a href="maketraits.html#cb111-3" aria-hidden="true"></a></span>
+<span id="cb111-4"><a href="maketraits.html#cb111-4" aria-hidden="true"></a><span class="co">## Creating three different traits objects:</span></span>
+<span id="cb111-5"><a href="maketraits.html#cb111-5" aria-hidden="true"></a><span class="co">## A Brownian Motion</span></span>
+<span id="cb111-6"><a href="maketraits.html#cb111-6" aria-hidden="true"></a>bm_process &lt;-<span class="st"> </span><span class="kw">make.traits</span>(<span class="dt">process =</span> BM.process)</span>
+<span id="cb111-7"><a href="maketraits.html#cb111-7" aria-hidden="true"></a><span class="co">## An Ornstein-Uhlenbeck process</span></span>
+<span id="cb111-8"><a href="maketraits.html#cb111-8" aria-hidden="true"></a>ou_process &lt;-<span class="st"> </span><span class="kw">make.traits</span>(<span class="dt">process =</span> OU.process)</span>
+<span id="cb111-9"><a href="maketraits.html#cb111-9" aria-hidden="true"></a><span class="co">## No process (just randomly drawing values from a normal distribution)</span></span>
+<span id="cb111-10"><a href="maketraits.html#cb111-10" aria-hidden="true"></a>no_process &lt;-<span class="st"> </span><span class="kw">make.traits</span>(<span class="dt">process =</span> no.process)</span>
+<span id="cb111-11"><a href="maketraits.html#cb111-11" aria-hidden="true"></a></span>
+<span id="cb111-12"><a href="maketraits.html#cb111-12" aria-hidden="true"></a><span class="co">## Mapping the three traits on the phylogeny</span></span>
+<span id="cb111-13"><a href="maketraits.html#cb111-13" aria-hidden="true"></a>bm_traits &lt;-<span class="st"> </span><span class="kw">map.traits</span>(bm_process, my_tree)</span>
+<span id="cb111-14"><a href="maketraits.html#cb111-14" aria-hidden="true"></a>ou_traits &lt;-<span class="st"> </span><span class="kw">map.traits</span>(ou_process, my_tree)</span>
+<span id="cb111-15"><a href="maketraits.html#cb111-15" aria-hidden="true"></a>no_traits &lt;-<span class="st"> </span><span class="kw">map.traits</span>(no_process, my_tree)</span>
+<span id="cb111-16"><a href="maketraits.html#cb111-16" aria-hidden="true"></a></span>
+<span id="cb111-17"><a href="maketraits.html#cb111-17" aria-hidden="true"></a><span class="co">## Plotting the topology and the different traits</span></span>
+<span id="cb111-18"><a href="maketraits.html#cb111-18" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb111-19"><a href="maketraits.html#cb111-19" aria-hidden="true"></a><span class="kw">plot</span>(my_tree, <span class="dt">main =</span> <span class="st">&quot;Base topology&quot;</span>)</span>
+<span id="cb111-20"><a href="maketraits.html#cb111-20" aria-hidden="true"></a><span class="kw">plot</span>(bm_traits, <span class="dt">main =</span> <span class="st">&quot;Mapped BM&quot;</span>)</span>
+<span id="cb111-21"><a href="maketraits.html#cb111-21" aria-hidden="true"></a><span class="kw">plot</span>(ou_traits, <span class="dt">main =</span> <span class="st">&quot;Mapped OU&quot;</span>)</span>
+<span id="cb111-22"><a href="maketraits.html#cb111-22" aria-hidden="true"></a><span class="kw">plot</span>(no_traits, <span class="dt">main =</span> <span class="st">&quot;Mapped normal trait&quot;</span>)</span></code></pre></div>
+<p><img src="treats_manual_files/figure-html/unnamed-chunk-67-1.png" width="672" /></p>
 </div>
-<div id="templates-for-making-your-very-own-process" class="section level2 hasAnchor" number="3.12">
-<h2><span class="header-section-number">3.12</span> Templates for making your very own process<a href="maketraits.html#templates-for-making-your-very-own-process" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="templates-for-making-your-very-own-process" class="section level2 hasAnchor" number="3.13">
+<h2><span class="header-section-number">3.13</span> Templates for making your very own process<a href="maketraits.html#templates-for-making-your-very-own-process" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>As detailed above, any process of your own design will work as long as it is a function that takes at least the arguments <code>x0</code> and <code>edge.length</code>.
 You can be imaginative and creative when designing your own process but here are two detailed example functions for a unidimensional Brownian Motion and Ornstein-Uhlenbeck process that you can use for a start (or not).
 Remember it is good practice for <code>treats</code> processes to set all the arguments with default values (just in case).</p>
 <blockquote>
 <p>Note that the functions below are not equal to the already implemented <code>BM.process</code> and <code>OU.process</code> but an easier to edit version that you can use as a template:</p>
 </blockquote>
-<div id="a-simple-brownian-motion-process-template" class="section level3 hasAnchor" number="3.12.1">
-<h3><span class="header-section-number">3.12.1</span> A simple Brownian Motion process template<a href="maketraits.html#a-simple-brownian-motion-process-template" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="maketraits.html#cb106-1" aria-hidden="true"></a><span class="co">## A simple Brownian motion process</span></span>
-<span id="cb106-2"><a href="maketraits.html#cb106-2" aria-hidden="true"></a>my.BM.process &lt;-<span class="st"> </span><span class="cf">function</span>(<span class="dt">x0 =</span> <span class="dv">0</span>, <span class="dt">edge.length =</span> <span class="dv">1</span>, <span class="dt">sd =</span> <span class="dv">1</span>, ...) {</span>
-<span id="cb106-3"><a href="maketraits.html#cb106-3" aria-hidden="true"></a>    <span class="co">## Drawing a random number from a normal distribution</span></span>
-<span id="cb106-4"><a href="maketraits.html#cb106-4" aria-hidden="true"></a>    <span class="co">## with x0 as the and a given standard deviation</span></span>
-<span id="cb106-5"><a href="maketraits.html#cb106-5" aria-hidden="true"></a>    <span class="co">## and depending on branch (edge) length</span></span>
-<span id="cb106-6"><a href="maketraits.html#cb106-6" aria-hidden="true"></a>    result &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dt">n =</span> <span class="dv">1</span>, <span class="dt">mean =</span> x0, <span class="dt">sd =</span> <span class="kw">sqrt</span>(sd<span class="op">^</span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>edge.length))</span>
-<span id="cb106-7"><a href="maketraits.html#cb106-7" aria-hidden="true"></a></span>
-<span id="cb106-8"><a href="maketraits.html#cb106-8" aria-hidden="true"></a>    <span class="co">## Return the number</span></span>
-<span id="cb106-9"><a href="maketraits.html#cb106-9" aria-hidden="true"></a>    <span class="kw">return</span>(result)</span>
-<span id="cb106-10"><a href="maketraits.html#cb106-10" aria-hidden="true"></a>}</span></code></pre></div>
+<div id="a-simple-brownian-motion-process-template" class="section level3 hasAnchor" number="3.13.1">
+<h3><span class="header-section-number">3.13.1</span> A simple Brownian Motion process template<a href="maketraits.html#a-simple-brownian-motion-process-template" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="maketraits.html#cb112-1" aria-hidden="true"></a><span class="co">## A simple Brownian motion process</span></span>
+<span id="cb112-2"><a href="maketraits.html#cb112-2" aria-hidden="true"></a>my.BM.process &lt;-<span class="st"> </span><span class="cf">function</span>(<span class="dt">x0 =</span> <span class="dv">0</span>, <span class="dt">edge.length =</span> <span class="dv">1</span>, <span class="dt">sd =</span> <span class="dv">1</span>, ...) {</span>
+<span id="cb112-3"><a href="maketraits.html#cb112-3" aria-hidden="true"></a>    <span class="co">## Drawing a random number from a normal distribution</span></span>
+<span id="cb112-4"><a href="maketraits.html#cb112-4" aria-hidden="true"></a>    <span class="co">## with x0 as the and a given standard deviation</span></span>
+<span id="cb112-5"><a href="maketraits.html#cb112-5" aria-hidden="true"></a>    <span class="co">## and depending on branch (edge) length</span></span>
+<span id="cb112-6"><a href="maketraits.html#cb112-6" aria-hidden="true"></a>    result &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dt">n =</span> <span class="dv">1</span>, <span class="dt">mean =</span> x0, <span class="dt">sd =</span> <span class="kw">sqrt</span>(sd<span class="op">^</span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>edge.length))</span>
+<span id="cb112-7"><a href="maketraits.html#cb112-7" aria-hidden="true"></a></span>
+<span id="cb112-8"><a href="maketraits.html#cb112-8" aria-hidden="true"></a>    <span class="co">## Return the number</span></span>
+<span id="cb112-9"><a href="maketraits.html#cb112-9" aria-hidden="true"></a>    <span class="kw">return</span>(result)</span>
+<span id="cb112-10"><a href="maketraits.html#cb112-10" aria-hidden="true"></a>}</span></code></pre></div>
 </div>
-<div id="a-simple-ornstein-uhlenbeck-process-template" class="section level3 hasAnchor" number="3.12.2">
-<h3><span class="header-section-number">3.12.2</span> A simple Ornstein-Uhlenbeck process template<a href="maketraits.html#a-simple-ornstein-uhlenbeck-process-template" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="maketraits.html#cb107-1" aria-hidden="true"></a><span class="co">## A simple Ornstein-Uhlenbeck motion process</span></span>
-<span id="cb107-2"><a href="maketraits.html#cb107-2" aria-hidden="true"></a>my.OU.process &lt;-<span class="st"> </span><span class="cf">function</span>(<span class="dt">x0 =</span> <span class="dv">0</span>, <span class="dt">edge.length =</span> <span class="dv">1</span>, <span class="dt">var =</span> <span class="dv">1</span>, <span class="dt">alpha =</span> <span class="dv">1</span>, ...) {</span>
-<span id="cb107-3"><a href="maketraits.html#cb107-3" aria-hidden="true"></a>    <span class="co">## Calculate the mean based on alpha</span></span>
-<span id="cb107-4"><a href="maketraits.html#cb107-4" aria-hidden="true"></a>    mean &lt;-<span class="st"> </span>x0 <span class="op">*</span><span class="st"> </span><span class="kw">exp</span>(<span class="op">-</span>alpha)</span>
-<span id="cb107-5"><a href="maketraits.html#cb107-5" aria-hidden="true"></a>    <span class="co">## Calculate the standard deviation based on alpha and the variance</span></span>
-<span id="cb107-6"><a href="maketraits.html#cb107-6" aria-hidden="true"></a>    sd &lt;-<span class="st"> </span><span class="kw">sqrt</span>(var<span class="op">/</span>(<span class="dv">2</span> <span class="op">*</span><span class="st"> </span>alpha) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">exp</span>(<span class="op">-</span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>alpha)))</span>
-<span id="cb107-7"><a href="maketraits.html#cb107-7" aria-hidden="true"></a>    <span class="co">## Draw a random number from a normal distribution</span></span>
-<span id="cb107-8"><a href="maketraits.html#cb107-8" aria-hidden="true"></a>    <span class="co">## using this mean and standard deviation</span></span>
-<span id="cb107-9"><a href="maketraits.html#cb107-9" aria-hidden="true"></a>    <span class="co">## and depending on branch (edge) length</span></span>
-<span id="cb107-10"><a href="maketraits.html#cb107-10" aria-hidden="true"></a>    result &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dt">n =</span> <span class="dv">1</span>, <span class="dt">mean =</span> mean, <span class="dt">sd =</span> <span class="kw">sqrt</span>(sd<span class="op">^</span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>edge.length))</span>
-<span id="cb107-11"><a href="maketraits.html#cb107-11" aria-hidden="true"></a></span>
-<span id="cb107-12"><a href="maketraits.html#cb107-12" aria-hidden="true"></a>    <span class="co">## Return the number</span></span>
-<span id="cb107-13"><a href="maketraits.html#cb107-13" aria-hidden="true"></a>    <span class="kw">return</span>(result)</span>
-<span id="cb107-14"><a href="maketraits.html#cb107-14" aria-hidden="true"></a>}</span></code></pre></div>
+<div id="a-simple-ornstein-uhlenbeck-process-template" class="section level3 hasAnchor" number="3.13.2">
+<h3><span class="header-section-number">3.13.2</span> A simple Ornstein-Uhlenbeck process template<a href="maketraits.html#a-simple-ornstein-uhlenbeck-process-template" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="maketraits.html#cb113-1" aria-hidden="true"></a><span class="co">## A simple Ornstein-Uhlenbeck motion process</span></span>
+<span id="cb113-2"><a href="maketraits.html#cb113-2" aria-hidden="true"></a>my.OU.process &lt;-<span class="st"> </span><span class="cf">function</span>(<span class="dt">x0 =</span> <span class="dv">0</span>, <span class="dt">edge.length =</span> <span class="dv">1</span>, <span class="dt">var =</span> <span class="dv">1</span>, <span class="dt">alpha =</span> <span class="dv">1</span>, ...) {</span>
+<span id="cb113-3"><a href="maketraits.html#cb113-3" aria-hidden="true"></a>    <span class="co">## Calculate the mean based on alpha</span></span>
+<span id="cb113-4"><a href="maketraits.html#cb113-4" aria-hidden="true"></a>    mean &lt;-<span class="st"> </span>x0 <span class="op">*</span><span class="st"> </span><span class="kw">exp</span>(<span class="op">-</span>alpha)</span>
+<span id="cb113-5"><a href="maketraits.html#cb113-5" aria-hidden="true"></a>    <span class="co">## Calculate the standard deviation based on alpha and the variance</span></span>
+<span id="cb113-6"><a href="maketraits.html#cb113-6" aria-hidden="true"></a>    sd &lt;-<span class="st"> </span><span class="kw">sqrt</span>(var<span class="op">/</span>(<span class="dv">2</span> <span class="op">*</span><span class="st"> </span>alpha) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">exp</span>(<span class="op">-</span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>alpha)))</span>
+<span id="cb113-7"><a href="maketraits.html#cb113-7" aria-hidden="true"></a>    <span class="co">## Draw a random number from a normal distribution</span></span>
+<span id="cb113-8"><a href="maketraits.html#cb113-8" aria-hidden="true"></a>    <span class="co">## using this mean and standard deviation</span></span>
+<span id="cb113-9"><a href="maketraits.html#cb113-9" aria-hidden="true"></a>    <span class="co">## and depending on branch (edge) length</span></span>
+<span id="cb113-10"><a href="maketraits.html#cb113-10" aria-hidden="true"></a>    result &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dt">n =</span> <span class="dv">1</span>, <span class="dt">mean =</span> mean, <span class="dt">sd =</span> <span class="kw">sqrt</span>(sd<span class="op">^</span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>edge.length))</span>
+<span id="cb113-11"><a href="maketraits.html#cb113-11" aria-hidden="true"></a></span>
+<span id="cb113-12"><a href="maketraits.html#cb113-12" aria-hidden="true"></a>    <span class="co">## Return the number</span></span>
+<span id="cb113-13"><a href="maketraits.html#cb113-13" aria-hidden="true"></a>    <span class="kw">return</span>(result)</span>
+<span id="cb113-14"><a href="maketraits.html#cb113-14" aria-hidden="true"></a>}</span></code></pre></div>
 
 </div>
 </div>

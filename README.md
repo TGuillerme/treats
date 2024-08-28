@@ -4,12 +4,10 @@
 [![develVersion](https://img.shields.io/badge/devel%20version-1.0.3-green.svg?style=flat)](https://github.com/TGuillerme/treats/tree/master)
 [![DOI](https://zenodo.org/badge/299272555.svg)](https://zenodo.org/badge/latestdoi/299272555)
 
-<!--
 [![minimal R version](https://img.shields.io/badge/R%3E%3D-4.0.0-6666ff.svg)](https://cran.r-project.org/)
 [![cran version](http://www.r-pkg.org/badges/version/treats)](https://cran.r-project.org/package=treats)
 [![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/grand-total/treats)](https://github.com/metacran/cranlogs.app)
 ![](http://cranlogs.r-pkg.org/badges/treats)
--->
 
 # `treats`: TREes And Traits Simulation
 

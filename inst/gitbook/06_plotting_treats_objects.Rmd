@@ -1,8 +1,8 @@
 ---
-title: "`plot.treats`"
-author: "Thomas Guillerme (guillert@tcd.ie)"
+title: "treats manual"
+author: "Thomas Guillerme (t.guillerme@sheffield.ac.uk)"
 date: "`r Sys.Date()`"
-# bibliography: [../References.bib, ../packages.bib]
+bibliography: [../References.bib]
 output:
   html_document: default
   pdf_document: default
@@ -26,7 +26,8 @@ You can use `plot.treats` to plot them by choosing which specific trait to plot 
 
 ```{r, fig.height=8, fig.width=8}
 ## Making a list of three traits
-list_of_traits <- make.traits(process = c(no.process, BM.process, OU.process), trait.names = c("No process (normal)", "Brownian motion", "Ornstein-Uhlenbeck"))
+list_of_traits <- make.traits(process = c(no.process, BM.process, OU.process),
+                              trait.names = c("No process (normal)", "Brownian motion", "Ornstein-Uhlenbeck"))
 ## Plotting each trait separately
 par(mfrow = c(2, 2))
 plot(list_of_traits, trait = 1)
@@ -101,11 +102,12 @@ Of course, if you're simulating multiple traits, you can always plot different o
 
 ```{r, fig.height = 6, fig.width = 6}
 ## Specifying a 3D trait process
-my_3D_trait <- make.traits(n = 3, )
+my_3D_trait <- make.traits(n = 3)
 ## Simulating a birth-death tree with that 3D trait
-my_data <- treats(bd.params = list(extinction = 0.2),
-                  stop.rule = list(max.living = 50),
-                  traits    = my_3D_trait)
+my_data <- treats(bd.params  = list(extinction = 0.2),
+                  stop.rule  = list(max.living = 50),
+                  traits     = my_3D_trait,
+                  null.error = 100)
 ```
 
 You can toggle which trait to plot using the `trait` option, either by providing a single value to plot that specific trait against time or by providing two traits.
@@ -154,8 +156,35 @@ rglwidget()
 
 ## Using `plot.treats` to plot non-treats objects
 
-If you like the plotting style of `treats` trees and data, you can always use the `make.traits` function to plot a tree and some traits as a `"treats"` object.
+If you like the plotting style of `treats` trees and data, you can always use the `make.treats` function to plot a tree and some traits as a `"treats"` object.
+If you have a dataset that contains trait data for tips and nodes you can transform it into a `"treats"` object and plot it using the generic `plot.treats` function:
 
-### Discrete plots
+```{r}
+set.seed(1)
+## Generating some random tree
+my_tree <- makeNodeLabel(rcoal(20))
 
-### Continuous plots (with [mapping](#map.traits))
+## Generating some random discrete data
+discrete_data <- sample(c(1,2), 39, replace = TRUE)
+names(discrete_data) <- c(my_tree$tip.label, my_tree$node.label)
+
+## Creating a treats object with this data
+discrete_treats <- make.treats(tree = my_tree, data = discrete_data)
+
+## Plot the data together
+plot(discrete_treats, legend = TRUE)
+```
+
+The same goes for continuous data:
+
+```{r}
+## Generating some random continuous data
+continuous_data <- rnorm(39)
+names(continuous_data) <- c(my_tree$tip.label, my_tree$node.label)
+
+## Creating a treats object with this data
+continuous_treats <- make.treats(tree = my_tree, data = continuous_data)
+
+## Plot the data together
+plot(continuous_treats)
+```

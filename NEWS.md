@@ -1,12 +1,9 @@
-treats v1.0.6 (2024-07-04) 
+treats v1.1.0 (2024-08-28) 
 =========================
 
 ### NEW FEATURES
 
  * New function: `link.traits` to link several traits to each other
-    - [ ] test: TODO needs test update
-    - [x] example
-    - [x] manual
  * New S3 function: `drop.tip` and `keep.tip` from `ape` now work on `"treats"` objects
 
 ### MINOR IMPROVEMENTS
@@ -23,6 +20,7 @@ treats v1.0.6 (2024-07-04)
 
  * Plotting `col` option is now handled and explained correctly by `plot.treats` when complex (i.e. when not equal to the number of elements or the number of element categories). 
  * Plotting `traits` now correctly displays multiple traits with the `trait` argument (thanks to Dominik Kopčak for spotting that one). 
+ * Removed bug where some `"founding"` events lead to an error "crossed_edges not found" when cleaning the treats output.
 
 treats v1.0 (2023-11-22) 
 =========================

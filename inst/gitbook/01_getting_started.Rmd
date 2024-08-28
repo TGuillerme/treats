@@ -103,9 +103,10 @@ If this is what the process should look like (theoretically) you can then add it
 
 ```{r}
 ## Simulate disparity and diversity
+set.seed(43)
 my_data <- treats(bd.params = my_params,
-                stop.rule = my_stop_rule,
-                traits    = my_trait)
+                  stop.rule = my_stop_rule,
+                  traits    = my_trait)
 ```
 
 Et voilà! We now have a simple disparity and diversity simulation.
@@ -178,9 +179,9 @@ set.seed(1)
 
 ## Simulate disparity and diversity
 default_data <- treats(bd.params = extinction_02,
-                     stop.rule = living_20,
-                     traits    = BM_trait,
-                     modifiers = default_modifiers)
+                       stop.rule = living_20,
+                       traits    = BM_trait,
+                       modifiers = default_modifiers)
 default_data
 ```
 

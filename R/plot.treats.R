@@ -332,6 +332,14 @@ plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NUL
 
         ## Get the number of states
         n_states <- length(unique(data[, trait]))
+        
+        ## Get the data to plot
+        data_plot <- data[, trait]
+        ## Remove 0 base (if exists)
+        if(any(data_plot == 0)) {
+            data_plot <- data_plot + 1
+        }
+
 
         ## Set the colours
         if(col[1] == "default") {
@@ -357,7 +365,7 @@ plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NUL
             plot_args$show.tip.label <- FALSE
         }
         if(is.null(plot_args$edge.color)) {
-            plot_args$edge.color <-  match.tip.edge(vector = col[data[c(tips, nodes),1]+1], phylo = tree)
+            plot_args$edge.color <-  match.tip.edge(vector = col[data_plot[c(tips, nodes)]], phylo = tree)
         }
 
         ## Plot the tree with the edge colours

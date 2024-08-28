@@ -695,6 +695,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                 time <- 0
                 slider <- root_time * 0.01 # 1% of the root age
 
+                crossed_edges <- NULL
                 while(tips_criteria > max_criteria) {
                     ## Increase the time (decrease)
                     time <- time + slider
@@ -702,7 +703,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                     ## Find the number of living taxa (crossed edges then)
                     crossed_edges <- which((tips_ages[combined_tree$edge[, 1] ] < slice_time) & (tips_ages[combined_tree$edge[, 2] ] >= slice_time))
                     tips_criteria <- length(crossed_edges)
-                    
+                        
                     ## Also count the fossils
                     if(do_all_tips) {
                         tips_criteria <- tips_criteria + sum(tips_ages[1:Ntip(combined_tree)] < slice_time)
@@ -713,20 +714,22 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                 tips_to_drop <- numeric()
                 bipartitions <- prop.part(combined_tree)
                 combined_tips <- Ntip(combined_tree)
-                for(edge in crossed_edges){
-                    descendant <- combined_tree$edge[edge ,2]
-                    if(descendant > combined_tips) {   
-                        all_descendants <- bipartitions[[descendant-combined_tips]]
-                        tips_to_drop <- c(tips_to_drop, all_descendants[-1])
+                
+                if(!is.null(crossed_edges)) {
+                    for(edge in crossed_edges){
+                        descendant <- combined_tree$edge[edge ,2]
+                        if(descendant > combined_tips) {   
+                            all_descendants <- bipartitions[[descendant-combined_tips]]
+                            tips_to_drop <- c(tips_to_drop, all_descendants[-1])
+                        }
                     }
+                    ## Trim the combined tree
+                    combined_tree <- drop.tip(combined_tree, tips_to_drop)
+                    nodes_depth <- node.depth.edgelength(combined_tree)
+                    crossed_edges <- (nodes_depth[combined_tree$edge[, 2]] >= slice_time)
+                    crossed_node_depth <- nodes_depth[combined_tree$edge[crossed_edges, 1]]
+                    combined_tree$edge.length[crossed_edges] <- slice_time-crossed_node_depth
                 }
-
-                ## Trim the combined tree
-                combined_tree <- drop.tip(combined_tree, tips_to_drop)
-                nodes_depth <- node.depth.edgelength(combined_tree)
-                crossed_edges <- (nodes_depth[combined_tree$edge[, 2]] >= slice_time)
-                crossed_node_depth <- nodes_depth[combined_tree$edge[crossed_edges, 1]]
-                combined_tree$edge.length[crossed_edges] <- slice_time-crossed_node_depth
             }
         }
 

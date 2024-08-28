@@ -20,10 +20,10 @@
   <meta name="twitter:description" content="treats R package manual" />
   
 
-<meta name="author" content="Thomas Guillerme (guillert@tcd.ie)" />
+<meta name="author" content="Thomas Guillerme (t.guillerme@sheffield.ac.uk)" />
 
 
-<meta name="date" content="2024-05-15" />
+<meta name="date" content="2024-08-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -208,13 +208,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.6" data-path="maketraits.html"><a href="maketraits.html#combining-multiple-traits-with-add"><i class="fa fa-check"></i><b>3.6</b> Combining multiple traits with <code>add</code></a></li>
 <li class="chapter" data-level="3.7" data-path="maketraits.html"><a href="maketraits.html#using-a-background-trait"><i class="fa fa-check"></i><b>3.7</b> Using a background trait</a></li>
 <li class="chapter" data-level="3.8" data-path="maketraits.html"><a href="maketraits.html#saving-trait-values-at-different-time-steps"><i class="fa fa-check"></i><b>3.8</b> Saving trait values at different time steps</a></li>
-<li class="chapter" data-level="3.9" data-path="maketraits.html"><a href="maketraits.html#traits-implemented-in-treats"><i class="fa fa-check"></i><b>3.9</b> Traits implemented in <code>treats</code></a></li>
-<li class="chapter" data-level="3.10" data-path="maketraits.html"><a href="maketraits.html#testing-the-traits-with-test"><i class="fa fa-check"></i><b>3.10</b> Testing the traits with <code>test</code></a></li>
-<li class="chapter" data-level="3.11" data-path="maketraits.html"><a href="maketraits.html#mapping-traits-on-a-tree-map.traits"><i class="fa fa-check"></i><b>3.11</b> Mapping traits on a tree: <code>map.traits</code></a></li>
-<li class="chapter" data-level="3.12" data-path="maketraits.html"><a href="maketraits.html#templates-for-making-your-very-own-process"><i class="fa fa-check"></i><b>3.12</b> Templates for making your very own process</a>
+<li class="chapter" data-level="3.9" data-path="maketraits.html"><a href="maketraits.html#linking-traits-together-with-link.traits"><i class="fa fa-check"></i><b>3.9</b> Linking traits together with <code>link.traits</code></a>
 <ul>
-<li class="chapter" data-level="3.12.1" data-path="maketraits.html"><a href="maketraits.html#a-simple-brownian-motion-process-template"><i class="fa fa-check"></i><b>3.12.1</b> A simple Brownian Motion process template</a></li>
-<li class="chapter" data-level="3.12.2" data-path="maketraits.html"><a href="maketraits.html#a-simple-ornstein-uhlenbeck-process-template"><i class="fa fa-check"></i><b>3.12.2</b> A simple Ornstein-Uhlenbeck process template</a></li>
+<li class="chapter" data-level="3.9.1" data-path="maketraits.html"><a href="maketraits.html#conditional-traits"><i class="fa fa-check"></i><b>3.9.1</b> Conditional traits</a></li>
+</ul></li>
+<li class="chapter" data-level="3.10" data-path="maketraits.html"><a href="maketraits.html#traits-implemented-in-treats"><i class="fa fa-check"></i><b>3.10</b> Traits implemented in <code>treats</code></a></li>
+<li class="chapter" data-level="3.11" data-path="maketraits.html"><a href="maketraits.html#testing-the-traits-with-test"><i class="fa fa-check"></i><b>3.11</b> Testing the traits with <code>test</code></a></li>
+<li class="chapter" data-level="3.12" data-path="maketraits.html"><a href="maketraits.html#map.traits"><i class="fa fa-check"></i><b>3.12</b> Mapping traits on a tree: <code>map.traits</code></a></li>
+<li class="chapter" data-level="3.13" data-path="maketraits.html"><a href="maketraits.html#templates-for-making-your-very-own-process"><i class="fa fa-check"></i><b>3.13</b> Templates for making your very own process</a>
+<ul>
+<li class="chapter" data-level="3.13.1" data-path="maketraits.html"><a href="maketraits.html#a-simple-brownian-motion-process-template"><i class="fa fa-check"></i><b>3.13.1</b> A simple Brownian Motion process template</a></li>
+<li class="chapter" data-level="3.13.2" data-path="maketraits.html"><a href="maketraits.html#a-simple-ornstein-uhlenbeck-process-template"><i class="fa fa-check"></i><b>3.13.2</b> A simple Ornstein-Uhlenbeck process template</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="makemodifiers.html"><a href="makemodifiers.html"><i class="fa fa-check"></i><b>4</b> Modifying the birth-death process</a>
@@ -252,6 +256,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="7.2.1" data-path="plots.html"><a href="plots.html#adding-dimensions-not-necessary-but-fun"><i class="fa fa-check"></i><b>7.2.1</b> Adding dimensions! Not necessary, but fun!</a></li>
 </ul></li>
+<li class="chapter" data-level="7.3" data-path="plots.html"><a href="plots.html#using-plot.treats-to-plot-non-treats-objects"><i class="fa fa-check"></i><b>7.3</b> Using <code>plot.treats</code> to plot non-treats objects</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="specific-examples.html"><a href="specific-examples.html"><i class="fa fa-check"></i><b>8</b> Specific examples</a>
 <ul>
@@ -363,9 +368,10 @@ This is used by default with the <code>make.traits</code> function:</p>
 This is not a really good name but you’ll see more about specifying trait names later on.
 If this is what the process should look like (theoretically) you can then add its <code>"traits"</code> object to our previous <code>treats</code> function to generate the tree and the traits:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="gettingstarted.html#cb15-1" aria-hidden="true"></a><span class="co">## Simulate disparity and diversity</span></span>
-<span id="cb15-2"><a href="gettingstarted.html#cb15-2" aria-hidden="true"></a>my_data &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> my_params,</span>
-<span id="cb15-3"><a href="gettingstarted.html#cb15-3" aria-hidden="true"></a>                <span class="dt">stop.rule =</span> my_stop_rule,</span>
-<span id="cb15-4"><a href="gettingstarted.html#cb15-4" aria-hidden="true"></a>                <span class="dt">traits    =</span> my_trait)</span></code></pre></div>
+<span id="cb15-2"><a href="gettingstarted.html#cb15-2" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">43</span>)</span>
+<span id="cb15-3"><a href="gettingstarted.html#cb15-3" aria-hidden="true"></a>my_data &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> my_params,</span>
+<span id="cb15-4"><a href="gettingstarted.html#cb15-4" aria-hidden="true"></a>                  <span class="dt">stop.rule =</span> my_stop_rule,</span>
+<span id="cb15-5"><a href="gettingstarted.html#cb15-5" aria-hidden="true"></a>                  <span class="dt">traits    =</span> my_trait)</span></code></pre></div>
 <p>Et voilà! We now have a simple disparity and diversity simulation.
 We can see what’s in the results by simply printing it or plotting it:</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="gettingstarted.html#cb16-1" aria-hidden="true"></a><span class="co">## What&#39;s in there</span></span>
@@ -438,9 +444,9 @@ By default, this function generates a <code>"modifiers"</code> object that affec
 <span id="cb25-8"><a href="gettingstarted.html#cb25-8" aria-hidden="true"></a></span>
 <span id="cb25-9"><a href="gettingstarted.html#cb25-9" aria-hidden="true"></a><span class="co">## Simulate disparity and diversity</span></span>
 <span id="cb25-10"><a href="gettingstarted.html#cb25-10" aria-hidden="true"></a>default_data &lt;-<span class="st"> </span><span class="kw">treats</span>(<span class="dt">bd.params =</span> extinction_<span class="dv">02</span>,</span>
-<span id="cb25-11"><a href="gettingstarted.html#cb25-11" aria-hidden="true"></a>                     <span class="dt">stop.rule =</span> living_<span class="dv">20</span>,</span>
-<span id="cb25-12"><a href="gettingstarted.html#cb25-12" aria-hidden="true"></a>                     <span class="dt">traits    =</span> BM_trait,</span>
-<span id="cb25-13"><a href="gettingstarted.html#cb25-13" aria-hidden="true"></a>                     <span class="dt">modifiers =</span> default_modifiers)</span>
+<span id="cb25-11"><a href="gettingstarted.html#cb25-11" aria-hidden="true"></a>                       <span class="dt">stop.rule =</span> living_<span class="dv">20</span>,</span>
+<span id="cb25-12"><a href="gettingstarted.html#cb25-12" aria-hidden="true"></a>                       <span class="dt">traits    =</span> BM_trait,</span>
+<span id="cb25-13"><a href="gettingstarted.html#cb25-13" aria-hidden="true"></a>                       <span class="dt">modifiers =</span> default_modifiers)</span>
 <span id="cb25-14"><a href="gettingstarted.html#cb25-14" aria-hidden="true"></a>default_data</span></code></pre></div>
 <pre><code>##  ---- treats object ---- 
 ## Birth death process with modifiers:
@@ -545,7 +551,7 @@ Note that we’ve used the same starting seed for both trees so the only thing d
 <div id="kpgexample" class="section level2 hasAnchor" number="2.4">
 <h2><span class="header-section-number">2.4</span> An illustrative example: mammals disparity through the K-Pg extinction<a href="gettingstarted.html#kpgexample" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Bib is studying the evolution of mammalian disparity (i.e. diversity of shapes) across the Cretaceous-Palaeogene mass extinction event (K-Pg - 66 million years ago).</p>
-<p>They use a dataset from <span class="citation">Beck and Lee (<a href="#ref-beckancient2014" role="doc-biblioref">2014</a>)</span> that is a discrete morphological space containing the ordination of the around 400 morphological characters for 50 species and estimated for their 49 descendants into an ordinated shapespace of 99 elements and 97 dimensions.</p>
+<p>They use a dataset from <span class="citation">Beck and Lee (<a href="#ref-beck2014ancient" role="doc-biblioref">2014</a>)</span> that is a discrete morphological space containing the ordination of the around 400 morphological characters for 50 species and estimated for their 49 descendants into an ordinated shapespace of 99 elements and 97 dimensions.</p>
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="gettingstarted.html#cb34-1" aria-hidden="true"></a><span class="kw">library</span>(dispRity)</span>
 <span id="cb34-2"><a href="gettingstarted.html#cb34-2" aria-hidden="true"></a><span class="co">## Loading the mammalian morphological example data</span></span>
 <span id="cb34-3"><a href="gettingstarted.html#cb34-3" aria-hidden="true"></a><span class="kw">data</span>(BeckLee_mat99)</span>
@@ -822,7 +828,7 @@ This allows us to simulate two contrasted scenarios to see whether using our obs
 </div>
 <h3>References</h3>
 <div id="refs" class="references hanging-indent">
-<div id="ref-beckancient2014">
+<div id="ref-beck2014ancient">
 <p>Beck, Robin MD, and Michael SY Lee. 2014. “Ancient Dates or Accelerated Rates? Morphological Clocks and the Antiquity of Placental Mammals.” <em>Proceedings of the Royal Society B: Biological Sciences</em> 281 (1793): 20141278.</p>
 </div>
 <div id="ref-moms">
