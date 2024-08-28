@@ -189,6 +189,8 @@ test_that("complex implementation works", {
     expect_equal(ncol(test$data), 2)
 
     ## Link trait with update
-    # test2 <- make.traits(process = list(BM.process, OU.process), update = linked)
-
+    test2 <- make.traits(process = list(NULL, BM.process, OU.process), start = c(10,10), update = linked)
+    expect_equal(test2$main$conditional.trait$start, c(10, 10))
+    error <- capture_error(make.traits(process = list(NULL, BM.process, OU.process), start = c(10,10), process.args = list(A = "A", B ="B", C = "C"), update = linked))
+    expect_equal(error[[1]], "Process arguments update is not yet implemented for conditional traits.")
 })

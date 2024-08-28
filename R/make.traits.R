@@ -56,11 +56,14 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
     match_call <- match.call()
 
     ## Check whether the process needs to be updated
+    conditional_update <- FALSE
     if(is.null(update)) {
         do_update <- FALSE
     } else {
         if(is(update, "treats") && is(update, "traits")) {
             do_update <- TRUE
+            ## Check if the trait is conditional
+            conditional_update <- "conditional.trait" %in% names(update$main) 
         } else {
             stop("You can only update a \"treats\" \"traits\" object. Check the documentation from the following function for helping designing such objects:\n    ?make.traits", call. = FALSE)
         }
@@ -69,14 +72,19 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
     ## Set the process to default if update and process is null
     if(do_update && is.null(process)) {
         ## Set the process to the previous one(s)
-        process <- lapply(lapply(update$main, `[[`, "process"), `[[`, 1)
+        if(!conditional_update) {
+            process <- lapply(lapply(update$main, `[[`, "process"), `[[`, 1)
+        } else {
+            process <- update$main$conditional.trait$process
+        }
         n_processes <- length(process)
     } else {
         ## Check the process(es)
         process_class <- check.class(process, c("function", "list"))
         n_processes <- length(process)
         if(process_class == "list") {
-            silent <- lapply(process, check.class, "function")
+            ## Check the processes class (ignore nulls)
+            silent <- lapply(process[!unlist(lapply(process, is.null))], check.class, "function")
         } else {
             process <- list(process)
         }
@@ -229,7 +237,6 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
     traits <- list(main = NULL, background = NULL)
     
     if(!do_update) {
-
         ## Add the process
         traits$main <- lapply(process, function(x) return(list(process = list(x))))
         ## Add the ids and the starts
@@ -251,9 +258,7 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
 
         ## Add names
         names(traits$main) <- trait_names
-
     } else {
-
         ## Update the traits
         traits$main <- update$main
 
@@ -263,12 +268,27 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
         ## Add the ids and the starts
         for(i in seq_along(updates)) {
 
-            ## Update the process
-            traits$main[[updates[[i]]]]$process[[1]] <- process[[i]]
+            if(!conditional_update) {
+                ## Update the process
+                traits$main[[updates[[i]]]]$process[[1]] <- process[[i]]
+            } else {
+                ## Update the process
+                for(j in 1:length(process)) {
+                    if(!is.null(process[[j]])) {
+                        traits$main$conditional.trait$process[[j]] <- process[[j]]
+                    }
+                }
+            }
+
             ## Update the starting value
             traits$main[[updates[[i]]]]$start   <- start_values[[i]][1:length(traits$main[[updates[[i]]]]$start)]
 
             if(add_process_args) {
+
+                if(conditional_update) {
+                    stop("Process arguments update is not yet implemented for conditional traits.")
+                }
+
                 ## Replacing/adding optional arguments if not NULL
                 if(!is.null(process.args[[updates[[i]]]][[1]])) {
                     ## Get the available names in the object to update
