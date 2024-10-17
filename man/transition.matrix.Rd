@@ -26,10 +26,10 @@ Utility function for generating discrete characters evolution transition matrice
 \details{
 The following transition rate matrices are currently implemented:
 \itemize{
-     \item "equal rates" where all transitions are equal (including no transition if \code{self = TRUE}).
-     \item "stepwise" transitions are allowed only in a step wise way (e.g. state 1 to 2 and 2 to 3 are allowed but not 1 to 3).
-     \item "symmetric" where transitions between states are all different but not directional (e.g. the change of state 1 to 2 is equal to 2 to 1). If \code{self = TRUE}, the non transitions (e.g. from state 1 to 1) are equal.
-     \item "all rates different" where all transitions are different. Note that if rates is a give value (rather than a function), then all rates are actually equal.
+     \item "equal rates" (or "ER") where all transitions are equal (including no transition if \code{self = TRUE}).
+     \item "stepwise" (or "Dollo") transitions are allowed only in a step wise way (e.g. state 1 to 2 and 2 to 3 are allowed but not 1 to 3).
+     \item "symmetric" ("SYM") where transitions between states are all different but not directional (e.g. the change of state 1 to 2 is equal to 2 to 1). If \code{self = TRUE}, the non transitions (e.g. from state 1 to 1) are equal.
+     \item "all rates different" (or "ARD") where all transitions are different. Note that if rates is a give value (rather than a function), then all rates are actually equal.
 }
 
 If \code{rates} is a function that generates negative values or a negative value, the output transition matrix always returns absolute values.
@@ -42,6 +42,7 @@ transition.matrix(type = "equal rates", states = 2, rates = 1, self = FALSE)
 ## Two different 6 states stepwise matrix with a random absolute normal rate
 transition.matrix(type = "stepwise", states = 6, rates = rnorm)
 transition.matrix(type = "stepwise", states = 6, rates = rnorm)
+
 
 }
 \seealso{

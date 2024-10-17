@@ -183,11 +183,13 @@ test_that("make.traits(update) works", {
 
 test_that("different processes works", {
 
-    ## BM.process
-
-    ## OU.process
-
-    ## no.process
+    ## All processes in nD
+    expect_is(make.traits(process = BM.process, n = 4), c("treats", "traits"))
+    expect_is(make.traits(process = OU.process, n = 4), c("treats", "traits"))
+    expect_is(make.traits(process = no.process, n = 4), c("treats", "traits"))
+    expect_is(make.traits(process = discrete.process, n = 4), c("treats", "traits"))
+    expect_is(make.traits(process = multi.peak.process, n = 4), c("treats", "traits"))
+    expect_is(make.traits(process = repulsion.process, n = 4), c("treats", "traits"))
 
     ## multi.peak.process
     expect_equal(peak.diff(1, c(1:3)), 0:2)
@@ -215,6 +217,9 @@ test_that("different processes works", {
     set.seed(1)
     expect_equal(discrete.process(0, 1, transitions = transition.matrix("ER", 2)), 1)
     expect_equal(discrete.process(0, 1, transitions = transition.matrix("ER", 2)), 0)
+
+    ## Discrete works with row labels
+    
 })
 
 test_that("bkg.traits works", {

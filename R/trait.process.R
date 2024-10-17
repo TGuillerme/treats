@@ -127,8 +127,25 @@ BM.process <- function(x0 = 0, edge.length = 1, Sigma = diag(length(x0)), ...) {
 
 ## Discrete traits
 discrete.process <- function(x0 = 0, edge.length = 1, transitions = transition.matrix("ER", 2)) {
-    # TODO: wishlist: allow for rownames in the transition matrix as state names.
-    return(sample(0:(nrow(transitions)-1), size = 1, prob = transitions[round(abs(x0))+1, ] * edge.length))
+    # no_dims <- FALSE
+    # if(!is.null(states <- rownames(transitions))) {
+    #     no_dims <- TRUE
+    #     dimnames(transitions) <- NULL
+    #     ## Translate x0 to integer
+    #     x0 <- match(x0, states)-1
+    # }
+
+    # ## Get the trait values
+    # traits <- sapply(x0, function(x0, transitions, edge.length) sample(0:(nrow(transitions)-1), size = 1, prob = transitions[round(abs(x0))+1, ] * edge.length), transitions = transitions, edge.length = edge.length)
+
+    return(sapply(x0, function(x0, transitions, edge.length) sample(0:(nrow(transitions)-1), size = 1, prob = transitions[round(abs(x0))+1, ] * edge.length), transitions = transitions, edge.length = edge.length))
+
+    # ## Return the traits (and translate them back)
+    # if(no_dims) {
+    #     return(traits)
+    # } else {
+    #     return(states[(traits+1)])
+    # }
 }
 
 ## The OU process
