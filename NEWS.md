@@ -1,4 +1,4 @@
-treats v1.0.7 (2024-08-28) 
+treats v1.0.8 (2024-10-17) 
 =========================
 
 ### NEW FEATURES
@@ -15,12 +15,14 @@ treats v1.0.7 (2024-08-28)
  * `plot.treats` now handles dynamic plot window sizes when plotting multiple trees on top of each other.
  * `plot.treats` now automatically plots any detectable discrete characters using the `"phylo"` format.
  * revamped `traits` internal structure for more modularity.
+ <!-- * `transition.matrix` can now handle state names (and pass them correctly to `discrete.process` and `make.traits`). -->
 
 ## BUG FIXES
 
  * Plotting `col` option is now handled and explained correctly by `plot.treats` when complex (i.e. when not equal to the number of elements or the number of element categories). 
  * Plotting `traits` now correctly displays multiple traits with the `trait` argument (thanks to Dominik Kopčak for spotting that one). 
  * Removed bug where some `"founding"` events lead to an error "crossed_edges not found" when cleaning the treats output.
+ * `discrete.process` now works in *n* dimensions. Thanks to Caleb Scutt for spotting this one.
 
 treats v1.0 (2023-11-22) 
 =========================
