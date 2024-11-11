@@ -1,4 +1,4 @@
-treats v1.0.8 (2024-10-17) 
+treats v1.1 (2024-11-11) 
 =========================
 
 ### NEW FEATURES
@@ -15,7 +15,6 @@ treats v1.0.8 (2024-10-17)
  * `plot.treats` now handles dynamic plot window sizes when plotting multiple trees on top of each other.
  * `plot.treats` now automatically plots any detectable discrete characters using the `"phylo"` format.
  * revamped `traits` internal structure for more modularity.
- <!-- * `transition.matrix` can now handle state names (and pass them correctly to `discrete.process` and `make.traits`). -->
 
 ## BUG FIXES
 
