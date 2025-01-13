@@ -1,3 +1,10 @@
+treats v1.1.1 (2025-01-13) 
+=========================
+
+## BUG FIXES
+
+ * print change from `ape` (aesthetic).
+
 treats v1.1 (2024-11-11) 
 =========================
 
