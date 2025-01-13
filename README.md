@@ -26,11 +26,11 @@ Check out the [paper](https://besjournals.onlinelibrary.wiley.com/doi/10.1111/20
 ## Installing `treats`
 
 ```r
-if(!require(devtools)) install.packages("devtools")
-library(devtools)
-install_github("TGuillerme/treats")
+install.packages("treats")
 library(treats)
 ```
+
+The package is also available in the [phylotastic r-universe](https://phylotastic.r-universe.dev/ui#packages) [![](https://phylotastic.r-universe.dev/badges/treats)](https://phylotastic.r-universe.dev) or through the [phylogenetics](https://cran.r-project.org/web/views/Phylogenetics.html) CRAN Task View. 
 
 ## How does it work?
 
