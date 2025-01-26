@@ -15,6 +15,7 @@
 #' @param legend logical, whether to display the legend in 2D plots (\code{TRUE}) or not (\code{FALSE}; default)
 #' @param add logical, whether to add to a previous plot.
 #' @param transparency Optional, a transparency factor (\code{1} = not transparent, \code{0} = invisible). If left empty, and multiple plots are called, the transparency is set to 1 / number of plots + 0.1. 
+#' @param dots the list of optional arguments, for internal use only. 
 #' 
 #' @return No return value, plot \code{x}'s content.
 #'
@@ -222,14 +223,18 @@ plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NUL
         
         ## Detect the plot limits for the first plot
         dots <- list(...)
-        xlim <- ylim <- zlim <- NULL
+        lims_list <- list(xlim = NULL, ylim = NULL, zlim = NULL)
+         # <- ylim <- zlim <- NULL
         if(is.null(dots$xlim)) {
-            xlim <- range(unlist(lapply(data, function(x, trait) range(x$data[, trait[1]]), trait = trait)))
+            lims_list$xlim <- range(unlist(lapply(data, function(x, trait) range(x$data[, trait[1]]), trait = trait)))
+        } else {
+            lims_list$xlim <- dots$xlim
+            dots$xlim <- NULL
         }
         if(is.null(dots$ylim)) {
             if(length(trait) > 1) {
                 ## ylim is the second trait
-                ylim <- range(unlist(lapply(data, function(x, trait) range(x$data[, trait[2]]), trait = trait)))
+                lims_list$ylim <- range(unlist(lapply(data, function(x, trait) range(x$data[, trait[2]]), trait = trait)))
             } else {
                 ## ylim is the tree depth
                 get.root.time <- function(x) {
@@ -239,14 +244,17 @@ plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NUL
                         return(x$tree$root.time)
                     }
                 }
-                ylim <- xlim
-                xlim <- c(max(unlist(lapply(data, get.root.time))), 0)
+                lims_list$ylim <- lims_list$xlim
+                lims_list$xlim <- c(max(unlist(lapply(data, get.root.time))), 0)
             }
+        } else {
+            lims_list$ylim <- dots$ylim
+            dots$ylim <- NULL
         }   
         if(is.null(dots$zlim) && use.3D) {
             if(length(trait) > 2) {
                 ## zlim is the second trait
-                zlim <- range(unlist(lapply(data, function(x, trait) range(x$data[, trait[3]]), trait = trait)))
+                lims_list$zlim <- range(unlist(lapply(data, function(x, trait) range(x$data[, trait[3]]), trait = trait)))
             } else {
                 ## zlim is the tree depth
                 get.root.time <- function(x) {
@@ -256,17 +264,20 @@ plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NUL
                         return(x$tree$root.time)
                     }
                 }
-                zlim <- ylim
-                ylim <- c(max(unlist(lapply(data, get.root.time))), 0)
+                lims_list$zlim <- lims_list$ylim
+                lims_list$ylim <- c(max(unlist(lapply(data, get.root.time))), 0)
             }
-        }
+        } else {
+            lims_list$zlim <- dots$zlim
+            dots$zlim <- NULL
+        } 
 
         ## First plot
-        plot.treats(data[[1]], col = col, xlim = xlim, ylim = ylim, zlim = zlim, ..., trait = trait, edges = edges, tips.nodes = tips.nodes, use.3D = use.3D, legend = legend, transparency = transparency, add = FALSE)
+        plot.treats(data[[1]], col = col, ..., trait = trait, edges = edges, tips.nodes = tips.nodes, use.3D = use.3D, legend = legend, transparency = transparency, add = FALSE, lims_list = lims_list)
         # plot.treats(data[[1]], col = col, xlim = xlim, ylim = ylim, zlim = zlim,  trait = trait, edges = edges, tips.nodes = tips.nodes, use.3D = use.3D, legend = legend, transparency = transparency, add = FALSE) ; warning("DEBUG")
 
         ## Subsequent plots
-        lapply(data[-1], plot.treats, col = col, ..., trait = trait, edges = edges, tips.nodes = tips.nodes, use.3D = use.3D, legend = FALSE, transparency = transparency, add = TRUE)
+        lapply(data[-1], plot.treats, col = col, ..., lims_list = lims_list, trait = trait, edges = edges, tips.nodes = tips.nodes, use.3D = use.3D, legend = FALSE, transparency = transparency, add = TRUE)
         # lapply(data[-1], plot.treats, col = col, trait = trait, edges = edges, tips.nodes = tips.nodes, use.3D = use.3D, legend = FALSE, transparency = transparency, add = TRUE) ; warning("DEBUG")
 
         return(invisible())
@@ -383,9 +394,22 @@ plot.treats <- function(x, col, ..., trait = 1, edges = "grey", tips.nodes = NUL
     ## Handle plot options
 
     ## Plot the normal data
-    points_params <- lines_params <- plot_params <- list(...)
+    dots <- list(...)
+    if(!is.null(dots$lims_list)) {
+        if(!is.null(dots$lims_list$xlim)) {
+            dots$xlim <- dots$lims_list$xlim
+        }
+        if(!is.null(dots$lims_list$ylim)) {
+            dots$ylim <- dots$lims_list$ylim
+        }
+        if(!is.null(dots$lims_list$zlim)) {
+            dots$zlim <- dots$lims_list$zlim
+        }
+        dots$lims_list <- NULL
+    }
+    points_params <- lines_params <- plot_params <- dots
     #points_params <- lines_params <- plot_params <- list() ; warning("DEBUG plot.treats")
-    
+
     ## Get the points IDs and ages
     points_ages     <- dispRity::tree.age(data$tree)
     points_tree_IDs <- match(rownames(data$data), points_ages[,"elements"])

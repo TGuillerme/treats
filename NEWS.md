@@ -1,8 +1,9 @@
-treats v1.1.1 (2025-01-13) 
+treats v1.1.2 (2025-01-26) 
 =========================
 
 ## BUG FIXES
 
+ * `plot.treats` now handles the optional arguments (`...`) in the right order for multiple trees. 
  * print change from `ape` (aesthetic).
 
 treats v1.1 (2024-11-11) 
