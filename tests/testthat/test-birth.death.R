@@ -511,15 +511,12 @@ test_that("events work", {
     expect_equal(Ntip(test1$tree), 84)
     expect_is(test1$data, c("matrix", "array"))
     expect_equal(dim(test1$data), c(84+83, 1))
-
-
     set.seed(18)
     test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.time, traits = traits, modifiers = NULL, events = events)
     expect_is(test2$tree, "phylo")
     expect_equal(Ntip(test2$tree), 152)
     expect_is(test2$data, c("matrix", "array"))
     expect_equal(dim(test2$data), c(152+160, 1))
-
 
     ## Max taxa
     set.seed(19)
@@ -528,7 +525,6 @@ test_that("events work", {
     expect_equal(Ntip(test1$tree), 50)
     expect_is(test1$data, c("matrix", "array"))
     expect_equal(dim(test1$data), c(50+49, 1))
-
     set.seed(19)
     test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.taxa, traits = traits, modifiers = NULL, events = events)
     expect_is(test2$tree, "phylo")
@@ -536,7 +532,6 @@ test_that("events work", {
     expect_is(test2$data, c("matrix", "array"))
     expect_equal(dim(test2$data), c(50+48, 1))
     
-
     ## Max living
     set.seed(20)
     test1 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.living, traits = traits, modifiers = NULL, events = NULL)
@@ -545,7 +540,6 @@ test_that("events work", {
     expect_equal(sum(tree.age(test1$tree)$ages == 0), 50)
     expect_is(test1$data, c("matrix", "array"))
     expect_equal(dim(test1$data), c(68+67, 1))
-
     set.seed(20)
     expect_warning(test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.living, traits = traits, modifiers = NULL, events = events))
     expect_is(test2$tree, "phylo")

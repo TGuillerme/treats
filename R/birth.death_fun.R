@@ -173,21 +173,23 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
  
     # warning("DEBUG: bith.death_fun.R")
     # modifiers  = make.modifiers()
-    # traits     = my_traits
-    # bd.params  = my_bd_params
-    # stop.rule  = stop_rule
+    # traits     = NULL
+    # bd.params  = bd.params
+    # stop.rule  = stop.rule.time
     # stop.rule$max.living = Inf
     # stop.rule$max.taxa = Inf
-    # events     = random_extinction
+    # events     = events
     # save.steps = NULL
     # null.error = FALSE
     # check.results = TRUE
     # # seed = 143 ; warning("FUCKING INTERNAL SEED!")
-    # set.seed(seed)
+    # set.seed(18)
 
     ## Set up the traits, modifiers and events simulation
     do_traits    <- ifelse(is.null(traits), FALSE, TRUE)
     do_events    <- ifelse(is.null(events), FALSE, TRUE)
+    ## If do_events make empty founding trees lists
+    founding_roots <- founding_trees <- founding_tree_root_ages <- list()
 
     ## Make the initial modifier (no modifier)
     initial.modifiers <- list("waiting"    = list(fun = branch.length.fast,
@@ -488,6 +490,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                                 select_root   <- events[[selected_event]]$args$founding.root(lineage, trait_values)
                                 lineage       <- select_root$lineage
                                 founding_root <- select_root$founding_root
+                                founding_roots[[length(founding_roots) + 1]] <- founding_root
                             } else {
                                 ## By default the founding root is either the last taxa (if extinction) or one of the two new taxa (if speciation)
                                 if(was_alive == 0) {
@@ -507,14 +510,15 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                                     founding_root <- was_alive
                                 }
                                 ## Record the founding root age
-                                founding_tree_root_age <- time - first_waiting_time
+                                founding_roots[[length(founding_roots) + 1]] <- founding_root
+                                founding_tree_root_ages[[length(founding_tree_root_ages) + 1]] <- time - first_waiting_time
                             }
 
                             ## Create a new independent birth death process
-                            founding_tree <- events[[selected_event]]$modification(
-                                stop.rule = stop.rule,
-                                time      = time,
-                                lineage   = lineage)
+                            founding_trees[[length(founding_trees) + 1]] <- events[[selected_event]]$modification(
+                                                                                        stop.rule = stop.rule,
+                                                                                        time      = time,
+                                                                                        lineage   = lineage)
                        })
 
                 ## Toggle the trigger tracker
@@ -600,69 +604,101 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
 
     # warning("DEBUG birth.death_fun.R") ; plot(tree) ; nodelabels(paste(Ntip(tree)+1:Nnode(tree)+Ntip(tree), tree$node.label, sep = ":"), cex = 0.75)
 
-    if(!is.null(founding_tree)) {
+    if(length(founding_trees) > 0) {
 
         ## The founding event
-        found_event <- which(unlist(lapply(events, function(x) return(x$target))) %in% "founding")[1]
-
-        #TODO: bug if more than one founding event!
+        found_event <- which(unlist(lapply(events, function(x) return(x$target))) %in% "founding")
 
         ## Using a prefix?
-        if(!is.null(events[[found_event]]$args) && !is.null(events[[found_event]]$args$prefix) && is(events[[found_event]]$args$prefix, "character")) {
-            tree_prefix <- events[[found_event]]$args$prefix
-        } else {
-            tree_prefix <- NULL
+        get.prefix <- function(event) {
+            if(!is.null(event$args) && !is.null(event$args$prefix) && is(event$args$prefix, "character")) {
+                return(event$args$prefix)
+            } else {
+                return(NULL)
+            }
+        }
+        tree_prefixes <- lapply(events[found_event], get.prefix)
+        for(i in 1:length(tree_prefixes)) {
+            if(is.null(tree_prefixes[[i]])) {
+                tree_prefixes[[i]] <- paste0("founding_", found_event[i])
+            }
         }
 
         ## Rename the tips and nodes of the founding tree
-        tip_names_updated <- paste0(tree_prefix, "t", (n_tips+1):(n_tips+Ntip(founding_tree$tree)))
-        node_names_updated <- paste0(tree_prefix, "n", (n_nodes+1):(n_nodes+Nnode(founding_tree$tree)))
+        add.prefix <- function(one_prefix, one_founding_tree, n_tips, n_nodes) {
+            return(list(tip  = paste0(one_prefix, "t", (n_tips+1):(n_tips+Ntip(one_founding_tree$tree))),
+                        node = paste0(one_prefix, "n", (n_nodes+1):(n_nodes+Nnode(one_founding_tree$tree)))))
+        }
+        updated_names <- mapply(add.prefix, tree_prefixes, founding_trees, MoreArgs = list(n_tips = n_tips, n_nodes = n_nodes), SIMPLIFY = FALSE)
 
         ## Rename the tips and nodes of the data
         if(do_traits) {
-            rownames(founding_tree$data) <- c(tip_names_updated, node_names_updated)[match(rownames(founding_tree$data), c(founding_tree$tree$tip.label, founding_tree$tree$node.label))]
+            update.rownames <- function(one_updated_name, one_founding_tree) {
+                rownames(one_founding_tree$data) <- c(one_updated_name$tip, one_updated_name$node)[match(rownames(one_founding_tree$data), c(one_founding_tree$tree$tip.label, one_founding_tree$tree$node.label))]
+                return(one_founding_tree)
+            }
+            founding_trees <- mapply(update.rownames, updated_names, founding_trees, SIMPLIFY = FALSE)
         }
 
-        ## Update the tipe and node numbers
-        founding_tree$tree$tip.label  <- tip_names_updated
-        founding_tree$tree$node.label <- node_names_updated
+        ## Rename the tips and nodes in the tree
+        update.labels <- function(one_updated_name, one_founding_tree) {
+            one_founding_tree$tree$tip.label <- one_updated_name$tip
+            one_founding_tree$tree$node.label <- one_updated_name$node
+            return(one_founding_tree)
+        }
+        founding_trees <- mapply(update.labels, updated_names, founding_trees, SIMPLIFY = FALSE)
 
         ## Get the binding position on the tree
-        binding_position <- cbind(table$parent2, table$element2)[which(table$element == founding_root), 2]
+        binding_positions <- lapply(founding_roots, function(x, table) cbind(table$parent2, table$element2)[which(table$element == x), 2], table = table)
 
-        ## Combine both trees
-        combined_tree <- bind.tree(tree, founding_tree$tree, where = binding_position)
+        ## Combine the trees serially
+        combined_tree <- tree
+        tmp_trees <- founding_trees
+        tmp_pos <- binding_positions
+        while(length(tmp_trees) > 0) {
+            combined_tree <- bind.tree(combined_tree, tmp_trees[[1]]$tree, where = tmp_pos[[1]])
+            tmp_pos[[1]] <- tmp_trees[[1]] <- NULL
+        }
 
         ## Adjust for the other stop rules (but time rule gets priority)
         if(stop.rule$max.time == Inf) {
             ## Getting the ages of each tips in both trees
-            founding_ages <- tree.age(founding_tree$tree, digits = 8)
+            founding_ages <- lapply(founding_trees, function(x) tree.age(x$tree, digits = 8))
             tree_ages     <- tree.age(tree, digits = 8)
             combined_ages <- tree.age(combined_tree, digits = 8)
 
             ## Getting the list of living tips in both trees
-            founding_living <- founding_ages$elements[founding_ages$ages == min(founding_ages$ages)]
+            founding_livings <- lapply(founding_ages, function(x) x$elements[x$ages == min(x$ages)])
             tree_living     <- tree_ages$elements[tree_ages$ages == min(tree_ages$ages)]
 
             ## Getting the ages of the living tips in the combined tree
-            comb_foun_ages <- combined_ages$ages[combined_ages$elements %in% founding_living]
+            comb_foun_ages <- lapply(founding_livings, function(x, combined_ages) {combined_ages$ages[combined_ages$elements %in% x]}, combined_ages)
             comb_tree_ages <- combined_ages$ages[combined_ages$elements %in% tree_living]
 
             ## Living tips ages difference
-            living_diff <- comb_tree_ages[1] - comb_foun_ages[1]
+            living_diffs <- unlist(lapply(comb_foun_ages, function(x, comb_tree_ages) comb_tree_ages[1] - x[1], comb_tree_ages))
 
-            if(living_diff != 0) {
-
-                ## Select which ones are the younger tips
-                if(living_diff > 0) {
-                    older_tips <- tree_living
-                } else {
-                    older_tips <- founding_living
+            if(any(living_diffs != 0)) {
+                ## Update all the differences
+                differences <- living_diffs
+                counter <- 0
+                while(length(differences) > 0) {
+                    living_diff <- differences[1]
+                    differences <- differences[-1]
+                    counter <- counter + 1
+                    if(living_diff != 0) {
+                        ## Select which ones are the younger tips
+                        if(living_diff > 0) {
+                            older_tips <- tree_living
+                        } else {
+                            older_tips <- founding_livings[[counter]]
+                        }
+                        ## Adding the living_diff to their edges
+                        #TODO: add the edge length to their tip or to their root?
+                        older_tips_edges <- which(combined_tree$edge[, 2] %in% which(combined_tree$tip.label %in% older_tips))
+                        combined_tree$edge.length[older_tips_edges] <- combined_tree$edge.length[older_tips_edges] + abs(living_diff)
+                    }                   
                 }
-
-                ## Adding the living_diff to their edges
-                older_tips_edges <- which(combined_tree$edge[, 2] %in% which(combined_tree$tip.label %in% older_tips))
-                combined_tree$edge.length[older_tips_edges] <- combined_tree$edge.length[older_tips_edges] + abs(living_diff)
             }
 
             ## Adjust for number of living taxa
@@ -792,9 +828,9 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
         }
 
         ## Adding the founding data to the trait_table
-        if(!is.null(founding_tree)) {
+        if(length(founding_trees) > 0) {
             ## Combining the trait tables
-            trait_table <- rbind(trait_table, founding_tree$data)
+            trait_table <- rbind(trait_table, do.call(rbind, lapply(founding_trees, `[[`, "data")))
 
             ## Removing any tips/nodes that ended up not being present in the tree
             trait_table <- trait_table[rownames(trait_table) %in% c(tree$tip.label, tree$node.label), , drop = FALSE]
