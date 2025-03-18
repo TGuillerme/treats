@@ -444,8 +444,8 @@ test_that("events work", {
     set.seed(1)
     test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.time, traits = NULL, modifiers = NULL, events = events)
     expect_is(test2$tree, "phylo")
-    expect_equal(Ntip(test2$tree), 89)
-    expect_equal(sum(tree.age(test2$tree)$ages == 0), 28)
+    expect_equal(Ntip(test2$tree), 88)
+    expect_equal(sum(tree.age(test2$tree)$ages == 0), 80)
     ## Founding tree has no fossils
     founding_tips <- grep("founding_", test2$tree$tip.label)
     expect_equal(length(founding_tips), 53)
@@ -461,8 +461,8 @@ test_that("events work", {
     set.seed(8)
     expect_warning(test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.taxa, traits = NULL, modifiers = NULL, events = events))
     expect_is(test2$tree, "phylo")
-    expect_equal(Ntip(test2$tree), 49)
-    expect_equal(sum(tree.age(test2$tree)$ages == 0), 40)
+    expect_equal(Ntip(test2$tree), 48)
+    expect_equal(sum(tree.age(test2$tree)$ages == 0), 39)
     ## Founding tree has no fossils
     founding_tips <- grep("founding_", test2$tree$tip.label)
     expect_equal(length(founding_tips), 15)
@@ -478,8 +478,8 @@ test_that("events work", {
     set.seed(8)
     expect_warning(test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.living, traits = NULL, modifiers = NULL, events = events))
     expect_is(test2$tree, "phylo")
-    expect_equal(Ntip(test2$tree), 60)
-    expect_equal(sum(tree.age(test2$tree)$ages == 0), 49)
+    expect_equal(Ntip(test2$tree), 59)
+    expect_equal(sum(tree.age(test2$tree)$ages == 0), 48)
     ## Founding tree has no fossils
     founding_tips <- grep("founding_", test2$tree$tip.label)
     expect_equal(length(founding_tips), 28)
@@ -514,9 +514,9 @@ test_that("events work", {
     set.seed(18)
     test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.time, traits = traits, modifiers = NULL, events = events)
     expect_is(test2$tree, "phylo")
-    expect_equal(Ntip(test2$tree), 152)
+    expect_equal(Ntip(test2$tree), 151)
     expect_is(test2$data, c("matrix", "array"))
-    expect_equal(dim(test2$data), c(152+160, 1))
+    expect_equal(dim(test2$data), c(151+161, 1))
 
     ## Max taxa
     set.seed(19)
@@ -526,11 +526,13 @@ test_that("events work", {
     expect_is(test1$data, c("matrix", "array"))
     expect_equal(dim(test1$data), c(50+49, 1))
     set.seed(19)
-    test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.taxa, traits = traits, modifiers = NULL, events = events)
+    
+expect_warning(test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.taxa, traits = traits, modifiers = NULL, events = events)) ## Warning should not fire and should be 50 tips!
+
     expect_is(test2$tree, "phylo")
-    expect_equal(Ntip(test2$tree), 50)
+    expect_equal(Ntip(test2$tree), 48)
     expect_is(test2$data, c("matrix", "array"))
-    expect_equal(dim(test2$data), c(50+48, 1))
+    expect_equal(dim(test2$data), c(48+47, 1))
     
     ## Max living
     set.seed(20)
@@ -541,12 +543,14 @@ test_that("events work", {
     expect_is(test1$data, c("matrix", "array"))
     expect_equal(dim(test1$data), c(68+67, 1))
     set.seed(20)
-    expect_warning(test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.living, traits = traits, modifiers = NULL, events = events))
+
+expect_warning(test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.living, traits = traits, modifiers = NULL, events = events)) ## Warning should not fire and should be 50 living tips
+
     expect_is(test2$tree, "phylo")
-    expect_equal(Ntip(test2$tree), 60)
-    expect_equal(sum(tree.age(test2$tree)$ages == 0), 49)
+    expect_equal(Ntip(test2$tree), 59)
+    expect_equal(sum(tree.age(test2$tree)$ages == 0), 48)
     expect_is(test2$data, c("matrix", "array"))
-    expect_equal(dim(test2$data), c(60+58, 1))
+    expect_equal(dim(test2$data), c(58+59, 1))
 })
 
 test_that("single logic works", {
@@ -707,3 +711,41 @@ test_that("snapshots/internal save works", {
     class(test) <- "treats"
     expect_null(plot(test))
 })
+
+# test_that("multiple founding events works", {
+
+#     stop.rule <- list(max.time = 3)
+#     trait0 <- make.traits(n=1, BM.process)
+#     trait1 <- make.traits(n=1,
+#                           process=BM.process,
+#                           process.args=list(Sigma=diag(1)*8))
+#     trait2 <- make.traits(n=1,
+#                           process=BM.process,
+#                           process.args=list(Sigma=diag(1)*1/8))
+#     bd.params <- make.bd.params(speciation = 1, extinction = 0)
+#     # add 2 founding events
+#     events <- make.events(target="founding",
+#                            condition=age.condition(1),
+#                            modification=founding.event(bd.params=bd.params,
+#                                                        traits=trait1),
+#                            event.name="rate_shift_1",
+#                            additional.args=list(prefix="shift_1"))
+#     events <- make.events(target="founding",
+#                            condition=age.condition(2),
+#                            modification=founding.event(bd.params=bd.params,
+#                                                        traits=trait2),
+#                            event.name="rate_shift_2",
+#                            additional.args=list(prefix="shift_2"),
+#                            add=events)
+
+
+# set.seed(1)
+# my_data <- treats(bd.params = bd.params,
+#                   stop.rule = stop.rule,
+#                   traits = trait0,
+#                   events = events,
+#                   verbose = TRUE)
+# plot(my_data$tree)
+
+
+# })

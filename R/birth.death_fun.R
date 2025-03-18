@@ -173,17 +173,17 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
  
     # warning("DEBUG: bith.death_fun.R")
     # modifiers  = make.modifiers()
-    # traits     = NULL
+    # traits     = trait0
     # bd.params  = bd.params
-    # stop.rule  = stop.rule.time
+    # stop.rule  = stop.rule
     # stop.rule$max.living = Inf
     # stop.rule$max.taxa = Inf
     # events     = events
     # save.steps = NULL
     # null.error = FALSE
     # check.results = TRUE
-    # # seed = 143 ; warning("FUCKING INTERNAL SEED!")
-    # set.seed(18)
+    # # seed = 1 ; warning("FUCKING INTERNAL SEED!")
+    # set.seed(1)
 
     ## Set up the traits, modifiers and events simulation
     do_traits    <- ifelse(is.null(traits), FALSE, TRUE)
@@ -433,6 +433,15 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                 ## Selecting the first triggerable event
                 selected_event <- which(triggers)[1]
 
+                # if(selected_event == 2) {
+                #     lineage_bkp <- lineage
+                #     edge_lengths_bkp <- edge_lengths
+                #     warning("DEBUG SECOND EVENT") ; break
+                #     lineage <- lineage_bkp
+                #     edge_lengths <- edge_lengths_bkp
+                #     internal.plot.lineage(lineage, edge_lengths)
+                # }
+
                 ## Shift current selection (if current is a fossil)
                 if(!is.na(lineage$livings[lineage$drawn]) && lineage$livings[lineage$drawn] != lineage$current) {
                     lineage$current <- lineage$livings[lineage$drawn]
@@ -445,6 +454,8 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                 if(do_traits) {
                     trait_values <- add.trait.value(trait_values, traits$main, lineage, edge_lengths, type = "all_node")
                 }
+                ## Update new_lineage as well
+                new_lineage <- new_lineage + length(lineage$livings)
 
                 ## Trigger the event
                 switch(events[[selected_event]]$target,
@@ -491,6 +502,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                                 lineage       <- select_root$lineage
                                 founding_root <- select_root$founding_root
                                 founding_roots[[length(founding_roots) + 1]] <- founding_root
+
                             } else {
                                 ## By default the founding root is either the last taxa (if extinction) or one of the two new taxa (if speciation)
                                 if(was_alive == 0) {
@@ -498,7 +510,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                                     founding_root <- sample(new_lineage, 1)
 
                                     ## Adding a mini waiting time to avoid 0 brlen
-                                    short_wait <- mean(edge_lengths)*0.01
+                                    short_wait <- mean(edge_lengths)*0.01  ## Change short wait to the actual normal waiting time?
                                     edge_lengths[lineage$livings] <- edge_lengths[lineage$livings] + short_wait
                                     time <- time + short_wait
 
