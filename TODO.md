@@ -13,3 +13,6 @@
   * [ ] either applied a posteriori on the whole `treats` object (to discretise the output)
   * [ ] or converts a process into `discrete.process` where the rate sampler is the one from the previous process.
   * [ ] allow `discretise.traits` and `discrete.process` to handle any states names (not just 0, 1, 2, ...)
+
+  
+ - [ ] transform data to be compatible with [tidytree](https://cran.r-project.org/web/packages/tidytree/index.html) format.
