@@ -1,7 +1,18 @@
 treats v1.1.2 (2025-01-26) 
 =========================
 
-## BUG FIXES
+<!-- 
+### NEW FEATURES
+ * [ ] include events for map.traits
+ * [ ] transform data to be compatible with [tidytree](https://cran.r-project.org/web/packages/tidytree/index.html) format.
+ -->
+
+<!-- ### MINOR IMPROVEMENTS 
+
+ * [ ] `treats` now allows for multiple `"founding"` `events`. Thanks to Ruby Redlich for this suggestion.
+ -->
+
+### BUG FIXES
 
  * `plot.treats` now handles the optional arguments (`...`) in the right order for multiple trees. 
  * print change from `ape` (aesthetic).
