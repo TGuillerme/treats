@@ -10,7 +10,10 @@ treats v1.1.3 (2025-03-27)
 <!-- ### MINOR IMPROVEMENTS 
 
  * [ ] `treats` now allows for multiple `"founding"` `events`. Thanks to Ruby Redlich for this suggestion.
- -->
+ 
+-->
+ * The branch leading to the `"founding"` `events` tree is now generated from from the input `"modifiers"` object rather than arbitrarily.
+
 
 ### BUG FIXES
 

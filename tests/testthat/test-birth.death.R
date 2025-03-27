@@ -444,11 +444,11 @@ test_that("events work", {
     set.seed(1)
     test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.time, traits = NULL, modifiers = NULL, events = events)
     expect_is(test2$tree, "phylo")
-    expect_equal(Ntip(test2$tree), 88)
-    expect_equal(sum(tree.age(test2$tree)$ages == 0), 80)
+    expect_equal(Ntip(test2$tree), 87)
+    expect_equal(sum(tree.age(test2$tree)$ages == 0), 79)
     ## Founding tree has no fossils
     founding_tips <- grep("founding_", test2$tree$tip.label)
-    expect_equal(length(founding_tips), 53)
+    expect_equal(length(founding_tips), 56)
     expect_equal(Ntip(drop.tip(test2$tree, tip = test2$tree$tip.label[-founding_tips])), length(founding_tips))
 
     ## Max taxa
@@ -461,11 +461,11 @@ test_that("events work", {
     set.seed(8)
     expect_warning(test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.taxa, traits = NULL, modifiers = NULL, events = events))
     expect_is(test2$tree, "phylo")
-    expect_equal(Ntip(test2$tree), 48)
-    expect_equal(sum(tree.age(test2$tree)$ages == 0), 39)
+    expect_equal(Ntip(test2$tree), 49)
+    expect_equal(sum(tree.age(test2$tree)$ages == 0), 40)
     ## Founding tree has no fossils
     founding_tips <- grep("founding_", test2$tree$tip.label)
-    expect_equal(length(founding_tips), 15)
+    expect_equal(length(founding_tips), 19)
     expect_equal(Ntip(drop.tip(test2$tree, tip = test2$tree$tip.label[-founding_tips])), length(founding_tips))
 
     ## Max living
@@ -478,11 +478,11 @@ test_that("events work", {
     set.seed(8)
     expect_warning(test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.living, traits = NULL, modifiers = NULL, events = events))
     expect_is(test2$tree, "phylo")
-    expect_equal(Ntip(test2$tree), 59)
-    expect_equal(sum(tree.age(test2$tree)$ages == 0), 48)
+    expect_equal(Ntip(test2$tree), 58)
+    expect_equal(sum(tree.age(test2$tree)$ages == 0), 49)
     ## Founding tree has no fossils
     founding_tips <- grep("founding_", test2$tree$tip.label)
-    expect_equal(length(founding_tips), 28)
+    expect_equal(length(founding_tips), 29)
     expect_equal(Ntip(drop.tip(test2$tree, tip = test2$tree$tip.label[-founding_tips])), length(founding_tips))
 
 
@@ -514,9 +514,9 @@ test_that("events work", {
     set.seed(18)
     test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.time, traits = traits, modifiers = NULL, events = events)
     expect_is(test2$tree, "phylo")
-    expect_equal(Ntip(test2$tree), 151)
+    expect_equal(Ntip(test2$tree), 148)
     expect_is(test2$data, c("matrix", "array"))
-    expect_equal(dim(test2$data), c(151+161, 1))
+    expect_equal(dim(test2$data), c(148+158, 1))
 
     ## Max taxa
     set.seed(19)
@@ -547,10 +547,10 @@ test_that("events work", {
     test2 <- birth.death.tree.traits(bd.params = bd.params, stop.rule = stop.rule.living, traits = traits, modifiers = NULL, events = events) ## Warning should not fire and should be 50 living tips
 
     expect_is(test2$tree, "phylo")
-    expect_equal(Ntip(test2$tree), 55)
-    expect_equal(sum(tree.age(test2$tree)$ages == 0), 47)
+    expect_equal(Ntip(test2$tree), 58)
+    expect_equal(sum(tree.age(test2$tree)$ages == 0), 50)
     expect_is(test2$data, c("matrix", "array"))
-    expect_equal(dim(test2$data), c(55+54, 1))
+    expect_equal(dim(test2$data), c(58+57, 1))
 })
 
 test_that("single logic works", {

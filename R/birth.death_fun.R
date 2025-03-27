@@ -510,13 +510,13 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                                     founding_root <- sample(new_lineage, 1)
 
                                     ## Adding a mini waiting time to avoid 0 brlen
-                                    short_wait <- mean(edge_lengths)*0.01  ## Change short wait to the actual normal waiting time?
-                                    # waiting_time <- modifiers$waiting$fun(bd.params    = sample.from(bd.params),
-                                                                          # lineage      = lineage,
-                                                                          # trait.values = trait_values,
-                                                                          # modify.fun   = modifiers$waiting$internal)
-                                    edge_lengths[lineage$livings] <- edge_lengths[lineage$livings] + short_wait#waiting_time
-                                    time <- time + short_wait#waiting_time
+                                    # short_wait <- mean(edge_lengths)*0.01  ## Change short wait to the actual normal waiting time?
+                                    waiting_time <- modifiers$waiting$fun(bd.params    = sample.from(bd.params),
+                                                                          lineage      = lineage,
+                                                                          trait.values = trait_values,
+                                                                          modify.fun   = modifiers$waiting$internal)
+                                    edge_lengths[lineage$livings] <- edge_lengths[lineage$livings] + waiting_time
+                                    time <- time + waiting_time
 
                                     ## Make one of the two available tips extinct
                                     lineage$livings <- lineage$livings[!(lineage$livings %in% founding_root)]
