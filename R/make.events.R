@@ -96,9 +96,9 @@ make.events <- function(target, condition, modification, add, test = TRUE, event
     need_args <- switch(target,
         taxa      = c("bd.params", "lineage", "trait.values"),
         bd.params = c("traits", "bd.params", "lineage", "trait.values"),
-        traits    = c("traits", "bd.params", "lineage", "trait.values"),
+        traits    = c("traits", "bd.params", "lineage", "trait.values", "start"),
         modifiers = c("modifiers", "bd.params", "lineage", "trait.values"),
-        founding  = c("stop.rule", "time", "lineage"))
+        founding  = c("stop.rule", "time", "lineage", "root.trait"))
     modification <- check.args(modification, fun_name = "modification", required_args = need_args)
 
     ## Check add

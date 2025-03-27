@@ -511,8 +511,12 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
 
                                     ## Adding a mini waiting time to avoid 0 brlen
                                     short_wait <- mean(edge_lengths)*0.01  ## Change short wait to the actual normal waiting time?
-                                    edge_lengths[lineage$livings] <- edge_lengths[lineage$livings] + short_wait
-                                    time <- time + short_wait
+                                    # waiting_time <- modifiers$waiting$fun(bd.params    = sample.from(bd.params),
+                                                                          # lineage      = lineage,
+                                                                          # trait.values = trait_values,
+                                                                          # modify.fun   = modifiers$waiting$internal)
+                                    edge_lengths[lineage$livings] <- edge_lengths[lineage$livings] + short_wait#waiting_time
+                                    time <- time + short_wait#waiting_time
 
                                     ## Make one of the two available tips extinct
                                     lineage$livings <- lineage$livings[!(lineage$livings %in% founding_root)]
@@ -526,11 +530,24 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                                 founding_tree_root_ages[[length(founding_tree_root_ages) + 1]] <- time - first_waiting_time
                             }
 
+                            if(do_traits) {
+                                ## Create a copy of the lineage object to select the founding root
+                                lineage_root <- lineage
+                                lineage_root$current <- founding_root
+                                ## Get the root values from the founding root
+                                root_values <- as.numeric(parent.traits(trait_values, lineage_root, current = TRUE))
+                                ## Save some RAM
+                                rm(lineage_root)
+                            } else {
+                                root_values <- NULL
+                            }
+
                             ## Create a new independent birth death process
                             founding_trees[[length(founding_trees) + 1]] <- events[[selected_event]]$modification(
                                                                                         stop.rule = stop.rule,
                                                                                         time      = time,
-                                                                                        lineage   = lineage)
+                                                                                        lineage   = lineage,
+                                                                                        root.trait = root_values)
                        })
 
                 ## Toggle the trigger tracker

@@ -223,12 +223,13 @@ bd.params.update <- function(x, speciation = NULL, extinction = NULL, joint = NU
 ## Updating a traits object
 traits.update <- function(x, process = NULL, process.args = NULL, trait.names = NULL) {
 
-    change.traits <- function(traits, bd.params, lineage, trait.values) {
+    change.traits <- function(traits, bd.params, lineage, trait.values, start = NULL) {
         ## Changing the traits
         return(make.traits(update       = traits,
                            process      = process,
                            process.args = process.args,
-                           trait.names  = trait.names))
+                           trait.names  = trait.names,
+                           start        = start))
     }
 
     return(change.traits)
@@ -253,7 +254,7 @@ modifiers.update <- function(x, branch.length = NULL, selection = NULL, speciati
 founding.event <- function(x, bd.params = NULL, traits = NULL, modifiers = NULL, events = NULL) {
 
     ## founding events
-    founding.fun <- function(stop.rule, time, lineage) {
+    founding.fun <- function(stop.rule, time, lineage, root.trait) {
         ## Update the stop rule
         stop_rule_updated <- stop.rule
         if(stop_rule_updated$max.time != Inf) {
@@ -264,6 +265,11 @@ founding.event <- function(x, bd.params = NULL, traits = NULL, modifiers = NULL,
         }
         if(stop_rule_updated$max.taxa != Inf) {
             stop_rule_updated$max.living <- stop_rule_updated$max.taxa - sum(!lineage$split)
+        }
+        ## Update the root trait
+        if(!is.null(traits)) {
+            ## Update the trait root value
+            traits <- traits.update()(traits, start = root.trait)
         }
 
         ## Run the founding event

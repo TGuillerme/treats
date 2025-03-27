@@ -47,6 +47,7 @@ check.events <- function(events) {
     ## Check the target
     allowed_targets <- c("taxa", "bd.params", "traits", "modifiers", "founding")
     check.method(events$target, allowed_targets, "target argument ")
+    root.trait <- NULL
     
     ## Check the modification on the different targets
     switch(events$target,
@@ -80,7 +81,8 @@ check.events <- function(events) {
             test_modification <- try(events$modification(
                             stop.rule    = stop.rule,
                             time         = time,
-                            lineage      = lineage)
+                            lineage      = lineage,
+                            root.trait   = root.trait)
             , silent = TRUE)}
         )
 
