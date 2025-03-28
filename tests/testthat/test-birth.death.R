@@ -712,40 +712,45 @@ test_that("snapshots/internal save works", {
     expect_null(plot(test))
 })
 
-# test_that("multiple founding events works", {
+test_that("multiple founding events works", {
 
-#     stop.rule <- list(max.time = 3)
-#     trait0 <- make.traits(n=1, BM.process)
-#     trait1 <- make.traits(n=1,
-#                           process=BM.process,
-#                           process.args=list(Sigma=diag(1)*8))
-#     trait2 <- make.traits(n=1,
-#                           process=BM.process,
-#                           process.args=list(Sigma=diag(1)*1/8))
-#     bd.params <- make.bd.params(speciation = 1, extinction = 0)
-#     # add 2 founding events
-#     events <- make.events(target="founding",
-#                            condition=age.condition(1),
-#                            modification=founding.event(bd.params=bd.params,
-#                                                        traits=trait1),
-#                            event.name="rate_shift_1",
-#                            additional.args=list(prefix="shift_1"))
-#     events <- make.events(target="founding",
-#                            condition=age.condition(2),
-#                            modification=founding.event(bd.params=bd.params,
-#                                                        traits=trait2),
-#                            event.name="rate_shift_2",
-#                            additional.args=list(prefix="shift_2"),
-#                            add=events)
+    stop.rule <- list(max.time = 4)
+    trait0 <- make.traits(n=1, BM.process)
+    trait1 <- make.traits(n=1,
+                          process=BM.process,
+                          process.args=list(Sigma=diag(1)*8))
+    trait2 <- make.traits(n=1,
+                          process=BM.process,
+                          process.args=list(Sigma=diag(1)*1/8))
+    bd.params <- make.bd.params(speciation = 1, extinction = 0)
+    # add 2 founding events
+    events <- make.events(target="founding",
+                           condition=age.condition(1),
+                           modification=founding.event(bd.params=bd.params,
+                                                       traits=trait1),
+                           event.name="rate_shift_1",
+                           additional.args=list(prefix="shift_1"))
+    events <- make.events(target="founding",
+                           condition=age.condition(2),
+                           modification=founding.event(bd.params=bd.params,
+                                                       traits=trait2),
+                           event.name="rate_shift_2",
+                           additional.args=list(prefix="shift_2"),
+                           add=events)
+    set.seed(1)
+    my_data <- treats(bd.params = bd.params,
+                      stop.rule = stop.rule,
+                      traits = trait0,
+                      events = events,
+                      verbose = TRUE)
+    expect_equal(Ntip(my_data$tree), 119)
+    ## Root is 4 (requested)
+    expect_equal(tree.age(my_data$tree)$age[120], 4)
+    ## All tips are living
+    expect_true(all(tree.age(my_data$tree)$age[1:119] == 0))
+    expect_equal(dim(my_data$data), c(119+Nnode(my_data$tree), 1))
 
-
-# set.seed(1)
-# my_data <- treats(bd.params = bd.params,
-#                   stop.rule = stop.rule,
-#                   traits = trait0,
-#                   events = events,
-#                   verbose = TRUE)
-# plot(my_data$tree)
-
-
-# })
+    ## Two shift regimes
+    expect_equal(length(grep("shift_1", my_data$tree$tip.label)), 65)
+    expect_equal(length(grep("shift_2", my_data$tree$tip.label)), 10)
+})

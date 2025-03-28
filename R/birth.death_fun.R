@@ -647,6 +647,7 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
             }
         }
         tree_prefixes <- lapply(events[found_event], get.prefix)
+        ## Create a prefix if absent
         for(i in 1:length(tree_prefixes)) {
             if(is.null(tree_prefixes[[i]])) {
                 tree_prefixes[[i]] <- paste0("founding_", found_event[i])
@@ -677,16 +678,19 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
         }
         founding_trees <- mapply(update.labels, updated_names, founding_trees, SIMPLIFY = FALSE)
 
-        ## Get the binding position on the tree
-        binding_positions <- lapply(founding_roots, function(x, table) cbind(table$parent2, table$element2)[which(table$element == x), 2], table = table)
+        ## Get the binding position (the "fossil" tips on which to bind the trees)
+        binding_tips <- lapply(founding_roots, function(x, table) cbind(table$parent2, table$element2)[which(table$element == x), 2], table = table)
+        ## Transform that in the tip labels
+        binding_tips <- lapply(binding_tips, function(x, tree) tree$tip.label[x], tree = tree)
 
         ## Combine the trees serially
         combined_tree <- tree
         tmp_trees <- founding_trees
-        tmp_pos <- binding_positions
         while(length(tmp_trees) > 0) {
-            combined_tree <- bind.tree(combined_tree, tmp_trees[[1]]$tree, where = tmp_pos[[1]])
-            tmp_pos[[1]] <- tmp_trees[[1]] <- NULL
+            ## Find the binding tree position (serially)
+            binding_position <- which(combined_tree$tip.label == binding_tips[[1]])
+            combined_tree <- bind.tree(combined_tree, tmp_trees[[1]]$tree, where = binding_position)
+            binding_tips[[1]] <- tmp_trees[[1]] <- NULL
         }
 
         ## Adjust for the other stop rules (but time rule gets priority)

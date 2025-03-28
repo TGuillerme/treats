@@ -1,4 +1,4 @@
-treats v1.1.3 (2025-03-27)
+treats v1.1.4 (2025-03-28)
 =========================
 
 <!-- 
@@ -7,13 +7,10 @@ treats v1.1.3 (2025-03-27)
  * [ ] transform data to be compatible with [tidytree](https://cran.r-project.org/web/packages/tidytree/index.html) format.
  -->
 
-<!-- ### MINOR IMPROVEMENTS 
+ ### MINOR IMPROVEMENTS 
 
- * [ ] `treats` now allows for multiple `"founding"` `events`. Thanks to Ruby Redlich for this suggestion.
- 
--->
+ * `treats` now allows for multiple `"founding"` `events`. Thanks to Ruby Redlich for this suggestion.
  * The branch leading to the `"founding"` `events` tree is now generated from from the input `"modifiers"` object rather than arbitrarily.
-
 
 ### BUG FIXES
 
