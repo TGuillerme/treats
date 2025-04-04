@@ -1,4 +1,4 @@
-treats v1.1.4 (2025-03-28)
+treats v1.1.5 (2025-04-04)
 =========================
 
 <!-- 
@@ -14,6 +14,7 @@ treats v1.1.4 (2025-03-28)
 
 ### BUG FIXES
 
+ * Bug fix in `map.traits` for very small trees.
  * When using `"founding"` `events` with `"traits"`, the trait process now correctly uses the founding tree's root trait values rather than the `"traits"`'s object's default ones (unless specified).
  * `plot.treats` now handles the optional arguments (`...`) in the right order for multiple trees. 
  * print change from `ape` (aesthetic).

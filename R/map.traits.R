@@ -100,7 +100,7 @@ map.traits_fun <- function(tree, traits) {
     rownames(trait_values)[1] <- Ntip(tree)+1
 
     ## Select only the nodes from the edge table
-    nodes_table <- edge_table[which(edge_table[,2] > Ntip(tree)), ]
+    nodes_table <- edge_table[which(edge_table[,2] > Ntip(tree)), , drop = FALSE]
     ## Creating the trait_table (first row is the edge from nothing to root)
     trait_table <- rbind(c(NA, Ntip(tree)+1, 0, trait_values[1,]), cbind(edge_table, matrix(NA, ncol = ncol(trait_values), nrow = nrow(edge_table))))
     colnames(trait_table) <- c("parent", "element", "edge", colnames(trait_values))
