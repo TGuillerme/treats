@@ -40,3 +40,40 @@ test_that("map.traits works", {
     expect_equal(unname(test$data[, 2]), c(0, 1, 1, 2, 2, 3, 3, 2, 2))
     expect_equal(unname(test$data[, 3]), c(100, 101, 101, 102, 102, 103, 103, 102, 102))
 })
+
+test_that("map.traits events", {
+
+    ## 1- trigger works in map.traits [TODO: TG]
+
+    ## 2- splitting works internally [TODO: CS]
+
+    ## Some example data
+    tree <- rtree(5)
+    splitted_tree <- split.tree(tree)
+    expect_is(splitted_tree, "list")
+    expect_equal(names(splitted), c("parent", "orphans"))
+    expect_is(splitted$parent, "multiPhylo")
+    expect_is(splitted$orphans, "list")
+    expect_is(splitted$orphans[[1]], "multiPhylo")
+
+    ## 3- apply map.traits
+    output <- map.traits(splitted$parent, traits, ...)
+    ## preparing orphans traits objects [TODO: TG]
+    orphan_traits <- prep.traits(output, traits, events)
+
+    expect_is(orphan_traits, "list")
+    expect_is(orphan_traits[[1]], "list")
+    expect_names(orphan_traits[[1]], c("tree", "traits"))
+
+    orphan_output <- do.call(map.traits, orphan_traits)
+
+    ## 4- merge trees together [TODO: CS]
+    expect_is(parents, "treats")
+    expect_is(orphan_output, "list")
+    expect_is(orphan_output[[1]], "treats")
+    x <- merge.parents.orphans(parents, orphan_output)
+    expect_is(x, "data.frame") # or a matrix?
+
+
+
+})
