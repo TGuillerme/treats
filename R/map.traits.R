@@ -4,6 +4,7 @@
 #'
 #' @param traits A \code{"traits"} object (see \code{\link{make.traits}}).
 #' @param tree   A \code{"phylo"} or \code{"multiPhylo"} object.
+#' @param events Optional, an \code{"events"} object to apply to the tree (see \code{\link{make.events}}).
 #' @param replicates Optional, a number of replicated traits to map.
 #'
 #' @return
@@ -11,6 +12,8 @@
 #' 
 #' @details  
 #' This function simulates the trait(s) on the tree using the tree's branch length.
+#'
+#' Note that when using an \code{"events"} with a \code{age.condition}, the age is calculated in time from the root of the tree, not in time from the present. So an event triggered with \code{age.condition(5)} will trigger 5 units from the root of the tree, not from the tips. To get it to trigger from the tips you can calculate it as \code{age.condition(my_tree$root.time-5)}.
 #'
 #' @examples
 #' ## Simulating a random tree with branch length
@@ -37,7 +40,7 @@
 #' plot(no_traits, main = "Mapped normal trait")
 #' par(oldpar)
 #'
-map.traits <- function(traits, tree, replicates) {
+map.traits <- function(traits, tree, events = NULL, replicates) {
     ## Sanitizing
     check.class(traits, c("treats", "traits"), " must be of class \"traits\". You can generate such object using:\nmake.traits()")
     tree_class <- check.class(tree, c("phylo", "multiPhylo"))
@@ -68,6 +71,23 @@ map.traits <- function(traits, tree, replicates) {
     ## Output
     output <- lapply(all_traits, lapply, function(x) make.treats(x$tree, x$data))
 
+    ## If events, trigger the recursion
+    if(!is.null(events)) {
+        if(!is(events, "treats") && is(events, "events")) {
+            stop(paste0("Events needs to be of class \"events\". You can generate such object using:\nmake.events()"))
+        }
+        ## Check if there are multiple events
+        n_events <- sum(abs(unlist(lapply(lapply(events, `[[`, "trigger"), function(x) ifelse(x == 0, 1, x)))))
+        
+        if(n_events > 1) {
+            stop("map.traits does not currently work with more that one event (or a recurring one).")
+            ## Do some nesting here if n_events > 1
+        }
+
+        ## Get the trigger condition time for the slicing
+        slicing_time <- get.trigger.time(events, tree, traits)
+    }
+
     ## Output
     if(tree_class == "phylo") {
         output <- lapply(output, function(x) return(x[[1]]))
@@ -78,7 +98,7 @@ map.traits <- function(traits, tree, replicates) {
         output <- output[[1]]
     }
     class(output) <- c("treats")
-    return(output)
+    return(output)  
 }
 
 ## Internal function for a single tree
@@ -131,4 +151,18 @@ map.traits_fun <- function(tree, traits) {
     rownames(trait_table) <- c(tree$tip.label, tree$node.label)[trait_table[,2]]
     trait_table <- trait_table[, -c(1:3), drop = FALSE]
     return(list(tree = tree, data = trait_table))
+}
+
+get.trigger.time <- function(events, tree, traits) {
+    ## Get the time condition (from start)
+    # age.condition
+    if(as.character(body(events[[1]]$condition)[[2]][[2]]) == "time") {
+        return(eval(body(events[[1]]$condition)[[2]][[3]], env = environment(events[[1]]$condition)))    
+    } else {
+        stop("map.traits currently only works with events triggered by age.condition", call. = FALSE)
+    }
+
+    #taxa.condition
+
+    #trait.condition
 }
