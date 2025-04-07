@@ -217,28 +217,29 @@ prep.traits <- function(one_orphan_tree, one_parent_trait_value, one_events, tra
                 replicates = replicates))
 }
 
+
 tree.slice.caleb <- function(tree, slice) {
-  # Slice the tree using dispRity
-  splitted <- dispRity::slice.tree(tree, age = slice, model = "acctran", keep.all.ancestors = TRUE)
-  
-  splitted_branches <- splitted$tip.label[grepl("^N", splitted$tip.label)]
-  
-  orphan_trees <- (castor::get_subtrees_at_nodes(tree, splitted_branches))$subtrees
-  
-  orphan_ages <- lapply(orphan_trees, get_orphan_tree_ages, full_tree = tree)
-  
-  added_br_length <- lapply(orphan_ages, function(ages) slice - ages)
-  
-  rescaled_orphans <- Map(add.root.edge, orphan_trees, added_br_length)
+    # Slice the tree using dispRity
+    splitted <- dispRity::slice.tree(tree, age = slice, model = "acctran", keep.all.ancestors = TRUE)
 
-  map.traits_label <- paste0("map.traits_split", 1:length(splitted$tip.label[grepl("^N", splitted$tip.label)]))
+    splitted_branches <- splitted$tip.label[grepl("^N", splitted$tip.label)]
 
-  splitted$tip.label[which(grepl("^N", splitted$tip.label))] <- map.traits_label
+    orphan_trees <- (castor::get_subtrees_at_nodes(tree, splitted_branches))$subtrees
 
-  rescaled_orphans <- Map(function(tree, label) {
-    tree$node.label <- c(label, tree$node.label)  
-    return(tree)
-}, rescaled_orphans, map.traits_label)
+    orphan_ages <- lapply(orphan_trees, get_orphan_tree_ages, full_tree = tree)
+
+    added_br_length <- lapply(orphan_ages, function(ages) slice - ages)
+
+    rescaled_orphans <- Map(add.root.edge, orphan_trees, added_br_length)
+
+    map.traits_label <- paste0("map.traits_split", 1:length(splitted$tip.label[grepl("^N", splitted$tip.label)]))
+
+    splitted$tip.label[which(grepl("^N", splitted$tip.label))] <- map.traits_label
+
+    rescaled_orphans <- Map(function(tree, label) {
+                            tree$node.label <- c(label, tree$node.label)  
+                            return(tree)
+                        }, rescaled_orphans, map.traits_label)
 
   return(list(parent = splitted, orphan_trees = rescaled_orphans))
 }
