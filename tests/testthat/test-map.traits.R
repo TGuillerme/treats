@@ -64,6 +64,14 @@ test_that("map.traits events", {
     # expect_is(splitted$orphans, "list")
     # expect_is(splitted$orphans[[1]], "multiPhylo")
 
+    ## 2.1 - after splitting make a list of all the orphan trees and their starting values
+    make.orphan.trees.list <- function(orphan_trees, sim_values)
+
+    traits$main[[1]]$process[[1]]
+    events[[1]]$modification(traits, start = one_parent_trait_value)$main[[1]]$process[[1]]
+
+
+
     # ## 3- apply map.traits
     # output <- map.traits(splitted$parent, traits, ...)
     # ## preparing orphans traits objects [TODO: TG]

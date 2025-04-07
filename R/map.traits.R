@@ -40,6 +40,9 @@
 #' plot(no_traits, main = "Mapped normal trait")
 #' par(oldpar)
 #'
+#' @author Thomas Guillerme, Caleb Scutt
+
+
 map.traits <- function(traits, tree, events = NULL, replicates) {
     ## Sanitizing
     check.class(traits, c("treats", "traits"), " must be of class \"traits\". You can generate such object using:\nmake.traits()")
@@ -65,12 +68,6 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
         warning("Background traits cannot be mapped and is ignored.")
     }
 
-    ## Map the traits
-    all_traits <- replicate(replicates, lapply(tree, map.traits_fun, traits = traits), simplify = FALSE)
-
-    ## Output
-    output <- lapply(all_traits, lapply, function(x) make.treats(x$tree, x$data))
-
     ## If events, trigger the recursion
     if(!is.null(events)) {
         if(!is(events, "treats") && is(events, "events")) {
@@ -84,8 +81,51 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
             ## Do some nesting here if n_events > 1
         }
 
+
+        ## If the events condition is traits, run the mapping first
+        trait_condition <- FALSE
+
         ## Get the trigger condition time for the slicing
         slicing_time <- get.trigger.time(events, tree, traits)
+
+        ## Placeholder for splitting the trees
+        parent_trees <- list()
+        orphan_trees <- list()
+
+        ## Run the simulations on the parent_tree
+        if(!trait_condition) {
+            ## Run the normal map.traits
+            parent_trees_traits <- map.traits(parent_trees, traits = traits, replicates = replicates)
+            ## Get the edges_values for the parent traits
+            parent_trait_values <- lapply(parent_trees_traits, function(treats) {treats$x[grep("map.traits_split", rownames(treats$x)),, drop = FALSE]})
+
+            ## Get the orphan trees and new traits (with starting trait values)
+            orphan_maps <- mapply(prep.traits, orphan_trees, parent_trait_values, MoreArgs = list(one_events = events[[1]], traits = traits, replicates = replicates), SIMPLIFY = FALSE)
+            ## TODO: if nested events, add this here!
+
+            ## Run all the orphan maps
+            orphan_data <- do.call(map.traits, orphan_maps)
+
+            ## Extract only the data
+            if(replicates > 1) {
+                all_traits <- do.call(cbind, lapply(orphan_data, lapply, `[[`, "x")) # OR rbind???
+            } else {
+                all_traits <- do.call(cbind, lapply(orphan_data, `[[`, "x")) # OR rbind???
+            }
+
+            ## Merge the data
+            all_traits <- cbind(parent_trees_traits$x, all_traits)
+            ## Remove duplicates
+            all_traits <- all_traits[unique(rownames(all_traits)),, drop = FALSE]
+        }
+    
+
+    } else {
+        ## Map the traits
+        all_traits <- replicate(replicates, lapply(tree, map.traits_fun, traits = traits), simplify = FALSE)
+
+        ## Output
+        output <- lapply(all_traits, lapply, function(x) make.treats(x$tree, x$data))
     }
 
     ## Output
@@ -153,6 +193,7 @@ map.traits_fun <- function(tree, traits) {
     return(list(tree = tree, data = trait_table))
 }
 
+## Internal function for getting events trigger times
 get.trigger.time <- function(events, tree, traits) {
     ## Get the time condition (from start)
     # age.condition
@@ -165,4 +206,13 @@ get.trigger.time <- function(events, tree, traits) {
     #taxa.condition
 
     #trait.condition
+}
+
+## Internal function for preparing traits after an event
+prep.traits <- function(one_orphan_tree, one_parent_trait_value, one_events, traits, replicates) {
+    ## Create the new arguments for map.traits
+    return(list(tree = one_orphan_tree,
+                traits = one_events$modification(traits, start = one_parent_trait_value),
+                events = NULL,
+                replicates = replicates))
 }
