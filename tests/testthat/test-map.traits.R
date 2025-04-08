@@ -70,7 +70,13 @@ test_that("map.traits events", {
     traits$main[[1]]$process[[1]]
     events[[1]]$modification(traits, start = one_parent_trait_value)$main[[1]]$process[[1]]
 
+    set.seed(123)
+    tree <- rtree(10)
+    tree <- makeNodeLabel(tree)
+    splitted <- dispRity::slice.tree(tree, age = 2, model = "acctran", keep.all.ancestors = TRUE)
+    splitted_branches <- splitted$tip.label[grepl("^N", splitted$tip.label)]
 
+    orphan_trees <- (castor::get_subtrees_at_nodes(tree, splitted_branches))$subtrees
 
     # ## 3- apply map.traits
     # output <- map.traits(splitted$parent, traits, ...)
@@ -93,3 +99,148 @@ test_that("map.traits events", {
 
 
 })
+
+test_that("add.root.edge correctly adds a root edge", {
+  set.seed(123) 
+  tree <- rtree(5)  # small random tree
+  new_root_edge <- runif(1, min = 0, max = 2)
+  
+  updated_tree <- add.root.edge(tree, new_root_edge)
+  
+  # Check if the number of nodes increased
+  expect_equal(updated_tree$Nnode, tree$Nnode + 1)
+  
+  # Check if the new edge was added
+  expect_equal(nrow(updated_tree$edge), nrow(tree$edge) + 1)
+  
+  # Check if the new edge length is correct
+  expect_equal(updated_tree$edge.length[1], new_root_edge)
+})
+
+## need test for orphan.ages function
+
+test_that("tree.slice.caleb works", {
+
+  ## test "phylo" output
+  set.seed(123)
+  starting_tree <- rtree(5)
+  starting_tree <- makeNodeLabel(starting_tree)
+  sliced_object <- tree.slice.caleb(starting_tree, 2)
+  expect_is(sliced_object, "list")
+  expect_equal(max(node.depth.edgelength(starting_tree)), sum(max(node.depth.edgelength(sliced_object$orphan[[1]])), max(node.depth.edgelength(sliced_object$parent))), tolerance = 1e-4) # test for equal tree height between unsliced and parent + orphan
+  expect_is(sliced_object$parent, "phylo")
+  expect_is(sliced_object$orphan_trees, "list")
+  expect_is(sliced_object$orphan_trees[[1]], "phylo")
+    # expect_is(splitted$orphans[[1]], "multiPhylo")
+
+  ## test "multiPhylo" output
+  set.seed(123)
+  multiphylo <- rmtree(5, N = 3)
+  multiphylo <- lapply(multiphylo, makeNodeLabel)
+  class(multiphylo) <- "multiPhylo"
+  sliced_multi <- tree.slice.caleb(multiphylo, 0.75)
+  
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+library(dispRity)
+
+library(treats)
+
+tree <- rtree(20)
+
+tree <- makeNodeLabel(tree)
+## use acctran to correctly label split branches with descending node label
+splitted <- dispRity::slice.tree(tree, age = 2, model = "acctran", keep.all.ancestors = TRUE)
+
+splitted$tip.label
+
+tree <- set.root.time(tree)
+
+# 
+splitted_branches <- splitted$tip.label[grepl("^N", splitted$tip.label)]
+
+
+
+
+## this then extracts subtree from the split node label, but only at point that node label occurs (so need to recalculate tree depth)
+orphan_trees <- (castor::get_subtrees_at_nodes(tree, splitted_branches))$subtrees
+
+  tree_age_data <- tree.age(tree)
+
+  orphan_node_ages <- tree_age_data$ages[as.character(tree_age_data$elements) %in% orphan_trees[[1]]$node.label[1]]
+
+
+
+## so anything in range of 1-n(tip label) is not added +1. anything higher is added +1. then a new row(at top) that is ntip+1 and ntip+2
+
+orphan_tree <- orphan_trees[[1]]
+
+tree.age(tree)
+
+node_ages <- tree.age(tree)$ages[tree.age(tree)$elements %in% orphan_tree[[1]] ]
+
+
+
+add.root.edge <- function(tree, new.root.edge) {
+    tree$edge <- rbind(c(Ntip(tree)+1, Ntip(tree)+2), ifelse(tree$edge > Ntip(tree), tree$edge+1, tree$edge))
+    tree$edge.length <- c(new.root.edge, tree$edge.length)
+    tree$Nnode <- tree$Nnode + 1
+    return(tree)
+}
+
+
+get_orphan_tree_ages <- function(orphan_tree, full_tree) {
+ 
+  tree_age_data <- tree.age(full_tree)
+  
+  orphan_node_ages <- tree_age_data$ages[as.character(tree_age_data$elements) %in% orphan_tree$node.label[1]]
+  
+  return(orphan_node_ages)
+}
+
+
+
+
+tree.slice.caleb <- function(tree, slice) {
+  # Slice the tree using dispRity
+  splitted <- dispRity::slice.tree(tree, age = slice, model = "acctran", keep.all.ancestors = TRUE)
+  
+  splitted_branches <- splitted$tip.label[grepl("^N", splitted$tip.label)]
+  
+  orphan_trees <- (castor::get_subtrees_at_nodes(tree, splitted_branches))$subtrees
+  
+  orphan_ages <- lapply(orphan_trees, get_orphan_tree_ages, full_tree = tree)
+  
+  added_br_length <- lapply(orphan_ages, function(ages) slice - ages)
+  
+  rescaled_orphans <- Map(add.root.edge, orphan_trees, added_br_length)
+
+  map.traits_label <- paste0("map.traits_split", 1:length(splitted$tip.label[grepl("^N", splitted$tip.label)]))
+
+  splitted$tip.label[which(grepl("^N", splitted$tip.label))] <- map.traits_label
+
+  rescaled_orphans <- Map(function(tree, label) {
+    tree$node.label <- c(label, tree$node.label)  
+    return(tree)
+}, rescaled_orphans, map.traits_label)
+
+  return(list(parent = splitted, orphan_trees = rescaled_orphans))
+}
+
+test <- tree.slice.caleb(tree, slice = 2)
+
