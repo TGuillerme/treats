@@ -249,20 +249,18 @@ tree.slice.caleb <- function(tree, slice) {
         return(list(parent = parent_trees, orphan_trees = orphan_trees))
     }
     
-    # If the input is a single phylo object, proceed with the original logic
+    # If input is phylo bypass the multiphylo step
     splitted <- dispRity::slice.tree(tree, age = slice, model = "acctran", keep.all.ancestors = TRUE)
 
-    splitted_branches <- splitted$tip.label[grepl("^N", splitted$tip.label)]
+    splitted_branches <- splitted$tip.label[grepl("^N", splitted$tip.label)] # finds branches that cross slice
 
-    orphan_trees <- (castor::get_subtrees_at_nodes(tree, splitted_branches))$subtrees
+    orphan_trees <- (castor::get_subtrees_at_nodes(tree, splitted_branches))$subtrees # extracts trees that are derived from sliced branches
 
-    orphan_ages <- lapply(orphan_trees, get.orphan.tree.ages, full_tree = tree)
+    orphan_ages <- lapply(orphan_trees, get.orphan.tree.ages, full_tree = tree) 
+    added_br_length <- lapply(orphan_ages, function(ages) slice - ages) 
+    rescaled_orphans <- Map(add.root.edge, orphan_trees, added_br_length) # rescales the orphan trees so root is at slice
 
-    added_br_length <- lapply(orphan_ages, function(ages) slice - ages)
-
-    rescaled_orphans <- Map(add.root.edge, orphan_trees, added_br_length)
-
-    map.traits_label <- paste0("map.traits_split", 1:length(splitted$tip.label[grepl("^N", splitted$tip.label)]))
+    map.traits_label <- paste0("map.traits_split", 1:length(splitted$tip.label[grepl("^N", splitted$tip.label)])) # correctly labels nodes and tips at slice point
 
     splitted$tip.label[which(grepl("^N", splitted$tip.label))] <- map.traits_label
 
@@ -271,5 +269,5 @@ tree.slice.caleb <- function(tree, slice) {
                             return(tree)
                         }, rescaled_orphans, map.traits_label)
 
-    return(list(parent = splitted, orphan_trees = rescaled_orphans))
+    return(list(parent = splitted, orphan_trees = rescaled_orphans)) # returns parents and orphans
 }
