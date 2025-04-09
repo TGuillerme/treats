@@ -228,11 +228,11 @@ add.root.edge <- function(tree, new.root.edge) {
 
 get.orphan.tree.ages <- function(orphan_tree, full_tree) {
  
-  tree_age_data <- tree.age(full_tree)
+    tree_age_data <- tree.age(full_tree)
   
-  orphan_node_ages <- tree_age_data$ages[as.character(tree_age_data$elements) %in% orphan_tree$node.label[1]]
+    orphan_node_ages <- tree_age_data$ages[as.character(tree_age_data$elements) %in% orphan_tree$node.label[1]]
   
-  return(orphan_node_ages)
+    return(orphan_node_ages)
 }
 
 
@@ -240,13 +240,8 @@ tree.slice.caleb <- function(tree, slice) {
     # Check if the input is a multiPhylo object
     if (class(tree) == "multiPhylo") {
         # Apply the function to each tree in the multiPhylo object
-        results <- lapply(tree, function(single_tree) tree.slice.caleb(single_tree, slice))
-        
-        # Combine the results into a single list
-        parent_trees <- lapply(results, `[[`, "parent")
-        orphan_trees <- lapply(results, `[[`, "orphan_trees")
-        
-        return(list(parent = parent_trees, orphan_trees = orphan_trees))
+        results <- lapply(tree, function(single_tree)  tree.slice.caleb(single_tree, slice))
+        return(results)
     }
     
     # If input is phylo bypass the multiphylo step
@@ -268,6 +263,8 @@ tree.slice.caleb <- function(tree, slice) {
                             tree$node.label <- c(label, tree$node.label)  
                             return(tree)
                         }, rescaled_orphans, map.traits_label)
+    
+    class(rescaled_orphans)  <- "multiPhylo"
 
     return(list(parent = splitted, orphan_trees = rescaled_orphans)) # returns parents and orphans
 }
