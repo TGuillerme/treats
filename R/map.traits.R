@@ -248,10 +248,7 @@ add.root.edge <- function(tree, new.root.edge) {
 # }
 
 tree.slice.caleb <- function(tree, slice) {
-    #TG: remove the bit about multiPhylo: this can be easily handled using lapply(tree, fun)
-
     ## Slice the tree at the age
-    #TG: Change the age of the tree slice. In slice tree it's the age of the slice (e.g.g 66 Mya), here it should be the age since root 
     splitted <- dispRity::slice.tree(tree, age = tree$root.time-slice, model = "acctran", keep.all.ancestors = TRUE)
 
     ## Precalculating tree ages (recycled in several places)
@@ -260,16 +257,11 @@ tree.slice.caleb <- function(tree, slice) {
     ## Getting the subtrees (orphans)
 
     ## Finds branches that cross slice
-    #TG: using grepl("^N") will only work if the user has their node labels written as "Node", "Notanode", etc. "totallyanode" will not work. 
-    # splitted_branches <- splitted$tip.label[grepl("^n", splitted$tip.label)] 
-    #TG: you can simply grep which node labels are now in tip labels
     splitted_branches <- splitted$tip.label[which(splitted$tip.label %in% tree$node.label)]
-
     ## Extracts trees that are descendant from the sliced branches
     orphan_trees <- castor::get_subtrees_at_nodes(tree, splitted_branches)$subtrees
 
     ## Find the missing branch length for the orphan
-    #TG: here you can improve the speed of the function by changing the arguments full_tree to be directly the tree.age (so it's calculated only ones) and then declare the function directly in the lapply (no speed improvement but less testing to do)
     # orphan_ages <- lapply(orphan_trees, get.orphan.tree.ages, full_tree = tree)
     orphan_ages <- lapply(orphan_trees, function(one_tree, tree_age_data) return(tree_age_data$ages[as.character(tree_age_data$elements) %in% one_tree$node.label[1]]), tree_age_data = tree_ages)
 
@@ -317,7 +309,6 @@ tree.slice.caleb <- function(tree, slice) {
     splitted$tip.label[splitted$tip.label %in% singletons_tips] <- paste0("map.traits_split_tip", singletons_tips)
  
     ## Combine the orphan trees
-    #TG: I removed the multiPhylo class since it's not gonna be relevant in the pipeline in map.traits anymore (i.e. no class checks)
     orphan_trees <- c(rescaled_orphans, singletons_trees)
 
     ## Return parent and orphans
