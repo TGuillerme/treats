@@ -54,22 +54,7 @@ test_that("map.traits events", {
     ## Testing get trigger
     expect_equal(get.trigger.time(events, tree = NULL, traits = NULL), 3)
 
-    ## 1- trigger works in map.traits [TODO: TG]
 
-
-    ## 2.1 - after splitting make a list of all the orphan trees and their starting values
-    make.orphan.trees.list <- function(orphan_trees, sim_values)
-
-    traits$main[[1]]$process[[1]]
-    events[[1]]$modification(traits, start = one_parent_trait_value)$main[[1]]$process[[1]]
-
-    set.seed(123)
-    tree <- rtree(10)
-    tree <- makeNodeLabel(tree)
-    splitted <- dispRity::slice.tree(tree, age = 2, model = "acctran", keep.all.ancestors = TRUE)
-    splitted_branches <- splitted$tip.label[grepl("^N", splitted$tip.label)]
-
-    orphan_trees <- (castor::get_subtrees_at_nodes(tree, splitted_branches))$subtrees
 
     # ## 3- apply map.traits
     # output <- map.traits(splitted$parent, traits, ...)
@@ -110,9 +95,6 @@ test_that("add.root.edge correctly adds a root edge", {
     expect_equal(updated_tree$edge.length[1], new_root_edge)
 })
 
-test_that("add.root.edge works", {
-
-})
 
 test_that("tree.slice.caleb works", {
     ## test "phylo" output

@@ -91,6 +91,10 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
             stop("map.traits does not currently work with more that one event (or a recurring one).")
             ## Do some nesting here if n_events > 1
         }
+        ## Only works for traits
+        if(events[[1]]$target != "traits") {
+            stop("map.traits does currently only works when targeting traits")
+        }
 
         ## If the events condition is traits, run the mapping first
         trait_condition <- FALSE
@@ -100,34 +104,49 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
 
         ## Placeholder for splitting the trees
         trees_list <- lapply(tree, tree.slice.caleb, slicing_time)
-
-        plot(ladderize(tree[[1]])) ; axisPhylo() ; nodelabels(tree[[1]]$node.label) 
-        dev.new()
-        plot(ladderize(trees_list[[1]]$parent)); axisPhylo(); nodelabels(trees_list[[1]]$parent$node.label)
-
-
-        parent_trees <- list()
-        orphan_trees <- list()
+        parent_trees <- lapply(trees_list, `[[`, "parent_tree")
+        class(parent_trees) <- "multiPhylo"
+        orphan_trees <- lapply(lapply(trees_list, `[[`, "orphan_tree"), function(x) {class(x) <- "multiPhylo"; return(x)})
 
         ## Run the simulations on the parent_tree
         if(!trait_condition) {
             ## Run the normal map.traits
             parent_trees_traits <- map.traits(parent_trees, traits = traits, replicates = replicates)
+            ## Make into a list of treats if it was a single tree
+            if(!is(parent_trees_traits[[1]]), "treats") {
+                parent_trees_traits <- list(parent_trees_traits)
+            }
             ## Get the edges_values for the parent traits
-            parent_trait_values <- lapply(parent_trees_traits, function(treats) {treats$x[grep("map.traits_split", rownames(treats$x)),, drop = FALSE]})
+            parent_trait_values <- lapply(parent_trees_traits, function(treats) {treats$data[grep("map.traits_split", rownames(treats$data)),, drop = FALSE]})
+
+            ## Sort the parent traits as a list in the same order as the orphan_trees roots
+            roots_order <- lapply(lapply(orphan_trees, lapply, function(x) x$node.label[1]), unlist, recursive = FALSE)
+            traits_order <- mapply(match, roots_order, lapply(parent_trait_values, rownames), SIMPLIFY = FALSE)
+            reorder.trait <- function(trait, order) {
+                return(trait[order,, drop = FALSE])
+            }
+            parent_trait_values <- mapply(reorder.trait, parent_trait_values, traits_order, SIMPLIFY = FALSE)
 
             ## Get the orphan trees and new traits (with starting trait values)
-            orphan_maps <- mapply(prep.traits, orphan_trees, parent_trait_values, MoreArgs = list(one_events = events[[1]], traits = traits, replicates = replicates), SIMPLIFY = FALSE)
-            ## TODO: if nested events, add this here!
+            orphan_maps <- list()
+            for(one_tree in 1:length(orphan_trees)) {
+                orphan_maps[[one_tree]] <- mapply(prep.traits,
+                                one_orphan_tree = orphan_trees[[one_tree]],
+                                one_parent_trait_value = unlist(apply(parent_trait_values[[one_tree]], 1, list), recursive =  FALSE),
+                                # TODO: if nested events, add the list of nested events here
+                                MoreArgs = list(one_events = events[[1]], traits = traits, replicates = replicates), SIMPLIFY = FALSE)
+            }
 
             ## Run all the orphan maps
-            orphan_data <- do.call(map.traits, orphan_maps)
+            orphan_data <- lapply(orphan_maps, lapply, lapply, function(x) do.call(map.traits, args = x))
+            #TODO: fix bug with map.traits for a tree with a single tip.
+
 
             ## Extract only the data
             if(replicates > 1) {
-                all_traits <- do.call(cbind, lapply(orphan_data, lapply, `[[`, "x")) # OR rbind???
+                all_traits <- do.call(cbind, lapply(orphan_data, lapply, `[[`, "data")) # OR rbind???
             } else {
-                all_traits <- do.call(cbind, lapply(orphan_data, `[[`, "x")) # OR rbind???
+                all_traits <- do.call(cbind, lapply(orphan_data, `[[`, "data")) # OR rbind???
             }
 
             ## Merge the data
@@ -229,10 +248,11 @@ get.trigger.time <- function(events, tree, traits) {
 prep.traits <- function(one_orphan_tree, one_parent_trait_value, one_events, traits, replicates) {
     ## Create the new arguments for map.traits
     return(list(tree = one_orphan_tree,
-                traits = one_events$modification(traits, start = one_parent_trait_value),
+                traits = one_events$modification(traits, start = as.numeric(one_parent_trait_value)),
                 events = NULL,
                 replicates = replicates))
 }
+
 
 ## Function for adding branch at root to correctly rescale orphan trees
 add.root.edge <- function(tree, new.root.edge) {
