@@ -47,9 +47,20 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
     ## Sanitizing
     check.class(traits, c("treats", "traits"), " must be of class \"traits\". You can generate such object using:\nmake.traits()")
     tree_class <- check.class(tree, c("phylo", "multiPhylo"))
-    if(tree_class == "phylo") {
+    if(tree_class == "phylo") {        
         tree <- list(tree)
     }
+    ## Check node labels on all trees
+    add.nodes.root <- function(tree) {
+        if(is.null(tree$nodel.label)) {
+            tree <- makeNodeLabel(tree, prefix = "n")
+        }
+        if(is.null(tree$root.time)) {
+            tree <- set.root.time(tree)
+        }
+        return(tree)
+    }
+    tree <- lapply(tree, add.nodes.root)
 
     ## Check replicates
     if(missing(replicates)) {
@@ -81,7 +92,6 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
             ## Do some nesting here if n_events > 1
         }
 
-
         ## If the events condition is traits, run the mapping first
         trait_condition <- FALSE
 
@@ -89,6 +99,13 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
         slicing_time <- get.trigger.time(events, tree, traits)
 
         ## Placeholder for splitting the trees
+        trees_list <- lapply(tree, tree.slice.caleb, slicing_time)
+
+        plot(ladderize(tree[[1]])) ; axisPhylo() ; nodelabels(tree[[1]]$node.label) 
+        dev.new()
+        plot(ladderize(trees_list[[1]]$parent)); axisPhylo(); nodelabels(trees_list[[1]]$parent$node.label)
+
+
         parent_trees <- list()
         orphan_trees <- list()
 
@@ -225,46 +242,84 @@ add.root.edge <- function(tree, new.root.edge) {
     return(tree)
 }
 
-
-get.orphan.tree.ages <- function(orphan_tree, full_tree) {
- 
-    tree_age_data <- tree.age(full_tree)
-  
-    orphan_node_ages <- tree_age_data$ages[as.character(tree_age_data$elements) %in% orphan_tree$node.label[1]]
-  
-    return(orphan_node_ages)
-}
-
+# get.orphan.tree.ages <- function(orphan_tree, full_tree) {
+#     tree_age_data <- tree.age(full_tree)
+#     return(tree_age_data$ages[as.character(tree_age_data$elements) %in% orphan_tree$node.label[1]])
+# }
 
 tree.slice.caleb <- function(tree, slice) {
-    # Check if the input is a multiPhylo object
-    if (class(tree) == "multiPhylo") {
-        # Apply the function to each tree in the multiPhylo object
-        results <- lapply(tree, function(single_tree)  tree.slice.caleb(single_tree, slice))
-        return(results)
-    }
-    
-    # If input is phylo bypass the multiphylo step
-    splitted <- dispRity::slice.tree(tree, age = slice, model = "acctran", keep.all.ancestors = TRUE)
+    #TG: remove the bit about multiPhylo: this can be easily handled using lapply(tree, fun)
 
-    splitted_branches <- splitted$tip.label[grepl("^N", splitted$tip.label)] # finds branches that cross slice
+    ## Slice the tree at the age
+    #TG: Change the age of the tree slice. In slice tree it's the age of the slice (e.g.g 66 Mya), here it should be the age since root 
+    splitted <- dispRity::slice.tree(tree, age = tree$root.time-slice, model = "acctran", keep.all.ancestors = TRUE)
 
-    orphan_trees <- (castor::get_subtrees_at_nodes(tree, splitted_branches))$subtrees # extracts trees that are derived from sliced branches
+    ## Precalculating tree ages (recycled in several places)
+    tree_ages <- tree.age(tree, digits = 7)
 
-    orphan_ages <- lapply(orphan_trees, get.orphan.tree.ages, full_tree = tree) 
-    added_br_length <- lapply(orphan_ages, function(ages) slice - ages) 
-    rescaled_orphans <- Map(add.root.edge, orphan_trees, added_br_length) # rescales the orphan trees so root is at slice
+    ## Getting the subtrees (orphans)
 
-    map.traits_label <- paste0("map.traits_split", 1:length(splitted$tip.label[grepl("^N", splitted$tip.label)])) # correctly labels nodes and tips at slice point
+    ## Finds branches that cross slice
+    #TG: using grepl("^N") will only work if the user has their node labels written as "Node", "Notanode", etc. "totallyanode" will not work. 
+    # splitted_branches <- splitted$tip.label[grepl("^n", splitted$tip.label)] 
+    #TG: you can simply grep which node labels are now in tip labels
+    splitted_branches <- splitted$tip.label[which(splitted$tip.label %in% tree$node.label)]
 
-    splitted$tip.label[which(grepl("^N", splitted$tip.label))] <- map.traits_label
+    ## Extracts trees that are descendant from the sliced branches
+    orphan_trees <- castor::get_subtrees_at_nodes(tree, splitted_branches)$subtrees
 
+    ## Find the missing branch length for the orphan
+    #TG: here you can improve the speed of the function by changing the arguments full_tree to be directly the tree.age (so it's calculated only ones) and then declare the function directly in the lapply (no speed improvement but less testing to do)
+    # orphan_ages <- lapply(orphan_trees, get.orphan.tree.ages, full_tree = tree)
+    orphan_ages <- lapply(orphan_trees, function(one_tree, tree_age_data) return(tree_age_data$ages[as.character(tree_age_data$elements) %in% one_tree$node.label[1]]), tree_age_data = tree_ages)
+
+    ## Relabel nodes and tips at slice point with a tractable suffix
+    map.traits_label <- paste0("map.traits_split_node", 1:length(splitted_branches)) 
+    splitted$tip.label[splitted$tip.label %in% splitted_branches] <- map.traits_label
+
+    ## Rescale the orphan trees (i.e. adding their extra branch length)
+    added_br_length <- lapply(orphan_ages, function(ages, slice) slice - ages, slice = (tree$root.time-slice))
+    ## Add the root edge
+    rescaled_orphans <- Map(add.root.edge, orphan_trees, added_br_length)
+    ## Add the new labels
     rescaled_orphans <- Map(function(tree, label) {
                             tree$node.label <- c(label, tree$node.label)  
                             return(tree)
                         }, rescaled_orphans, map.traits_label)
-    
-    class(rescaled_orphans)  <- "multiPhylo"
 
-    return(list(parent = splitted, orphan_trees = rescaled_orphans)) # returns parents and orphans
+    ## Getting the singleton trees (orphans)
+
+    ## Detecting which tip is a singleton (tip in sliced tree is at minimum age + tip in the input tree is not at slice time)
+    splitted_ages <- tree.age(splitted, digits = 7)
+    ## Find the singletons (ignores the tips that are already called map.traits)
+    splitted_ages_singeltons <- splitted_ages[!grepl("map.traits_split_node", splitted_ages$elements), ]
+    singletons_tips <- splitted_ages_singeltons$elements[which(splitted_ages_singeltons$ages == min(splitted_ages_singeltons$ages))]
+    ## Dropping singletons that have the age of the slice time
+    if(any(same_age <- tree_ages$ages[tree_ages$elements %in% singletons_tips] == (tree$root.time-slice))) {
+        singletons_tips <- singletons_tips[-same_age]
+    }
+    ## Calculating the singletons edges length
+    singletons_edges <- (tree$root.time-slice) - tree_ages$ages[tree_ages$elements %in% singletons_tips]
+
+    ## Make the mini trees
+    make.mini.tree <- function(tip, edge_length) {
+        tree <- list(tip.label = tip,
+                     node.label = paste0("map.traits_split_tip", tip),
+                     Nnode = 1,
+                     edge = matrix(c(2, 1), ncol = 2, byrow = TRUE),
+                     edge.length = edge_length)
+        class(tree) <- "phylo"
+        return(tree)
+    }
+    singletons_trees <- mapply(make.mini.tree, as.list(singletons_tips), as.list(singletons_edges), SIMPLIFY = FALSE)
+
+    ## Renaming the branching tips on splitted
+    splitted$tip.label[splitted$tip.label %in% singletons_tips] <- paste0("map.traits_split_tip", singletons_tips)
+ 
+    ## Combine the orphan trees
+    #TG: I removed the multiPhylo class since it's not gonna be relevant in the pipeline in map.traits anymore (i.e. no class checks)
+    orphan_trees <- c(rescaled_orphans, singletons_trees)
+
+    ## Return parent and orphans
+    return(list(parent_tree = splitted, orphan_tree = orphan_trees))
 }

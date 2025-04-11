@@ -43,6 +43,9 @@ test_that("map.traits works", {
 
 test_that("map.traits events", {
 
+    set.seed(1)
+    tree <- rtree(50)
+    traits <- make.traits()
     ## Events object for testing
     events <- make.events(
         condition    = age.condition(3),
@@ -53,16 +56,6 @@ test_that("map.traits events", {
 
     ## 1- trigger works in map.traits [TODO: TG]
 
-    ## 2- splitting works internally [TODO: CS]
-
-    # ## Some example data
-    # tree <- rtree(5)
-    # splitted_tree <- split.tree(tree)
-    # expect_is(splitted_tree, "list")
-    # expect_equal(names(splitted), c("parent", "orphans"))
-    # expect_is(splitted$parent, "multiPhylo")
-    # expect_is(splitted$orphans, "list")
-    # expect_is(splitted$orphans[[1]], "multiPhylo")
 
     ## 2.1 - after splitting make a list of all the orphan trees and their starting values
     make.orphan.trees.list <- function(orphan_trees, sim_values)
@@ -117,29 +110,50 @@ test_that("add.root.edge correctly adds a root edge", {
     expect_equal(updated_tree$edge.length[1], new_root_edge)
 })
 
+test_that("add.root.edge works", {
 
+})
 
 test_that("tree.slice.caleb works", {
     ## test "phylo" output
     set.seed(123)
-    starting_tree <- rtree(5)
+    starting_tree <- rcoal(5) # tree is ultrametric to make sure that the slices add up to the correct length
     starting_tree <- makeNodeLabel(starting_tree)
-    sliced_object <- tree.slice.caleb(starting_tree, 2)
+    starting_tree <- set.root.time(starting_tree)
+    slice <- 0.35
+    sliced_object <- tree.slice.caleb(starting_tree, slice = slice)
     expect_is(sliced_object, "list")
-    expect_equal(max(node.depth.edgelength(starting_tree)), sum(max(node.depth.edgelength(sliced_object$orphan[[1]])), max(node.depth.edgelength(sliced_object$parent))), tolerance = 1e-4) # test for equal tree height between unsliced and parent + orphan
-    expect_is(sliced_object$parent, "phylo")
-    expect_is(sliced_object$orphan_trees, "multiPhylo")
-    expect_is(sliced_object$orphan_trees[[1]], "phylo")
-    expect_equal(sliced_object$parent$tip.label[grepl("^map.traits", sliced_object$parent$tip.label)][1], sliced_object$orphan_trees[[1]]$node.label[1]) # ensure correct map traits node/tip labelling
 
-    ## test "multiPhylo" output
-    set.seed(41)
-    multiphylo <- rmtree(5, N = 3)
-    multiphylo <- lapply(multiphylo, makeNodeLabel)
-    class(multiphylo) <- "multiPhylo"
-    sliced_multi <- tree.slice.caleb(multiphylo, 1)
-    expect_is(sliced_multi, "list")
-    expect_is(sliced_multi[[1]]$parent, "phylo")
-    expect_is(sliced_multi[[1]]$orphan_trees, "multiPhylo")
-    expect_is(sliced_multi[[1]]$orphan_trees[[1]], "phylo")
+    ## Length of the sliced tree is 1 (slice is sliced from the root)
+    expect_equal(max(node.depth.edgelength(sliced_object$parent_tree)), slice)
+    ## Length of the orphan trees is root.time - 1 (the rest of the time)
+    expect_equal(max(node.depth.edgelength(sliced_object$orphan_tree[[1]])), (starting_tree$root.time - slice), tolerance = 1e-7) # Not sure where the tolerance error comes from (not tree.ages could be castor. but good enough)
+    expect_equal(max(node.depth.edgelength(sliced_object$orphan_tree[[2]])), (starting_tree$root.time - slice), tolerance = 1e-7)
+    expect_equal(max(node.depth.edgelength(sliced_object$orphan_tree[[3]])), (starting_tree$root.time - slice))
+
+    expect_is(sliced_object$parent, "phylo")
+    expect_is(sliced_object$orphan_tree, "list")
+    expect_is(sliced_object$orphan_tree[[1]], "phylo")
+
+
+    ## testing complex tree
+    set.seed(1)
+    tree <- rtree(50)
+    tree <- makeNodeLabel(tree, prefix = "n")
+    tree <- set.root.time(tree)
+    slice <- 2
+    tree_sliced <- tree.slice.caleb(tree, slice)
+    expect_is(tree_sliced, "list")
+    expect_equal(names(tree_sliced), c("parent_tree", "orphan_tree"))
+    expect_is(tree_sliced$parent_tree, "phylo")
+    ## 9 nodes leading to subtrees
+    expect_equal(length(grep("map.traits_split_node", tree_sliced$parent_tree$tip.label)), 9)
+    ## 6 tips leading to singletons
+    expect_equal(length(grep("map.traits_split_tip", tree_sliced$parent_tree$tip.label)), 7)
+    ## Should be tree orphan trees, including 6 singletons
+    expect_equal(length(tree_sliced$orphan_tree), 16)
+    ## should have 22 tips
+    expect_equal(Ntip(tree_sliced$parent_tree), 22)
+    ## ... 16 of which are cuts (min age)
+    expect_equal(sum(tree.age(tree_sliced$parent_tree)$ages == min(tree.age(tree_sliced$parent_tree)$ages)), 16)
 })
