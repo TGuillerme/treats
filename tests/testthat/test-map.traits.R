@@ -41,6 +41,21 @@ test_that("map.traits works", {
     expect_equal(unname(test$data[, 3]), c(100, 101, 101, 102, 102, 103, 103, 102, 102))
 })
 
+test_that("map.traits works with a mini tree", {
+    tree <- list(edge = matrix(c(2,1), nrow = 1),
+                      edge.length = 1.5,
+                      Nnode = 1,
+                      tip.label = "t1")
+    class(tree) <- "phylo"
+
+    test <- map.traits(traits = make.traits(), tree = tree)
+    expect_equal(Nnode(test$tree), 1)
+    expect_equal(Ntip(test$tree), 1)
+    expect_equal(dim(test$data), c(2,1))
+    expect_equal(rownames(test$data), c("n1", "t1"))
+
+})
+
 test_that("map.traits events", {
 
     set.seed(1)
@@ -54,27 +69,10 @@ test_that("map.traits events", {
     ## Testing get trigger
     expect_equal(get.trigger.time(events, tree = NULL, traits = NULL), 3)
 
+    test <- map.traits(traits = traits, tree = tree, events = events)
 
-
-    # ## 3- apply map.traits
-    # output <- map.traits(splitted$parent, traits, ...)
-    # ## preparing orphans traits objects [TODO: TG]
-    # orphan_traits <- prep.traits(output, traits, events)
-
-    # expect_is(orphan_traits, "list")
-    # expect_is(orphan_traits[[1]], "list")
-    # expect_names(orphan_traits[[1]], c("tree", "traits"))
-
-    # orphan_output <- do.call(map.traits, orphan_traits)
-
-    # ## 4- merge trees together [TODO: CS]
-    # expect_is(parents, "treats")
-    # expect_is(orphan_output, "list")
-    # expect_is(orphan_output[[1]], "treats")
-    # x <- merge.parents.orphans(parents, orphan_output)
-    # expect_is(x, "data.frame") # or a matrix?
-
-
+    ## Output should be of same length as Ntip+Ntree
+    expect_equal(Ntip(tree[[1]]) + Nnode(tree[[1]]), nrow(test$data))
 
 })
 

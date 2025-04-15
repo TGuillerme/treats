@@ -4,12 +4,14 @@
 \alias{map.traits}
 \title{Maps a trait on a tree}
 \usage{
-map.traits(traits, tree, replicates)
+map.traits(traits, tree, events = NULL, replicates)
 }
 \arguments{
 \item{traits}{A \code{"traits"} object (see \code{\link{make.traits}}).}
 
 \item{tree}{A \code{"phylo"} or \code{"multiPhylo"} object.}
+
+\item{events}{Optional, an \code{"events"} object to apply to the tree (see \code{\link{make.events}}).}
 
 \item{replicates}{Optional, a number of replicated traits to map.}
 }
@@ -21,6 +23,8 @@ Simulates one or more trait specified through a "traits" onto one or multiple tr
 }
 \details{
 This function simulates the trait(s) on the tree using the tree's branch length.
+
+Note that when using an \code{"events"} with a \code{age.condition}, the age is calculated in time from the root of the tree, not in time from the present. So an event triggered with \code{age.condition(5)} will trigger 5 units from the root of the tree, not from the tips. To get it to trigger from the tips you can calculate it as \code{age.condition(my_tree$root.time-5)}.
 }
 \examples{
 ## Simulating a random tree with branch length
@@ -47,4 +51,7 @@ plot(ou_traits, main = "Mapped OU")
 plot(no_traits, main = "Mapped normal trait")
 par(oldpar)
 
+}
+\author{
+Thomas Guillerme, Caleb Scutt
 }

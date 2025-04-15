@@ -52,7 +52,7 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
     }
     ## Check node labels on all trees
     add.nodes.root <- function(tree) {
-        if(is.null(tree$nodel.label)) {
+        if(is.null(tree$node.label)) {
             tree <- makeNodeLabel(tree, prefix = "n")
         }
         if(is.null(tree$root.time)) {
@@ -113,7 +113,7 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
             ## Run the normal map.traits
             parent_trees_traits <- map.traits(parent_trees, traits = traits, replicates = replicates)
             ## Make into a list of treats if it was a single tree
-            if(!is(parent_trees_traits[[1]]), "treats") {
+            if(!is(parent_trees_traits[[1]], "treats")) {
                 parent_trees_traits <- list(parent_trees_traits)
             }
             ## Get the edges_values for the parent traits
@@ -138,24 +138,20 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
             }
 
             ## Run all the orphan maps
-            orphan_data <- lapply(orphan_maps, lapply, lapply, function(x) do.call(map.traits, args = x))
-            #TODO: fix bug with map.traits for a tree with a single tip.
-
+            orphan_data <- lapply(orphan_maps, lapply, function(x) do.call(map.traits, args = x))
 
             ## Extract only the data
-            if(replicates > 1) {
-                all_traits <- do.call(cbind, lapply(orphan_data, lapply, `[[`, "data")) # OR rbind???
-            } else {
-                all_traits <- do.call(cbind, lapply(orphan_data, `[[`, "data")) # OR rbind???
-            }
-
+            all_orphan_data <- lapply(lapply(orphan_data, lapply, `[[`, "data"), function(x) do.call(rbind, x))
             ## Merge the data
-            all_traits <- cbind(parent_trees_traits$x, all_traits)
-            ## Remove duplicates
-            all_traits <- all_traits[unique(rownames(all_traits)),, drop = FALSE]
+            combined_trait_data <- mapply(function(x,y) rbind(x$data, y), parent_trees_traits, all_orphan_data, SIMPLIFY = FALSE)
+            ## Remove "map.traits_split" elements
+            cleaned_trait_data <- lapply(combined_trait_data, function(x) x[!grepl("map.traits_split", rownames(x)),, drop = FALSE])
+
+            ## Make into treats objects
+            class(tree) <- "multiPhylo"
+            output <- mapply(make.treats, tree, cleaned_trait_data, SIMPLIFY = FALSE)
         }
     
-
     } else {
         ## Map the traits
         all_traits <- replicate(replicates, lapply(tree, map.traits_fun, traits = traits), simplify = FALSE)
@@ -163,6 +159,8 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
         ## Output
         output <- lapply(all_traits, lapply, function(x) make.treats(x$tree, x$data))
     }
+
+    ## Merge into treats
 
     ## Output
     if(tree_class == "phylo") {
@@ -180,16 +178,11 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
 ## Internal function for a single tree
 map.traits_fun <- function(tree, traits) {
 
-    ## Generate node names
-    if(is.null(tree$node.label)) {
-        tree$node.label <- paste0("n", seq(1:Nnode(tree)))
-    }
-
     ## Get the edge table
     edge_table <- cbind(tree$edge, tree$edge.length)
 
     ## Ladderise the edge table
-    edge_table <- edge_table[order(edge_table[, 1]), ]
+    edge_table <- edge_table[order(edge_table[, 1]), , drop = FALSE]
 
     ## Initialise the trait table
     trait_values <- rbind(NULL, c(unlist(lapply(traits$main, function(x) return(x$start)))))
