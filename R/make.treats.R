@@ -2,8 +2,8 @@
 #'
 #' @description Combines a tree and some associated data into a treats object (e.g. for plotting)
 #'
-#' @param tree a phylogenetic tree.
-#' @param data a dataset of traits, either a \code{matrix} with column names or a named \code{vector}.
+#' @param tree a \code{phylo} or \code{multiPhylo} object.
+#' @param data a dataset of traits, either a \code{matrix} with column names or a named \code{vector} (or a \code{list} of them).
 # @param ... additional \code{treats} objects to add (e.g. \code{traits}).
 #'
 #' @return
@@ -71,16 +71,25 @@ make.treats <- function(tree, data) {#, ...) {
         }
 
         ## Check the length of the data
-        if(length(data) != length(tree)) {
+        n_data <- length(data)
+        n_tree <- length(tree)
+        if(n_data != n_tree) {
             ## Replicating the tree or the data
-            if(length(data) == 1) {
-                data <- unlist(replicate(length(tree), data, simplify = FALSE), recursive = FALSE)
+            if(n_data < n_tree) {
+                ## Ratio
+                ratio <- n_tree/n_data
+                if(!(ratio == floor(ratio))) {
+                    stop("The tree and data are not the same length (or not a whole multiple of each other).")
+                }
+                data <- unlist(replicate(ratio, data, simplify = FALSE), recursive = FALSE)
             }
-            if(length(tree) == 1) {
-                tree <- unlist(replicate(length(data), tree, simplify = FALSE), recursive = FALSE)
-            }
-            if(length(tree) != 1 && length(data) != 1) {
-                stop("The tree and data don't match.")
+            if(n_tree < n_data) {
+                ## Get the ratio
+                ratio <- n_data/n_tree
+                if(!(ratio == floor(ratio))) {
+                    stop("The tree and data are not the same length (or not a whole multiple of each other).")
+                }
+                tree <- unlist(replicate(ratio, tree, simplify = FALSE), recursive = FALSE)
             }
         }
         ## Check the data and the tree
