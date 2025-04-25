@@ -1,4 +1,4 @@
-treats v1.1.5 (2025-04-04)
+treats v1.1.6 (2025-04-23)
 =========================
 
 <!-- 
@@ -9,6 +9,7 @@ treats v1.1.5 (2025-04-04)
 
  ### MINOR IMPROVEMENTS 
 
+ * `make.treats` can now directly make `multi.treats` objects if provided a list of data and trees.
  * `treats` now allows for multiple `"founding"` `events`. Thanks to Ruby Redlich for this suggestion.
  * The branch leading to the `"founding"` `events` tree is now generated from from the input `"modifiers"` object rather than arbitrarily.
 

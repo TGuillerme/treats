@@ -47,38 +47,37 @@ test_that("make.treats works", {
     error <- capture_error(make.treats(my_tree, wrong_data))
     expect_equal(error[[1]],  "The tree and data labels don't match.\nYou can use the following to make them match:\ndispRity::clean.data(data, tree)")
 
-    # ## Works with multiPhylo and matrix list
-    #TODO: uncomment after next dispRity release
-    # set.seed(1)
-    # ## The tree
-    # trees <- replicate(3, rcoal(10), simplify = FALSE)
-    # trees <- lapply(trees, makeNodeLabel)
-    # class(trees) <- "multiPhylo"
-    # ## The matrix
-    # data <- space.maker(elements = 10, dimensions = 2, distribution = rnorm, elements.name = trees[[1]]$tip.label)
+    ## Works with multiPhylo and matrix list
+    set.seed(1)
+    ## The tree
+    trees <- replicate(3, rcoal(10), simplify = FALSE)
+    trees <- lapply(trees, makeNodeLabel)
+    class(trees) <- "multiPhylo"
+    ## The matrix
+    data <- space.maker(elements = 10, dimensions = 2, distribution = rnorm, elements.name = trees[[1]]$tip.label)
 
-    # ## Run the multi.ace on the continuous data
-    # expect_warning(disp_data <- multi.ace(data = data, tree = trees, output = "dispRity", verbose = FALSE))
+    ## Run the multi.ace on the continuous data
+    expect_warning(disp_data <- multi.ace(data = data, tree = trees, output = "dispRity", verbose = FALSE))
 
-    # ## List of trees
-    # trees <- disp_data$tree
-    # datas <- disp_data$matrix
+    ## List of trees
+    trees <- disp_data$tree
+    datas <- disp_data$matrix
 
-    # ## Works with multiple trees and data
-    # test <- make.treats(data = datas, tree = trees)
-    # expect_is(test, "treats")
-    # expect_length(test, 3)
-    # expect_is(test[[1]], "treats")
-    # expect_equal(names(test[[1]]), c("tree", "data"))
-    # test <- make.treats(data = disp_data)
-    # expect_is(test, "treats")
-    # expect_length(test, 3)
-    # expect_is(test[[1]], "treats")
-    # expect_equal(names(test[[1]]), c("tree", "data"))
-    # test <- make.treats(disp_data)
-    # expect_is(test, "treats")
-    # expect_length(test, 3)
-    # expect_is(test[[1]], "treats")
-    # expect_equal(names(test[[1]]), c("tree", "data"))
+    ## Works with multiple trees and data
+    test <- make.treats(data = datas, tree = trees)
+    expect_is(test, "treats")
+    expect_length(test, 3)
+    expect_is(test[[1]], "treats")
+    expect_equal(names(test[[1]]), c("tree", "data"))
+    test <- make.treats(data = disp_data)
+    expect_is(test, "treats")
+    expect_length(test, 3)
+    expect_is(test[[1]], "treats")
+    expect_equal(names(test[[1]]), c("tree", "data"))
+    test <- make.treats(disp_data)
+    expect_is(test, "treats")
+    expect_length(test, 3)
+    expect_is(test[[1]], "treats")
+    expect_equal(names(test[[1]]), c("tree", "data"))
 
 })
