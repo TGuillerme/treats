@@ -47,7 +47,14 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
     ## Sanitizing
     check.class(traits, c("treats", "traits"), " must be of class \"traits\". You can generate such object using:\nmake.traits()")
     tree_class <- check.class(tree, c("phylo", "multiPhylo"))
-    if(tree_class == "phylo") {        
+
+    if(tree_class == "multiPhylo") {
+        out <- lapply(tree, function(tree, traits, events, replicates) map.traits(traits, tree, events, replicates), traits = traits, events = events, replicates = replicates)
+        class(out) <- "treats"
+        return(out)
+    }
+
+    if(tree_class == "phylo") {
         tree <- list(tree)
     }
     ## Check node labels on all trees
@@ -149,6 +156,9 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
 
             ## Make into treats objects
             class(tree) <- "multiPhylo"
+
+            make.treats(tree[[1]], cleaned_trait_data[[1]])
+
             output <- mapply(make.treats, tree, cleaned_trait_data, SIMPLIFY = FALSE)
         }
     
