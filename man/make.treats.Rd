@@ -7,9 +7,9 @@
 make.treats(tree, data)
 }
 \arguments{
-\item{tree}{a phylogenetic tree.}
+\item{tree}{a \code{phylo} or \code{multiPhylo} object.}
 
-\item{data}{a dataset of traits, either a \code{matrix} with column names or a named \code{vector}.}
+\item{data}{a dataset of traits, either a \code{matrix} with column names or a named \code{vector} (or a \code{list} of them).}
 }
 \value{
 This function outputs a \code{treats} object that is a list of at least two elements: \code{$tree}, a \code{"phylo"} object and \code{$data}, a \code{"matrix"} of the trait values.
