@@ -53,27 +53,6 @@ test_that("map.traits works with a mini tree", {
     expect_equal(Ntip(test$tree), 1)
     expect_equal(dim(test$data), c(2,1))
     expect_equal(rownames(test$data), c("n1", "t1"))
-
-})
-
-test_that("map.traits events", {
-
-    set.seed(1)
-    tree <- rtree(50)
-    traits <- make.traits()
-    ## Events object for testing
-    events <- make.events(
-        condition    = age.condition(3),
-        target       = "traits",
-        modification = traits.update(process = OU.process))
-    ## Testing get trigger
-    expect_equal(get.trigger.time(events, tree = NULL, traits = NULL), 3)
-
-    test <- map.traits(traits = traits, tree = tree, events = events)
-
-    ## Output should be of same length as Ntip+Ntree
-    expect_equal(Ntip(tree[[1]]) + Nnode(tree[[1]]), nrow(test$data))
-
 })
 
 test_that("add.root.edge correctly adds a root edge", {
@@ -92,7 +71,6 @@ test_that("add.root.edge correctly adds a root edge", {
     # Check if the new edge length is correct
     expect_equal(updated_tree$edge.length[1], new_root_edge)
 })
-
 
 test_that("tree.slice.caleb works", {
     ## test "phylo" output
@@ -137,3 +115,53 @@ test_that("tree.slice.caleb works", {
     ## ... 16 of which are cuts (min age)
     expect_equal(sum(tree.age(tree_sliced$parent_tree)$ages == min(tree.age(tree_sliced$parent_tree)$ages)), 16)
 })
+
+test_that("map.traits events", {
+
+    set.seed(1)
+    tree <- rtree(50)
+    traits <- make.traits()
+    ## Events object for testing
+    events <- make.events(
+        condition    = age.condition(3),
+        target       = "traits",
+        modification = traits.update(process = OU.process))
+    ## Testing get trigger
+    expect_equal(get.trigger.time(events, tree = NULL, traits = NULL), 3)
+
+    ## Testing simple
+    test <- map.traits(traits = traits, tree = tree, events = events, replicates = 3)
+
+    ## A treats object with three replicates
+    expect_is(test, "treats")
+    expect_is(test[[1]], "treats")
+    expect_is(test[[2]], "treats")
+    expect_is(test[[3]], "treats")
+
+    ## Testing multiphylo
+    tree <- rmtree(5, 50)
+    test <- map.traits(traits = traits, tree = tree, events = events)
+    expect_is(test, "treats")
+    expect_equal(length(test), 5)
+    test <- map.traits(traits = traits, tree = tree, events = events, replicates = 2)
+    expect_equal(length(test), 10)
+
+    ## Visual check
+    # plot(test[[3]])
+
+    ## Bigger simulations (for example)
+    # set.seed(1)
+    # tree <- treats(stop.rule = list(max.time = 6), bd.params = make.bd.params(speciation = 1, extinction = 0.2))
+    # test1 <- map.traits(traits = traits, tree = tree)
+    # events <- make.events(
+    #     condition    = age.condition(4),
+    #     target       = "traits",
+    #     modification = traits.update(process = OU.process))
+    # test2 <- map.traits(traits = traits, tree = tree, events = events)
+    # op <- par(mfrow = c(1,2))
+    # plot(test1)
+    # plot(test2)
+    # par(op)
+    ## Next step is to allow the input of an already simulated object!
+})
+
