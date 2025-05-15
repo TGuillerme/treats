@@ -15,7 +15,7 @@
 #' @param legend logical, whether to display the legend in 2D plots (\code{TRUE}) or not (\code{FALSE}; default)
 #' @param add logical, whether to add to a previous plot.
 #' @param transparency Optional, a transparency factor (\code{1} = not transparent, \code{0} = invisible). If left empty, and multiple plots are called, the transparency is set to 1 / number of plots + 0.1. 
-#' @param dots the list of optional arguments, for internal use only. 
+# @param dots the list of optional arguments, for internal use only. 
 #' 
 #' @return No return value, plot \code{x}'s content.
 #'
