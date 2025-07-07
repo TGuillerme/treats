@@ -138,7 +138,12 @@ discrete.process <- function(x0 = 0, edge.length = 1, transitions = transition.m
     # ## Get the trait values
     # traits <- sapply(x0, function(x0, transitions, edge.length) sample(0:(nrow(transitions)-1), size = 1, prob = transitions[round(abs(x0))+1, ] * edge.length), transitions = transitions, edge.length = edge.length)
 
-    return(sapply(x0, function(x0, transitions, edge.length) sample(0:(nrow(transitions)-1), size = 1, prob = transitions[round(abs(x0))+1, ] * edge.length), transitions = transitions, edge.length = edge.length))
+    if(edge.length != 0) {
+        return(sapply(x0, function(x0, transitions, edge.length) sample(0:(nrow(transitions)-1), size = 1, prob = transitions[round(abs(x0))+1, ] * edge.length), transitions = transitions, edge.length = edge.length))
+    } else {
+        return(x0)
+    }
+    
 
     # ## Return the traits (and translate them back)
     # if(no_dims) {
