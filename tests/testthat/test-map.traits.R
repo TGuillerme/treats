@@ -177,10 +177,73 @@ test_that("map.traits events", {
             modification = random.extinction(0.8))
     error <- capture_error(map.traits(tree, traits = traits, events = events_no_traits))
     expect_equal(error[[1]], "events in map.traits can only target traits (make.events(target = \"traits\"), ...).")
-    ## works with time trigger
-    ## works with traits trigger
+
+
     ## works with taxa trigger
+    events <- make.events(
+        condition    = taxa.condition(10),
+        target       = "traits",
+        modification = traits.update(process = OU.process))
+
+    ## works with traits trigger
+    ## Events object for testing
+    events <- make.events(
+        condition    = trait.condition(1),
+        target       = "traits",
+        modification = traits.update(process = OU.process))
+
+
+
     ## works with multiple triggers
 
 })
 
+test_that("get.trigger.time", {
+    set.seed(1)
+    tree <- rtree(50)
+    traits <- make.traits()
+    
+
+    ## Time list
+    
+    ## Events object for testing
+    events <- make.events(
+        condition    = age.condition(3),
+        target       = "traits",
+        modification = traits.update(process = OU.process))
+    
+    ## Testing get trigger
+    test <- get.trigger.time(events, tree = tree, traits = traits)
+    
+    expect_is(test, "list")
+    expect_equal(names(test), c("time", "type", "traits"))
+    expect_equal(test$time, 3)
+    expect_equal(test$type, "time")
+    expect_null(test$traits)
+
+    ## Testing get trigger for taxa
+    events <- make.events(
+        condition    = taxa.condition(10),
+        target       = "traits",
+        modification = traits.update(process = OU.process))
+    test <- get.trigger.time(events, tree = tree, traits = traits)
+    
+    expect_is(test, "list")
+    expect_equal(names(test), c("time", "type", "traits"))
+    expect_equal(test$time, 3)
+    expect_equal(test$type, "taxa")
+    expect_null(test$traits)
+
+    ## Testing get trigger for taxa
+    events <- make.events(
+        condition    = trait.condition(1),
+        target       = "traits",
+        modification = traits.update(process = OU.process))
+    test <- get.trigger.time(events, tree = tree, traits = traits)
+    
+    expect_is(test, "list")
+    expect_equal(names(test), c("time", "type", "traits"))
+    expect_equal(test$time, 3)
+    expect_equal(test$type, "trait")
+    expect_is(test$traits, "treats")
+})

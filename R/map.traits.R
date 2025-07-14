@@ -101,9 +101,6 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
         }
 
         ## Detect the event condition
-        event_condition <- events[[1]]$condition
-        trigger_type <- "time"
-
         ## Once the condition is detected, find the trigger time (i.e. until when to run the first mapping)
         # 1- if time, get the time trigger
         # slicing_time <- get.trigger.time(events, tree, traits)
@@ -113,27 +110,26 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
         # slicing_time <- get.trigger.taxa(events, tree, traits)
 
         ## Get the slicing time
-        max_time <- max(tree.age(tree)$age)
-
-        if(trigger_type != "traits") {
-            slicing_time <- get.trigger.time(events, tree, traits, trigger = event_condition)
-        } else {
-            slicing_time <- get.trigger.time(events, tree, traits, trigger = event_condition)
-            parent_tree_traits <- slicing_time$traits
-            slicing_time <- slicing_time$time
-        }
-
+        slicing_time <- get.trigger.time(events, tree, traits)
+        parent_tree_traits <- slicing_time$traits
+        trigger_type <- slicing_time$type
+        slicing_time <- slicing_time$time
+    
         ## If slicing_time is not within the event time just run map.traits
-        if(slicing_time < 0 || slicing_time >= max_time) {
-            return(map.traits(traits, tree, replicates))
+        if(slicing_time < 0 || slicing_time >= max(tree.age(tree)$age) || is.null(slicing_time)) {
+            if(!is.null(parent_tree_traits)) {
+                return(parent_tree_traits)
+            } else {
+                return(map.traits(traits, tree, replicates))
+            }
         }
-
+        
         ## Split the tree
         trees_list <- tree.slice.map.traits(tree, slicing_time) 
         parent_trees <- trees_list$parent_tree
         orphan_trees <- trees_list$orphan_tree
 
-        if(trigger_type != "traits") {
+        if(is.null(parent_tree_traits)) {
             ## Run the normal map.traits
             parent_trees_traits <- map.traits(parent_trees, traits = traits, replicates = replicates)
         }
@@ -246,18 +242,48 @@ map.traits_fun <- function(tree, traits) {
 }
 
 ## Internal function for getting events trigger times
-get.trigger.time <- function(events, tree, traits, ...) {
+get.trigger.time <- function(events, tree, traits) {
+    
+    sim_traits <- NULL
+
     ## Get the time condition (from start)
-    # age.condition
-    if(as.character(body(events[[1]]$condition)[[2]][[2]]) == "time") {
-        return(eval(body(events[[1]]$condition)[[2]][[3]], env = environment(events[[1]]$condition)))    
+    condition_args <- as.character(body(events[[1]]$condition)[[2]][[2]])
+
+    if(any(grepl("time", condition_args))) {
+        condition_type <- "time"
     } else {
-        stop("map.traits currently only works with events triggered by age.condition", call. = FALSE)
+        if(any(grepl("lineage", condition_args))) {
+            condition_type <- "taxa"
+        } else {
+            if(any(grepl("trait.values", condition_args))) {
+                condition_type <- "traits"
+            }
+        }
     }
 
-    #taxa.condition
+    ## Get the condition for time (easy)
+    if(condition_type == "time") {
+        slice_time <- eval(body(events[[1]]$condition)[[2]][[3]], env = environment(events[[1]]$condition))    
+    }
 
-    #trait.condition
+    ## Get the condition for taxa (should be the time when n_taxa exists)
+    if(condition_type == "taxa") {
+
+        ## Check in the tree when it triggers the event (check in tree_bd_sim logic for inspiration)
+
+    }
+
+    ## Get the condition for traits (should be the time when reaching trait n)
+    if(condition_type == "traits") {
+        ## Simulate the traits first
+        sim_traits <- map.traits(traits, tree)
+
+        ## Check in sim_traits when it triggers the event (check in tree_bd_sim logic for inspiration)
+
+    }
+
+    ## Return info
+    return(list(time = slice_time, type = condition_type, traits = sim_traits))
 }
 
 ## Function for adding branch at root to correctly rescale orphan trees
