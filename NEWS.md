@@ -3,7 +3,14 @@ treats v1.1.7 (2025-07-07)
 
 <!-- 
 ### NEW FEATURES
- * [ ] include events for map.traits
+ * [ ] `map.traits` can now include `"events"` that are affecting `traits`.
+    - [ ] test
+    - [ ] doc
+    - [ ] works with time trigger
+    - [ ] works with traits trigger
+    - [ ] works with taxa trigger
+    - [ ] works with multiple triggers
+    - [ ] affects traits
  * [ ] transform data to be compatible with [tidytree](https://cran.r-project.org/web/packages/tidytree/index.html) format.
  -->
 

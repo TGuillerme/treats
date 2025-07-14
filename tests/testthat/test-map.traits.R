@@ -72,14 +72,14 @@ test_that("add.root.edge correctly adds a root edge", {
     expect_equal(updated_tree$edge.length[1], new_root_edge)
 })
 
-test_that("tree.slice.caleb works", {
+test_that("tree.slice.map.traits works", {
     ## test "phylo" output
     set.seed(123)
     starting_tree <- rcoal(5) # tree is ultrametric to make sure that the slices add up to the correct length
     starting_tree <- makeNodeLabel(starting_tree)
     starting_tree <- set.root.time(starting_tree)
     slice <- 0.35
-    sliced_object <- tree.slice.caleb(starting_tree, slice = slice)
+    sliced_object <- tree.slice.map.traits(starting_tree, slice = slice)
     expect_is(sliced_object, "list")
 
     ## Length of the sliced tree is 1 (slice is sliced from the root)
@@ -100,7 +100,7 @@ test_that("tree.slice.caleb works", {
     tree <- makeNodeLabel(tree, prefix = "n")
     tree <- set.root.time(tree)
     slice <- 2
-    tree_sliced <- tree.slice.caleb(tree, slice)
+    tree_sliced <- tree.slice.map.traits(tree, slice)
     expect_is(tree_sliced, "list")
     expect_equal(names(tree_sliced), c("parent_tree", "orphan_tree"))
     expect_is(tree_sliced$parent_tree, "phylo")
@@ -163,5 +163,24 @@ test_that("map.traits events", {
     # plot(test2)
     # par(op)
     ## Next step is to allow the input of an already simulated object!
+
+
+    ## Sanitizing
+    ## affects traits
+    set.seed(1)
+    tree <- rtree(50)
+    traits <- make.traits()
+    ## Events object for testing
+    events_no_traits <- make.events(
+            target = "taxa",
+            condition = age.condition(4),
+            modification = random.extinction(0.8))
+    error <- capture_error(map.traits(tree, traits = traits, events = events_no_traits))
+    expect_equal(error[[1]], "events in map.traits can only target traits (make.events(target = \"traits\"), ...).")
+    ## works with time trigger
+    ## works with traits trigger
+    ## works with taxa trigger
+    ## works with multiple triggers
+
 })
 
