@@ -107,10 +107,9 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
         slicing_time <- slicing_time$time
 
         if(trigger_type == "traits" && replicates > 1) {
-            stop("Traits triggered events yet not implemented with replicates.")
+            stop("Traits triggered events not yet implemented with replicates.")
             ## TODO for replicates: find different slicing_time so basically just call map.traits recursively
         }
-    
         ## If slicing_time is not within the event time just run map.traits
         if(slicing_time < 0 || slicing_time >= max(tree.age(tree)$age) || is.null(slicing_time)) {
             if(!is.null(parent_trees_traits)) {
@@ -121,7 +120,7 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
         }
         
         ## Split the tree
-        trees_list <- tree.slice.map.traits(tree, slicing_time) 
+        trees_list <- tree.slice.map.traits(tree, slicing_time)
         parent_trees <- trees_list$parent_tree
         orphan_trees <- trees_list$orphan_tree
 
@@ -129,6 +128,7 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
             ## Run the normal map.traits
             parent_trees_traits <- map.traits(parent_trees, traits = traits, replicates = replicates)
         }
+
         ## Make into a list of treats if it was a single tree
         if(!is(parent_trees_traits[[1]], "treats")) {
             parent_trees_traits <- list(parent_trees_traits)
@@ -296,6 +296,40 @@ get.trigger.time <- function(events, tree, traits) {
             tree_ages <- tree.age(sim_traits$tree) 
             slice_time <- tree_ages$ages[which(tree_ages$elements == names(trigger_loc[1]))]
         }
+
+        ## Cut the tree at the slicing time
+        sliced_tree <- tree.slice.map.traits(sim_traits$tree, slice = slice_time)$parent_tree
+
+        ## Get the elements to save and the ones to re-simulate
+        saved_elements <- c(sliced_tree$tip.label, sliced_tree$node.label)[!grepl("map.traits_split",c(sliced_tree$tip.label, sliced_tree$node.label))]
+        sim_elements <- new_elements <- c(sliced_tree$tip.label, sliced_tree$node.label)[grepl("map.traits_split",c(sliced_tree$tip.label, sliced_tree$node.label))]
+
+        ## Reduce the trait table
+        sliced_table <- sim_traits$data[saved_elements, , drop = FALSE]
+
+        ## Simulate the new elements
+        missing_traits <- matrix(ncol = ncol(sliced_table), nrow = 0)
+        while(length(sim_elements) > 0) {
+            ## Get the elements IDs
+            tip_id <- which(sliced_tree$tip.label == sim_elements[1])
+            edge_id <- which(sliced_tree$edge[,2] == tip_id)
+            ancestor_id <- sliced_tree$edge[edge_id, 1] - Ntip(sliced_tree)
+            ## Get the x0 and edge length
+            x0 <- sim_traits$data[sliced_tree$node.label[ancestor_id], ]
+            edge_length <- sliced_tree$edge.length[edge_id]
+            ## Simulate the trait value
+            missing_traits <- rbind(missing_traits, sim.element.trait(traits[[1]][[1]], parent.trait = x0, edge.length = edge_length))
+            rownames(missing_traits)[nrow(missing_traits)] <- sim_elements[1]
+            ## Remove the element
+            sim_elements <- sim_elements[-1]
+        }
+        ## Update the reduce trait table
+        sliced_table <- rbind(sliced_table, missing_traits)
+        sliced_table <- sliced_table[c(sliced_tree$tip.label, sliced_tree$node.label), , drop = FALSE]
+
+        ## Update the treats object
+        sim_traits$tree <- sliced_tree
+        sim_traits$data <- sliced_table
     }
 
     ## Return info
