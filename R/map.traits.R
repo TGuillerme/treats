@@ -100,25 +100,21 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
             ## Do some nesting here if n_events > 1
         }
 
-        ## Detect the event condition
-        ## Once the condition is detected, find the trigger time (i.e. until when to run the first mapping)
-        # 1- if time, get the time trigger
-        # slicing_time <- get.trigger.time(events, tree, traits)
-        # # 2- if traits, get the trait trigger 
-        # slicing_time <- get.trigger.trait(events, tree, traits)
-        # # 3 - if taxa, get the taxa trigger
-        # slicing_time <- get.trigger.taxa(events, tree, traits)
-
         ## Get the slicing time
         slicing_time <- get.trigger.time(events, tree, traits)
-        parent_tree_traits <- slicing_time$traits
+        parent_trees_traits <- slicing_time$traits
         trigger_type <- slicing_time$type
         slicing_time <- slicing_time$time
+
+        if(trigger_type == "traits" && replicates > 1) {
+            stop("Traits triggered events yet not implemented with replicates.")
+            ## TODO for replicates: find different slicing_time so basically just call map.traits recursively
+        }
     
         ## If slicing_time is not within the event time just run map.traits
         if(slicing_time < 0 || slicing_time >= max(tree.age(tree)$age) || is.null(slicing_time)) {
-            if(!is.null(parent_tree_traits)) {
-                return(parent_tree_traits)
+            if(!is.null(parent_trees_traits)) {
+                return(parent_trees_traits)
             } else {
                 return(map.traits(traits, tree, replicates))
             }
@@ -129,7 +125,7 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
         parent_trees <- trees_list$parent_tree
         orphan_trees <- trees_list$orphan_tree
 
-        if(is.null(parent_tree_traits)) {
+        if(is.null(parent_trees_traits)) {
             ## Run the normal map.traits
             parent_trees_traits <- map.traits(parent_trees, traits = traits, replicates = replicates)
         }
@@ -314,11 +310,7 @@ add.root.edge <- function(tree, new.root.edge) {
     return(tree)
 }
 
-# get.orphan.tree.ages <- function(orphan_tree, full_tree) {
-#     tree_age_data <- tree.age(full_tree)
-#     return(tree_age_data$ages[as.character(tree_age_data$elements) %in% orphan_tree$node.label[1]])
-# }
-
+## Slicing trees for map traits (by Caleb Scutt)
 tree.slice.map.traits <- function(tree, slice) {
     ## Slice the tree at the age
     splitted <- dispRity::slice.tree(tree, age = tree$root.time-slice, model = "acctran", keep.all.ancestors = TRUE)

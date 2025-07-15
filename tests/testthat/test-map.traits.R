@@ -137,11 +137,11 @@ test_that("map.traits events", {
     expect_is(test[[3]], "treats")
 
     ## Testing multiphylo
-    tree <- rmtree(5, 50)
-    test <- map.traits(traits = traits, tree = tree, events = events)
+    trees <- rmtree(5, 50)
+    test <- map.traits(traits = traits, tree = trees, events = events)
     expect_is(test, "treats")
     expect_equal(length(test), 5)
-    test <- map.traits(traits = traits, tree = tree, events = events, replicates = 2)
+    test <- map.traits(traits = traits, tree = trees, events = events, replicates = 2)
     expect_equal(length(test), 10)
 
     ## Visual check
@@ -175,19 +175,24 @@ test_that("map.traits events", {
     error <- capture_error(map.traits(tree, traits = traits, events = events_no_traits))
     expect_equal(error[[1]], "events in map.traits can only target traits (make.events(target = \"traits\"), ...).")
 
-
     ## works with taxa trigger
-    events <- make.events(
+    events_taxa <- make.events(
         condition    = taxa.condition(10),
         target       = "traits",
         modification = traits.update(process = OU.process))
+    test <- map.traits(traits = traits, tree = tree, events = events_taxa)
+    expect_is(test, "treats")
+    # plot(test)
 
     ## works with traits trigger
     ## Events object for testing
-    events <- make.events(
+    events_traits <- make.events(
         condition    = trait.condition(1),
         target       = "traits",
         modification = traits.update(process = OU.process))
+    test <- map.traits(traits = traits, tree = tree, events = events_traits)
+    expect_is(test, "treats")
+    # plot(test)
 
     ## works with multiple triggers
 
