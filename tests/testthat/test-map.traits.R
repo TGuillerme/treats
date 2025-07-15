@@ -126,9 +126,7 @@ test_that("map.traits events", {
         condition    = age.condition(3),
         target       = "traits",
         modification = traits.update(process = OU.process))
-    ## Testing get trigger
-    expect_equal(get.trigger.time(events, tree = NULL, traits = NULL), 3)
-
+    
     ## Testing simple
     test <- map.traits(traits = traits, tree = tree, events = events, replicates = 3)
 
@@ -164,7 +162,6 @@ test_that("map.traits events", {
     # par(op)
     ## Next step is to allow the input of an already simulated object!
 
-
     ## Sanitizing
     ## affects traits
     set.seed(1)
@@ -192,8 +189,6 @@ test_that("map.traits events", {
         target       = "traits",
         modification = traits.update(process = OU.process))
 
-
-
     ## works with multiple triggers
 
 })
@@ -202,7 +197,6 @@ test_that("get.trigger.time", {
     set.seed(1)
     tree <- rtree(50)
     traits <- make.traits()
-    
 
     ## Time list
     
@@ -230,7 +224,7 @@ test_that("get.trigger.time", {
     
     expect_is(test, "list")
     expect_equal(names(test), c("time", "type", "traits"))
-    expect_equal(test$time, 3)
+    expect_equal(round(test$time, 5), round(3.421907, 5))
     expect_equal(test$type, "taxa")
     expect_null(test$traits)
 
@@ -239,11 +233,12 @@ test_that("get.trigger.time", {
         condition    = trait.condition(1),
         target       = "traits",
         modification = traits.update(process = OU.process))
+    set.seed(1)
     test <- get.trigger.time(events, tree = tree, traits = traits)
     
     expect_is(test, "list")
     expect_equal(names(test), c("time", "type", "traits"))
-    expect_equal(test$time, 3)
-    expect_equal(test$type, "trait")
+    expect_equal(round(test$time, 5), 2.5608)
+    expect_equal(test$type, "traits")
     expect_is(test$traits, "treats")
 })

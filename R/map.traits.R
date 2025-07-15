@@ -244,7 +244,7 @@ map.traits_fun <- function(tree, traits) {
 ## Internal function for getting events trigger times
 get.trigger.time <- function(events, tree, traits) {
     
-    sim_traits <- NULL
+    slice_time <- sim_traits <- NULL
 
     ## Get the time condition (from start)
     condition_args <- as.character(body(events[[1]]$condition)[[2]][[2]])
@@ -263,14 +263,24 @@ get.trigger.time <- function(events, tree, traits) {
 
     ## Get the condition for time (easy)
     if(condition_type == "time") {
+        ## Check the required time
         slice_time <- eval(body(events[[1]]$condition)[[2]][[3]], env = environment(events[[1]]$condition))    
     }
 
     ## Get the condition for taxa (should be the time when n_taxa exists)
     if(condition_type == "taxa") {
+        ## Check the required number of lineages
+        required_lineages <- eval(body(events[[1]]$condition)[[2]][[3]], env = environment(events[[1]]$condition))
 
-        ## Check in the tree when it triggers the event (check in tree_bd_sim logic for inspiration)
+        ## Get the lineages through time
+        ltt_table <- ape::ltt.plot.coords(tree)
 
+        ## Get the time for the required lineagss
+        trigger_loc <- which(ltt_table[, 2] == required_lineages) #TG: condition here is set to equal but can probably be something else
+        if(length(trigger_loc) != 0) {
+            ## Return the first occurrence
+            slice_time <- unname(abs(ltt_table[trigger_loc[1], 1]))
+        }
     }
 
     ## Get the condition for traits (should be the time when reaching trait n)
@@ -278,8 +288,18 @@ get.trigger.time <- function(events, tree, traits) {
         ## Simulate the traits first
         sim_traits <- map.traits(traits, tree)
 
-        ## Check in sim_traits when it triggers the event (check in tree_bd_sim logic for inspiration)
+        ## Check the required trait evaluation
+        condition <- eval(body(events[[1]]$condition)[[2]][[2]][[1]], env = environment(events[[1]]$condition))
+        trait <- eval(body(events[[1]]$condition)[[2]][[2]][[2]][[2]][[2]][[4]], env = environment(events[[1]]$condition))
+        threshold <- eval(body(events[[1]]$condition)[[2]][[2]][[3]], env = environment(events[[1]]$condition))
 
+        ## Check in sim_traits when it triggers the event (check in tree_bd_sim logic for inspiration)
+        trigger_loc <- which(condition(sim_traits$data[, trait], threshold))
+        if(length(trigger_loc) != 0) {
+            ## Return the first occurrence
+            tree_ages <- tree.age(sim_traits$tree) 
+            slice_time <- tree_ages$ages[which(tree_ages$elements == names(trigger_loc[1]))]
+        }
     }
 
     ## Return info
