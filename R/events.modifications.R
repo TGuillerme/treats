@@ -183,16 +183,20 @@ random.extinction <- function(x){
 }
 
 ## Mass extinction based on traits modification
-trait.extinction.multi <- function(x, condition = `<`, traits = c(1, 3, 6)) {
+trait.extinction <- function(x, condition = `<`, trait = 1) {
+
+    ## Function for extinction trait
     extinction.trait <- function(bd.params, lineage, trait.values) {
+        ## Select the nodes be traits
         parent_traits <- parent.traits(trait.values, lineage, current = FALSE)
-        trait_checks <- sapply(traits, function(trait_idx) {
-            condition(parent_traits[, trait_idx], x)
-        })
-        selected_nodes <- as.numeric(names(which(apply(trait_checks, 1, all))))
+        selected_nodes <- as.numeric(names(which(condition(parent_traits[, trait], x))))
+
+        ## Select the descendants that'll go extinct
         extinct <- which(lineage$parents %in% selected_nodes)
+
+        ## Update the lineage object
         lineage$livings <- lineage$livings[!lineage$livings %in% extinct]
-        lineage$n <- length(lineage$livings)
+        lineage$n       <- length(lineage$livings)
         return(lineage)
     }
     return(extinction.trait)
