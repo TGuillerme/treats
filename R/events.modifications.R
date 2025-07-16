@@ -191,27 +191,27 @@ trait.extinction <- function(x, condition = `<`, trait = 1, intensity) {
         ## Select the nodes by traits
         parent_traits <- parent.traits(trait.values, lineage, current = FALSE)
         
-        ## Check if we have enough traits
+        ## Check that target traits does not exceed number of traits
         if(ncol(parent_traits) < max(trait)) {
             return(lineage)  # Return unchanged if not enough traits
         }
         
-        ## Handle multiple traits with AND condition
+        ## Handle multiple traits with ANY condition
         if(length(trait) == 1) {
-            # Single trait (original behavior)
+            # Single trait (original functionality)
             selected_nodes <- as.numeric(names(which(condition(parent_traits[, trait], x))))
         } else {
-            # Multiple traits - ALL must meet the condition
-            trait_checks <- sapply(trait, function(trait_idx) {
+            # Multiple traits - ANY should meet the condition
+            trait_checks <- sapply(trait, function(trait_idx) { # iterate over each targeted trait
                 condition(parent_traits[, trait_idx], x)
             })
-            # Use apply with 'all' to ensure ALL traits meet the condition
+            
             selected_nodes <- as.numeric(names(which(apply(trait_checks, 1, any))))
         }
         
         ## Select the descendants that'll go extinct
         selected <- which(lineage$parents %in% selected_nodes)
-        extinct <- sample(selected, size = ceiling(length(selected) * intensity))
+        extinct <- sample(selected, size = ceiling(length(selected) * intensity)) # added an intensity parameter for how hard the extinction hits
 
         
         ## Update the lineage object
