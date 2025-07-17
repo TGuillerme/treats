@@ -11,7 +11,6 @@ treats v1.1.7 (2025-07-15)
     - [x] works with taxa trigger
     - [ ] works with multiple triggers
     - [x] affects traits
- * [ ] transform data to be compatible with [tidytree](https://cran.r-project.org/web/packages/tidytree/index.html) format.
  -->
 
  ### MINOR IMPROVEMENTS 
