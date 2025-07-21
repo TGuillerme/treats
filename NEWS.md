@@ -4,12 +4,12 @@ treats v1.1.7 (2025-07-15)
 <!-- 
 ### NEW FEATURES
  * [ ] `map.traits` can now include `"events"` that are affecting `traits`.
-    - [ ] test
+    - [x] test
     - [ ] doc
     - [x] works with time trigger
     - [x] works with traits trigger
     - [x] works with taxa trigger
-    - [ ] works with multiple triggers
+    - [ ] works with multiple events
     - [x] affects traits
  -->
 
