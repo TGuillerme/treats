@@ -108,7 +108,7 @@
 #' 
 #' @seealso \code{\link{treats}} \code{\link{make.events}} \code{\link{events.conditions}}
 #' 
-#' @author Thomas Guillerme
+#' @author Thomas Guillerme, Caleb Scutt
 
 ## The list of conditions
 events.modification <- function(x, ...) {
@@ -183,7 +183,7 @@ random.extinction <- function(x){
 }
 
 ## Mass extinction based on traits modification
-trait.extinction <- function(x, condition = `<`, trait = 1, intensity) {
+trait.extinction <- function(x, condition = `<`, trait = 1, severity = 1, threshold = 0.5) {
     
     ## Function for extinction trait
     extinction.trait <- function(bd.params, lineage, trait.values) {
@@ -196,22 +196,25 @@ trait.extinction <- function(x, condition = `<`, trait = 1, intensity) {
             return(lineage)  # Return unchanged if not enough traits
         }
         
-        ## Handle multiple traits with ANY condition
+        ## Handle either single or multiple traits
         if(length(trait) == 1) {
             # Single trait (original functionality)
             selected_nodes <- as.numeric(names(which(condition(parent_traits[, trait], x))))
         } else {
-            # Multiple traits - ANY should meet the condition
+            # Multiple traits - if any meet criteria it goes extinct
             trait_checks <- sapply(trait, function(trait_idx) { # iterate over each targeted trait
                 condition(parent_traits[, trait_idx], x)
             })
             
-            selected_nodes <- as.numeric(names(which(apply(trait_checks, 1, any))))
+            trait_percentages <- apply(trait_checks, 1, function(row) sum(row) / length(row))
+            
+            # branches are selected for extinction if enough of their traits are selected for (designated by an arbitrary threshold)
+            selected_nodes <- as.numeric(names(which(trait_percentages >= threshold)))
         }
         
         ## Select the descendants that'll go extinct
         selected <- which(lineage$parents %in% selected_nodes)
-        extinct <- sample(selected, size = ceiling(length(selected) * intensity)) # added an intensity parameter for how hard the extinction hits
+        extinct <- sample(selected, size = ceiling(length(selected) * severity)) # added a severity parameter for how hard the extinction hits
 
         
         ## Update the lineage object
