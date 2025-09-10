@@ -509,9 +509,13 @@ It is also possible to incorporate `events` into the `map.traits` function. This
 ## simulate random tree
 
 bd_params <- make.bd.params(speciation = 1, extinction = 0.7)
-stop_rule <- list(max.living = 150) 
+
+stop_rule <- list(max.living = 100) # different tree sizes
+
 tree <- treats(stop_rule, bd_params, traits = NULL)
-bm_switch <- make.events(target = "traits", condition = age.condition(10), modification = traits.update(process = BM.process))
+
+
+bm_switch <- make.events(target = "traits", condition = taxa.condition(50), modification = traits.update(process = BM.process))
 mapped_events <- map.traits(traits = bm_process, tree = tree, events = bm_switch)
 
 
