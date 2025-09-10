@@ -503,6 +503,20 @@ plot(ou_traits, main = "Mapped OU")
 plot(no_traits, main = "Mapped normal trait")
 ```
 
+It is also possible to incorporate `events` into the `map.traits` function. This means that the trait process can be altered when a certain condition is met. For example, the trait process can change from an OU model to a BM model at time x.
+
+```{r}
+## simulate random tree
+
+bd_params <- make.bd.params(speciation = 1, extinction = 0.7)
+stop_rule <- list(max.living = 150) 
+tree <- treats(stop_rule, bd_params, traits = NULL)
+bm_switch <- make.events(target = "traits", condition = age.condition(10), modification = traits.update(process = BM.process))
+mapped_events <- map.traits(traits = bm_process, tree = tree, events = bm_switch)
+
+
+```
+
 ## Templates for making your very own process
 
 As detailed above, any process of your own design will work as long as it is a function that takes at least the arguments `x0` and `edge.length`.
