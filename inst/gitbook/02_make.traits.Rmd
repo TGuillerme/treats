@@ -503,22 +503,29 @@ plot(ou_traits, main = "Mapped OU")
 plot(no_traits, main = "Mapped normal trait")
 ```
 
-It is also possible to incorporate `events` into the `map.traits` function. This means that the trait process can be altered when a certain condition is met. For example, the trait process can change from an OU model to a BM model at time x.
+It is also possible to incorporate `events` into the `map.traits` function. This means that the trait process can be altered when a certain condition is met. For example, the trait process can switch from an OU model to a BM model. Alternatively, the parameters of the OU model can change.
 
 ```{r}
 ## simulate random tree
+my_tree <- rtree(200)
+## OU process
+ou <- make.traits(process = OU.process, n = 1)
+## Event where trait switches to BM process
+bm_switch <- make.events(target = "traits", condition = age.condition(5), modification = traits.update(process = BM.process))
+## Map trait with event onto tree
+bm_switch_mapped <- map.traits(traits = ou, tree = my_tree, events = bm_switch)
 
-bd_params <- make.bd.params(speciation = 1, extinction = 0.7)
+my_tree <- rtree(200)
+## OU model with optimum of 3
+ou <- make.traits(process = OU.process, n = 1, process.args = list(optimum = 3))
+## Optimum switches
+optimum_switch <- make.events(target = "traits", condition = age.condition(4), modification = traits.update(process = OU.process, process.args = list(optimum = -3)))
+## Map trait with event onto tree
+optimum_switch_mapped <- map.traits(traits = ou, tree = my_tree, events = optimum_switch)
 
-stop_rule <- list(max.living = 100) # different tree sizes
-
-tree <- treats(stop_rule, bd_params, traits = NULL)
-
-
-bm_switch <- make.events(target = "traits", condition = taxa.condition(50), modification = traits.update(process = BM.process))
-mapped_events <- map.traits(traits = bm_process, tree = tree, events = bm_switch)
-
-
+par(mfrow = c(2,1))
+plot(bm_switch_mapped, main = "OU switch to BM")
+plot(optimum_switch_mapped, main = "OU optimum switch")
 ```
 
 ## Templates for making your very own process
