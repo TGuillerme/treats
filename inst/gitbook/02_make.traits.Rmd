@@ -511,15 +511,17 @@ my_tree <- rtree(200)
 ## OU process
 ou <- make.traits(process = OU.process, n = 1)
 ## Event where trait switches to BM process
-bm_switch <- make.events(target = "traits", condition = age.condition(5), modification = traits.update(process = BM.process))
+bm_switch <- make.events(target = "traits", condition = age.condition(5),
+                         modification = traits.update(process = BM.process))
 ## Map trait with event onto tree
 bm_switch_mapped <- map.traits(traits = ou, tree = my_tree, events = bm_switch)
 
-my_tree <- rtree(200)
 ## OU model with optimum of 3
 ou <- make.traits(process = OU.process, n = 1, process.args = list(optimum = 3))
 ## Optimum switches
-optimum_switch <- make.events(target = "traits", condition = age.condition(4), modification = traits.update(process = OU.process, process.args = list(optimum = -3)))
+optimum_switch <- make.events(target = "traits", condition = age.condition(4),
+                              modification = traits.update(process = OU.process,
+                                                           process.args = list(optimum = -3)))
 ## Map trait with event onto tree
 optimum_switch_mapped <- map.traits(traits = ou, tree = my_tree, events = optimum_switch)
 
