@@ -503,7 +503,7 @@ plot(ou_traits, main = "Mapped OU")
 plot(no_traits, main = "Mapped normal trait")
 ```
 
-It is also possible to incorporate [`events`](#makeevents) into the `map.traits` function. This means that the trait process can be altered when a certain condition is met. For example, the trait process can switch from an OU model to a BM model. Alternatively, the parameters of the OU model can change.
+It is also possible to incorporate `events` into the `map.traits` function. See for more information on adding [events](#makeevents). For example, the trait process can switch from an OU model to a BM model. Alternatively, the parameters of the OU model can change.
 
 ```{r}
 ## simulate random tree
