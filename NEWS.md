@@ -1,4 +1,4 @@
-treats v1.1.7 (2025-07-15)
+treats v1.1.7 (2025-09-26)
 =========================
 
 <!-- 
@@ -11,6 +11,7 @@ treats v1.1.7 (2025-07-15)
     - [x] works with taxa trigger
     - [ ] works with multiple events
     - [x] affects traits
+ * `crude.bd.est` now works on multiPhylo
  -->
 
  ### MINOR IMPROVEMENTS 
@@ -18,6 +19,8 @@ treats v1.1.7 (2025-07-15)
  * `make.treats` can now directly make `multi.treats` objects if provided a list of data and trees.
  * `treats` now allows for multiple `"founding"` `events`. Thanks to Ruby Redlich for this suggestion.
  * The branch leading to the `"founding"` `events` tree is now generated from from the input `"modifiers"` object rather than arbitrarily.
+<!-- * `crude.bd.est` now works on multiPhylo objects. -->
+
 
 ### BUG FIXES
 
