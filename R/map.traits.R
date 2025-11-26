@@ -213,12 +213,12 @@ map.traits_fun <- function(tree, traits) {
     while(nrow(nodes_table) > 0) {
         ## Generate the trait
         trait_values <- rbind(trait_values,
-                              unlist(lapply(traits$main,
+                            unlist(lapply(traits$main,
                                             sim.element.trait,
-                                            parent.trait = trait_values[(nodes_table[1, 1]-Ntip(tree)), ],
+                                            parent.trait = trait_values[as.character(nodes_table[1, 1]), ],  ## correct parent node trait value is now grabbed by name.
                                             edge.length  = nodes_table[1, 3])
                                             )
-                             , deparse.level = 0)
+                            , deparse.level = 0)
         ## Name the trait
         rownames(trait_values)[nrow(trait_values)] <- nodes_table[1, 2]
         ## Decrease the node table
