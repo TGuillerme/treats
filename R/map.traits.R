@@ -85,7 +85,7 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
 
     ## If events, trigger the recursion
     if(!is.null(events)) {
-        if(!is(events, "treats") && is(events, "events")) {
+    if(!is(events, "treats") && is(events, "events")) {
             stop(paste0("Events needs to be of class \"events\". You can generate such object using:\nmake.events()"))
         }
         ## Only works for traits
@@ -171,6 +171,7 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
         ## Remove "map.traits_split" elements
         cleaned_trait_data <- lapply(combined_trait_data, function(x) x[!grepl("map.traits_split", rownames(x)),, drop = FALSE])
 
+        # unduplicated_cleaned_trait_data <- lapply(cleaned_trait_data, function(x) x[!duplicated(rownames(x)), , drop = FALSE])
         ## Make into treats objects
         output <- lapply(cleaned_trait_data, function(X, tree) make.treats(tree, X), tree = tree)
     } else {
@@ -381,9 +382,13 @@ tree.slice.map.traits <- function(tree, slice) {
 
     ## Detecting which tip is a singleton (tip in sliced tree is at minimum age + tip in the input tree is not at slice time)
     splitted_ages <- tree.age(splitted, digits = 7)
+    splitted_ages <- splitted_ages[splitted_ages$elements %in% splitted$tip.label, ] ## only keep tips, so that nodes are not passed through
+
     ## Find the singletons (ignores the tips that are already called map.traits)
     splitted_ages_singeltons <- splitted_ages[!grepl("map.traits_split_node", splitted_ages$elements), ]
     singletons_tips <- splitted_ages_singeltons$elements[which(splitted_ages_singeltons$ages == min(splitted_ages_singeltons$ages))]
+    same_age_elements <- tree_ages$elements[tree_ages$elements %in% singletons_tips & tree_ages$ages == (tree$root.time-slice)] ## any tips that end exactly at slice dealt with
+
     ## Dropping singletons that have the age of the slice time
     if(any(same_age <- tree_ages$ages[tree_ages$elements %in% singletons_tips] == (tree$root.time-slice))) {
         singletons_tips <- singletons_tips[-same_age]
