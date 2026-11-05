@@ -73,6 +73,7 @@ test_that("simulating trees works", {
     expect_equal(max(tree.age(test)$age), 6)
 })
 
+
 test_that("simulating trees + traits works", {
 
     ## Some processes to test

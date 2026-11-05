@@ -288,4 +288,10 @@ test_that("trait processes work", {
     expect_equal(round(repulsion.process(), 5), c(round(-0.6264538, 5)))
     expect_null(plot(make.traits(repulsion.process)))
     expect_null(plot(make.traits(repulsion.process, process.args = list(repulsion = 5))))
+
+    ## EB process
+    set.seed(1)
+    expect_equal(round(EB.process(), 5), matrix(round(-0.41191, 5)))
+    expect_is(plot(EB.process), "list")
+    expect_null(plot(make.traits(EB.process)))
 })

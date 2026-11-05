@@ -1,11 +1,11 @@
 ## Simulating traits for one element
-sim.element.trait <- function(one.trait, parent.trait, edge.length) {
+sim.element.trait <- function(one.trait, parent.trait, edge.length, t.since.root = 0) {
     ## Simulate conditional if exist
     if(!is.null(one.trait$link)) {
         switch(one.trait$link$type, {
             "conditional" = sim.link <- sim.link.conditional
         }) 
-        return(sim.link(one.trait, parent.trait, edge.length))
+        return(sim.link(one.trait, parent.trait, edge.length, t.since.root))
     }
 
     ## Set the simulation arguments
@@ -20,18 +20,22 @@ sim.element.trait <- function(one.trait, parent.trait, edge.length) {
     ## Add the x0 (last step) + the edge length
     trait_args$x0 <- parent.trait[one.trait$trait_id]
     trait_args$edge.length <- edge.length
+    process_formals <- names(formals(one.trait$process[[1]]))
+    if("t.since.root" %in% process_formals) {
+        trait_args$t.since.root <- t.since.root
+    }
     return(do.call(one.trait$process[[1]], trait_args))
 }
-multi.sim.element.trait <- function(one.trait, parent.traits, edge.lengths, select = NULL) {
+multi.sim.element.trait <- function(one.trait, parent.traits, edge.lengths, t.since.root, select = NULL) {
     ## Select the trait (if needed)
     if(!is.null(select)) {
         one.trait <- one.trait[[select]]
     }
     ## Run all the traits
-    return(do.call(rbind, lapply(as.list(1:dim(parent.traits)[1]), function(X, parent.traits, edge.lengths, one.trait) sim.element.trait(one.trait, parent.traits[X, , drop = FALSE], edge.lengths[X]), parent.traits, edge.lengths, one.trait)))
+    return(do.call(rbind, lapply(as.list(1:dim(parent.traits)[1]), function(X, parent.traits, edge.lengths, one.trait) sim.element.trait(one.trait, parent.traits[X, , drop = FALSE], edge.lengths[X], t.since.root[X]), parent.traits, edge.lengths, one.trait)))
 }
 ## Sim link traits
-sim.link.conditional <- function(one.trait, parent.trait, edge.length) {
+sim.link.conditional <- function(one.trait, parent.trait, edge.length, t.since.root) {
     select.trait.process <- function(one.trait, select) {
         selected_process <- one.trait
         selected_process$link <- NULL
@@ -48,7 +52,7 @@ sim.link.conditional <- function(one.trait, parent.trait, edge.length) {
     ## Simulate the first trait
     first_trait <- select.trait.process(one.trait, select = 1)
     first_trait$trait_id <- one.trait$trait_id[1] 
-    first_trait_val <- sim.element.trait(first_trait, parent.trait = parent.trait, edge.length = edge.length)
+    first_trait_val <- sim.element.trait(first_trait, parent.trait = parent.trait, edge.length = edge.length, t.since.root = t.since.root)
     
     ## Choose which trait
     selected_trait <- which(unlist(lapply(one.trait$link$conditional.test, function(x, x1) x(x1), x1 = first_trait_val)))[1]
@@ -56,11 +60,11 @@ sim.link.conditional <- function(one.trait, parent.trait, edge.length) {
     ## Select the second trait
     second_trait <- select.trait.process(one.trait, select = selected_trait+1)
     second_trait$trait_id <- second_trait$trait_id[-1]
-    other_trait_val <- sim.element.trait(second_trait, parent.trait = parent.trait, edge.length = edge.length)
+    other_trait_val <- sim.element.trait(second_trait, parent.trait = parent.trait, edge.length = edge.length, t.since.root = t.since.root)
     return(c(first_trait_val, other_trait_val))
 }
 
-add.trait.value <- function(trait_values, traits, lineage, edge_lengths, type = "one_node") {
+add.trait.value <- function(trait_values, traits, lineage, edge_lengths,t.since.root, type = "one_node") {
 
     ## Simulation selector
     sim.fun <- switch(type,
@@ -76,7 +80,7 @@ add.trait.value <- function(trait_values, traits, lineage, edge_lengths, type = 
                     "all_node" = edge_lengths[lineage$parents[lineage$livings]])
 
     ## Simulate the new trait values in batch
-    new_trait_values <- lapply(traits, sim.fun, parent.trait = parent_traits, edge.length = edges)
+    new_trait_values <- lapply(traits, sim.fun, parent.trait = parent_traits, edge.length = edges, t.since.root = t.since.root)
 
     ## Output
     if(type == "one_node") {
@@ -89,12 +93,13 @@ add.trait.value <- function(trait_values, traits, lineage, edge_lengths, type = 
     }   
 }
 ## Simulates one set of traits for the living species
-sim.living.tips <- function(living, trait_table, traits) {
+sim.living.tips <- function(living, trait_table, traits, t.since.root) {
     return(unlist(
           lapply(traits,
                  sim.element.trait,
                  parent.trait = trait_table[which(trait_table[, "element"] == trait_table[living, "parent"]), -c(1:3), drop = FALSE],
-                 edge.length  = trait_table[living, "edge"]
+                 edge.length  = trait_table[living, "edge"],
+                 t.since.root = t.since.root
                  )
           )
     )
@@ -342,7 +347,11 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                 lineage      <- bd.update.single.nodes(lineage)
                 edge_lengths <- bd.update.single.edges(time, time.slice, lineage, edge_lengths)
                 if(do_traits) {
-                    trait_values <- add.trait.value(trait_values, traits$main, lineage, edge_lengths, type = "all_node")
+                    trait_values <- add.trait.value(
+                        trait_values, traits$main, lineage, edge_lengths,
+                        t.since.root = time.slice - edge_lengths[lineage$parents[lineage$livings]],
+                        type = "all_node"
+                    )
                 }
 
                 ## Updating the saving.steps
@@ -365,17 +374,29 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                 ## Update the lineage and create generate background traits
                 lineage      <- bd.update.single.nodes(lineage)
                 edge_lengths <- bd.update.single.edges(time, time.slice = time, lineage, edge_lengths)
-                trait_values <- add.trait.value(trait_values, traits$background$main, lineage, edge_lengths, type = "all_node")
+                trait_values <- add.trait.value(
+                    trait_values, traits$background$main, lineage, edge_lengths,
+                    t.since.root = time - edge_lengths[lineage$parents[lineage$livings]],
+                    type = "all_node"
+                )
 
                 ## Redo the current node
-                trait_values <- add.trait.value(trait_values, traits$main, lineage, edge_lengths, type = "one_node")
+                trait_values <- add.trait.value(
+                    trait_values, traits$main, lineage, edge_lengths,
+                    t.since.root = time - edge_lengths[lineage$current],
+                    type = "one_node"
+                )
                 rownames(trait_values)[rownames(trait_values) == ""] <- lineage$current
                 ## Duplicate the trait value for the ancestor of the current node?
                 trait_values[lineage$parent[lineage$livings[lineage$drawn]], ] <- trait_values[nrow(trait_values),]
 
             } else {
                 ## Simulate trait values for current node only
-                trait_values <- add.trait.value(trait_values, traits$main, lineage, edge_lengths, type = "one_node")
+                trait_values <- add.trait.value(
+                    trait_values, traits$main, lineage, edge_lengths,
+                    t.since.root = time - edge_lengths[lineage$current],
+                    type = "one_node"
+                )
                 rownames(trait_values)[rownames(trait_values) == ""] <- lineage$current
             }
         }
@@ -452,7 +473,11 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
                 lineage      <- bd.update.single.nodes(lineage)
                 edge_lengths <- bd.update.single.edges(time, time.slice, lineage, edge_lengths)
                 if(do_traits) {
-                    trait_values <- add.trait.value(trait_values, traits$main, lineage, edge_lengths, type = "all_node")
+                    trait_values <- add.trait.value(
+                        trait_values, traits$main, lineage, edge_lengths,
+                        t.since.root = time.slice - edge_lengths[lineage$parents[lineage$livings]],
+                        type = "all_node"
+                    )
                 }
                 ## Update new_lineage as well
                 new_lineage <- new_lineage + length(lineage$livings)
@@ -845,9 +870,15 @@ birth.death.tree.traits <- function(stop.rule, bd.params, traits = NULL, modifie
         ## Simulate the traits for the living tips and add them to the trait table
         if(length(living_tips) > 0) {
             if(is.null(traits$background)) {
-                trait_table[living_tips, -c(1:3)] <- t(sapply(living_tips, sim.living.tips, trait_table, traits$main, simplify = TRUE))
+                tip_times <- time - trait_table[living_tips, "edge"]
+                trait_table[living_tips, -c(1:3)] <- t(sapply(seq_along(living_tips), function(i) {
+                    sim.living.tips(living_tips[i], trait_table, traits$main, tip_times[i])
+                }, simplify = TRUE))
             } else {
-                trait_table[living_tips, -c(1:3)] <- t(sapply(living_tips, sim.living.tips, trait_table, traits$background$main, simplify = TRUE))
+                tip_times <- time - trait_table[living_tips, "edge"]
+                trait_table[living_tips, -c(1:3)] <- t(sapply(seq_along(living_tips), function(i) {
+                    sim.living.tips(living_tips[i], trait_table, traits$background$main, tip_times[i]) ## tip_times are passed to t.since.root
+                }, simplify = TRUE))
             }
         }
 
