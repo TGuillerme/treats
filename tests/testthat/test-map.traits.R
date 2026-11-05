@@ -55,7 +55,7 @@ test_that("map.traits works with a mini tree", {
     expect_equal(rownames(test$data), c("n1", "t1"))
 })
 
-test_that("map.traits works with EB.process", {
+test_that("map.traits works with EB.process", { 
     set.seed(1)
     tree <- rtree(5)
     traits <- make.traits(process = EB.process)
