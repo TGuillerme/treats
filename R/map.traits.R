@@ -197,6 +197,9 @@ map.traits_fun <- function(tree, traits) {
     ## Get the edge table
     edge_table <- cbind(tree$edge, tree$edge.length)
 
+    ## Get the node depths
+    node_depth <- ape::node.depth.edgelength(tree)
+
     ## Ladderise the edge table
     edge_table <- edge_table[order(edge_table[, 1]), , drop = FALSE]
 
@@ -217,7 +220,8 @@ map.traits_fun <- function(tree, traits) {
                             unlist(lapply(traits$main,
                                             sim.element.trait,
                                             parent.trait = trait_values[as.character(nodes_table[1, 1]), ],  ## correct parent node trait value is now grabbed by name.
-                                            edge.length  = nodes_table[1, 3])
+                                            edge.length  = nodes_table[1, 3],
+                                            t.since.root = node_depth[nodes_table[1,1]])
                                             )
                             , deparse.level = 0)
         ## Name the trait
@@ -231,7 +235,10 @@ map.traits_fun <- function(tree, traits) {
     ## Find the tips
     living_tips <- which(is.na(trait_table[, 4]))
     ## Generate the traits for the tips
-    trait_table[living_tips, -c(1:3)] <- t(sapply(living_tips, sim.living.tips, trait_table, traits$main, simplify = TRUE))
+    tip_times <- node_depth[trait_table[living_tips, "parent"]]
+    trait_table[living_tips, -c(1:3)] <- t(sapply(seq_along(living_tips), function(i) {
+        sim.living.tips(living_tips[i], trait_table, traits$main, tip_times[i])
+    }, simplify = TRUE))
     ## Clean the table
     rownames(trait_table) <- c(tree$tip.label, tree$node.label)[trait_table[,2]]
     trait_table <- trait_table[, -c(1:3), drop = FALSE]

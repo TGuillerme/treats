@@ -1,5 +1,5 @@
 #' @name trait.process
-#' @aliases BM.process OU.process no.process multi.peak.process repulsion.process discrete.process
+#' @aliases BM.process BM.trend.process EB.process OU.process no.process multi.peak.process repulsion.process discrete.process
 #' @title Trait processes
 #'
 #' @description Different trait processes implemented in treats.
@@ -39,6 +39,22 @@
 #'               \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
 #'          }
 #'      
+#'      \item{EB.process} An early burst process (uni or multidimensional). The rate of evolution decays exponentially from the root.
+#'      This process can take following optional arguments:
+#'          \itemize{
+#'               \item \code{Sigma} the traits variance/covariance (default is \code{diag(length(x0))}).
+#'               \item \code{t.since.root} the time at which the branch starts, measured from the root (default is \code{0}).
+#'               \item \code{decay} the exponential decay parameter (default is \code{1}). A value of \code{0} gives Brownian motion.
+#'               \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
+#'          }
+#'      \item{BM.trend.process} A Brownian motion process with an additional trend argument. It's an extension of the \code{BM.process}.
+#'      This process can take the following optional arguments:
+#'          \itemize{
+#'               \item \code{Sigma} a positive-definite symmetric matrix specifying the covariance matrix of the variables (default is \code{diag(length(x0))}).
+#'               \item \code{trend} a value that is multiplied by each edge length across the tree to denote the jump in starting value at the next child node.
+#'               \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
+#'          }
+#'
 #'      \item{no.process} An non-process unidimensional function. This function generates a trait value not depending on the branch length nor the previous state
 #'      This process can take following optional arguments:
 #'          \itemize{
@@ -112,6 +128,7 @@
 trait.process <- function(x0 = 0, edge.length = 1, ...) {
     message("Trait processes implemented in treats:")
     message("?BM.process")
+    message("?EB.process")
     message("?discrete.process")
     message("?OU.process")
     message("?no.process")
@@ -124,6 +141,27 @@ trait.process <- function(x0 = 0, edge.length = 1, ...) {
 BM.process <- function(x0 = 0, edge.length = 1, Sigma = diag(length(x0)), ...) {
     return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = Sigma * edge.length, ...)))
 }
+
+## BM + trend model
+BM.trend.process <- function(x0 = 0, edge.length = 1,
+                             Sigma = diag(length(x0)), trend = 0.1, ...) {
+  drift <- trend * edge.length 
+  if (edge.length < (0.01 * Sigma[1,1])){ drift <- 0}
+  return(t(MASS::mvrnorm(n = 1, mu = x0 + drift, Sigma = Sigma * edge.length, ...)))
+}
+
+
+## Early Burst model
+EB.process <- function(x0 = 0, edge.length = 1, Sigma = diag(length(x0)), t.since.root = 0, decay = 0.1, ...) {
+    end.time <- t.since.root + edge.length ## end time is the time at child node (from the root)
+    if(decay == 0) {
+        branch.Sigma <- Sigma * edge.length ## defaults to BM.process here
+    } else {
+        branch.Sigma <- Sigma * (exp(-2 * decay * t.since.root) - exp(-2 * decay * end.time)) / (2 * decay)
+    }
+    return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = branch.Sigma, ...)))
+}
+
 
 ## Discrete traits
 discrete.process <- function(x0 = 0, edge.length = 1, transitions = transition.matrix("ER", 2)) {
@@ -152,6 +190,7 @@ discrete.process <- function(x0 = 0, edge.length = 1, transitions = transition.m
     #     return(states[(traits+1)])
     # }
 }
+
 
 ## The OU process
 OU.process <- function(x0 = 0, edge.length = 1, Sigma = diag(length(x0)), alpha = 1, optimum = 0, ...) {
@@ -216,3 +255,34 @@ repulsion.process <- function(x0 = 0, edge.length = 1, repulsion = 0.5, sd = 1, 
 
     return(bm_value)
 }
+
+
+
+# correlate.process <- function(x0 = rep(0, n.traits), edge.length = 1, 
+#                                           correlation = correlation, 
+#                                           transitions = transition.matrix) {
+    
+#     # If x0 is a single value, expand it to vector
+#     if(length(x0) == 1) {
+#       x0 <- rep(x0, n.traits)
+#     }
+    
+#     # traits generated independently at first
+#     independent_traits <- sapply(1:n.traits, function(i) {
+#       discrete.process(x0 = x0[i], edge.length = edge.length, transitions = transitions)
+#     })
+    
+#     # Apply correlation by modifying some traits to match the first trait
+#     trait_values <- independent_traits
+    
+#     for(i in 2:n.correlated.traits) {
+#       # Decide if this trait should be correlated
+#       if(runif(1) < correlation) {
+#         # Make it the same as trait 1
+#         trait_values[i] <- trait_values[1]
+#       }
+#       # otherwise keep the independent evolution per trait column
+#     }
+    
+#     return(trait_values)
+#   }

@@ -21,6 +21,7 @@ export(make.traits)
 export(link.traits)
 export(trait.process)
 export(BM.process)
+export(EB.process)
 export(discrete.process)
 export(OU.process)
 export(no.process)
@@ -70,5 +71,4 @@ S3method(plot, treats) #incl traits
 S3method(print, treats) #incl traits modifiers and events
 S3method(drop.tip, treats)
 S3method(keep.tip, treats)
-
 
