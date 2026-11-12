@@ -152,19 +152,35 @@ BM.trend.process <- function(x0 = 0, edge.length = 1,
 
 
 ## Early Burst model
-EB.process <- function(x0 = 0, edge.length = 1, Sigma = diag(length(x0)), t.since.root = 0, decay = 0.1, ...) {
-    end.time <- t.since.root + edge.length ## end time is the time at child node (from the root)
+EB.process <- function(x0 = 0, edge.length = 1, Sigma = diag(length(x0)), t.since.root = 0, decay = 0.1, ...) { ## see if t.since.root can be replaced by existing time argument.
+    end.time <- t.since.root + edge.length ## end.time is the time at child node (from the root)
     if(decay == 0) {
-        branch.Sigma <- Sigma * edge.length ## defaults to BM.process here
+        branch.Sigma <- Sigma * edge.length ## defaults to BM.process here when decay is 0 
     } else {
         branch.Sigma <- Sigma * (exp(-2 * decay * t.since.root) - exp(-2 * decay * end.time)) / (2 * decay)
     }
     return(t(MASS::mvrnorm(n = 1, mu = x0, Sigma = branch.Sigma, ...)))
 }
 
+##testing process.
+set.seed(1)
+tree <- rtree(1000)
+sim <- map.traits(make.traits(EB.process, n =1, process.args = list(Sigma = diag(0.25, 1,1), decay = 0.7)), tree )
+plot(sim)
+
+stop_rule <- list(max.taxa = 1000)
+bd <- make.bd.params(1,0.8)
+
+eb <- make.traits(EB.process, n =1, process.args = list(Sigma = diag(0.25, 1,1), decay = 0.15))
+sim <- treats(stop_rule, bd, traits = , null.error = 100)
+
+## t.since root could be used by another process (custom function)? need to check. But this could allow time varying rates in BM through time (eg could input a sine wave function?)
+
+
+
 
 ## Discrete traits
-discrete.process <- function(x0 = 0, edge.length = 1, transitions = transition.matrix("ER", 2)) {
+discrete.process <- function(x0 = 0, edge.length = 1, transitions = transition.matrix("ER", 2)) { ## add correlation here as an argument
     # no_dims <- FALSE
     # if(!is.null(states <- rownames(transitions))) {
     #     no_dims <- TRUE
