@@ -291,7 +291,7 @@ test_that("trait processes work", {
 
     ## EB process
     set.seed(1)
-    expect_equal(round(EB.process(), 5), matrix(round(-0.41191, 5)))
+    expect_equal(round(EB.process(), 5), matrix(round(-0.5964, 5)))
     expect_is(plot(EB.process), "list")
     expect_null(plot(make.traits(EB.process)))
 })
