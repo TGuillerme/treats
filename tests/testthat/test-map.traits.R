@@ -223,7 +223,7 @@ test_that("get.trigger.time", {
         modification = traits.update(process = OU.process))
     
     ## Testing get trigger
-    test <- get.trigger.time(events, tree = tree, traits = traits)
+    test <- get.trigger.time(events = events, tree = tree, traits = traits)
     
     expect_is(test, "list")
     expect_equal(names(test), c("time", "type", "traits"))
@@ -236,7 +236,7 @@ test_that("get.trigger.time", {
         condition    = taxa.condition(10),
         target       = "traits",
         modification = traits.update(process = OU.process))
-    test <- get.trigger.time(events, tree = tree, traits = traits)
+    test <- get.trigger.time(events = events, tree = tree, traits = traits)
     
     expect_is(test, "list")
     expect_equal(names(test), c("time", "type", "traits"))
@@ -250,7 +250,7 @@ test_that("get.trigger.time", {
         target       = "traits",
         modification = traits.update(process = OU.process))
     set.seed(1)
-    test <- get.trigger.time(events, tree = tree, traits = traits)
+    test <- get.trigger.time(events = events, tree = tree, traits = traits)
     
     expect_is(test, "list")
     expect_equal(names(test), c("time", "type", "traits"))
