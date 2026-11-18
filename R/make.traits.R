@@ -269,6 +269,7 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
         for(i in seq_along(updates)) {
 
             if(!conditional_update) {
+                old_process <- traits$main[[updates[[i]]]]$process[[1]]
                 ## Update the process
                 traits$main[[updates[[i]]]]$process[[1]] <- process[[i]]
             } else {
@@ -289,26 +290,33 @@ make.traits <- function(process = BM.process, n = NULL, start = NULL, process.ar
                     stop("Process arguments update is not yet implemented for conditional traits.")
                 }
 
-                ## Replacing/adding optional arguments if not NULL
+                ## Detect whether to add new process.args
                 if(!is.null(process.args[[updates[[i]]]][[1]])) {
-                    ## Get the available names in the object to update
                     to_update <- names(process.args[[i]])
                     present_arguments <- unlist(lapply(traits$main[[updates[[i]]]]$process.args, names))
-                    ## Detect whether to add new process.args
-                    to_add <- id_to_add <- which(!(to_update %in% present_arguments))
-                    ## Sort which arguments needs adding and which ones need updating
-                    if(length(id_to_add) != 0) {
-                        to_add <- to_update[id_to_add]
-                        to_update <- to_update[-id_to_add]
-                    } 
-                    ## Update the arguments
-                    if(length(to_update) != 0) {
-                        ## Replace the existing arguments
-                        traits$main[[updates[[i]]]]$process.args[[1]][[to_update]] <- process.args[[i]][[to_update]]
+
+                    ## Check if the process function itself changed
+                    process_changed <- !identical(old_process, process[[i]])
+
+                    ## Identify arguments to add (new args only) 
+                    to_add <- to_update[!(to_update %in% present_arguments)]
+                    to_update <- to_update[to_update %in% present_arguments]
+
+                    ## If process changed, remove old args not in new process (eg if OU -> BM, remove "alpha")
+                    if(process_changed) {
+                        to_remove <- present_arguments[!(present_arguments %in% to_update)]
+                        if(length(to_remove) > 0) {
+                            traits$main[[updates[[i]]]]$process.args[[1]][to_remove] <- NULL
+                        }
                     }
-                    ## Add the arguments
-                    if(length(to_add) != 0) {
-                        ## Add new arguments
+
+                    ## Update existing arguments
+                    if(length(to_update) > 0) {
+                        traits$main[[updates[[i]]]]$process.args[[1]][to_update] <- process.args[[i]][to_update]
+                    }
+
+                    ## Add new arguments
+                    if(length(to_add) > 0) {
                         traits$main[[updates[[i]]]]$process.args[[1]] <- c(traits$main[[updates[[i]]]]$process.args[[1]], process.args[[i]][to_add])
                     }
                 }

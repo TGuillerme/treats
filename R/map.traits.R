@@ -4,6 +4,7 @@
 #'
 #' @param traits A \code{"traits"} object (see \code{\link{make.traits}}).
 #' @param tree   A \code{"phylo"} or \code{"multiPhylo"} object.
+#' @param events Optional, an \code{"events"} object to apply to the tree (see \code{\link{make.events}}).
 #' @param replicates Optional, a number of replicated traits to map.
 #'
 #' @return
@@ -11,6 +12,8 @@
 #' 
 #' @details  
 #' This function simulates the trait(s) on the tree using the tree's branch length.
+#'
+#' Note that when using an \code{"events"} with a \code{age.condition}, the age is calculated in time from the root of the tree, not in time from the present. So an event triggered with \code{age.condition(5)} will trigger 5 units from the root of the tree, not from the tips. To get it to trigger from the tips you can calculate it as \code{age.condition(my_tree$root.time-5)}.
 #'
 #' @examples
 #' ## Simulating a random tree with branch length
@@ -37,12 +40,30 @@
 #' plot(no_traits, main = "Mapped normal trait")
 #' par(oldpar)
 #'
-map.traits <- function(traits, tree, replicates) {
+#' @author Thomas Guillerme, Caleb Scutt
+
+
+map.traits <- function(traits, tree, events = NULL, replicates) {
     ## Sanitizing
     check.class(traits, c("treats", "traits"), " must be of class \"traits\". You can generate such object using:\nmake.traits()")
     tree_class <- check.class(tree, c("phylo", "multiPhylo"))
-    if(tree_class == "phylo") {
-        tree <- list(tree)
+
+    ## Lapply through the trees
+    if(tree_class == "multiPhylo") {
+        out <- lapply(tree, function(tree, traits, events, replicates) map.traits(traits, tree, events, replicates), traits = traits, events = events, replicates = replicates)
+        if(!missing(replicates) && replicates != 1 && !is.null(events)) {
+            out <- unlist(out, recursive = FALSE)
+        }
+        class(out) <- "treats"
+        return(out)
+    }
+
+    ## Check trees attributes
+    if(is.null(tree$node.label)) {
+        tree <- makeNodeLabel(tree, prefix = "n")
+    }
+    if(is.null(tree$root.time)) {
+        tree <- set.root.time(tree)
     }
 
     ## Check replicates
@@ -53,8 +74,8 @@ map.traits <- function(traits, tree, replicates) {
     }
 
     ## Check for edge lengths
-    if(any(unlist(lapply(tree, function(x) is.null(x$edge.length))))) {
-        stop(paste0("The input tree", ifelse(tree_class == "phylo", " has", "s have"), " no branch lengths."))
+    if(is.null(tree$edge.length)) {
+        stop(paste0("The input tree has no branch lengths."))
     }
 
     ## Ignore the background trait
@@ -62,38 +83,125 @@ map.traits <- function(traits, tree, replicates) {
         warning("Background traits cannot be mapped and is ignored.")
     }
 
-    ## Map the traits
-    all_traits <- replicate(replicates, lapply(tree, map.traits_fun, traits = traits), simplify = FALSE)
+    ## If events, trigger the recursion
+    if(!is.null(events)) {
+    if(!is(events, "treats") && is(events, "events")) {
+            stop(paste0("Events needs to be of class \"events\". You can generate such object using:\nmake.events()"))
+        }
+        ## Only works for traits
+        if(events[[1]]$target != "traits") {
+            stop("events in map.traits can only target traits (make.events(target = \"traits\"), ...).")
+        }
 
-    ## Output
-    output <- lapply(all_traits, lapply, function(x) make.treats(x$tree, x$data))
+        ## Check if there are multiple events
+        n_events <- sum(abs(unlist(lapply(lapply(events, `[[`, "trigger"), function(x) ifelse(x == 0, 1, x)))))
+        if(n_events > 1) {
+            stop("map.traits does not currently work with more that one event (or a recurring one).")
+            ## Do some nesting here if n_events > 1
+        }
 
-    ## Output
-    if(tree_class == "phylo") {
-        output <- lapply(output, function(x) return(x[[1]]))
+        ## Get the slicing time
+        slicing_time <- get.trigger.time(events, tree, traits)
+        parent_trees_traits <- slicing_time$traits
+        trigger_type <- slicing_time$type
+        slicing_time <- slicing_time$time
+
+        if(trigger_type == "traits" && replicates > 1) {
+            stop("Traits triggered events not yet implemented with replicates.")
+            ## TODO for replicates: find different slicing_time so basically just call map.traits recursively
+        }
+        ## If slicing_time is not within the event time just run map.traits
+        if(slicing_time < 0 || slicing_time >= max(tree.age(tree)$age) || is.null(slicing_time)) {
+            if(!is.null(parent_trees_traits)) {
+                return(parent_trees_traits)
+            } else {
+                return(map.traits(traits, tree, replicates))
+            }
+        }
+        
+        ## Split the tree
+        trees_list <- tree.slice.map.traits(tree, slicing_time)
+        parent_trees <- trees_list$parent_tree
+        orphan_trees <- trees_list$orphan_tree
+
+        if(is.null(parent_trees_traits)) {
+            ## Run the normal map.traits
+            parent_trees_traits <- map.traits(parent_trees, traits = traits, replicates = replicates)
+        }
+
+        ## Make into a list of treats if it was a single tree
+        if(!is(parent_trees_traits[[1]], "treats")) {
+            parent_trees_traits <- list(parent_trees_traits)
+        }
+        ## Get the edges_values for the parent traits
+        parent_trait_values <- lapply(parent_trees_traits, function(treats) {treats$data[grep("map.traits_split", rownames(treats$data)),, drop = FALSE]})
+
+        ## Sort the parent traits as a list in the same order as the orphan_trees roots
+        roots_order <- unlist(lapply(orphan_trees, function(x) x$node.label[1]))
+        traits_order <- lapply(lapply(parent_trait_values, rownames), function(x, roots) match(roots, x), roots = roots_order)
+        reorder.trait <- function(trait, order) {
+            return(trait[order,, drop = FALSE])
+        }
+        ## Split the data in a list per orphan trees per replicates (parent_trait_values[[one_orphan_tree]][[one_replicate]])
+        parent_trait_values <- apply(do.call(cbind, mapply(reorder.trait, parent_trait_values, traits_order, SIMPLIFY = FALSE)), 1, function(x, dim) unlist(apply(matrix(x, nrow = dim), 2, as.list), recursive = FALSE), dim = length(traits$main[[1]]$start))
+
+        ## Get the orphan trees and new traits (with starting trait values)
+        ## Internal function for preparing traits after an event
+        prep.traits <- function(one_orphan_tree, one_parent_trait_values_set, one_events, traits) {
+            ## Create the new arguments for map.traits
+            lapply(one_parent_trait_values_set, function(x, tree, traits, one_events) {
+                return(list(tree = tree,
+                            traits = one_events$modification(traits, start = as.numeric(x)),
+                            events = NULL,
+                            replicates = 1))},
+                tree = one_orphan_tree, one_events = one_events, traits = traits)
+        }
+        orphan_maps <- mapply(prep.traits, orphan_trees, parent_trait_values, MoreArgs = list(one_events = events[[1]], traits = traits), SIMPLIFY = FALSE)
+
+        ## Run all the orphan maps
+        orphan_data <- lapply(orphan_maps, lapply, function(x) do.call(map.traits, args = x))
+
+        ## Extract only the data
+        all_orphan_data <- lapply(orphan_data, lapply, `[[`, "data")
+        ## Merge the data
+        combined_trait_data <- list()
+        for(one_rep in 1:replicates) {
+            combined_trait_data[[one_rep]] <- rbind(parent_trees_traits[[one_rep]]$data, do.call(rbind, lapply(all_orphan_data, `[[`, one_rep)))
+        }
+        ## Remove "map.traits_split" elements
+        cleaned_trait_data <- lapply(combined_trait_data, function(x) x[!grepl("map.traits_split", rownames(x)),, drop = FALSE])
+
+        # unduplicated_cleaned_trait_data <- lapply(cleaned_trait_data, function(x) x[!duplicated(rownames(x)), , drop = FALSE])
+        ## Make into treats objects
+        output <- lapply(cleaned_trait_data, function(X, tree) make.treats(tree, X), tree = tree)
     } else {
-        output <- unlist(output, recursive = FALSE)
+
+        ## Map the traits
+        all_traits <- replicate(replicates, map.traits_fun(tree = tree, traits = traits), simplify = FALSE)
+
+        ## Output
+        output <- lapply(all_traits, function(x) make.treats(x$tree, x$data))
     }
+
+    ## Output
     if(length(output) == 1) {
         output <- output[[1]]
     }
     class(output) <- c("treats")
-    return(output)
+    return(output)  
 }
 
 ## Internal function for a single tree
 map.traits_fun <- function(tree, traits) {
 
-    ## Generate node names
-    if(is.null(tree$node.label)) {
-        tree$node.label <- paste0("n", seq(1:Nnode(tree)))
-    }
-
     ## Get the edge table
     edge_table <- cbind(tree$edge, tree$edge.length)
 
+    ## Get the node depths
+    node_depth <- ape::node.depth.edgelength(tree)
+
     ## Ladderise the edge table
-    edge_table <- edge_table[order(edge_table[, 1]), ]
+    edge_table <- edge_table[order(edge_table[, 1]), , drop = FALSE]
 
     ## Initialise the trait table
     trait_values <- rbind(NULL, c(unlist(lapply(traits$main, function(x) return(x$start)))))
@@ -109,12 +217,13 @@ map.traits_fun <- function(tree, traits) {
     while(nrow(nodes_table) > 0) {
         ## Generate the trait
         trait_values <- rbind(trait_values,
-                              unlist(lapply(traits$main,
+                            unlist(lapply(traits$main,
                                             sim.element.trait,
-                                            parent.trait = trait_values[(nodes_table[1, 1]-Ntip(tree)), ],
-                                            edge.length  = nodes_table[1, 3])
+                                            parent.trait = trait_values[as.character(nodes_table[1, 1]), ],  ## correct parent node trait value is now grabbed by name.
+                                            edge.length  = nodes_table[1, 3],
+                                            t.since.root = node_depth[nodes_table[1,1]])
                                             )
-                             , deparse.level = 0)
+                            , deparse.level = 0)
         ## Name the trait
         rownames(trait_values)[nrow(trait_values)] <- nodes_table[1, 2]
         ## Decrease the node table
@@ -126,9 +235,223 @@ map.traits_fun <- function(tree, traits) {
     ## Find the tips
     living_tips <- which(is.na(trait_table[, 4]))
     ## Generate the traits for the tips
-    trait_table[living_tips, -c(1:3)] <- t(sapply(living_tips, sim.living.tips, trait_table, traits$main, simplify = TRUE))
+    tip_times <- node_depth[trait_table[living_tips, "parent"]]
+    trait_table[living_tips, -c(1:3)] <- t(sapply(seq_along(living_tips), function(i) {
+        sim.living.tips(living_tips[i], trait_table, traits$main, tip_times[i])
+    }, simplify = TRUE))
     ## Clean the table
     rownames(trait_table) <- c(tree$tip.label, tree$node.label)[trait_table[,2]]
     trait_table <- trait_table[, -c(1:3), drop = FALSE]
     return(list(tree = tree, data = trait_table))
+}
+
+## Internal function for getting events trigger times
+get.trigger.time <- function(events, tree, traits) {
+
+    condition_call <- events[[1]]$call$condition
+
+    condition_type <- if(is.call(condition_call)) {
+        as.character(condition_call[[1]])
+    } else {
+        NULL
+    }
+
+    condition_env <- environment(events[[1]]$condition)
+    
+    slice_time <- sim_traits <- NULL
+
+    ## Get the time condition (from start)
+    condition_args <- paste(all.names(body(events[[1]]$condition), unique = TRUE), collapse = " ")
+
+    # if(any(grepl("time", condition_args))) {
+    #     condition_type <- "time"
+    # } else {
+    #     if(any(grepl("lineage", condition_args))) {
+    #         condition_type <- "taxa"
+    #     } else {
+    #         if(any(grepl("trait.values", condition_args))) {
+    #             condition_type <- "traits"
+    #         }
+    #     }
+    # }
+
+    condition_type <- switch(condition_type, 
+        "age.condition"="time",
+        "taxa.condition"="taxa",
+        "trait.condition"="traits",
+        NULL
+    )
+
+    ## Get the condition for time (easy)
+    if(condition_type == "time") {
+        ## Check the required time
+        # slice_time <- eval(body(events[[1]]$condition)[[2]][[3]], env = environment(events[[1]]$condition))   
+        slice_time  <- condition_env$x 
+    }
+
+    ## Get the condition for taxa (should be the time when n_taxa exists)
+    if(condition_type == "taxa") {
+        ## Check the required number of lineages
+        # required_lineages <- eval(body(events[[1]]$condition)[[2]][[3]], env = environment(events[[1]]$condition))
+        required_lineages <- condition_env$x
+
+        ## Get the lineages through time
+        ltt_table <- ape::ltt.plot.coords(tree)
+
+        ## Get the time for the required lineagss
+        trigger_loc <- which(ltt_table[, 2] == required_lineages) #TG: condition here is set to equal but can probably be something else
+        if(length(trigger_loc) != 0) {
+            ## Return the first occurrence
+            slice_time <- unname(abs(ltt_table[trigger_loc[1], 1]))
+        }
+    }
+
+    ## Get the condition for traits (should be the time when reaching trait n)
+    if(condition_type == "traits") {
+        ## Simulate the traits first
+        sim_traits <- map.traits(traits, tree)
+
+        ## Check the required trait evaluation
+        condition <- condition_env$condition
+        trait <- condition_env$trait
+        threshold <- condition_env$x ## x is the trait val it hist before triggered
+        abs.fun <- condition_env$abs.fun
+
+        ## Check in sim_traits when it triggers the event (check in tree_bd_sim logic for inspiration)
+        trait_values <- sim_traits$data[, trait, drop = TRUE]
+        trait_values <- abs.fun(trait_values)
+        trigger_loc <- which(condition(trait_values, threshold))
+        if(length(trigger_loc) != 0) {
+            ## Return the first occurrence
+            tree_ages <- tree.age(sim_traits$tree) 
+            slice_time <- tree_ages$ages[which(tree_ages$elements == names(trigger_loc[1]))]
+        }
+
+        ## Cut the tree at the slicing time
+        sliced_tree <- tree.slice.map.traits(sim_traits$tree, slice = slice_time)$parent_tree
+
+        ## Get the elements to save and the ones to re-simulate
+        saved_elements <- c(sliced_tree$tip.label, sliced_tree$node.label)[!grepl("map.traits_split",c(sliced_tree$tip.label, sliced_tree$node.label))]
+        sim_elements <- new_elements <- c(sliced_tree$tip.label, sliced_tree$node.label)[grepl("map.traits_split",c(sliced_tree$tip.label, sliced_tree$node.label))]
+
+        ## Reduce the trait table
+        sliced_table <- sim_traits$data[saved_elements, , drop = FALSE]
+
+        ## Simulate the new elements
+        missing_traits <- matrix(ncol = ncol(sliced_table), nrow = 0)
+        while(length(sim_elements) > 0) {
+            ## Get the elements IDs
+            tip_id <- which(sliced_tree$tip.label == sim_elements[1])
+            edge_id <- which(sliced_tree$edge[,2] == tip_id)
+            ancestor_id <- sliced_tree$edge[edge_id, 1] - Ntip(sliced_tree)
+            ## Get the x0 and edge length
+            x0 <- sim_traits$data[sliced_tree$node.label[ancestor_id], ]
+            edge_length <- sliced_tree$edge.length[edge_id]
+            ## Simulate the trait value
+            missing_traits <- rbind(missing_traits, sim.element.trait(traits[[1]][[1]], parent.trait = x0, edge.length = edge_length))
+            rownames(missing_traits)[nrow(missing_traits)] <- sim_elements[1]
+            ## Remove the element
+            sim_elements <- sim_elements[-1]
+        }
+        ## Update the reduce trait table
+        sliced_table <- rbind(sliced_table, missing_traits)
+        sliced_table <- sliced_table[c(sliced_tree$tip.label, sliced_tree$node.label), , drop = FALSE]
+
+        ## Update the treats object
+        sim_traits$tree <- sliced_tree
+        sim_traits$data <- sliced_table
+    }
+
+    if(is.null(condition_type)) {
+        condition_names <- paste(all.names(body(events[[1]]$condition), unique = TRUE), collapse = " ") ## if event is unknown condition go back to function names 
+
+        condition_type <- if (grepl("trait.values", condition_names)){ "traits"} else if (grepl("lineage", condition_names, fixed = TRUE)){ "taxa"} else if (grepl("time", condition_names, fixed = TRUE)){ "time"} else{stop("Cannot identify event condition type. Must be one of... \n")
+
+        }
+
+    }
+
+    ## Return info
+    return(list(time = slice_time, type = condition_type, traits = sim_traits))
+}
+
+## Function for adding branch at root to correctly rescale orphan trees
+add.root.edge <- function(tree, new.root.edge) {
+    tree$edge <- rbind(c(Ntip(tree)+1, Ntip(tree)+2), ifelse(tree$edge > Ntip(tree), tree$edge+1, tree$edge))
+    tree$edge.length <- c(new.root.edge, tree$edge.length)
+    tree$Nnode <- tree$Nnode + 1
+    return(tree)
+}
+
+## Slicing trees for map traits (by Caleb Scutt)
+tree.slice.map.traits <- function(tree, slice) {
+    ## Slice the tree at the age
+    splitted <- dispRity::slice.tree(tree, age = tree$root.time-slice, model = "acctran", keep.all.ancestors = TRUE)
+
+    ## Precalculating tree ages (recycled in several places)
+    tree_ages <- tree.age(tree, digits = 7)
+
+    ## Getting the subtrees (orphans)
+
+    ## Finds branches that cross slice
+    splitted_branches <- splitted$tip.label[which(splitted$tip.label %in% tree$node.label)]
+    ## Extracts trees that are descendant from the sliced branches
+    orphan_trees <- castor::get_subtrees_at_nodes(tree, splitted_branches)$subtrees
+
+    ## Find the missing branch length for the orphan
+    # orphan_ages <- lapply(orphan_trees, get.orphan.tree.ages, full_tree = tree)
+    orphan_ages <- lapply(orphan_trees, function(one_tree, tree_age_data) return(tree_age_data$ages[as.character(tree_age_data$elements) %in% one_tree$node.label[1]]), tree_age_data = tree_ages)
+
+    ## Relabel nodes and tips at slice point with a tractable suffix
+    map.traits_label <- paste0("map.traits_split_node", 1:length(splitted_branches)) 
+    splitted$tip.label[splitted$tip.label %in% splitted_branches] <- map.traits_label
+
+    ## Rescale the orphan trees (i.e. adding their extra branch length)
+    added_br_length <- lapply(orphan_ages, function(ages, slice) slice - ages, slice = (tree$root.time-slice))
+    ## Add the root edge
+    rescaled_orphans <- Map(add.root.edge, orphan_trees, added_br_length)
+    ## Add the new labels
+    rescaled_orphans <- Map(function(tree, label) {
+                            tree$node.label <- c(label, tree$node.label)  
+                            return(tree)
+                        }, rescaled_orphans, map.traits_label)
+
+    ## Getting the singleton trees (orphans)
+
+    ## Detecting which tip is a singleton (tip in sliced tree is at minimum age + tip in the input tree is not at slice time)
+    splitted_ages <- tree.age(splitted, digits = 7)
+    splitted_ages <- splitted_ages[splitted_ages$elements %in% splitted$tip.label, ] ## only keep tips, so that nodes are not passed through
+
+    ## Find the singletons (ignores the tips that are already called map.traits)
+    splitted_ages_singeltons <- splitted_ages[!grepl("map.traits_split_node", splitted_ages$elements), ]
+    singletons_tips <- splitted_ages_singeltons$elements[which(splitted_ages_singeltons$ages == min(splitted_ages_singeltons$ages))]
+    same_age_elements <- tree_ages$elements[tree_ages$elements %in% singletons_tips & tree_ages$ages == (tree$root.time-slice)] ## any tips that end exactly at slice dealt with
+
+    ## Dropping singletons that have the age of the slice time
+    if(any(same_age <- tree_ages$ages[tree_ages$elements %in% singletons_tips] == (tree$root.time-slice))) {
+        singletons_tips <- singletons_tips[-same_age]
+    }
+    ## Calculating the singletons edges length
+    singletons_edges <- (tree$root.time-slice) - tree_ages$ages[tree_ages$elements %in% singletons_tips]
+
+    ## Make the mini trees
+    make.mini.tree <- function(tip, edge_length) {
+        tree <- list(tip.label = tip,
+                     node.label = paste0("map.traits_split_tip", tip),
+                     Nnode = 1,
+                     edge = matrix(c(2, 1), ncol = 2, byrow = TRUE),
+                     edge.length = edge_length)
+        class(tree) <- "phylo"
+        return(tree)
+    }
+    singletons_trees <- mapply(make.mini.tree, as.list(singletons_tips), as.list(singletons_edges), SIMPLIFY = FALSE)
+
+    ## Renaming the branching tips on splitted
+    splitted$tip.label[splitted$tip.label %in% singletons_tips] <- paste0("map.traits_split_tip", singletons_tips)
+ 
+    ## Combine the orphan trees
+    orphan_trees <- c(rescaled_orphans, singletons_trees)
+
+    ## Return parent and orphans
+    return(list(parent_tree = splitted, orphan_tree = orphan_trees))
 }
