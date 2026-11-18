@@ -1,11 +1,10 @@
-treats v1.1.8 (2026-11-12)
+treats v1.1.8 (2026-11-18)
 =========================
 
 ### NEW FEATURES
 
 * `map.traits` now includes an `events` argument.
-* New trait processes: `EB.process` and `BM.trend.process`
-* 
+* New trait processes: `EB.process` and `BM.trend.process`.
 
 
 treats v1.1.7 (2025-09-26)
