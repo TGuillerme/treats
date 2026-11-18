@@ -247,34 +247,53 @@ map.traits_fun <- function(tree, traits) {
 
 ## Internal function for getting events trigger times
 get.trigger.time <- function(events, tree, traits) {
+
+    condition_call <- events[[1]]$call$condition
+
+    condition_type <- if(is.call(condition_call)) {
+        as.character(condition_call[[1]])
+    } else {
+        NULL
+    }
+
+    condition_env <- environment(events[[1]]$condition)
     
     slice_time <- sim_traits <- NULL
 
     ## Get the time condition (from start)
-    condition_args <- as.character(body(events[[1]]$condition)[[2]][[2]])
+    condition_args <- paste(all.names(body(events[[1]]$condition), unique = TRUE), collapse = " ")
 
-    if(any(grepl("time", condition_args))) {
-        condition_type <- "time"
-    } else {
-        if(any(grepl("lineage", condition_args))) {
-            condition_type <- "taxa"
-        } else {
-            if(any(grepl("trait.values", condition_args))) {
-                condition_type <- "traits"
-            }
-        }
-    }
+    # if(any(grepl("time", condition_args))) {
+    #     condition_type <- "time"
+    # } else {
+    #     if(any(grepl("lineage", condition_args))) {
+    #         condition_type <- "taxa"
+    #     } else {
+    #         if(any(grepl("trait.values", condition_args))) {
+    #             condition_type <- "traits"
+    #         }
+    #     }
+    # }
+
+    condition_type <- switch(condition_type, 
+        "age.condition"="time",
+        "taxa.condition"="taxa",
+        "trait.condition"="traits",
+        NULL
+    )
 
     ## Get the condition for time (easy)
     if(condition_type == "time") {
         ## Check the required time
-        slice_time <- eval(body(events[[1]]$condition)[[2]][[3]], env = environment(events[[1]]$condition))    
+        # slice_time <- eval(body(events[[1]]$condition)[[2]][[3]], env = environment(events[[1]]$condition))   
+        slice_time  <- condition_env$x 
     }
 
     ## Get the condition for taxa (should be the time when n_taxa exists)
     if(condition_type == "taxa") {
         ## Check the required number of lineages
-        required_lineages <- eval(body(events[[1]]$condition)[[2]][[3]], env = environment(events[[1]]$condition))
+        # required_lineages <- eval(body(events[[1]]$condition)[[2]][[3]], env = environment(events[[1]]$condition))
+        required_lineages <- condition_env$x
 
         ## Get the lineages through time
         ltt_table <- ape::ltt.plot.coords(tree)
@@ -293,12 +312,15 @@ get.trigger.time <- function(events, tree, traits) {
         sim_traits <- map.traits(traits, tree)
 
         ## Check the required trait evaluation
-        condition <- eval(body(events[[1]]$condition)[[2]][[2]][[1]], env = environment(events[[1]]$condition))
-        trait <- eval(body(events[[1]]$condition)[[2]][[2]][[2]][[2]][[2]][[4]], env = environment(events[[1]]$condition))
-        threshold <- eval(body(events[[1]]$condition)[[2]][[2]][[3]], env = environment(events[[1]]$condition))
+        condition <- condition_env$condition
+        trait <- condition_env$trait
+        threshold <- condition_env$x ## x is the trait val it hist before triggered
+        abs.fun <- condition_env$abs.fun
 
         ## Check in sim_traits when it triggers the event (check in tree_bd_sim logic for inspiration)
-        trigger_loc <- which(condition(sim_traits$data[, trait], threshold))
+        trait_values <- sim_traits$data[, trait, drop = TRUE]
+        trait_values <- abs.fun(trait_values)
+        trigger_loc <- which(condition(trait_values, threshold))
         if(length(trigger_loc) != 0) {
             ## Return the first occurrence
             tree_ages <- tree.age(sim_traits$tree) 
@@ -338,6 +360,15 @@ get.trigger.time <- function(events, tree, traits) {
         ## Update the treats object
         sim_traits$tree <- sliced_tree
         sim_traits$data <- sliced_table
+    }
+
+    if(is.null(condition_type)) {
+        condition_names <- paste(all.names(body(events[[1]]$condition), unique = TRUE), collapse = " ") ## if event is unknown condition go back to function names 
+
+        condition_type <- if (grepl("trait.values", condition_names)){ "traits"} else if (grepl("lineage", condition_names, fixed = TRUE)){ "taxa"} else if (grepl("time", condition_names, fixed = TRUE)){ "time"} else{stop("Cannot identify event condition type. Must be one of... \n")
+
+        }
+
     }
 
     ## Return info
