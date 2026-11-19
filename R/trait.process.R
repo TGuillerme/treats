@@ -43,7 +43,7 @@
 #'      This process can take following optional arguments:
 #'          \itemize{
 #'               \item \code{Sigma} the traits variance/covariance (default is \code{diag(length(x0))}).
-#'               \item \code{t.since.root} the time at which the branch starts, measured from the root (default is \code{0}).
+#'               \item \code{t.since.root} the time at which the trait process starts, measured from the root (highly recommended to leave as \code{0}).
 #'               \item \code{decay} the exponential decay parameter (default is \code{1}). A value of \code{0} gives Brownian motion.
 #'               \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
 #'          }
