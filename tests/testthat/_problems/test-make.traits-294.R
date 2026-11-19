@@ -1,0 +1,31 @@
+# Extracted from test-make.traits.R:294
+
+# setup ------------------------------------------------------------------------
+library(testthat)
+test_env <- simulate_test_env(package = "treats", path = "..")
+attach(test_env, warn.conflicts = FALSE)
+
+# test -------------------------------------------------------------------------
+set.seed(1)
+expect_equal(round(BM.process(), 5), matrix(round(-0.6264538, 5)))
+expect_is(plot(BM.process), "list")
+expect_null(plot(make.traits(BM.process)))
+set.seed(1)
+expect_equal(round(OU.process(), 5), matrix(round(-0.4119058, 5)))
+expect_is(plot(OU.process), "list")
+expect_null(plot(make.traits(OU.process)))
+set.seed(1)
+expect_equal(round(no.process(), 5), c(round(-0.6264538, 5)))
+expect_null(plot(make.traits(no.process)))
+expect_null(plot(make.traits(no.process, process.args = list(fun = runif))))
+set.seed(1)
+expect_equal(round(multi.peak.process(), 5), matrix(round(-0.4119058, 5)))
+expect_is(plot(multi.peak.process), "list")
+expect_null(plot(make.traits(multi.peak.process, process.args = list(peaks = c(1, 5, 10)))))
+expect_null(plot(make.traits(multi.peak.process, n = 3, start = c(1,2,3), process.args = list(peaks = list(1, 5, 10)))))
+set.seed(1)
+expect_equal(round(repulsion.process(), 5), c(round(-0.6264538, 5)))
+expect_null(plot(make.traits(repulsion.process)))
+expect_null(plot(make.traits(repulsion.process, process.args = list(repulsion = 5))))
+set.seed(1)
+expect_equal(round(EB.process(), 5), matrix(round(-0.5964, 5)))

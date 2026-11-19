@@ -38,6 +38,10 @@
 
 crude.bd.est <- function(tree, method, ...) {
 
+    if(is(tree, "multiPhylo")) {
+        return(lapply(tree, crude.bd.est, method = method, ...))
+    }
+
     dots <- list(...)
 
     ## Check class

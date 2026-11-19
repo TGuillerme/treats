@@ -1,17 +1,26 @@
-treats v1.1.7 (2025-07-15)
+treats v1.1.8 (2026-11-18)
+=========================
+
+### NEW FEATURES
+
+* `map.traits` now includes an `events` argument.
+* New trait processes: `EB.process` and `BM.trend.process`.
+
+
+treats v1.1.7 (2025-09-26)
 =========================
 
 <!-- 
 ### NEW FEATURES
  * [ ] `map.traits` can now include `"events"` that are affecting `traits`.
-    - [ ] test
+    - [x] test
     - [ ] doc
     - [x] works with time trigger
     - [x] works with traits trigger
     - [x] works with taxa trigger
-    - [ ] works with multiple triggers
+    - [ ] works with multiple events
     - [x] affects traits
- * [ ] transform data to be compatible with [tidytree](https://cran.r-project.org/web/packages/tidytree/index.html) format.
+ * `crude.bd.est` now works on multiPhylo
  -->
 
  ### MINOR IMPROVEMENTS 
@@ -19,6 +28,8 @@ treats v1.1.7 (2025-07-15)
  * `make.treats` can now directly make `multi.treats` objects if provided a list of data and trees.
  * `treats` now allows for multiple `"founding"` `events`. Thanks to Ruby Redlich for this suggestion.
  * The branch leading to the `"founding"` `events` tree is now generated from from the input `"modifiers"` object rather than arbitrarily.
+<!-- * `crude.bd.est` now works on multiPhylo objects. -->
+
 
 ### BUG FIXES
 

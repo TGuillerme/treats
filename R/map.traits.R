@@ -85,7 +85,7 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
 
     ## If events, trigger the recursion
     if(!is.null(events)) {
-        if(!is(events, "treats") && is(events, "events")) {
+    if(!is(events, "treats") && is(events, "events")) {
             stop(paste0("Events needs to be of class \"events\". You can generate such object using:\nmake.events()"))
         }
         ## Only works for traits
@@ -171,6 +171,7 @@ map.traits <- function(traits, tree, events = NULL, replicates) {
         ## Remove "map.traits_split" elements
         cleaned_trait_data <- lapply(combined_trait_data, function(x) x[!grepl("map.traits_split", rownames(x)),, drop = FALSE])
 
+        # unduplicated_cleaned_trait_data <- lapply(cleaned_trait_data, function(x) x[!duplicated(rownames(x)), , drop = FALSE])
         ## Make into treats objects
         output <- lapply(cleaned_trait_data, function(X, tree) make.treats(tree, X), tree = tree)
     } else {
@@ -196,6 +197,9 @@ map.traits_fun <- function(tree, traits) {
     ## Get the edge table
     edge_table <- cbind(tree$edge, tree$edge.length)
 
+    ## Get the node depths
+    node_depth <- ape::node.depth.edgelength(tree)
+
     ## Ladderise the edge table
     edge_table <- edge_table[order(edge_table[, 1]), , drop = FALSE]
 
@@ -213,12 +217,13 @@ map.traits_fun <- function(tree, traits) {
     while(nrow(nodes_table) > 0) {
         ## Generate the trait
         trait_values <- rbind(trait_values,
-                              unlist(lapply(traits$main,
+                            unlist(lapply(traits$main,
                                             sim.element.trait,
-                                            parent.trait = trait_values[(nodes_table[1, 1]-Ntip(tree)), ],
-                                            edge.length  = nodes_table[1, 3])
+                                            parent.trait = trait_values[as.character(nodes_table[1, 1]), ],  ## correct parent node trait value is now grabbed by name.
+                                            edge.length  = nodes_table[1, 3],
+                                            t.since.root = node_depth[nodes_table[1,1]])
                                             )
-                             , deparse.level = 0)
+                            , deparse.level = 0)
         ## Name the trait
         rownames(trait_values)[nrow(trait_values)] <- nodes_table[1, 2]
         ## Decrease the node table
@@ -230,7 +235,10 @@ map.traits_fun <- function(tree, traits) {
     ## Find the tips
     living_tips <- which(is.na(trait_table[, 4]))
     ## Generate the traits for the tips
-    trait_table[living_tips, -c(1:3)] <- t(sapply(living_tips, sim.living.tips, trait_table, traits$main, simplify = TRUE))
+    tip_times <- node_depth[trait_table[living_tips, "parent"]]
+    trait_table[living_tips, -c(1:3)] <- t(sapply(seq_along(living_tips), function(i) {
+        sim.living.tips(living_tips[i], trait_table, traits$main, tip_times[i])
+    }, simplify = TRUE))
     ## Clean the table
     rownames(trait_table) <- c(tree$tip.label, tree$node.label)[trait_table[,2]]
     trait_table <- trait_table[, -c(1:3), drop = FALSE]
@@ -239,34 +247,53 @@ map.traits_fun <- function(tree, traits) {
 
 ## Internal function for getting events trigger times
 get.trigger.time <- function(events, tree, traits) {
+
+    condition_call <- events[[1]]$call$condition
+
+    condition_type <- if(is.call(condition_call)) {
+        as.character(condition_call[[1]])
+    } else {
+        NULL
+    }
+
+    condition_env <- environment(events[[1]]$condition)
     
     slice_time <- sim_traits <- NULL
 
     ## Get the time condition (from start)
-    condition_args <- as.character(body(events[[1]]$condition)[[2]][[2]])
+    condition_args <- paste(all.names(body(events[[1]]$condition), unique = TRUE), collapse = " ")
 
-    if(any(grepl("time", condition_args))) {
-        condition_type <- "time"
-    } else {
-        if(any(grepl("lineage", condition_args))) {
-            condition_type <- "taxa"
-        } else {
-            if(any(grepl("trait.values", condition_args))) {
-                condition_type <- "traits"
-            }
-        }
-    }
+    # if(any(grepl("time", condition_args))) {
+    #     condition_type <- "time"
+    # } else {
+    #     if(any(grepl("lineage", condition_args))) {
+    #         condition_type <- "taxa"
+    #     } else {
+    #         if(any(grepl("trait.values", condition_args))) {
+    #             condition_type <- "traits"
+    #         }
+    #     }
+    # }
+
+    condition_type <- switch(condition_type, 
+        "age.condition"="time",
+        "taxa.condition"="taxa",
+        "trait.condition"="traits",
+        NULL
+    )
 
     ## Get the condition for time (easy)
     if(condition_type == "time") {
         ## Check the required time
-        slice_time <- eval(body(events[[1]]$condition)[[2]][[3]], env = environment(events[[1]]$condition))    
+        # slice_time <- eval(body(events[[1]]$condition)[[2]][[3]], env = environment(events[[1]]$condition))   
+        slice_time  <- condition_env$x 
     }
 
     ## Get the condition for taxa (should be the time when n_taxa exists)
     if(condition_type == "taxa") {
         ## Check the required number of lineages
-        required_lineages <- eval(body(events[[1]]$condition)[[2]][[3]], env = environment(events[[1]]$condition))
+        # required_lineages <- eval(body(events[[1]]$condition)[[2]][[3]], env = environment(events[[1]]$condition))
+        required_lineages <- condition_env$x
 
         ## Get the lineages through time
         ltt_table <- ape::ltt.plot.coords(tree)
@@ -285,12 +312,15 @@ get.trigger.time <- function(events, tree, traits) {
         sim_traits <- map.traits(traits, tree)
 
         ## Check the required trait evaluation
-        condition <- eval(body(events[[1]]$condition)[[2]][[2]][[1]], env = environment(events[[1]]$condition))
-        trait <- eval(body(events[[1]]$condition)[[2]][[2]][[2]][[2]][[2]][[4]], env = environment(events[[1]]$condition))
-        threshold <- eval(body(events[[1]]$condition)[[2]][[2]][[3]], env = environment(events[[1]]$condition))
+        condition <- condition_env$condition
+        trait <- condition_env$trait
+        threshold <- condition_env$x ## x is the trait val it hist before triggered
+        abs.fun <- condition_env$abs.fun
 
         ## Check in sim_traits when it triggers the event (check in tree_bd_sim logic for inspiration)
-        trigger_loc <- which(condition(sim_traits$data[, trait], threshold))
+        trait_values <- sim_traits$data[, trait, drop = TRUE]
+        trait_values <- abs.fun(trait_values)
+        trigger_loc <- which(condition(trait_values, threshold))
         if(length(trigger_loc) != 0) {
             ## Return the first occurrence
             tree_ages <- tree.age(sim_traits$tree) 
@@ -330,6 +360,15 @@ get.trigger.time <- function(events, tree, traits) {
         ## Update the treats object
         sim_traits$tree <- sliced_tree
         sim_traits$data <- sliced_table
+    }
+
+    if(is.null(condition_type)) {
+        condition_names <- paste(all.names(body(events[[1]]$condition), unique = TRUE), collapse = " ") ## if event is unknown condition go back to function names 
+
+        condition_type <- if (grepl("trait.values", condition_names)){ "traits"} else if (grepl("lineage", condition_names, fixed = TRUE)){ "taxa"} else if (grepl("time", condition_names, fixed = TRUE)){ "time"} else{stop("Cannot identify event condition type. Must be one of... \n")
+
+        }
+
     }
 
     ## Return info
@@ -381,9 +420,13 @@ tree.slice.map.traits <- function(tree, slice) {
 
     ## Detecting which tip is a singleton (tip in sliced tree is at minimum age + tip in the input tree is not at slice time)
     splitted_ages <- tree.age(splitted, digits = 7)
+    splitted_ages <- splitted_ages[splitted_ages$elements %in% splitted$tip.label, ] ## only keep tips, so that nodes are not passed through
+
     ## Find the singletons (ignores the tips that are already called map.traits)
     splitted_ages_singeltons <- splitted_ages[!grepl("map.traits_split_node", splitted_ages$elements), ]
     singletons_tips <- splitted_ages_singeltons$elements[which(splitted_ages_singeltons$ages == min(splitted_ages_singeltons$ages))]
+    same_age_elements <- tree_ages$elements[tree_ages$elements %in% singletons_tips & tree_ages$ages == (tree$root.time-slice)] ## any tips that end exactly at slice dealt with
+
     ## Dropping singletons that have the age of the slice time
     if(any(same_age <- tree_ages$ages[tree_ages$elements %in% singletons_tips] == (tree$root.time-slice))) {
         singletons_tips <- singletons_tips[-same_age]

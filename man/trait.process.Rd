@@ -3,6 +3,8 @@
 \name{trait.process}
 \alias{trait.process}
 \alias{BM.process}
+\alias{BM.trend.process}
+\alias{EB.process}
 \alias{OU.process}
 \alias{no.process}
 \alias{multi.peak.process}
@@ -52,6 +54,15 @@ The different trait processes implemented in treats are:
               \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
          }
      
+     \item{EB.process} An early burst process (uni or multidimensional). The rate of evolution decays exponentially from the root.
+     This process can take following optional arguments:
+         \itemize{
+              \item \code{Sigma} the traits variance/covariance (default is \code{diag(length(x0))}).
+              \item \code{t.since.root} the time at which the branch starts, measured from the root (default is \code{0}).
+              \item \code{decay} the exponential decay parameter (default is \code{1}). A value of \code{0} gives Brownian motion.
+              \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
+         }
+
      \item{no.process} An non-process unidimensional function. This function generates a trait value not depending on the branch length nor the previous state
      This process can take following optional arguments:
          \itemize{
