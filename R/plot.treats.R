@@ -15,8 +15,10 @@
 #' @param legend logical, whether to display the legend in 2D plots (\code{TRUE}) or not (\code{FALSE}; default)
 #' @param add logical, whether to add to a previous plot.
 #' @param transparency Optional, a transparency factor (\code{1} = not transparent, \code{0} = invisible). If left empty, and multiple plots are called, the transparency is set to 1 / number of plots + 0.1. 
-# @param dots the list of optional arguments, for internal use only. 
-#' 
+#' @param tiplabels Optional, whether to also display the tip labels (default = \code{FALSE}). If \code{TRUE}, this argument can take a named list of arguments corresponding to the \code{ape::tiplabels} function.
+#' @param nodelabels Optional, whether to also display the node labels (default = \code{FALSE}). If \code{TRUE}, this argument can take a named list of arguments corresponding to the \code{ape::nodelabels} function.
+#' @param edgelabels Optional, whether to also display the edge labels (default = \code{FALSE}). If \code{TRUE}, this argument can take a named list of arguments corresponding to the \code{ape::edgelabels} function.
+#'
 #' @return No return value, plot \code{x}'s content.
 #'
 #' @details

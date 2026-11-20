@@ -46,6 +46,12 @@
 \item{transparency}{Optional, a transparency factor (\code{1} = not transparent, \code{0} = invisible). If left empty, and multiple plots are called, the transparency is set to 1 / number of plots + 0.1.}
 
 \item{add}{logical, whether to add to a previous plot.}
+
+\item{tiplabels}{Optional, whether to also display the tip labels (default = \code{FALSE}). If \code{TRUE}, this argument can take a named list of arguments corresponding to the \code{ape::tiplabels} function.}
+
+\item{nodelabels}{Optional, whether to also display the node labels (default = \code{FALSE}). If \code{TRUE}, this argument can take a named list of arguments corresponding to the \code{ape::nodelabels} function.}
+
+\item{edgelabels}{Optional, whether to also display the edge labels (default = \code{FALSE}). If \code{TRUE}, this argument can take a named list of arguments corresponding to the \code{ape::edgelabels} function.}
 }
 \value{
 No return value, plot \code{x}'s content.

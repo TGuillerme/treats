@@ -62,6 +62,13 @@ The different trait processes implemented in treats are:
               \item \code{decay} the exponential decay parameter (default is \code{1}). A value of \code{0} gives Brownian motion.
               \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
          }
+     \item{BM.trend.process} A Brownian motion process with an additional trend argument. It's an extension of the \code{BM.process}.
+     This process can take the following optional arguments:
+         \itemize{
+              \item \code{Sigma} a positive-definite symmetric matrix specifying the covariance matrix of the variables (default is \code{diag(length(x0))}).
+              \item \code{trend} a value that is multiplied by each edge length across the tree to denote the jump in starting value at the next child node.
+              \item \code{...} any named additional argument to be passed to \code{\link[MASS]{mvrnorm}}.
+         }
 
      \item{no.process} An non-process unidimensional function. This function generates a trait value not depending on the branch length nor the previous state
      This process can take following optional arguments:
